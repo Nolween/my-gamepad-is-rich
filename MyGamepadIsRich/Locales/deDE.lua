@@ -126,7 +126,7 @@ ns.AddLocale("deDE", {
     HUD_COMBAT = "Aktionen können im Kampf nicht geändert werden.",
     HUD_GAME_SLOT = "Diese Taste behält die Aktion des Spiels (Springen, Interagieren...).",
     HUD_KIND = "Die Leiste des Spiels nimmt nur Zauber, Gegenstände, Reittiere und Makros aus der Makroliste.",
-    HUD_EDITING = "Ebene bearbeiten: Klicke auf einen Platz, um ihn zu belegen, Rechtsklick zum Leeren. Klicke erneut auf die Miniatur, um zurückzukehren.",
+    HUD_EDITING = "Ebene bearbeiten: Klicke auf einen Platz, um ihn zu belegen, Rechtsklick zum Leeren. Klicke erneut auf die Miniatur oder drücke eine andere Taste, um zurückzukehren.",
     HUD_TILE_HINT = "Klick: belegen  -  Rechtsklick: leeren",
     HUD_CARD_HINT = "Klick: diese Ebene bearbeiten",
 })
@@ -315,4 +315,15 @@ ns.AddLocale("deDE", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("deDE", {
     HUD_ERROR = "HUD-Fehler, das HUD ist bis zum /reload angehalten (die Leiste des Spiels ist zurück). Bitte melde diese Nachricht: %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("deDE", {
+    TRIGGERS_LABEL = "Trigger LT / RT:",
+    TRIGGERS_ADDON = "Addon-Modifikatoren",
+    TRIGGERS_GAME = "Ebenen des Spiels",
+    TRIGGERS_ADDON_DESC = "Halte LT oder RT (oder beide) und drücke A, B, X, Y oder das Steuerkreuz: die Aktionen des Addons, mit allem, was es erlaubt (selbst geschriebene Makros, WoW-Befehle). Sie ersetzen die Ebenen LT, RT und LT + RT der Controller-Leiste des Spiels; ein leeres Feld tut nichts. LB und RB bleiben unverändert.",
+    TRIGGERS_GAME_DESC = "LT und RT behalten die Ebenen der Controller-Leiste des Spiels (im Reiter Aktionen bearbeitbar).",
+    TRIGGERS_COPIED = "%d Aktion(en) aus den LT/RT-Ebenen des Spiels in die des Addons übernommen.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT: Addon-Modifikatoren.",
 })

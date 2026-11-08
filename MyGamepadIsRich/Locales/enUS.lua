@@ -127,7 +127,7 @@ ns.AddLocale("enUS", {
     HUD_COMBAT = "Actions can't be changed in combat.",
     HUD_GAME_SLOT = "This button keeps the game's own action (jump, interact...).",
     HUD_KIND = "The game's bar only takes spells, items, mounts and macros from the macro list.",
-    HUD_EDITING = "Editing this layer: click a tile to set it, right-click to clear it. Click the miniature again to go back.",
+    HUD_EDITING = "Editing this layer: click a tile to set it, right-click to clear it. Click the miniature again, or press any other button or key, to go back.",
     HUD_TILE_HINT = "Click: set  -  Right-click: clear",
     HUD_CARD_HINT = "Click: edit this layer",
 })
@@ -316,4 +316,15 @@ ns.AddLocale("enUS", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("enUS", {
     HUD_ERROR = "HUD error, the HUD is stopped until /reload (the game's bar is back). Please report this message: %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("enUS", {
+    TRIGGERS_LABEL = "LT / RT triggers:",
+    TRIGGERS_ADDON = "Addon modifiers",
+    TRIGGERS_GAME = "Game layers",
+    TRIGGERS_ADDON_DESC = "Hold LT or RT (or both) then press A, B, X, Y or the D-pad: the addon's actions, with everything it allows (custom macros, WoW commands). They replace the LT, RT and LT + RT layers of the game's controller bar; an empty slot does nothing. LB and RB are not touched.",
+    TRIGGERS_GAME_DESC = "LT and RT keep the layers of the game's controller bar (edited from the Actions tab).",
+    TRIGGERS_COPIED = "%d action(s) copied from the game's LT / RT layers to the addon's.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT: addon modifiers.",
 })

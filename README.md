@@ -8,6 +8,7 @@ Support des boutons supplémentaires des manettes (palettes arrière, gâchettes
   - **Bouton simple** — une action, une autre avec LT maintenu, une autre avec RT maintenu (une couche vide reprend l'action « Seul ») ;
   - **Désactivé**.
 - **Paires** : les boutons vont par deux (gauche + droite : emplacements 1 + 2, 3 + 4, 5 + 6). Quand les deux sont des modificateurs, les maintenir ensemble donne 8 combinaisons de plus, comme LT + RT.
+- **Gâchettes LT / RT** (au choix, par profil) : elles peuvent devenir des modificateurs de l'addon, qui remplacent les couches LT, RT et LT + RT de la barre manette du jeu. Voir [Gâchettes LT / RT](#gâchettes-lt--rt).
 - Interface en glisser-déposer (sorts, objets, macros, montures, jouets, ensembles d'équipement, macro écrite à la main, commande WoW).
 - Fonctionne en combat.
 
@@ -89,6 +90,23 @@ La manette, les touches et les modes sont enregistrés pour tout le compte, dans
 
 Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
 
+## Gâchettes LT / RT
+
+Dans l'onglet **Boutons**, la ligne **Gâchettes LT / RT** propose deux choix, enregistrés dans le profil :
+
+- **Couches du jeu** (par défaut) : LT et RT gardent les couches de la barre manette de Forever. On les remplit depuis l'onglet Actions, avec ce que la barre du jeu accepte (sorts, objets, montures, macros de la liste).
+- **Modificateurs de l'addon** : LT, RT et LT + RT deviennent des couches de l'addon, comme L5. Maintenir LT puis appuyer sur A lance l'action de l'addon, avec tout ce qu'il permet (macros écrites à la main, commandes WoW, ensembles d'équipement). Elles remplacent les couches LT, RT et LT + RT de la barre du jeu ; une case vide ne fait rien. Ce ne sont jamais des boutons simples.
+
+En passant aux modificateurs de l'addon, les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Rien n'est perdu, et revenir aux couches du jeu les retrouve telles quelles.
+
+**LB et RB ne sont jamais touchés** (ciblage).
+
+Technique : l'addon suit les réglages de manette du jeu.
+- Une gâchette qui **imite une touche** (`GamePadEmulateShift = PADLTRIGGER`, le réglage de Forever pour LT) est liée en accord : LT + A = `SHIFT-PAD1`.
+- Une gâchette qui **n'imite rien** (RT chez Forever) a sa touche reprise par un gestionnaire, comme la touche de L5.
+
+Ces liaisons n'existent que quand le jeu a le focus manette : dans les fenêtres de Forever (sacs, carte…), les gâchettes gardent leur rôle.
+
 ## Profils
 
 Un **profil** contient une manette, ses boutons (touches, modes, noms) et, pour chaque personnage, ses actions. Pratique avec plusieurs manettes : un profil « G7 Pro », un profil « DualSense Edge »…
@@ -147,6 +165,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 
 - Une **commande WoW** ne peut pas être sur une couche LT/RT, ni sur la couche « Seul » d'un bouton qui a des couches LT/RT. En mode Modificateur, elle marche partout.
 - Avec deux modificateurs maintenus en même temps, c'est le dernier pressé qui l'emporte, sauf s'ils forment une paire : leur couche de paire s'active.
+- Quand LT / RT sont des modificateurs de l'addon, Forever ne reçoit plus l'appui sur RT en jeu. Ce qu'il fait lui-même avec RT (par exemple une action de classe sur RB + RT) peut ne plus répondre : il suffit de repasser aux couches du jeu.
 - Si Forever bascule l'interface en mode clavier/souris quand une palette envoie une touche, merci de le signaler : une option pourra forcer le style manette.
 - Improved Forever peut aussi poser des liaisons sur certaines touches. En cas de conflit, c'est la dernière liaison appliquée qui gagne.
 

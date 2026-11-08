@@ -126,7 +126,7 @@ ns.AddLocale("koKR", {
     HUD_COMBAT = "전투 중에는 동작을 바꿀 수 없습니다.",
     HUD_GAME_SLOT = "이 버튼은 게임 동작(점프, 상호작용 등)을 유지합니다.",
     HUD_KIND = "게임 바에는 주문, 아이템, 탈것, 매크로 목록의 매크로만 넣을 수 있습니다.",
-    HUD_EDITING = "이 층 편집 중: 칸을 클릭해 지정하고, 오른쪽 클릭으로 비우세요. 미리보기를 다시 클릭하면 돌아갑니다.",
+    HUD_EDITING = "이 층 편집 중: 칸을 클릭해 지정하고, 오른쪽 클릭으로 비우세요. 미리보기를 다시 클릭하거나 다른 버튼이나 키를 누르면 돌아갑니다.",
     HUD_TILE_HINT = "클릭: 지정  -  오른쪽 클릭: 비우기",
     HUD_CARD_HINT = "클릭: 이 층 편집",
 })
@@ -315,4 +315,15 @@ ns.AddLocale("koKR", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("koKR", {
     HUD_ERROR = "HUD 오류: /reload 전까지 HUD가 멈춥니다(게임 바가 돌아옵니다). 이 메시지를 알려 주세요: %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("koKR", {
+    TRIGGERS_LABEL = "LT / RT 트리거:",
+    TRIGGERS_ADDON = "애드온 수정키",
+    TRIGGERS_GAME = "게임 층",
+    TRIGGERS_ADDON_DESC = "LT나 RT(또는 둘 다)를 누른 채 A, B, X, Y 또는 십자키를 누르면 애드온의 동작이 나갑니다(직접 작성한 매크로, WoW 명령 등 모두 가능). 게임 컨트롤러 바의 LT, RT, LT + RT 층을 대신하며, 빈 칸은 아무것도 하지 않습니다. LB와 RB는 바뀌지 않습니다.",
+    TRIGGERS_GAME_DESC = "LT와 RT는 게임 컨트롤러 바의 층을 그대로 씁니다(동작 탭에서 편집).",
+    TRIGGERS_COPIED = "게임의 LT / RT 층에서 동작 %d개를 애드온으로 가져왔습니다.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT: 애드온 수정키.",
 })

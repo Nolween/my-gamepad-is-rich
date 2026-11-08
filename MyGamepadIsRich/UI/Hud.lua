@@ -551,7 +551,8 @@ end
 
 local function CardTooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText(L.HUD_CARD_HINT, 1, 0.82, 0, true)
+    -- (SetText : texte, r, g, b, alpha, retour à la ligne ; AddLine n'a pas d'alpha)
+    GameTooltip:SetText(L.HUD_CARD_HINT, 1, 0.82, 0, 1, true)
     GameTooltip:Show()
 end
 
@@ -708,10 +709,17 @@ local function Relayout()
     local s = H.Settings()
     local bottom = s.strip == "bottom"
     local list = {}
-    for _, name in ipairs(BARS) do list[#list + 1] = { bar = name } end
+    -- (les barres LT / RT du jeu remplacées par les couches de l'addon n'y sont plus)
+    for _, name in ipairs(BARS) do
+        if not ns.GameBarReplaced(name) then list[#list + 1] = { bar = name } end
+    end
+    -- (à leur place : les couches LT / RT / LT + RT de l'addon)
+    if ns.TriggersOn() then
+        for _, id in ipairs({ "LT", "RT", ns.TRIGGER_PAIR.id }) do list[#list + 1] = { mod = id } end
+    end
     -- (les modificateurs, puis les paires prêtes)
     for _, id in ipairs(ns.LIST_IDS) do
-        if ns.IsModLayer(id) then list[#list + 1] = { mod = id } end
+        if ns.IsModLayer(id) and not ns.TRIGGER_LAYERS[id] then list[#list + 1] = { mod = id } end
     end
 
     -- La bande : réparties sur 1 à 3 lignes (chacune centrée), à la taille choisie
@@ -745,6 +753,7 @@ local function Relayout()
     local y0 = MainY()
     -- (la couche modifiée n'existe plus : retour)
     if editing and editing.mod and not ns.IsModLayer(editing.mod) then editing = nil end
+    if editing and editing.bar and ns.GameBarReplaced(editing.bar) then editing = nil end
 
     local simple = {}
     for _, id in ipairs(ns.BUTTON_IDS) do
@@ -870,6 +879,11 @@ local function Update(pu)
     local lt, rt = Triggers()
     local mod = ns.Modifier.Held and ns.Modifier.Held()
     if mod and not ns.IsModLayer(mod) then mod = nil end
+    -- Gâchettes données à l'addon : lues sur la manette (LT, qui imite Maj,
+    -- n'a pas de gestionnaire) ; un autre modificateur tenu passe avant
+    if ns.TriggersOn() and (lt or rt) and (not mod or ns.TRIGGER_LAYERS[mod]) then
+        mod = (lt and rt) and ns.TRIGGER_PAIR.id or (lt and "LT" or "RT")
+    end
 
     -- La barre active de Forever, par son nom
     local active = pu.activeBar
@@ -953,6 +967,55 @@ local function Watch()
     if on then Update(pu) end
 end
 
+---------------------------------------------------------------------------
+-- Mode édition : n'importe quelle autre touche ou bouton de la manette le
+-- quitte. Un cadre écoute seulement pendant l'édition (hors combat), et
+-- laisse passer chaque appui au jeu, sauf Échap (qui n'ouvre alors pas le
+-- menu du jeu). Les boutons de clic du curseur manette ne comptent pas :
+-- ce sont eux qui cliquent les cases.
+---------------------------------------------------------------------------
+local editKeys, editKeysOn = nil, false
+
+local function CursorButton(button)
+    return button == ns.CVar("GamePadCursorLeftClick") or button == ns.CVar("GamePadCursorRightClick")
+end
+
+local function StopEditing()
+    editing = nil
+end
+
+local function SetEditKeys(on)
+    on = on and not InCombatLockdown()
+    if on == editKeysOn then return end
+    if not editKeys then
+        editKeys = CreateFrame("Frame", nil, UIParent)
+        editKeys:SetScript("OnKeyDown", function(self, key)
+            if InCombatLockdown() then return end
+            -- (Échap quitte l'édition sans ouvrir le menu du jeu)
+            self:SetPropagateKeyboardInput(key ~= "ESCAPE")
+            StopEditing()
+        end)
+        editKeys:SetScript("OnGamePadButtonDown", function(_, button)
+            if CursorButton(button) then return end
+            StopEditing()
+        end)
+        -- (le combat arrive : on ne garde pas un cadre clavier ouvert)
+        editKeys:RegisterEvent("PLAYER_REGEN_DISABLED")
+        editKeys:SetScript("OnEvent", function()
+            StopEditing()
+            if editKeysOn then
+                editKeysOn = false
+                editKeys:EnableKeyboard(false)
+                if editKeys.EnableGamePadButton then editKeys:EnableGamePadButton(false) end
+            end
+        end)
+    end
+    editKeysOn = on
+    if on then editKeys:SetPropagateKeyboardInput(true) end
+    editKeys:EnableKeyboard(on)
+    if editKeys.EnableGamePadButton then editKeys:EnableGamePadButton(on) end
+end
+
 -- Une erreur dans la mise à jour (20 fois par seconde) se répéterait sans
 -- fin : le HUD s'arrête, rend sa barre au jeu, et le dit une seule fois
 local broken = false
@@ -965,6 +1028,8 @@ local function Restore()
     end
     if holder then holder:Hide() end
     shown = false
+    editing = nil
+    pcall(SetEditKeys, false)
 end
 
 local wait = 0
@@ -974,7 +1039,11 @@ watcher:SetScript("OnUpdate", function(_, elapsed)
     wait = wait - elapsed
     if wait > 0 then return end
     wait = 0.05
-    local ok, err = pcall(Watch)
+    local ok, err = pcall(function()
+        Watch()
+        -- (l'écoute des touches suit le mode édition, HUD affiché)
+        SetEditKeys(shown and editing ~= nil)
+    end)
     if not ok then
         broken = true
         pcall(Restore)

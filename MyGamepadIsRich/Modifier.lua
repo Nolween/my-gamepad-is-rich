@@ -22,9 +22,33 @@ local combos = {}   -- [couche .. touche] = bouton d'action
 local written = {}  -- (attributs de couches posés au dernier Setup, à effacer)
 
 -- (à chaque attribut changé : recalcul complet, idempotent)
+-- Les gâchettes LT / RT données à l'addon passent aussi par ici, liées
+-- seulement quand le jeu a le focus manette (les fenêtres de Forever gardent
+-- leurs gâchettes) :
+--   gâchette qui imite une touche (LT = Maj) : ses 8 combinaisons en accord
+--     (« SHIFT-PAD1 »), « chord-* » ;
+--   gâchette qui n'imite rien (RT) : sa touche va à son gestionnaire,
+--     « hkey-* », et elle devient un modificateur comme les autres.
+-- Une case vide d'une couche de gâchette ne fait rien (« swallow ») : sans
+-- ça, l'action de la barre du jeu partirait.
 local DISPATCH = [[
     self:ClearBindings()
     if not self:GetAttribute("gps-ingame") then return end
+    local noop = self:GetAttribute("noop")
+    for j = 1, self:GetAttribute("hcount") or 0 do
+        local key, click = self:GetAttribute("hkey-" .. j), self:GetAttribute("hclick-" .. j)
+        if key and click then self:SetBindingClick(true, key, click, "LeftButton") end
+    end
+    for j = 1, self:GetAttribute("chord-count") or 0 do
+        local key = self:GetAttribute("chord-key-" .. j)
+        local click = self:GetAttribute("chord-click-" .. j)
+        local cmd = self:GetAttribute("chord-cmd-" .. j)
+        if key and click then
+            self:SetBindingClick(true, key, click, "LeftButton")
+        elseif key and cmd then
+            self:SetBinding(true, key, cmd)
+        end
+    end
     local best, bestOrder
     for j = 1, self:GetAttribute("count") or 0 do
         local id = self:GetAttribute("id" .. j)
@@ -39,6 +63,7 @@ local DISPATCH = [[
     if partner and self:GetAttribute("held-" .. partner) then
         layer = self:GetAttribute("pairlayer-" .. best) or best
     end
+    local swallow = noop and self:GetAttribute("swallow-" .. layer)
     for i = 1, 8 do
         local key = self:GetAttribute("key" .. i)
         local click = self:GetAttribute("click-" .. layer .. "-" .. i)
@@ -47,6 +72,25 @@ local DISPATCH = [[
             self:SetBindingClick(true, key, click, "LeftButton")
         elseif key and cmd then
             self:SetBinding(true, key, cmd)
+        elseif key and swallow then
+            self:SetBindingClick(true, key, noop, "LeftButton")
+        end
+    end
+    -- (RT tenu par son gestionnaire, LT en accord : avec LT, c'est la paire)
+    local extra = (layer == best) and self:GetAttribute("extra-" .. best)
+    if extra then
+        local prefix = self:GetAttribute("extraprefix-" .. best) or ""
+        for i = 1, 8 do
+            local key = self:GetAttribute("key" .. i)
+            local click = self:GetAttribute("click-" .. extra .. "-" .. i)
+            local cmd = self:GetAttribute("cmd-" .. extra .. "-" .. i)
+            if key and click then
+                self:SetBindingClick(true, prefix .. key, click, "LeftButton")
+            elseif key and cmd then
+                self:SetBinding(true, prefix .. key, cmd)
+            elseif key and noop then
+                self:SetBindingClick(true, prefix .. key, noop, "LeftButton")
+            end
         end
     end
 ]]
@@ -74,10 +118,22 @@ local EDGE = [[
     if not down ~= not self:GetAttribute("gps-down") then return false end
 ]]
 
+-- Un bouton qui ne fait rien : les cases vides des couches de gâchette
+local noop
+local function Noop()
+    if noop then return noop end
+    noop = CreateFrame("Button", "MyGamepadIsRichNoop", UIParent, "SecureActionButtonTemplate")
+    noop:SetSize(1, 1)
+    noop:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
+    noop:RegisterForClicks("AnyDown", "AnyUp")
+    return noop
+end
+
 local function Dispatcher()
     if disp then return disp end
     disp = CreateFrame("Frame", "MyGamepadIsRichModDispatch", UIParent, "SecureHandlerAttributeTemplate")
     for i, key in ipairs(ns.PAD_KEYS) do disp:SetAttribute("key" .. i, key) end
+    disp:SetAttribute("noop", Noop():GetName())
     disp:SetAttribute("gps-ingame", true)
     disp:SetAttribute("_onattributechanged", DISPATCH)
     return disp
@@ -156,6 +212,7 @@ end
 -- Application (hors combat) : Begin, Setup pour chaque modificateur, Finish
 ---------------------------------------------------------------------------
 local count = 0
+local chordCount, hcount = 0, 0
 local active = {}
 
 function M.Begin()
@@ -166,7 +223,7 @@ function M.Begin()
     wipe(held)
     wipe(pairOf)
     wipe(active)
-    count = 0
+    count, chordCount, hcount = 0, 0, 0
     disp:SetAttribute("count", 0)
 end
 
@@ -191,6 +248,104 @@ function M.Finish(onDown)
             WriteLayer(pair.id, ns.ButtonActions(pair.id), onDown)
             pairOf[pair.a], pairOf[pair.b] = pair.id, pair.id
         end
+    end
+end
+
+---------------------------------------------------------------------------
+-- Gâchettes LT / RT données à l'addon (couches LT, RT et LT + RT)
+---------------------------------------------------------------------------
+-- La touche qu'une gâchette imite (réglages GamePadEmulate* du jeu), ou nil
+local EMULATE = { ALT = "GamePadEmulateAlt", CTRL = "GamePadEmulateCtrl", SHIFT = "GamePadEmulateShift" }
+local function Emulated(button)
+    for mod, cvar in pairs(EMULATE) do
+        if ns.CVar(cvar) == button then return mod end
+    end
+end
+
+-- Le préfixe d'une liaison, dans l'ordre du jeu : « ALT-CTRL-SHIFT- »
+local function Prefix(a, b)
+    local out = ""
+    for _, mod in ipairs({ "ALT", "CTRL", "SHIFT" }) do
+        if mod == a or mod == b then out = out .. mod .. "-" end
+    end
+    return out
+end
+
+-- Une couche en accord : ses 8 cases liées à prefix .. bouton (les vides
+-- ne font rien)
+local function WriteChord(layer, actions, prefix, onDown)
+    for _, key in ipairs(ns.PAD_KEYS) do
+        chordCount = chordCount + 1
+        local n = chordCount
+        Write("chord-key-" .. n, prefix .. key)
+        local action = actions.combos[key]
+        if ns.Actions.IsCommand(action) then
+            Write("chord-cmd-" .. n, action.command)
+        else
+            local macro, text
+            if action then macro, text = ns.Actions.Secure(action) end
+            if macro or text then
+                local b = ComboButton(layer, key)
+                b:SetAttribute("gps-down", onDown)
+                b:SetAttribute("useOnKeyDown", onDown)
+                b:SetAttribute("macro", macro)
+                b:SetAttribute("macrotext", text)
+                Write("chord-click-" .. n, b:GetName())
+            else
+                Write("chord-click-" .. n, Noop():GetName())
+            end
+        end
+    end
+    Write("chord-count", chordCount)
+end
+
+-- Une gâchette qui n'imite rien : un modificateur comme L5, dont la touche
+-- n'est liée que quand le jeu a le focus manette
+local function SetupTrigger(id, actions, onDown)
+    local h = Handler(id)
+    count = count + 1
+    Write("id" .. count, id)
+    disp:SetAttribute("count", count)
+    WriteLayer(id, actions, onDown)
+    Write("swallow-" .. id, true)
+    active[id] = true
+    hcount = hcount + 1
+    Write("hkey-" .. hcount, ns.TRIGGER_KEY[id])
+    Write("hclick-" .. hcount, h:GetName())
+    Write("hcount", hcount)
+end
+
+function M.Triggers(owner, onDown)
+    local mods = { LT = Emulated(ns.TRIGGER_KEY.LT), RT = Emulated(ns.TRIGGER_KEY.RT) }
+    for _, id in ipairs({ "LT", "RT" }) do
+        if mods[id] then
+            WriteChord(id, ns.ButtonActions(id), mods[id] .. "-", onDown)
+        else
+            SetupTrigger(id, ns.ButtonActions(id), onDown)
+        end
+    end
+    -- La paire LT + RT
+    local pairID = ns.TRIGGER_PAIR.id
+    local pairActions = ns.ButtonActions(pairID)
+    if mods.LT and mods.RT then
+        -- (les deux en accord : « CTRL-SHIFT-PAD1 »...)
+        WriteChord(pairID, pairActions, Prefix(mods.LT, mods.RT), onDown)
+    elseif not mods.LT and not mods.RT then
+        -- (deux gestionnaires : une paire comme L5 + R5)
+        Write("partner-LT", "RT")
+        Write("partner-RT", "LT")
+        Write("pairlayer-LT", pairID)
+        Write("pairlayer-RT", pairID)
+        WriteLayer(pairID, pairActions, onDown)
+        Write("swallow-" .. pairID, true)
+        pairOf.LT, pairOf.RT = pairID, pairID
+    else
+        -- (un gestionnaire, l'autre en accord : le gestionnaire tenu lie
+        -- aussi les combinaisons en accord, vers la paire)
+        local handler = mods.LT and "RT" or "LT"
+        WriteLayer(pairID, pairActions, onDown)
+        Write("extra-" .. handler, pairID)
+        Write("extraprefix-" .. handler, (mods.LT or mods.RT) .. "-")
     end
 end
 

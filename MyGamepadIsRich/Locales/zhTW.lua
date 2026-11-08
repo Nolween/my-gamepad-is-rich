@@ -126,7 +126,7 @@ ns.AddLocale("zhTW", {
     HUD_COMBAT = "戰鬥中無法變更動作。",
     HUD_GAME_SLOT = "此按鍵保留遊戲內建的動作（跳躍、互動……）。",
     HUD_KIND = "遊戲快捷列只接受法術、物品、坐騎和巨集清單中的巨集。",
-    HUD_EDITING = "正在編輯此層：點擊格子進行設定，右鍵清空。再次點擊縮圖返回。",
+    HUD_EDITING = "正在編輯此層：點擊格子進行設定，右鍵清空。再次點擊縮圖，或按任意其他按鍵，即可返回。",
     HUD_TILE_HINT = "點擊：設定  -  右鍵：清空",
     HUD_CARD_HINT = "點擊：編輯此層",
 })
@@ -314,4 +314,15 @@ ns.AddLocale("zhTW", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("zhTW", {
     HUD_ERROR = "HUD 發生錯誤：在 /reload 前已停止（恢復遊戲快捷列）。請回報此訊息：%s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("zhTW", {
+    TRIGGERS_LABEL = "LT / RT 扳機：",
+    TRIGGERS_ADDON = "插件修飾鍵",
+    TRIGGERS_GAME = "遊戲的層",
+    TRIGGERS_ADDON_DESC = "按住 LT 或 RT（或兩者）再按 A、B、X、Y 或十字鍵：觸發插件的動作，支援插件的全部功能（手寫巨集、WoW 指令）。它們取代遊戲手把快捷列的 LT、RT 和 LT + RT 層；空格子不執行任何動作。LB 和 RB 不變。",
+    TRIGGERS_GAME_DESC = "LT 和 RT 保留遊戲手把快捷列的層（可在「動作」分頁編輯）。",
+    TRIGGERS_COPIED = "已將遊戲 LT / RT 層中的 %d 個動作複製到插件的層。",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT：插件修飾鍵。",
 })

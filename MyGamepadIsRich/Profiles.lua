@@ -93,6 +93,8 @@ function P.Init()
     for _, prof in pairs(db.profiles) do
         prof.controller = ns.ControllerDef(prof.controller).id
         prof.buttons = FillButtons(type(prof.buttons) == "table" and prof.buttons or {})
+        -- (LT / RT : aux couches du jeu tant qu'on ne les donne pas à l'addon)
+        if prof.triggers ~= "modifier" then prof.triggers = "off" end
         if type(prof.name) ~= "string" or prof.name == "" then prof.name = L.PROFILE_DEFAULT end
     end
     if not db.profiles[db.profile] then db.profile = P.List()[1].id end
@@ -210,6 +212,7 @@ function P.New(name, controllerID)
         name = P.UniqueName(name),
         controller = ns.ControllerDef(controllerID).id,
         buttons = FillButtons({}),
+        triggers = "off",
     }
     ns.SuggestModes(prof)
     ns.db.profiles[id] = prof
@@ -226,6 +229,7 @@ function P.Copy(fromID, name)
         name = P.UniqueName(name),
         controller = from.controller,
         buttons = ns.DeepCopy(from.buttons),
+        triggers = from.triggers,
     }
     local actions = ns.char.profiles[fromID] and ns.char.profiles[fromID].actions
     ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(actions or {})) }
@@ -279,6 +283,7 @@ function P.Import(data, opts)
     local prof = ns.db.profiles[id]
     prof.controller = ns.ControllerDef(data.controller).id
     prof.buttons = FillButtons(ns.DeepCopy(data.buttons))
+    prof.triggers = data.triggers == "modifier" and "modifier" or "off"
     if opts.actions and data.actions then
         ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(data.actions)) }
     end

@@ -17,12 +17,24 @@ ns.PAIRS = {
     { id = "EX1EX2", a = "EX1", b = "EX2" },
 }
 
--- Tout ce qui a des actions : les boutons, puis les paires
+-- Les gâchettes LT et RT, quand le profil les donne à l'addon : des
+-- modificateurs (jamais des boutons simples) qui remplacent les couches
+-- LT, RT et LT + RT de la barre manette du jeu. Leur paire est à part de
+-- ns.PAIRS : elle ne passe pas par les gestionnaires de touche (Modifier.lua).
+ns.TRIGGER_KEY = { LT = "PADLTRIGGER", RT = "PADRTRIGGER" }
+ns.TRIGGER_PAIR = { id = "LTRT", a = "LT", b = "RT" }
+ns.TRIGGER_LAYERS = { LT = true, RT = true, LTRT = true }
+-- (la barre du jeu que chaque couche remplace)
+ns.TRIGGER_BAR = { LT = "leftBar", RT = "rightBar", LTRT = "bottomBar" }
+
+-- Tout ce qui a des actions : les boutons, les paires, puis les gâchettes
 ns.LIST_IDS = {}
 for _, id in ipairs(ns.BUTTON_IDS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 for _, pair in ipairs(ns.PAIRS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = pair.id end
+for _, id in ipairs({ "LT", "RT", "LTRT" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 
 function ns.PairDef(id)
+    if id == ns.TRIGGER_PAIR.id then return ns.TRIGGER_PAIR end
     for _, pair in ipairs(ns.PAIRS) do
         if pair.id == id then return pair end
     end
@@ -32,8 +44,20 @@ function ns.IsPair(id)
     return ns.PairDef(id) ~= nil
 end
 
--- Un bouton en mode modificateur, avec une touche
+-- Le profil donne-t-il LT et RT à l'addon ?
+function ns.TriggersOn()
+    return ns.prof ~= nil and ns.prof.triggers == "modifier"
+end
+
+-- Une barre du jeu (LT, RT, LT + RT) remplacée par une couche de l'addon
+function ns.GameBarReplaced(bar)
+    return ns.TriggersOn() and (bar == "leftBar" or bar == "rightBar" or bar == "bottomBar")
+end
+
+-- Un modificateur prêt : un bouton en mode modificateur avec une touche, ou
+-- une gâchette donnée à l'addon
 local function ModReady(id)
+    if ns.TRIGGER_KEY[id] then return ns.TriggersOn() end
     local def = ns.prof and ns.prof.buttons[id]
     return def ~= nil and def.mode == "modifier" and def.key ~= nil
 end
@@ -124,6 +148,7 @@ end
 function ns.ButtonLabel(id)
     local pair = ns.PairDef(id)
     if pair then return ns.ButtonLabel(pair.a) .. " + " .. ns.ButtonLabel(pair.b) end
+    if ns.TRIGGER_KEY[id] then return id end
     local b = ns.prof and ns.prof.buttons[id]
     if b and b.name and b.name ~= "" then return b.name end
     return ns.SlotName(id) or ns.SpareName(id)
@@ -204,7 +229,8 @@ function ns.Apply(quiet)
             end
         end
     end
-    -- (les paires : après tous les modificateurs)
+    -- (les gâchettes, puis les paires : après tous les modificateurs)
+    if ns.TriggersOn() then ns.Modifier.Triggers(owner, onDown) end
     ns.Modifier.Finish(onDown)
     if ns.Focus then ns.Focus.Push() end
     for _, fn in ipairs(listeners) do pcall(fn, false) end
@@ -212,6 +238,32 @@ function ns.Apply(quiet)
 end
 
 function ns.IsPending() return pending end
+
+-- Donner LT / RT à l'addon (on) ou les rendre au jeu. En les prenant, les
+-- couches LT, RT et LT + RT de l'addon encore vides reprennent ce que la
+-- barre du jeu y avait (sorts, objets, macros de la liste), pour ne rien
+-- perdre de ce qu'on y avait posé.
+function ns.SetTriggers(on)
+    if not ns.prof then return end
+    ns.prof.triggers = on and "modifier" or "off"
+    if on and ns.Bar and ns.Bar.Available() then
+        local copied = 0
+        for layer, bar in pairs(ns.TRIGGER_BAR) do
+            local combos = ns.ButtonActions(layer).combos
+            if not next(combos) then
+                for i, key in ipairs(ns.Bar.PAD_KEYS) do
+                    local action = ns.Bar.Get(bar, i)
+                    if action and action.kind ~= "slot" then
+                        combos[key] = action
+                        copied = copied + 1
+                    end
+                end
+            end
+        end
+        if copied > 0 then ns.Print(L.TRIGGERS_COPIED:format(copied)) end
+    end
+    ns.Apply()
+end
 
 ---------------------------------------------------------------------------
 -- Événements

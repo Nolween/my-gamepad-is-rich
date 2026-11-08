@@ -126,7 +126,7 @@ ns.AddLocale("zhCN", {
     HUD_COMBAT = "战斗中无法更改动作。",
     HUD_GAME_SLOT = "此按键保留游戏自带的动作（跳跃、互动……）。",
     HUD_KIND = "游戏动作条只接受法术、物品、坐骑和宏列表中的宏。",
-    HUD_EDITING = "正在编辑此层：点击格子进行设置，右键清空。再次点击缩略图返回。",
+    HUD_EDITING = "正在编辑此层：点击格子进行设置，右键清空。再次点击缩略图，或按任意其他按键，即可返回。",
     HUD_TILE_HINT = "点击：设置  -  右键：清空",
     HUD_CARD_HINT = "点击：编辑此层",
 })
@@ -314,4 +314,15 @@ ns.AddLocale("zhCN", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("zhCN", {
     HUD_ERROR = "HUD 出错：在 /reload 前已停止（恢复游戏动作条）。请报告此消息：%s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("zhCN", {
+    TRIGGERS_LABEL = "LT / RT 扳机：",
+    TRIGGERS_ADDON = "插件修饰键",
+    TRIGGERS_GAME = "游戏的层",
+    TRIGGERS_ADDON_DESC = "按住 LT 或 RT（或两者）再按 A、B、X、Y 或十字键：触发插件的动作，支持插件的全部功能（手写宏、WoW 指令）。它们取代游戏手柄动作条的 LT、RT 和 LT + RT 层；空格子不执行任何操作。LB 和 RB 不变。",
+    TRIGGERS_GAME_DESC = "LT 和 RT 保留游戏手柄动作条的层（可在“动作”标签页编辑）。",
+    TRIGGERS_COPIED = "已将游戏 LT / RT 层中的 %d 个动作复制到插件的层。",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT：插件修饰键。",
 })

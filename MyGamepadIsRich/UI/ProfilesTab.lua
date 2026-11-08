@@ -149,6 +149,7 @@ end
 
 local function SummaryText(sum)
     local lines = { L.IMPORT_SUMMARY:format(sum.name, sum.controller, sum.keys, sum.actions) }
+    if sum.triggers then lines[#lines + 1] = L.IMPORT_SUMMARY_TRIGGERS end
     if sum.hud then lines[#lines + 1] = L.IMPORT_SUMMARY_HUD end
     if #sum.macros > 0 then
         lines[#lines + 1] = "|cffff6060" .. L.IMPORT_MACROS:format(#sum.macros) .. "|r"

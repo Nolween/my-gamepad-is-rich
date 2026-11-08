@@ -126,7 +126,7 @@ ns.AddLocale("frFR", {
     HUD_COMBAT = "Impossible de changer les actions en combat.",
     HUD_GAME_SLOT = "Ce bouton garde l'action du jeu (sauter, interagir...).",
     HUD_KIND = "La barre du jeu ne prend que des sorts, objets, montures et macros de la liste des macros.",
-    HUD_EDITING = "Modification de cette couche : clic sur une case pour l'attribuer, clic droit pour la vider. Clique à nouveau sur la miniature pour revenir.",
+    HUD_EDITING = "Modification de cette couche : clic sur une case pour l'attribuer, clic droit pour la vider. Clique à nouveau sur la miniature, ou appuie sur n'importe quel autre bouton ou touche, pour revenir.",
     HUD_TILE_HINT = "Clic : attribuer  -  Clic droit : vider",
     HUD_CARD_HINT = "Clic : modifier cette couche",
 })
@@ -315,4 +315,15 @@ ns.AddLocale("frFR", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("frFR", {
     HUD_ERROR = "Erreur du HUD, il est arrêté jusqu'au /reload (la barre du jeu revient). Merci de signaler ce message : %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("frFR", {
+    TRIGGERS_LABEL = "Gâchettes LT / RT :",
+    TRIGGERS_ADDON = "Modificateurs de l'addon",
+    TRIGGERS_GAME = "Couches du jeu",
+    TRIGGERS_ADDON_DESC = "Maintiens LT ou RT (ou les deux) puis appuie sur A, B, X, Y ou la croix : les actions de l'addon, avec tout ce qu'il permet (macros écrites à la main, commandes WoW). Elles remplacent les couches LT, RT et LT + RT de la barre manette du jeu ; une case vide ne fait rien. LB et RB ne changent pas.",
+    TRIGGERS_GAME_DESC = "LT et RT gardent les couches de la barre manette du jeu (modifiables depuis l'onglet Actions).",
+    TRIGGERS_COPIED = "%d action(s) des couches LT / RT du jeu reprise(s) dans celles de l'addon.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT : modificateurs de l'addon.",
 })

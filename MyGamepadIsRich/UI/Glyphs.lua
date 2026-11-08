@@ -72,7 +72,9 @@ function UI.CreateGlyph(parent, size)
 
     function f:SetKey(key)
         self.key = key
-        local atlas = ATLAS[key] and FindAtlas(key)
+        -- (les gâchettes de l'addon, « LT » / « RT » : l'icône du jeu)
+        local pad = ns.TRIGGER_KEY and ns.TRIGGER_KEY[key] or key
+        local atlas = ATLAS[pad] and FindAtlas(pad)
         if atlas then
             self.tex:SetAtlas(atlas)
             self.tex:Show()

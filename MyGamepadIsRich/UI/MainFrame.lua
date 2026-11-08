@@ -83,11 +83,18 @@ local function Same(a, b)
 end
 
 local function Sections()
+    -- (la barre manette : ses couches LT / RT / LT + RT sont celles de
+    -- l'addon quand le profil lui donne les gâchettes)
     local pad = { title = L.SECTION_PAD, items = {} }
-    for _, name in ipairs(ns.Bar.NAMES) do pad.items[#pad.items + 1] = { bar = name } end
+    for _, name in ipairs(ns.Bar.NAMES) do
+        if not ns.GameBarReplaced(name) then pad.items[#pad.items + 1] = { bar = name } end
+    end
+    if ns.TriggersOn() then
+        for _, id in ipairs({ "LT", "RT", ns.TRIGGER_PAIR.id }) do pad.items[#pad.items + 1] = { mod = id } end
+    end
     local mods = { title = L.SECTION_MODS, items = {}, empty = L.SECTION_MODS_EMPTY }
     for _, id in ipairs(ns.LIST_IDS) do
-        if ns.IsModLayer(id) then mods.items[#mods.items + 1] = { mod = id } end
+        if ns.IsModLayer(id) and not ns.TRIGGER_LAYERS[id] then mods.items[#mods.items + 1] = { mod = id } end
     end
     local simple = { title = L.SECTION_SIMPLE, items = {}, empty = L.SECTION_SIMPLE_EMPTY }
     for _, id in ipairs(ns.BUTTON_IDS) do
@@ -392,8 +399,9 @@ end
 -- (les boutons de la manette, puis les emplacements libres) ; les paires
 ---------------------------------------------------------------------------
 local rows, pairRows = {}, {}
-local buttonsWarning, controllerName
-local ROWS_TOP, ROW_STEP = -68, 56
+local buttonsWarning, controllerName, triggerChecks
+local ROWS_TOP, ROW_STEP = -68, 50
+local TRIGGERS_H = 30 -- (la ligne des gâchettes, sous les boutons)
 
 -- La liste des manettes (préréglages), avec leur logiciel
 local function PickController()
@@ -470,7 +478,7 @@ local function BuildButtons(page)
 
         -- (le mode : une case à cocher par mode, son explication au survol)
         local modeLabel = UI.Text(row, "GameFontNormal", L.MODE)
-        modeLabel:SetPoint("TOPLEFT", 60, -33)
+        modeLabel:SetPoint("TOPLEFT", 60, -30)
         row.modes = {}
         local x = modeLabel:GetStringWidth() + 10
         local DESC = { modifier = L.MODE_MODIFIER_DESC, simple = L.MODE_SIMPLE_DESC, off = L.MODE_OFF_DESC }
@@ -499,8 +507,47 @@ local function BuildButtons(page)
         rows[i] = row
     end
 
+    -- Les gâchettes LT / RT : couches du jeu, ou modificateurs de l'addon
+    -- (jamais des boutons simples)
+    local ty = ROWS_TOP - #ns.BUTTON_IDS * ROW_STEP - 2
+    local trow = CreateFrame("Frame", nil, page)
+    trow:SetSize(WIDTH - 40, TRIGGERS_H - 4)
+    trow:SetPoint("TOPLEFT", 12, ty)
+    local tbg = trow:CreateTexture(nil, "BACKGROUND")
+    tbg:SetAllPoints()
+    tbg:SetColorTexture(1, 1, 1, 0.04)
+    local ttag = Tag(trow, 20)
+    ttag:SetPoint("LEFT", 10, 0)
+    SetTag(ttag, { "PADLTRIGGER", "PADRTRIGGER" })
+    local tlabel = UI.Text(trow, "GameFontNormal", L.TRIGGERS_LABEL)
+    tlabel:SetPoint("LEFT", 76, 0)
+    triggerChecks = {}
+    local tx = 76 + tlabel:GetStringWidth() + 14
+    local TDESC = { modifier = L.TRIGGERS_ADDON_DESC, off = L.TRIGGERS_GAME_DESC }
+    for _, def in ipairs({ { "modifier", L.TRIGGERS_ADDON }, { "off", L.TRIGGERS_GAME } }) do
+        local mode = def[1]
+        local cb = CreateFrame("CheckButton", nil, trow, "UICheckButtonTemplate")
+        cb:SetSize(22, 22)
+        cb:SetPoint("LEFT", tx, 0)
+        local text = UI.Text(cb, "GameFontHighlight", def[2])
+        text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
+        cb:SetScript("OnClick", function()
+            ns.SetTriggers(mode == "modifier")
+            RefreshAll()
+        end)
+        cb:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOP")
+            GameTooltip:SetText(def[2], 1, 0.82, 0, 1, true)
+            GameTooltip:AddLine(TDESC[mode], 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        triggerChecks[mode] = cb
+        tx = tx + 30 + text:GetStringWidth() + 18
+    end
+
     -- Les paires
-    local y = ROWS_TOP - #ns.BUTTON_IDS * ROW_STEP - 6
+    local y = ty - TRIGGERS_H - 4
     local title = UI.Text(page, "GameFontNormal", L.PAIRS_TITLE)
     title:SetPoint("TOPLEFT", 14, y)
     for i, pair in ipairs(ns.PAIRS) do
@@ -532,6 +579,9 @@ local function RefreshButtons()
         row.key:SetText(def.key and ns.KeyLabel(def.key) or ("|cffff6060" .. L.KEY_NONE .. "|r"))
         for mode, cb in pairs(row.modes) do cb:SetChecked(def.mode == mode) end
     end
+    local on = ns.TriggersOn()
+    triggerChecks.modifier:SetChecked(on)
+    triggerChecks.off:SetChecked(not on)
     for _, row in ipairs(pairRows) do
         local pair = row.pair
         SetTag(row.tag, { pair.a, pair.b })

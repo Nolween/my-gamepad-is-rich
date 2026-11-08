@@ -17,6 +17,8 @@ B.KEYS = {
     topBar = {}, leftBar = { "PADLTRIGGER" }, rightBar = { "PADRTRIGGER" },
     bottomBar = { "PADLTRIGGER", "PADRTRIGGER" },
 }
+-- Le bouton de la manette de chaque case 1-8 (croix, puis X, Y, B, A)
+B.PAD_KEYS = { "PADDLEFT", "PADDUP", "PADDRIGHT", "PADDDOWN", "PAD3", "PAD4", "PAD2", "PAD1" }
 
 local function Util()
     return _G.GamepadActionBarBindingUtil

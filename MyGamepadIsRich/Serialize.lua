@@ -261,6 +261,8 @@ local function Clean(raw)
         name = CleanString(raw.name, ns.Profiles.NAME_MAX) or L.PROFILE_IMPORTED,
         controller = ns.ControllerDef(type(raw.controller) == "string" and raw.controller or nil).id,
         buttons = {},
+        -- (absent des exports d'avant les gâchettes : couches du jeu)
+        triggers = raw.triggers == "modifier" and "modifier" or "off",
     }
     local buttons = type(raw.buttons) == "table" and raw.buttons or {}
     for _, slot in ipairs(ns.BUTTON_IDS) do
@@ -300,7 +302,8 @@ function S.Export(profileID, opts)
     local prof = ns.Profiles.Get(profileID)
     if not prof then return nil end
     opts = opts or {}
-    local data = { v = FORMAT, name = prof.name, controller = prof.controller, buttons = {} }
+    local data = { v = FORMAT, name = prof.name, controller = prof.controller, buttons = {},
+        triggers = prof.triggers }
     for _, slot in ipairs(ns.BUTTON_IDS) do
         local b = prof.buttons[slot]
         data.buttons[slot] = { mode = b.mode, key = b.key, name = b.name }
@@ -321,6 +324,7 @@ function S.Summary(data)
         name = data.name,
         controller = ns.ControllerName(ns.ControllerDef(data.controller)),
         keys = 0, actions = 0, macros = {}, commands = {}, hud = data.hud ~= nil,
+        triggers = data.triggers == "modifier",
     }
     for _, slot in ipairs(ns.BUTTON_IDS) do
         if data.buttons[slot].key then sum.keys = sum.keys + 1 end
@@ -382,6 +386,7 @@ function S.SelfTest()
     Check(data ~= nil, "import: " .. tostring(info))
     if data then
         Check(data.controller == ns.prof.controller, "controller")
+        Check(data.triggers == ns.prof.triggers, "triggers")
         for _, slot in ipairs(ns.BUTTON_IDS) do
             local a, b = ns.prof.buttons[slot], data.buttons[slot]
             Check(a.mode == b.mode and a.key == b.key and a.name == b.name, "button " .. slot)
@@ -415,6 +420,7 @@ function S.SelfTest()
     if d then
         Check(d.name == "Acffff0000B", "forged name")
         Check(d.controller == "other", "forged controller")
+        Check(d.triggers == "off", "forged triggers")
         Check(d.buttons.L5.mode == ns.DEFAULT_BUTTONS.L5.mode and d.buttons.L5.key == nil, "forged L5")
         Check(d.buttons.R5.mode == "simple" and d.buttons.R5.key == "F10", "forged R5")
         local combos = d.actions and d.actions.L5 and d.actions.L5.combos or {}

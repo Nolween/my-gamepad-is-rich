@@ -126,7 +126,7 @@ ns.AddLocale("itIT", {
     HUD_COMBAT = "Non puoi cambiare le azioni in combattimento.",
     HUD_GAME_SLOT = "Questo pulsante mantiene l'azione del gioco (saltare, interagire...).",
     HUD_KIND = "La barra del gioco accetta solo incantesimi, oggetti, cavalcature e macro dell'elenco delle macro.",
-    HUD_EDITING = "Modifica di questo strato: clicca su uno spazio per assegnarlo, clic destro per svuotarlo. Clicca di nuovo sulla miniatura per tornare.",
+    HUD_EDITING = "Modifica di questo strato: clicca su uno spazio per assegnarlo, clic destro per svuotarlo. Clicca di nuovo sulla miniatura, o premi qualsiasi altro pulsante o tasto, per tornare.",
     HUD_TILE_HINT = "Clic: assegna  -  Clic destro: svuota",
     HUD_CARD_HINT = "Clic: modifica questo strato",
 })
@@ -315,4 +315,15 @@ ns.AddLocale("itIT", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("itIT", {
     HUD_ERROR = "Errore dell'HUD: resta fermo fino al /reload (torna la barra del gioco). Per favore segnala questo messaggio: %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("itIT", {
+    TRIGGERS_LABEL = "Grilletti LT / RT:",
+    TRIGGERS_ADDON = "Modificatori dell'addon",
+    TRIGGERS_GAME = "Strati del gioco",
+    TRIGGERS_ADDON_DESC = "Tieni premuto LT o RT (o entrambi) e premi A, B, X, Y o la croce: le azioni dell'addon, con tutto ciò che permette (macro scritte a mano, comandi di WoW). Sostituiscono gli strati LT, RT e LT + RT della barra del controller del gioco; una casella vuota non fa nulla. LB e RB non cambiano.",
+    TRIGGERS_GAME_DESC = "LT e RT mantengono gli strati della barra del controller del gioco (modificabili dalla scheda Azioni).",
+    TRIGGERS_COPIED = "%d azione/i degli strati LT / RT del gioco copiata/e in quelli dell'addon.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificatori dell'addon.",
 })

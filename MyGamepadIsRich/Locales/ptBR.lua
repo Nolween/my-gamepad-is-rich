@@ -126,7 +126,7 @@ ns.AddLocale("ptBR", {
     HUD_COMBAT = "Não é possível mudar as ações em combate.",
     HUD_GAME_SLOT = "Este botão mantém a ação do jogo (pular, interagir...).",
     HUD_KIND = "A barra do jogo só aceita feitiços, itens, montarias e macros da lista de macros.",
-    HUD_EDITING = "Editando esta camada: clique em um espaço para atribuí-lo, clique direito para esvaziá-lo. Clique de novo na miniatura para voltar.",
+    HUD_EDITING = "Editando esta camada: clique em um espaço para atribuí-lo, clique direito para esvaziá-lo. Clique de novo na miniatura, ou aperte qualquer outro botão ou tecla, para voltar.",
     HUD_TILE_HINT = "Clique: atribuir  -  Clique direito: esvaziar",
     HUD_CARD_HINT = "Clique: editar esta camada",
 })
@@ -315,4 +315,15 @@ ns.AddLocale("ptBR", {
 -- HUD : arrêt après une erreur
 ns.AddLocale("ptBR", {
     HUD_ERROR = "Erro do HUD: ele fica parado até o /reload (a barra do jogo volta). Por favor, informe esta mensagem: %s",
+})
+
+-- Gâchettes LT / RT données à l'addon
+ns.AddLocale("ptBR", {
+    TRIGGERS_LABEL = "Gatilhos LT / RT:",
+    TRIGGERS_ADDON = "Modificadores do addon",
+    TRIGGERS_GAME = "Camadas do jogo",
+    TRIGGERS_ADDON_DESC = "Segure LT ou RT (ou os dois) e aperte A, B, X, Y ou o direcional: as ações do addon, com tudo o que ele permite (macros escritas à mão, comandos do WoW). Elas substituem as camadas LT, RT e LT + RT da barra de controle do jogo; uma casa vazia não faz nada. LB e RB não mudam.",
+    TRIGGERS_GAME_DESC = "LT e RT mantêm as camadas da barra de controle do jogo (editáveis na aba Ações).",
+    TRIGGERS_COPIED = "%d ação(ões) das camadas LT / RT do jogo copiada(s) para as do addon.",
+    IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificadores do addon.",
 })
