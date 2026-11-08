@@ -120,7 +120,7 @@ Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâcheme
 ## Boutons de base (LT, RT, LB, RB)
 
 Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil : **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires.
-- **Par défaut, comme dans le jeu** (libellé en vert) : LT et RT en Modificateur, LB en Cible alliée, RB en Cible ennemie (ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Utiliser les modes conseillés ». À la mise à jour vers la 1.6, les profils existants y passent une fois. Il n'y a pas de case « Jeu » : les modes par défaut font comme le jeu.
+- **Par défaut, comme dans le jeu** (libellé en vert) : LT et RT en Modificateur, LB en Cible alliée, RB en Cible ennemie (ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Prendre les types conseillés ». Il n'y a pas de case « Jeu » : les modes par défaut font comme le jeu.
 - Les cases vides d'un modificateur ou d'une cible ne font rien. Les boutons de base forment des paires avec n'importe quel autre modificateur (LT + RT, LB + RB, L5 + LT...), à cocher dans l'onglet Boutons.
 
 Quand LT ou RT devient modificateur (ou cible), les couches de l'addon encore vides reprennent une fois, pour chaque personnage, ce que la barre du jeu avait sur LT, RT et LT + RT.
@@ -138,8 +138,6 @@ Un **profil** contient une manette, ses boutons (touches, modes, noms) et, pour 
 - **Copier** reprend la manette, les boutons et les actions **du personnage connecté**. Les autres personnages commencent ce profil sans actions.
 - **Supprimer** efface aussi les actions de tous les personnages pour ce profil. Le dernier profil ne peut pas être supprimé.
 - Le **HUD** et le bouton de la minimap sont communs à tous les profils.
-
-À la mise à jour depuis la 1.3, la configuration existante devient un premier profil, nommé d'après la manette. Chaque personnage y retrouve ses actions.
 
 ### Exporter, importer
 
