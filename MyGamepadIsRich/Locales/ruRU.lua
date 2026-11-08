@@ -179,6 +179,10 @@ ns.AddLocale("ruRU", {
 ns.AddLocale("ruRU", {
     HUD_STRIP_SIZE = "Размер миниатюр:",
     HUD_STRIP_ROWS = "Строк миниатюр:",
+    HUD_ORDER = "Порядок миниатюр:",
+    HUD_ORDER_RESET = "Порядок по умолчанию",
+    HUD_ORDER_HINT = "Стрелки: переместить слой. На HUD можно также перетащить миниатюру на другую.",
+    HUD_CARD_DRAG = "Перетащить: переместить (на другую миниатюру)",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent

@@ -87,7 +87,143 @@ function H.Settings()
     -- (taille des miniatures, et nombre de lignes sur lesquelles les répartir)
     s.stripScale = s.stripScale or 1
     s.stripRows = s.stripRows or 1
+    -- (l'ordre des miniatures : nil = celui de l'interface)
+    if s.order ~= nil and type(s.order) ~= "table" then s.order = nil end
     return s
+end
+
+---------------------------------------------------------------------------
+-- L'ordre des miniatures, choisi par le joueur : s.order, une liste de clés
+-- (« bar:topBar », « mod:L5 », « mod:L5R5 »). Sans ordre choisi : celui de
+-- l'interface. Une couche qui n'y est pas encore (modificateur ajouté...) se
+-- place après sa voisine dans l'ordre de l'interface ; une couche qui
+-- disparaît (bouton désactivé) garde sa place dans la liste pour son retour.
+---------------------------------------------------------------------------
+local ORDER_MAX = 80
+
+local function LayerKey(e)
+    if e.bar then return "bar:" .. e.bar end
+    return "mod:" .. tostring(e.mod)
+end
+H.LayerKey = LayerKey
+
+local function ValidKey(k)
+    if type(k) ~= "string" then return false end
+    local kind, id = k:match("^(%a+):(%w+)$")
+    if kind == "bar" then return BAR_INDEX[id] ~= nil end
+    if kind == "mod" then
+        for _, m in ipairs(ns.MOD_ORDER) do if m == id then return true end end
+        return ns.IsPair(id)
+    end
+    return false
+end
+
+-- primary dans son ordre, puis chaque clé de secondary absente, posée juste
+-- après celle qui la précède dans secondary (au début s'il n'y en a pas)
+local function MergeKeys(primary, secondary)
+    local out, seen = {}, {}
+    for _, k in ipairs(primary) do
+        if not seen[k] then
+            out[#out + 1] = k
+            seen[k] = true
+        end
+    end
+    local prev
+    for _, k in ipairs(secondary) do
+        if not seen[k] then
+            local pos = 1
+            if prev then
+                for i, x in ipairs(out) do
+                    if x == prev then pos = i + 1 break end
+                end
+            end
+            table.insert(out, pos, k)
+            seen[k] = true
+        end
+        prev = k
+    end
+    return out
+end
+
+-- Les couches dans l'ordre de l'interface : les barres du jeu (sauf celles
+-- remplacées par les couches de l'addon), les couches des boutons de base
+-- donnés à l'addon et leurs paires, puis les modificateurs et autres paires
+local function DefaultLayers()
+    local list = {}
+    for _, name in ipairs(BARS) do
+        if not ns.GameBarReplaced(name) then list[#list + 1] = { bar = name } end
+    end
+    local padLayers, extraLayers = ns.ModLayerLists()
+    for _, ids in ipairs({ padLayers, extraLayers }) do
+        for _, id in ipairs(ids) do list[#list + 1] = { mod = id } end
+    end
+    return list
+end
+
+-- Les couches du HUD, dans l'ordre choisi
+function H.Layers()
+    local list = DefaultLayers()
+    local order = H.Settings().order
+    if not order then return list end
+    local byKey, defaults, present = {}, {}, {}
+    for _, e in ipairs(list) do
+        local k = LayerKey(e)
+        byKey[k] = e
+        defaults[#defaults + 1] = k
+    end
+    for _, k in ipairs(order) do
+        if byKey[k] then present[#present + 1] = k end
+    end
+    local out = {}
+    for _, k in ipairs(MergeKeys(present, defaults)) do out[#out + 1] = byKey[k] end
+    return out
+end
+
+-- (keys : les couches présentes, dans leur nouvel ordre)
+local function SaveOrder(keys)
+    local s = H.Settings()
+    local order = MergeKeys(keys, s.order or {})
+    while #order > ORDER_MAX do table.remove(order) end
+    s.order = order
+end
+
+function H.HasCustomOrder()
+    return H.Settings().order ~= nil
+end
+
+function H.ResetOrder()
+    H.Settings().order = nil
+    H.Changed()
+end
+
+-- Déplace une couche de delta places (-1 : vers la gauche / le haut)
+function H.MoveLayer(key, delta)
+    local keys = {}
+    for _, e in ipairs(H.Layers()) do keys[#keys + 1] = LayerKey(e) end
+    local from
+    for i, k in ipairs(keys) do if k == key then from = i end end
+    local to = from and from + delta
+    if not to or to < 1 or to > #keys then return end
+    keys[from], keys[to] = keys[to], keys[from]
+    SaveOrder(keys)
+    H.Changed()
+end
+
+-- Pose une couche à la place d'une autre (glisser-déposer sur le HUD)
+function H.MoveLayerTo(key, targetKey)
+    if key == targetKey then return end
+    local keys = {}
+    for _, e in ipairs(H.Layers()) do keys[#keys + 1] = LayerKey(e) end
+    local from, to
+    for i, k in ipairs(keys) do
+        if k == key then from = i end
+        if k == targetKey then to = i end
+    end
+    if not (from and to) then return end
+    table.remove(keys, from)
+    table.insert(keys, to, key)
+    SaveOrder(keys)
+    H.Changed()
 end
 
 -- La hauteur réelle de la bande (lignes et taille comprises), posée par Relayout
@@ -637,7 +773,34 @@ local function CardTooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
     -- (SetText : texte, r, g, b, alpha, retour à la ligne ; AddLine n'a pas d'alpha)
     GameTooltip:SetText(L.HUD_CARD_HINT, 1, 0.82, 0, 1, true)
+    GameTooltip:AddLine(L.HUD_CARD_DRAG, 1, 0.82, 0, true)
     GameTooltip:Show()
+end
+
+-- Glisser une miniature sur une autre : elle prend sa place (hors combat).
+-- Le relâchement d'un glisser ne compte pas comme un clic.
+local dragCard, dragEnd = nil, 0
+
+local function CardUnderMouse()
+    for _, c in ipairs(cards) do
+        if c:IsShown() and c:IsMouseOver() then return c end
+    end
+end
+
+local function CardDragStart(self)
+    if InCombatLockdown() then return end
+    GameTooltip:Hide()
+    dragCard = self
+end
+
+local function CardDragStop()
+    local from = dragCard
+    dragCard, dragEnd = nil, GetTime()
+    if not from or InCombatLockdown() then return end
+    local target = CardUnderMouse()
+    if target and target ~= from and target.entry and from.entry then
+        H.MoveLayerTo(LayerKey(from.entry), LayerKey(target.entry))
+    end
 end
 
 local function Card()
@@ -673,8 +836,12 @@ local function Card()
     c:EnableMouse(true)
     c:SetScript("OnEnter", CardTooltip)
     c:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    c:RegisterForDrag("LeftButton")
+    c:SetScript("OnDragStart", CardDragStart)
+    c:SetScript("OnDragStop", CardDragStop)
     -- (clic : cette couche en grand pour la modifier ; encore : retour)
     c:SetScript("OnMouseUp", function(self)
+        if dragCard or GetTime() == dragEnd then return end
         local e = self.entry
         if editing and editing.bar == e.bar and editing.mod == e.mod then
             editing = nil
@@ -818,17 +985,8 @@ local function Relayout()
     dirty = false
     local s = H.Settings()
     local bottom = s.strip == "bottom"
-    local list = {}
-    -- (les barres LT / RT du jeu remplacées par les couches de l'addon n'y sont plus)
-    for _, name in ipairs(BARS) do
-        if not ns.GameBarReplaced(name) then list[#list + 1] = { bar = name } end
-    end
-    -- (à leur place : les couches des boutons de base donnés à l'addon et
-    -- leurs paires, puis les modificateurs et les autres paires prêtes)
-    local padLayers, extraLayers = ns.ModLayerLists()
-    for _, ids in ipairs({ padLayers, extraLayers }) do
-        for _, id in ipairs(ids) do list[#list + 1] = { mod = id } end
-    end
+    -- (dans l'ordre choisi par le joueur, ou celui de l'interface)
+    local list = H.Layers()
 
     -- La bande : réparties sur 1 à 3 lignes (chacune centrée), à la taille choisie
     -- (chaque miniature montre aussi les boutons simples de sa couche)
@@ -904,11 +1062,11 @@ local function PadIndex(button)
 end
 
 local function Triggers()
-    local ok, state = pcall(GetGamePadState)
-    local pad = ok and type(state) == "table" and state.buttons
-    if not pad then return IsShiftKeyDown and IsShiftKeyDown() or false, false end
-    local lt, rt = PadIndex("PADLTRIGGER"), PadIndex("PADRTRIGGER")
-    return lt and pad[lt] and true or false, rt and pad[rt] and true or false
+    -- (l'état réel de la manette, Focus.lua ; GetGamePadState n'existe pas
+    -- partout)
+    local down = ns.Focus and ns.Focus.PadsDown()
+    if not down then return IsShiftKeyDown and IsShiftKeyDown() or false, false end
+    return down.LT == true, down.RT == true
 end
 
 local pressed = {}
@@ -1025,6 +1183,8 @@ local function Update(pu)
     ShowLayer(pu, view)
 
     local any = mod ~= nil or lt or rt
+    if dragCard and InCombatLockdown() then dragCard = nil end
+    local dropOn = dragCard and CardUnderMouse()
     for _, c in ipairs(cards) do
         if c:IsShown() then
             SetCardMinis(c, pu)
@@ -1032,6 +1192,13 @@ local function Update(pu)
             local isLive = (live.mod and e.mod == live.mod) or (not live.mod and live.bar and e.bar == live.bar)
             local isEdit = editing and e.bar == editing.bar and e.mod == editing.mod
             SetCardState(c, isLive, isEdit, any)
+            -- (glisser en cours : la miniature tenue estompée, sa future place
+            -- en bleu)
+            if c == dragCard then
+                c:SetAlpha(0.4)
+            elseif dropOn == c then
+                c.edge:SetColorTexture(EDIT_EDGE[1], EDIT_EDGE[2], EDIT_EDGE[3], EDIT_EDGE[4])
+            end
         end
     end
 
@@ -1189,6 +1356,12 @@ watcher:SetScript("OnUpdate", function(_, elapsed)
 end)
 ns.OnApplied(function() dirty = true end)
 
+-- L'ordre des couches a changé : le HUD se refait, la fenêtre aussi
+function H.Changed()
+    dirty = true
+    if UI.RefreshAll then UI.RefreshAll() end
+end
+
 -- La bande des miniatures : "top" (au-dessus) ou "bottom" (dessous)
 function H.SetStrip(pos)
     H.Settings().strip = (pos == "top") and "top" or "bottom"
@@ -1249,7 +1422,25 @@ function H.ExportSettings()
     local out = { enabled = s.enabled, scale = s.scale, strip = s.strip,
         stripScale = s.stripScale, stripRows = s.stripRows }
     if s.pos then out.pos = { s.pos[1], s.pos[2], s.pos[3], s.pos[4] } end
+    if s.order then
+        out.order = {}
+        for i, k in ipairs(s.order) do out.order[i] = k end
+    end
     return out
+end
+
+-- (un ordre importé : seulement des clés de couches connues, sans doublon)
+local function CleanOrder(t)
+    if type(t) ~= "table" then return nil end
+    local out, seen = {}, {}
+    for i = 1, math.min(#t, ORDER_MAX) do
+        local k = t[i]
+        if ValidKey(k) and not seen[k] then
+            out[#out + 1] = k
+            seen[k] = true
+        end
+    end
+    return #out > 0 and out or nil
 end
 
 -- (t vient d'une chaîne d'import : n'importe quoi peut s'y trouver)
@@ -1266,6 +1457,7 @@ function H.CleanSettings(t)
     if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
         out.pos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
     end
+    out.order = CleanOrder(t.order)
     return out
 end
 
@@ -1275,6 +1467,7 @@ function H.ImportSettings(t)
     local s = H.Settings()
     for k, v in pairs(clean) do s[k] = v end
     s.pos = clean.pos
+    s.order = clean.order
     H.Place()
     dirty = true
 end

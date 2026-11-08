@@ -180,6 +180,10 @@ ns.AddLocale("enUS", {
 ns.AddLocale("enUS", {
     HUD_STRIP_SIZE = "Miniature size:",
     HUD_STRIP_ROWS = "Miniature rows:",
+    HUD_ORDER = "Order of the miniatures:",
+    HUD_ORDER_RESET = "Default order",
+    HUD_ORDER_HINT = "Arrows: move a layer. On the HUD, you can also drag a miniature onto another one.",
+    HUD_CARD_DRAG = "Drag: move it (onto another miniature)",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent

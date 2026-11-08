@@ -179,6 +179,10 @@ ns.AddLocale("zhTW", {
 ns.AddLocale("zhTW", {
     HUD_STRIP_SIZE = "縮圖大小：",
     HUD_STRIP_ROWS = "縮圖列數：",
+    HUD_ORDER = "縮圖順序：",
+    HUD_ORDER_RESET = "預設順序",
+    HUD_ORDER_HINT = "箭頭：移動一層。在 HUD 上也可以把縮圖拖到另一個縮圖上。",
+    HUD_CARD_DRAG = "拖曳：移動它（拖到另一個縮圖上）",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent

@@ -179,6 +179,10 @@ ns.AddLocale("koKR", {
 ns.AddLocale("koKR", {
     HUD_STRIP_SIZE = "미리보기 크기:",
     HUD_STRIP_ROWS = "미리보기 줄 수:",
+    HUD_ORDER = "미리보기 순서:",
+    HUD_ORDER_RESET = "기본 순서",
+    HUD_ORDER_HINT = "화살표: 층 이동. HUD에서 미리보기를 다른 미리보기 위로 끌어 놓을 수도 있습니다.",
+    HUD_CARD_DRAG = "끌기: 이동 (다른 미리보기 위로)",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent

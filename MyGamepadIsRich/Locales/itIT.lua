@@ -179,6 +179,10 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     HUD_STRIP_SIZE = "Dimensione delle miniature:",
     HUD_STRIP_ROWS = "Righe di miniature:",
+    HUD_ORDER = "Ordine delle miniature:",
+    HUD_ORDER_RESET = "Ordine predefinito",
+    HUD_ORDER_HINT = "Frecce: sposta uno strato. Sull'HUD puoi anche trascinare una miniatura su un'altra.",
+    HUD_CARD_DRAG = "Trascina: spostala (su un'altra miniatura)",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent

@@ -776,6 +776,8 @@ end
 -- Onglet HUD
 ---------------------------------------------------------------------------
 local hud = {}
+-- (la liste d'ordre des miniatures : colonne de droite de l'onglet)
+local ORDER_X, ORDER_W, ORDER_H, ORDER_ROW = 540, 236, 330, 28
 
 local function Check(parent, text, onClick)
     local cb = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
@@ -852,7 +854,7 @@ local function BuildHudPage(page)
     reset:SetScript("OnClick", function() ns.Hud.ResetPosition() RefreshAll() end)
     hud.moveHint = UI.Text(page, "GameFontHighlightSmall", L.HUD_UNLOCKED)
     hud.moveHint:SetPoint("TOPLEFT", hud.move, "BOTTOMLEFT", 0, -6)
-    hud.moveHint:SetPoint("RIGHT", -16, 0)
+    hud.moveHint:SetPoint("RIGHT", page, "LEFT", ORDER_X - 20, 0)
     hud.moveHint:SetJustifyH("LEFT")
     hud.moveHint:SetTextColor(0.5, 0.85, 1)
 
@@ -862,8 +864,93 @@ local function BuildHudPage(page)
 
     local tip = UI.Text(page, "GameFontDisableSmall", L.HUD_TILE_HINT .. "  -  " .. L.HUD_CARD_HINT)
     tip:SetPoint("BOTTOMLEFT", 16, 12)
-    tip:SetPoint("RIGHT", -16, 0)
+    tip:SetPoint("RIGHT", page, "LEFT", ORDER_X - 20, 0)
     tip:SetJustifyH("LEFT")
+
+    -- Ordre des miniatures (colonne de droite) : flèches, ou glisser sur le HUD
+    local orderLabel = UI.Text(page, "GameFontNormal", L.HUD_ORDER)
+    orderLabel:SetPoint("TOPLEFT", ORDER_X, -60)
+    orderLabel:SetPoint("RIGHT", -16, 0)
+    orderLabel:SetJustifyH("LEFT")
+    local back = page:CreateTexture(nil, "BACKGROUND")
+    back:SetColorTexture(1, 1, 1, 0.03)
+    back:SetPoint("TOPLEFT", ORDER_X - 4, -80)
+    back:SetPoint("BOTTOMRIGHT", page, "TOPLEFT", ORDER_X + ORDER_W + 26, -(80 + ORDER_H))
+    local scroll = CreateFrame("ScrollFrame", nil, page, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", ORDER_X, -82)
+    scroll:SetSize(ORDER_W, ORDER_H - 4)
+    hud.orderChild = CreateFrame("Frame", nil, scroll)
+    hud.orderChild:SetSize(ORDER_W, 10)
+    scroll:SetScrollChild(hud.orderChild)
+    hud.orderRows = {}
+
+    hud.orderReset = UI.Button(page, L.HUD_ORDER_RESET, ORDER_W, 24)
+    hud.orderReset:SetPoint("TOPLEFT", ORDER_X, -(88 + ORDER_H))
+    hud.orderReset:SetScript("OnClick", function() ns.Hud.ResetOrder() RefreshAll() end)
+    local orderHint = UI.Text(page, "GameFontHighlightSmall", L.HUD_ORDER_HINT)
+    orderHint:SetPoint("TOPLEFT", hud.orderReset, "BOTTOMLEFT", 0, -6)
+    orderHint:SetPoint("RIGHT", -16, 0)
+    orderHint:SetJustifyH("LEFT")
+    orderHint:SetTextColor(0.7, 0.7, 0.7)
+end
+
+-- Une ligne de la liste d'ordre : pastilles, nom, flèches haut / bas
+local function ArrowButton(parent, dir)
+    local b = CreateFrame("Button", nil, parent)
+    b:SetSize(24, 24)
+    local base = "Interface\\ChatFrame\\UI-ChatIcon-Scroll" .. dir
+    b:SetNormalTexture(base .. "-Up")
+    b:SetPushedTexture(base .. "-Down")
+    b:SetDisabledTexture(base .. "-Disabled")
+    b:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+    return b
+end
+
+local function OrderRow(i)
+    local r = hud.orderRows[i]
+    if r then return r end
+    r = CreateFrame("Frame", nil, hud.orderChild)
+    r:SetSize(ORDER_W - 4, ORDER_ROW - 2)
+    local bg = r:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    bg:SetColorTexture(1, 1, 1, 0.05)
+    r.num = UI.Text(r, "GameFontDisableSmall")
+    r.num:SetPoint("LEFT", 4, 0)
+    r.num:SetWidth(16)
+    r.tag = Tag(r, 20)
+    r.tag:SetPoint("LEFT", 22, 0)
+    r.name = UI.Text(r, "GameFontHighlight")
+    r.name:SetPoint("LEFT", 80, 0)
+    r.name:SetPoint("RIGHT", -54, 0)
+    r.name:SetJustifyH("LEFT")
+    r.name:SetWordWrap(false)
+    r.down = ArrowButton(r, "Down")
+    r.down:SetPoint("RIGHT", -2, 0)
+    r.up = ArrowButton(r, "Up")
+    r.up:SetPoint("RIGHT", r.down, "LEFT", -2, 0)
+    r.up:SetScript("OnClick", function(self) ns.Hud.MoveLayer(self:GetParent().key, -1) RefreshAll() end)
+    r.down:SetScript("OnClick", function(self) ns.Hud.MoveLayer(self:GetParent().key, 1) RefreshAll() end)
+    hud.orderRows[i] = r
+    return r
+end
+
+local function RefreshOrder()
+    local layers = ns.Hud.Layers()
+    for i, layer in ipairs(layers) do
+        local r = OrderRow(i)
+        r.key = ns.Hud.LayerKey(layer)
+        r:ClearAllPoints()
+        r:SetPoint("TOPLEFT", 2, -(i - 1) * ORDER_ROW)
+        r.num:SetText(i)
+        SetTag(r.tag, LayerKeys(layer))
+        r.name:SetText(LayerName(layer))
+        r.up:SetEnabled(i > 1)
+        r.down:SetEnabled(i < #layers)
+        r:Show()
+    end
+    for i = #layers + 1, #hud.orderRows do hud.orderRows[i]:Hide() end
+    hud.orderChild:SetHeight(math.max(10, #layers * ORDER_ROW))
+    hud.orderReset:SetEnabled(ns.Hud.HasCustomOrder())
 end
 
 local function RefreshHudPage()
@@ -878,6 +965,7 @@ local function RefreshHudPage()
     hud.move:SetText(unlocked and L.HUD_MOVE_DONE or L.HUD_MOVE)
     hud.moveHint:SetShown(unlocked)
     hud.minimap:SetChecked(ns.MinimapButton.IsShown())
+    RefreshOrder()
 end
 
 ---------------------------------------------------------------------------

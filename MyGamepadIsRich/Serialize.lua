@@ -432,7 +432,8 @@ function S.SelfTest()
             PAD3 = { kind = "spell", id = 133 },
             PAD4 = { kind = "command", command = "NOT_A_BINDING" },
         }, layers = { nope = { kind = "item", id = 6948 } } }, ZZ = { combos = {} } },
-        hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 } },
+        hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 },
+            order = { "bar:topBar", "evil", "mod:L5", "mod:L5", "bar:nope", "mod:ZZ", 7, "mod:L5R5" } },
         pads = { LB = "target_friend", RB = "evil", LT = 5, XX = "modifier" },
         pairs = { L5LT = true, ZZ = true, LBRB = "yes", L5L5 = true },
     })
@@ -450,6 +451,7 @@ function S.SelfTest()
         Check(combos.PAD3 and combos.PAD3.id == 133, "forged spell kept")
         Check(next(d.actions.L5.layers) == nil and d.actions.ZZ == nil, "forged layers")
         Check(d.hud.scale == 2 and d.hud.strip == "bottom" and d.hud.pos == nil, "forged hud")
+        Check(Serialize(d.hud.order) == Serialize({ "bar:topBar", "mod:L5", "mod:L5R5" }), "forged hud order")
     end
 
     if #fails == 0 then

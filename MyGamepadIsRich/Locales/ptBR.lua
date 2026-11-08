@@ -179,6 +179,10 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     HUD_STRIP_SIZE = "Tamanho das miniaturas:",
     HUD_STRIP_ROWS = "Linhas de miniaturas:",
+    HUD_ORDER = "Ordem das miniaturas:",
+    HUD_ORDER_RESET = "Ordem padrão",
+    HUD_ORDER_HINT = "Setas: mover uma camada. No HUD, você também pode arrastar uma miniatura sobre outra.",
+    HUD_CARD_DRAG = "Arrastar: movê-la (sobre outra miniatura)",
 })
 
 -- Manettes (préréglages), et les textes qui en dépendent
