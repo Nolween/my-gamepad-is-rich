@@ -160,6 +160,7 @@ local engineOwner
 local EngineTargeting -- (défini plus bas)
 
 local function SetHeld(id, down)
+    if ns.Diag then ns.Diag.Log((down and "appui " or "relâché ") .. id) end
     if down then
         if not held[id] then
             order = order + 1

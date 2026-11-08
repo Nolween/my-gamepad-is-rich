@@ -87,7 +87,10 @@ frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:SetScript("OnEvent", function(_, event)
     inCombat = event == "PLAYER_REGEN_DISABLED"
-    -- (PLAYER_REGEN_DISABLED arrive juste avant le verrouillage)
+    -- (PLAYER_REGEN_DISABLED arrive juste avant le verrouillage : dernier
+    -- moment pour reprendre un bouton rendu à Forever, sans quoi sa couche
+    -- de l'addon manquerait pendant tout le combat)
+    if inCombat then F.TakeBack() end
     if not InCombatLockdown() then ns.Modifier.SetInGame(F.InGame()) end
 end)
 
@@ -124,15 +127,21 @@ local function ForeverBar()
     end
 end
 
+-- Les boutons rendus à Forever repassent à l'addon (Forever revenu, ou
+-- combat qui commence)
+function F.TakeBack()
+    if not givenBack or InCombatLockdown() then return end
+    if ns.Diag then ns.Diag.Log("reprise " .. table.concat(givenBack, "+")) end
+    ns.Modifier.GiveBack(givenBack, false)
+    givenBack, warned, stuckSince = nil, nil, nil
+end
+
 local function CheckStuck(down, inGame)
     local bar = ForeverBar()
     local pads = bar and STUCK_PADS[bar]
     if givenBack then
         -- (Forever est revenu : les boutons repassent à l'addon)
-        if not pads then
-            ns.Modifier.GiveBack(givenBack, false)
-            givenBack, warned = nil, nil
-        end
+        if not pads then F.TakeBack() end
         return
     end
     local stuck = pads and inGame and down and not next(down) and not next(ns.Modifier.HeldState())
@@ -149,6 +158,7 @@ local function CheckStuck(down, inGame)
     if GetTime() - stuckSince < 0.5 then return end
     stuckSince = nil
     givenBack = pads
+    if ns.Diag then ns.Diag.Log("bloqué sur " .. bar .. " : rendu à Forever " .. table.concat(pads, "+")) end
     ns.Modifier.GiveBack(pads, true)
     if not warned then
         warned = true
@@ -159,12 +169,45 @@ local function CheckStuck(down, inGame)
     end
 end
 
+-- Forever vérifie ses gâchettes à chaque ACTIONBAR_SLOT_CHANGED (un sceau de
+-- paladin, une forme... en provoquent un) en lisant l'état réel de la
+-- manette : si LT ou RT, donné à l'addon, est tenu à ce moment, il passe sur
+-- sa barre LT / RT, puis n'en revient pas au relâchement (il ne le reçoit
+-- pas). Tant que LT ou RT est à l'addon, sa barre n'a rien à vérifier (les
+-- couches de l'addon remplacent ses barres LT / RT) : elle est désabonnée de
+-- cet événement, et réabonnée quand ils reviennent au jeu. Hors combat ;
+-- réaffirmé régulièrement si Forever se réabonne de lui-même.
+local SLOT_EVENT = "ACTIONBAR_SLOT_CHANGED"
+local slotEventCut = false
+
+function F.SyncForeverEvents()
+    if InCombatLockdown() then return end
+    local pu = ns.Bar and ns.Bar.PageUnit()
+    if not (pu and pu.IsEventRegistered) then return end
+    local cut = ns.prof ~= nil and (ns.PadTaken("LT") or ns.PadTaken("RT"))
+    local okR, registered = pcall(pu.IsEventRegistered, pu, SLOT_EVENT)
+    if not okR then return end
+    if cut and registered then
+        if pcall(pu.UnregisterEvent, pu, SLOT_EVENT) then
+            if not slotEventCut and ns.Diag then ns.Diag.Log("Forever désabonné de " .. SLOT_EVENT) end
+            slotEventCut = true
+        end
+    elseif not cut and slotEventCut then
+        -- (seulement s'il l'était avant nous)
+        if pcall(pu.RegisterEvent, pu, SLOT_EVENT) then
+            if ns.Diag then ns.Diag.Log("Forever réabonné à " .. SLOT_EVENT) end
+            slotEventCut = false
+        end
+    end
+end
+
 local last, wait = nil, 0
 frame:SetScript("OnUpdate", function(_, elapsed)
     wait = wait - elapsed
     if wait > 0 then return end
     wait = 0.1
     if not ns.db or InCombatLockdown() then return end
+    F.SyncForeverEvents()
     local down = F.PadsDown()
     Reconcile(down)
     CheckStuck(down, last ~= false and F.InGame())

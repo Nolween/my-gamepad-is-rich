@@ -1,5 +1,12 @@
 -- /mgir etat : l'état des couches à cet instant, dans le chat (à taper
 -- quand une couche semble bloquée). Lecture seule.
+--
+-- Journal des couches : 10 fois par seconde (combat compris), l'état des
+-- gâchettes et de la barre de Forever ; une ligne seulement quand il
+-- change. Les 120 dernières lignes sont gardées dans
+-- MyGamepadIsRichDB.diagLog (écrit par le jeu au /reload ou à la
+-- déconnexion), pour comprendre une barre restée bloquée. Lecture seule :
+-- rien n'est touché dans le jeu.
 -- (les outils de relevé du développement sont dans Probe.lua, hors du .toc :
 -- ajouter « Probe.lua » au .toc, après Diag.lua, pour /mgir probe)
 local _, ns = ...
@@ -14,28 +21,109 @@ local function S(v)
     return ok and s or "<?>"
 end
 
+-- La barre active de Forever, par son nom
+local function ActiveBar()
+    local pu = ns.Bar and ns.Bar.PageUnit()
+    if not (pu and pu.actionBars) then return "?" end
+    for _, name in ipairs(ns.Bar.NAMES or {}) do
+        if pu.actionBars[name] ~= nil and pu.actionBars[name] == pu.activeBar then return name end
+    end
+    return "other"
+end
+
+-- (« BIND » : ce que la touche lance, liaisons prioritaires comprises)
+local function Binding(key)
+    local ok, action = pcall(GetBindingAction, key, true)
+    if not ok then return "?" end
+    action = S(action)
+    -- (raccourcis : les boutons de l'addon et de Forever ont des noms longs)
+    action = action:gsub("^CLICK MyGamepadIsRich", "mgir:"):gsub("^CLICK InputFunctionBindingButton_", "forever:")
+        :gsub(":LeftButton$", "")
+    return action ~= "" and action or "-"
+end
+
+local function Sorted(set)
+    local out = {}
+    for k, v in pairs(set or {}) do out[#out + 1] = (v == true) and k or (k .. "(" .. v .. ")") end
+    table.sort(out)
+    return #out > 0 and table.concat(out, " ") or "-"
+end
+
 function D.State()
     local function Line(label, value) ns.Print(label .. " : " .. value) end
     Line("focus jeu (Forever)", S(ns.Focus.InGame()) .. ", addon " .. S(ns.Modifier.InGameAttribute())
         .. ", combat " .. S(InCombatLockdown()))
-    local heldList = {}
-    for id, where in pairs(ns.Modifier.HeldState()) do heldList[#heldList + 1] = id .. "(" .. where .. ")" end
-    table.sort(heldList)
-    Line("tenus pour l'addon", #heldList > 0 and table.concat(heldList, " ") or "aucun")
+    Line("tenus pour l'addon", Sorted(ns.Modifier.HeldState()))
     Line("couche de l'addon", S(ns.Modifier.Held()))
     local down = ns.Focus.PadsDown()
-    local downList = {}
-    for id in pairs(down or {}) do downList[#downList + 1] = id end
-    table.sort(downList)
-    Line("enfoncés sur la manette", down and (#downList > 0 and table.concat(downList, " ") or "aucun") or "?")
-    local pu = ns.Bar and ns.Bar.PageUnit()
-    local active = "?"
-    if pu and pu.actionBars then
-        for _, name in ipairs(ns.Bar.NAMES or {}) do
-            if pu.actionBars[name] == pu.activeBar then active = name end
-        end
-    end
-    Line("barre active de Forever", active)
+    Line("enfoncés sur la manette", down and Sorted(down) or "?")
+    Line("barre active de Forever", ActiveBar())
     Line("A est lié à", S(GetBindingAction("PAD1", true)))
-    Line("LT est lié à", S(GetBindingAction("PADLTRIGGER", true)))
+    for _, id in ipairs(ns.PAD_IDS) do
+        Line(id .. " est lié à", Binding(ns.PAD_KEY[id]))
+    end
 end
+
+---------------------------------------------------------------------------
+-- Journal
+---------------------------------------------------------------------------
+local LOG_MAX = 120
+local lastLine
+local t0
+
+local function Log(text)
+    if not ns.db then return end
+    t0 = t0 or GetTime()
+    local log = ns.db.diagLog
+    if type(log) ~= "table" then
+        log = {}
+        ns.db.diagLog = log
+    end
+    log[#log + 1] = ("%s %.2f %s"):format(date("%H:%M:%S"), GetTime() - t0, text)
+    while #log > LOG_MAX do table.remove(log, 1) end
+end
+D.Log = Log
+
+local function Snapshot()
+    local down = ns.Focus.PadsDown()
+    local parts = {
+        "bar=" .. ActiveBar(),
+        "pad=" .. (down and Sorted(down) or "?"),
+        "held=" .. Sorted(ns.Modifier.HeldState()),
+        "layer=" .. S(ns.Modifier.Held()),
+        "ingame=" .. S(ns.Focus.InGame()) .. "/" .. S(ns.Modifier.InGameAttribute()),
+        "combat=" .. (InCombatLockdown() and "1" or "0"),
+    }
+    for _, id in ipairs(ns.PAD_IDS) do
+        if ns.PadTaken(id) then parts[#parts + 1] = id .. "=" .. Binding(ns.PAD_KEY[id]) end
+    end
+    return table.concat(parts, " ")
+end
+
+local watcher = CreateFrame("Frame")
+local wait = 0
+watcher:SetScript("OnUpdate", function(_, elapsed)
+    wait = wait - elapsed
+    if wait > 0 then return end
+    wait = 0.1
+    if not (ns.db and ns.prof) then return end
+    local ok, line = pcall(Snapshot)
+    if not ok then return end
+    if line ~= lastLine then
+        lastLine = line
+        Log(line)
+    end
+end)
+
+watcher:RegisterEvent("PLAYER_LOGIN")
+watcher:RegisterEvent("PLAYER_REGEN_DISABLED")
+watcher:RegisterEvent("PLAYER_REGEN_ENABLED")
+watcher:SetScript("OnEvent", function(_, event)
+    if event == "PLAYER_LOGIN" then
+        Log("== connexion " .. ns.Version())
+    else
+        Log("event " .. event)
+    end
+end)
+
+ns.OnApplied(function(waiting) Log(waiting and "apply (après le combat)" or "apply") end)
