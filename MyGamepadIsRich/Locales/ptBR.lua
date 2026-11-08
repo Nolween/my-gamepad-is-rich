@@ -406,3 +406,13 @@ ns.AddLocale("ptBR", {
     PAIRS_HINT = "Marque os pares que quer usar: segurar os dois modificadores juntos dá 8 combinações a mais. Quaisquer dois modificadores podem formar um par (L5 + LT, LB + RT...).",
     PAIRS_NONE = "Coloque pelo menos dois botões em Modificador, Alvo aliado ou Alvo inimigo para formar pares.",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("ptBR", {
+    PAIR_WAITS = "%s está em Jogo: coloque em Modificador, Alvo aliado ou Alvo inimigo (acima)",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("ptBR", {
+    MODE_IS_DEFAULT = "Padrão para este botão: funciona como no jogo.",
+})

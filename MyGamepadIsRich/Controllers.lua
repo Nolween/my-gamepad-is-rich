@@ -121,9 +121,10 @@ local function Suggested(i, count)
     return "simple"
 end
 
--- Les modes conseillés des boutons de base : LB cible les alliés, RB les
--- ennemis (comme dans Forever, avec la couche de raccourcis de l'addon)
-ns.DEFAULT_PADS = { LB = "target_friend", RB = "target_enemy" }
+-- Les modes par défaut des boutons de base, comme dans Forever : LT et RT
+-- modificateurs, LB cible les alliés, RB les ennemis (avec la couche de
+-- raccourcis de l'addon)
+ns.DEFAULT_PADS = { LT = "modifier", RT = "modifier", LB = "target_friend", RB = "target_enemy" }
 
 -- Les modes conseillés, posés sur un profil (sans appliquer)
 function ns.SuggestModes(prof)

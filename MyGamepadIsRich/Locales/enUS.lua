@@ -407,3 +407,13 @@ ns.AddLocale("enUS", {
     PAIRS_HINT = "Tick the pairs you want: holding both modifiers together gives 8 more combinations. Any two modifiers can form a pair (L5 + LT, LB + RT...).",
     PAIRS_NONE = "Set at least two buttons as Modifier, Ally target or Enemy target to form pairs.",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("enUS", {
+    PAIR_WAITS = "%s is on Game: set it to Modifier, Ally target or Enemy target (above)",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("enUS", {
+    MODE_IS_DEFAULT = "Default for this button: it works like in the game.",
+})

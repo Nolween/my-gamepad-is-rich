@@ -405,3 +405,13 @@ ns.AddLocale("zhTW", {
     PAIRS_HINT = "勾選要使用的組合：同時按住兩個修飾鍵可再獲得 8 個組合。任意兩個修飾鍵都能組成組合（L5 + LT、LB + RT……）。",
     PAIRS_NONE = "至少將兩個按鍵設為修飾鍵、友方目標或敵方目標，才能組成組合。",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("zhTW", {
+    PAIR_WAITS = "%s 處於「遊戲」：請設為修飾鍵、友方目標或敵方目標（上方）",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("zhTW", {
+    MODE_IS_DEFAULT = "此按鍵的預設設定：與遊戲中的作用相同。",
+})

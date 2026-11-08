@@ -104,7 +104,10 @@ ns.MOD_MODES = { modifier = true, target_friend = true, target_enemy = true }
 -- Les modes d'un bouton, dans l'ordre de l'interface, et leurs libellés ;
 -- un bouton de base a « game » en plus (au jeu), à la place de « off »
 ns.MODES = { "modifier", "target_friend", "target_enemy", "simple", "off" }
-ns.PAD_MODES = { "game", "modifier", "target_friend", "target_enemy", "simple" }
+-- (les boutons de base n'ont pas de case « Jeu » : leur mode par défaut,
+-- ns.DEFAULT_PADS, fait comme le jeu. « game » ne reste que pour
+-- /mgir restore, qui les rend vraiment au jeu)
+ns.PAD_MODES = { "modifier", "target_friend", "target_enemy", "simple" }
 local MODE_LABEL = {
     modifier = "MODE_MODIFIER", target_friend = "MODE_TARGET_FRIEND", target_enemy = "MODE_TARGET_ENEMY",
     simple = "MODE_SIMPLE", off = "MODE_OFF", game = "MODE_GAME",
@@ -335,6 +338,8 @@ ns.bindingOwner = owner
 local pending = false
 local listeners = {}
 local lastTargetWarning -- (le dernier avertissement de ciblage donné)
+local barRetries = 0    -- (essais de reprise de la barre du jeu)
+local CopyGameBar       -- (plus bas)
 
 function ns.OnApplied(fn) listeners[#listeners + 1] = fn end
 
@@ -347,6 +352,12 @@ function ns.Apply(quiet)
         return false
     end
     pending = false
+    -- (LT / RT donnés à l'addon : leurs couches vides reprennent la barre du
+    -- jeu ; pas encore prête au chargement : on réessaie un peu plus tard)
+    if ns.CopyGameBars() and C_Timer and barRetries < 10 then
+        barRetries = barRetries + 1
+        C_Timer.After(2, function() ns.Apply(true) end)
+    end
     ClearOverrideBindings(owner)
     local onDown = ns.UseKeyDown()
     ns.Modifier.Begin()
@@ -442,7 +453,7 @@ end
 
 -- Les couches de l'addon encore vides reprennent ce que la barre du jeu
 -- avait sur LT, RT ou LT + RT (sorts, objets, macros de la liste)
-local function CopyGameBar(layer)
+function CopyGameBar(layer)
     local bar = ns.TRIGGER_BAR[layer]
     if not (bar and ns.Bar and ns.Bar.Available()) then return 0 end
     local combos = ns.ButtonActions(layer).combos
@@ -458,15 +469,38 @@ local function CopyGameBar(layer)
     return copied
 end
 
+-- Une fois par personnage et par couche : LT, RT et LT + RT donnés à
+-- l'addon reprennent ce que la barre du jeu avait (si leur couche est vide).
+-- Renvoie vrai si une couche attend encore la barre du jeu (pas prête).
+function ns.CopyGameBars()
+    if not ns.cprof then return false end
+    local done = ns.cprof.barCopied or {}
+    ns.cprof.barCopied = done
+    local copied, waiting = 0, false
+    for _, layer in ipairs({ "LT", "RT", "LTRT" }) do
+        if not done[layer] and ns.IsModLayer(layer) then
+            if ns.Bar and ns.Bar.Available() then
+                copied = copied + CopyGameBar(layer)
+                done[layer] = true
+            else
+                waiting = true
+            end
+        end
+    end
+    if copied > 0 then ns.Print(L.TRIGGERS_COPIED:format(copied)) end
+    return waiting
+end
+
 -- Le mode d'un bouton de base (« game » : rendu au jeu)
 function ns.SetPadMode(id, mode)
     if not (ns.prof and ns.PAD_KEY[id]) then return end
     ns.prof.pads = ns.prof.pads or {}
     ns.prof.pads[id] = (mode ~= "game") and mode or nil
-    if ns.MOD_MODES[mode] then
-        local copied = CopyGameBar(id)
-        if ns.PairReady("LTRT") then copied = copied + CopyGameBar("LTRT") end
-        if copied > 0 then ns.Print(L.TRIGGERS_COPIED:format(copied)) end
+    -- (devenu modificateur : sa couche, si elle est vide, reprend la barre
+    -- du jeu à l'application)
+    if ns.MOD_MODES[mode] and ns.cprof and ns.cprof.barCopied then
+        ns.cprof.barCopied[id] = nil
+        ns.cprof.barCopied.LTRT = nil
     end
     ns.Apply()
 end

@@ -119,14 +119,13 @@ Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâcheme
 
 ## Boutons de base (LT, RT, LB, RB)
 
-Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil :
-- **Jeu** (par défaut pour LT et RT) : le bouton garde son rôle dans Forever. LT / RT gardent les couches de la barre manette, à remplir depuis l'onglet Actions avec ce que la barre du jeu accepte. LB / RB gardent le ciblage de Forever.
-- **Par défaut, LB est en Cible alliée et RB en Cible ennemie** (modes de l'addon : ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Utiliser les modes conseillés ». À la mise à jour vers la 1.6, les profils existants y passent une fois ; « Jeu » reste disponible.
-- **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires. Les cases vides d'un modificateur ou d'une cible ne font rien. Ils forment des paires avec n'importe quel autre modificateur (LT + RT, LB + RB, L5 + LT...), à cocher dans l'onglet Boutons.
+Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil : **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires.
+- **Par défaut, comme dans le jeu** (libellé en vert) : LT et RT en Modificateur, LB en Cible alliée, RB en Cible ennemie (ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Utiliser les modes conseillés ». À la mise à jour vers la 1.6, les profils existants y passent une fois. Il n'y a pas de case « Jeu » : les modes par défaut font comme le jeu.
+- Les cases vides d'un modificateur ou d'une cible ne font rien. Les boutons de base forment des paires avec n'importe quel autre modificateur (LT + RT, LB + RB, L5 + LT...), à cocher dans l'onglet Boutons.
 
-En donnant LT ou RT à l'addon (modificateur ou cible), les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Revenir sur « Jeu » retrouve la barre du jeu telle quelle.
+Quand LT ou RT devient modificateur (ou cible), les couches de l'addon encore vides reprennent une fois, pour chaque personnage, ce que la barre du jeu avait sur LT, RT et LT + RT.
 
-**Imitation de Maj / Ctrl.** Chez Forever, LT imite Maj et LB imite Ctrl (`GamePadEmulateShift`, `GamePadEmulateCtrl`). Un bouton qui imite une touche n'envoie son appui que s'il est tapé brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant qu'un tel bouton est donné à l'addon, l'addon coupe son imitation ; il la remet quand le bouton revient sur « Jeu ». Le réglage d'origine est noté dans les réglages du compte. **Avant de désactiver l'addon**, tape `/mgir restore` : les boutons de base reviennent au jeu et les imitations sont remises.
+**Imitation de Maj / Ctrl.** Chez Forever, LT imite Maj et LB imite Ctrl (`GamePadEmulateShift`, `GamePadEmulateCtrl`). Un bouton qui imite une touche n'envoie son appui que s'il est tapé brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant qu'un tel bouton est donné à l'addon, l'addon coupe son imitation ; il la remet avec `/mgir restore`. Le réglage d'origine est noté dans les réglages du compte. **Avant de désactiver l'addon**, tape `/mgir restore` : les boutons de base reviennent au jeu et les imitations sont remises.
 
 Ces liaisons n'existent que quand le jeu a le focus manette. Dans les fenêtres de Forever (sacs, carte…), LT, RT, LB et RB gardent leur rôle, et RB garde son clic droit avec le curseur.
 

@@ -406,3 +406,13 @@ ns.AddLocale("frFR", {
     PAIRS_HINT = "Coche les paires à utiliser : maintenir les deux modificateurs ensemble donne 8 combinaisons de plus. N'importe quels deux modificateurs peuvent former une paire (L5 + LT, LB + RT...).",
     PAIRS_NONE = "Mets au moins deux boutons en Modificateur, Cible alliée ou Cible ennemie pour former des paires.",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("frFR", {
+    PAIR_WAITS = "%s est sur Jeu : mets-le en Modificateur, Cible alliée ou Cible ennemie (plus haut)",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("frFR", {
+    MODE_IS_DEFAULT = "Par défaut pour ce bouton : il fonctionne comme dans le jeu.",
+})

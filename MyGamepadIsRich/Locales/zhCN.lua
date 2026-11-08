@@ -405,3 +405,13 @@ ns.AddLocale("zhCN", {
     PAIRS_HINT = "勾选要使用的组合：同时按住两个修饰键可再获得 8 个组合。任意两个修饰键都能组成组合（L5 + LT、LB + RT……）。",
     PAIRS_NONE = "至少将两个按键设为修饰键、友方目标或敌方目标，才能组成组合。",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("zhCN", {
+    PAIR_WAITS = "%s 处于“游戏”：请设为修饰键、友方目标或敌方目标（上方）",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("zhCN", {
+    MODE_IS_DEFAULT = "此按键的默认设置：与游戏中的作用相同。",
+})

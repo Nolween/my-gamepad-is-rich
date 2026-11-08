@@ -267,8 +267,8 @@ local function Clean(raw)
         name = CleanString(raw.name, ns.Profiles.NAME_MAX) or L.PROFILE_IMPORTED,
         controller = ns.ControllerDef(type(raw.controller) == "string" and raw.controller or nil).id,
         buttons = {},
-        -- (boutons de base : modes connus seulement ; absents = au jeu)
-        pads = ns.Profiles.CleanPads(raw.pads),
+        -- (boutons de base : modes connus seulement ; absents = mode par défaut)
+        pads = ns.Profiles.FillPads(raw.pads),
         -- (paires choisies : ids connus seulement ; absentes = par défaut)
         pairs = ns.Profiles.CleanPairs(raw.pairs),
     }
@@ -404,7 +404,7 @@ function S.SelfTest()
     Check(data ~= nil, "import: " .. tostring(info))
     if data then
         Check(data.controller == ns.prof.controller, "controller")
-        Check(Serialize(data.pads) == Serialize(ns.Profiles.CleanPads(ns.prof.pads)), "pads")
+        Check(Serialize(data.pads) == Serialize(ns.Profiles.FillPads(ns.prof.pads)), "pads")
         Check(Serialize(data.pairs) == Serialize(ns.Profiles.CleanPairs(ns.prof.pairs)), "pairs")
         for _, slot in ipairs(ns.BUTTON_IDS) do
             local a, b = ns.prof.buttons[slot], data.buttons[slot]
@@ -441,7 +441,7 @@ function S.SelfTest()
     if d then
         Check(d.name == "Acffff0000B", "forged name")
         Check(d.controller == "other", "forged controller")
-        Check(d.pads.LB == "target_friend" and d.pads.RB == nil and d.pads.LT == nil, "forged pads")
+        Check(d.pads.LB == "target_friend" and d.pads.RB == "target_enemy" and d.pads.LT == "modifier" and d.pads.XX == nil, "forged pads")
         Check(Serialize(d.pairs) == Serialize({ L5LT = true }), "forged pairs")
         Check(d.buttons.L5.mode == ns.DEFAULT_BUTTONS.L5.mode and d.buttons.L5.key == nil, "forged L5")
         Check(d.buttons.R5.mode == "simple" and d.buttons.R5.key == "F10", "forged R5")

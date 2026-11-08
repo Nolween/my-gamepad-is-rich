@@ -406,3 +406,13 @@ ns.AddLocale("itIT", {
     PAIRS_HINT = "Spunta le coppie da usare: tenere premuti entrambi i modificatori dà 8 combinazioni in più. Due modificatori qualsiasi possono formare una coppia (L5 + LT, LB + RT...).",
     PAIRS_NONE = "Imposta almeno due pulsanti come Modificatore, Alleato o Nemico per formare coppie.",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("itIT", {
+    PAIR_WAITS = "%s è su Gioco: impostalo su Modificatore, Alleato o Nemico (sopra)",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("itIT", {
+    MODE_IS_DEFAULT = "Predefinito per questo pulsante: funziona come nel gioco.",
+})

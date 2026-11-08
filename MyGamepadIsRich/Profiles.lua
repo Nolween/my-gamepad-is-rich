@@ -85,6 +85,15 @@ function P.CleanPads(pads)
     return out
 end
 
+-- Les modes des boutons de base, les absents à leur mode par défaut
+function P.FillPads(pads)
+    local out = P.CleanPads(pads)
+    for id, mode in pairs(ns.DEFAULT_PADS) do
+        if out[id] == nil then out[id] = mode end
+    end
+    return out
+end
+
 -- Les paires choisies : { [id] = true }, ids connus seulement ; absentes
 -- (profils et exports d'avant) : les paires par défaut
 function P.CleanPairs(raw)
@@ -132,16 +141,16 @@ function P.Init()
         end
         prof.triggers = nil
         prof.pairs = P.CleanPairs(prof.pairs)
-        -- (1.6 : LB / RB passent une fois en ciblage allié / ennemi, s'ils
-        -- étaient au jeu ; un « Jeu » choisi ensuite est gardé)
-        if not db.padDefaults then
-            for id, mode in pairs(ns.DEFAULT_PADS) do
-                if prof.pads[id] == nil then prof.pads[id] = mode end
-            end
+        -- (1.6 : les boutons restés au jeu passent une fois à leur mode par
+        -- défaut — LT / RT modificateurs, LB / RB ciblage — car il n'y a plus
+        -- de case « Jeu » ; leurs couches reprennent la barre du jeu,
+        -- ns.CopyGameBars)
+        if (tonumber(db.padDefaults) or 0) < 2 then
+            prof.pads = P.FillPads(prof.pads)
         end
         if type(prof.name) ~= "string" or prof.name == "" then prof.name = L.PROFILE_DEFAULT end
     end
-    db.padDefaults = 1
+    db.padDefaults = 2
     if not db.profiles[db.profile] then db.profile = P.List()[1].id end
 
     char.profiles = char.profiles or {}

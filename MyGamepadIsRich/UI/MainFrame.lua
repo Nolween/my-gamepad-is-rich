@@ -539,6 +539,7 @@ local function ModeRow(parent, modes, onPick)
         cb:SetPoint("LEFT", modeLabel, "LEFT", x, 0)
         local text = UI.Text(cb, "GameFontHighlight", ModeLabel(mode))
         text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
+        cb.label = text
         cb:SetScript("OnClick", function()
             onPick(mode)
             RefreshAll()
@@ -547,6 +548,7 @@ local function ModeRow(parent, modes, onPick)
             GameTooltip:SetOwner(self, "ANCHOR_TOP")
             GameTooltip:SetText(ModeLabel(mode), 1, 0.82, 0, 1, true)
             GameTooltip:AddLine(ns.ModeDesc(mode), 1, 1, 1, true)
+            if self.isDefault then GameTooltip:AddLine(L.MODE_IS_DEFAULT, 0.25, 1, 0.25, true) end
             GameTooltip:Show()
         end)
         cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -635,6 +637,12 @@ local function BuildButtons(page)
         row.name:SetPoint("TOPLEFT", 64, -6)
         row.hint = UI.Text(row, "GameFontDisable", L.PAD_HINT)
         row.hint:SetPoint("LEFT", row.name, "RIGHT", 12, 0)
+        -- (son mode par défaut, celui du jeu : en vert)
+        local default = row.modes[ns.DEFAULT_PADS[id]]
+        if default then
+            default.isDefault = true
+            default.label:SetTextColor(0.25, 1, 0.25)
+        end
         row.id = id
         padRows[i] = row
     end
@@ -692,10 +700,18 @@ local function RefreshButtons()
     pairsTitle:ClearAllPoints()
     pairsTitle:SetPoint("TOPLEFT", 2, y - 6)
     y = y - 24
-    -- (toutes les paires de deux modificateurs prêts : cochée = utilisée)
+    -- (toutes les paires de deux modificateurs prêts : cochée = utilisée ;
+    -- plus, grisées, celles d'un modificateur avec un bouton de base resté
+    -- au jeu : cochables d'avance, actives quand il devient modificateur)
+    local function Waiting(id)
+        return ns.PAD_KEY[id] ~= nil and ns.PadMode(id) == "game"
+    end
     local possible = {}
     for _, pair in ipairs(ns.ALL_PAIRS) do
-        if ns.PairPossible(pair.id) then possible[#possible + 1] = pair end
+        local a, b = ns.IsModLayer(pair.a), ns.IsModLayer(pair.b)
+        if (a and b) or (a and Waiting(pair.b)) or (b and Waiting(pair.a)) then
+            possible[#possible + 1] = pair
+        end
     end
     pairsHint:SetText(#possible > 0 and L.PAIRS_HINT or L.PAIRS_NONE)
     pairsHint:ClearAllPoints()
@@ -711,7 +727,14 @@ local function RefreshButtons()
         row.check:SetChecked(ns.PairEnabled(pair.id))
         SetTag(row.tag, { pair.a, pair.b })
         local label = ns.ButtonLabel(pair.id)
-        row.text:SetText(ns.PairEnabled(pair.id) and label or ("|cff999999" .. label .. "|r"))
+        if not ns.PairPossible(pair.id) then
+            local wait = Waiting(pair.a) and pair.a or pair.b
+            label = "|cff999999" .. label .. "  ·  " .. L.PAIR_WAITS:format(ns.ButtonLabel(wait)) .. "|r"
+        elseif not ns.PairEnabled(pair.id) then
+            label = "|cff999999" .. label .. "|r"
+        end
+        row.text:SetText(label)
+        row.text:SetWordWrap(false)
     end
     for i = #possible + 1, #pairRows do
         pairRows[i]:Hide()

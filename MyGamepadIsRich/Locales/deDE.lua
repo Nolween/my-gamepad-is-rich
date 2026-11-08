@@ -406,3 +406,13 @@ ns.AddLocale("deDE", {
     PAIRS_HINT = "Hake die gewünschten Paare an: Beide Modifikatoren zusammen gehalten ergeben 8 weitere Kombinationen. Zwei beliebige Modifikatoren können ein Paar bilden (L5 + LT, LB + RT...).",
     PAIRS_NONE = "Stelle mindestens zwei Tasten auf Modifikator, Verbündete oder Feinde, um Paare zu bilden.",
 })
+
+-- Paire avec un bouton de base resté au jeu
+ns.AddLocale("deDE", {
+    PAIR_WAITS = "%s steht auf Spiel: auf Modifikator, Verbündete oder Feinde stellen (oben)",
+})
+
+-- Boutons de base : mode par défaut
+ns.AddLocale("deDE", {
+    MODE_IS_DEFAULT = "Standard für diese Taste: Sie funktioniert wie im Spiel.",
+})
