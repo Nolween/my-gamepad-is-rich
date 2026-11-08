@@ -330,7 +330,7 @@ ns.AddLocale("itIT", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("itIT", {
-    MENU_GAME_BAR_HINT = "Macro scritte, comandi di WoW: imposta LT / RT su «Modificatori dell'addon» (scheda Pulsanti)",
+    MENU_GAME_BAR_HINT = "Macro scritte, comandi di WoW: dai LT / RT all'addon (scheda Pulsanti, Pulsanti di base)",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -343,4 +343,51 @@ ns.AddLocale("itIT", {
     GAME_search = "Cerca (clic destro sul bersaglio)",
     GAME_attack = "Attacco automatico",
     GAME_interact = "Interagisci",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("itIT", {
+    MODE_TARGET_FRIEND = "Alleato",
+    MODE_TARGET_ENEMY = "Nemico",
+    MODE_TARGET_FRIEND_DESC = "Come LB in Forever: una pressione breve seleziona l'alleato più vicino; tienilo premuto e mira con lo stick destro per sceglierne uno. Tenuto premuto è anche un modificatore: A, B, X, Y e la croce lanciano le sue 8 scorciatoie.",
+    MODE_TARGET_ENEMY_DESC = "Come RB in Forever: una pressione breve seleziona il nemico più vicino; tienilo premuto e mira con lo stick destro per sceglierne uno. Tenuto premuto è anche un modificatore: A, B, X, Y e la croce lanciano le sue 8 scorciatoie.",
+    TARGET_UNAVAILABLE = "Il sistema di bersaglio di Forever non è disponibile: %s funziona come un semplice modificatore.",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("itIT", {
+    TAB_DONATE = "Sostieni",
+    DONATE_TITLE = "Sostieni My Gamepad Is Rich",
+    DONATE_INTRO = "My Gamepad Is Rich è gratuito e lo resterà. Se ti è utile e vuoi ringraziarmi, puoi farmi una donazione su PayPal, dell'importo che preferisci.",
+    DONATE_SCAN = "Scansiona il codice QR con il telefono",
+    DONATE_LINK = "Oppure copia il link (Ctrl+C) e incollalo nel browser:",
+    DONATE_THANKS = "Le donazioni sono del tutto facoltative e non sbloccano nulla: tutte le funzioni restano disponibili per tutti. Grazie per il tuo sostegno!",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("itIT", {
+    MODE_GAME = "Gioco",
+    MODE_GAME_DESC = "Questo pulsante mantiene il suo ruolo nel gioco (LT / RT: strati della barra del controller; LB / RB: il sistema di bersaglio di Forever).",
+    PADS_LABEL = "Pulsanti di base:",
+    PADS_PICK = "%s: scegli una modalità",
+    IMPORT_SUMMARY_PADS = "Pulsanti di base dati all'addon: %s",
+    EMULATION_OFF = "%s non imita più Maiusc / Ctrl finché appartiene all'addon. Scrivi /mgir restore prima di disattivare l'addon.",
+    RESTORE_DONE = "Pulsanti di base restituiti al gioco e imitazione di Maiusc / Ctrl ripristinata.",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("itIT", {
+    TARGET_MISSING_FRIEND = "Nessun pulsante seleziona gli alleati: rimetti LB su «Gioco», o un pulsante su «Alleato» (scheda Pulsanti).",
+    TARGET_MISSING_ENEMY = "Nessun pulsante seleziona i nemici: rimetti RB su «Gioco», o un pulsante su «Nemico» (scheda Pulsanti).",
+    TARGET_MISSING_BOTH = "Nessun pulsante seleziona alleati o nemici: rimetti LB / RB su «Gioco», o dei pulsanti su «Alleato» / «Nemico» (scheda Pulsanti).",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("itIT", {
+    PAD_HINT = "pulsante del controller: niente da rilevare",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("itIT", {
+    SIMPLE_USUAL = "Solito",
 })

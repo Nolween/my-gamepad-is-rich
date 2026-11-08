@@ -17,25 +17,34 @@ ns.PAIRS = {
     { id = "EX1EX2", a = "EX1", b = "EX2" },
 }
 
--- Les gâchettes LT et RT, quand le profil les donne à l'addon : des
--- modificateurs (jamais des boutons simples) qui remplacent les couches
--- LT, RT et LT + RT de la barre manette du jeu. Leur paire est à part de
--- ns.PAIRS : elle ne passe pas par les gestionnaires de touche (Modifier.lua).
-ns.TRIGGER_KEY = { LT = "PADLTRIGGER", RT = "PADRTRIGGER" }
-ns.TRIGGER_PAIR = { id = "LTRT", a = "LT", b = "RT" }
-ns.TRIGGER_LAYERS = { LT = true, RT = true, LTRT = true }
--- (la barre du jeu que chaque couche remplace)
+-- Les boutons de base de la manette (LT, RT, LB, RB) : chacun reste au jeu
+-- (« game », par défaut) ou est donné à l'addon dans un mode de bouton
+-- (modificateur, ciblage, bouton simple). Leurs paires (LT + RT, LB + RB)
+-- sont à part de ns.PAIRS.
+ns.PAD_IDS = { "LT", "RT", "LB", "RB" }
+ns.PAD_KEY = { LT = "PADLTRIGGER", RT = "PADRTRIGGER", LB = "PADLSHOULDER", RB = "PADRSHOULDER" }
+ns.TRIGGER_KEY = ns.PAD_KEY -- (ancien nom)
+ns.PAD_PAIRS = {
+    { id = "LTRT", a = "LT", b = "RT" },
+    { id = "LBRB", a = "LB", b = "RB" },
+}
+ns.TRIGGER_PAIR = ns.PAD_PAIRS[1]
+ns.TRIGGER_LAYERS = { LT = true, RT = true, LTRT = true, LB = true, RB = true, LBRB = true }
+-- (la barre du jeu que la couche d'une gâchette remplace)
 ns.TRIGGER_BAR = { LT = "leftBar", RT = "rightBar", LTRT = "bottomBar" }
 
--- Tout ce qui a des actions : les boutons, les paires, les gâchettes, puis
--- « BASE » (les cases de la couche « Seul » que l'addon prend au jeu, Bar.lua)
+-- Tout ce qui a des actions : les boutons, les paires, les boutons de base
+-- et leurs paires, puis « BASE » (les cases de la couche « Seul » que
+-- l'addon prend au jeu, Bar.lua)
 ns.LIST_IDS = {}
 for _, id in ipairs(ns.BUTTON_IDS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 for _, pair in ipairs(ns.PAIRS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = pair.id end
-for _, id in ipairs({ "LT", "RT", "LTRT", "BASE" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
+for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB", "BASE" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 
 function ns.PairDef(id)
-    if id == ns.TRIGGER_PAIR.id then return ns.TRIGGER_PAIR end
+    for _, pair in ipairs(ns.PAD_PAIRS) do
+        if pair.id == id then return pair end
+    end
     for _, pair in ipairs(ns.PAIRS) do
         if pair.id == id then return pair end
     end
@@ -45,22 +54,58 @@ function ns.IsPair(id)
     return ns.PairDef(id) ~= nil
 end
 
--- Le profil donne-t-il LT et RT à l'addon ?
+-- Les modes qui font d'un bouton un modificateur (une couche de 8
+-- combinaisons) : modificateur, et les deux modes de ciblage
+ns.MOD_MODES = { modifier = true, target_friend = true, target_enemy = true }
+
+-- Les modes d'un bouton, dans l'ordre de l'interface, et leurs libellés ;
+-- un bouton de base a « game » en plus (au jeu), à la place de « off »
+ns.MODES = { "modifier", "target_friend", "target_enemy", "simple", "off" }
+ns.PAD_MODES = { "game", "modifier", "target_friend", "target_enemy", "simple" }
+local MODE_LABEL = {
+    modifier = "MODE_MODIFIER", target_friend = "MODE_TARGET_FRIEND", target_enemy = "MODE_TARGET_ENEMY",
+    simple = "MODE_SIMPLE", off = "MODE_OFF", game = "MODE_GAME",
+}
+
+-- Le mode d'un bouton de base dans le profil actif
+function ns.PadMode(id)
+    local pads = ns.prof and ns.prof.pads
+    return pads and pads[id] or "game"
+end
+
+-- Un bouton de base est-il donné à l'addon ?
+function ns.PadTaken(id)
+    return ns.PadMode(id) ~= "game"
+end
+
+-- (ancien nom : LT / RT donnés à l'addon)
 function ns.TriggersOn()
-    return ns.prof ~= nil and ns.prof.triggers == "modifier"
+    return ns.PadTaken("LT") or ns.PadTaken("RT")
 end
 
--- Une barre du jeu (LT, RT, LT + RT) remplacée par une couche de l'addon
+-- Une barre du jeu (LT, RT, LT + RT) remplacée : sa gâchette est à l'addon
+-- (LT + RT : l'une ou l'autre, le jeu ne peut plus faire la paire)
 function ns.GameBarReplaced(bar)
-    return ns.TriggersOn() and (bar == "leftBar" or bar == "rightBar" or bar == "bottomBar")
+    if bar == "leftBar" then return ns.PadTaken("LT") end
+    if bar == "rightBar" then return ns.PadTaken("RT") end
+    if bar == "bottomBar" then return ns.PadTaken("LT") or ns.PadTaken("RT") end
+    return false
 end
 
--- Un modificateur prêt : un bouton en mode modificateur avec une touche, ou
--- une gâchette donnée à l'addon
+function ns.ModeLabel(mode)
+    return L[MODE_LABEL[mode] or "MODE_OFF"]
+end
+
+function ns.ModeDesc(mode)
+    return L[(MODE_LABEL[mode] or "MODE_OFF") .. "_DESC"]
+end
+
+-- Un modificateur prêt : un bouton en mode modificateur (ou ciblage) avec
+-- une touche, ou un bouton de base dans un de ces modes
 local function ModReady(id)
-    if ns.TRIGGER_KEY[id] then return ns.TriggersOn() end
+    if ns.PAD_KEY[id] then return ns.MOD_MODES[ns.PadMode(id)] or false end
     local def = ns.prof and ns.prof.buttons[id]
-    return def ~= nil and def.mode == "modifier" and def.key ~= nil
+    return def ~= nil and ns.MOD_MODES[def.mode] and def.key ~= nil or false
 end
 
 -- Une paire est utilisable si ses deux boutons sont des modificateurs avec une touche
@@ -203,6 +248,7 @@ local owner = CreateFrame("Frame", "MyGamepadIsRichBindingOwner")
 ns.bindingOwner = owner
 local pending = false
 local listeners = {}
+local lastTargetWarning -- (le dernier avertissement de ciblage donné)
 
 function ns.OnApplied(fn) listeners[#listeners + 1] = fn end
 
@@ -218,6 +264,12 @@ function ns.Apply(quiet)
     ClearOverrideBindings(owner)
     local onDown = ns.UseKeyDown()
     ns.Modifier.Begin()
+    -- (les boutons simples ont une case dans chaque couche de modificateur)
+    local simpleKeys = {}
+    for _, id in ipairs(ns.SimpleIDs()) do
+        simpleKeys[#simpleKeys + 1] = { id = id, key = ns.PAD_KEY[id] or ns.Button(id).key }
+    end
+    ns.Modifier.SetSimpleKeys(simpleKeys)
     for _, id in ipairs(ns.BUTTON_IDS) do
         local def = ns.prof.buttons[id]
         local actions = ns.cprof.actions[id]
@@ -225,16 +277,24 @@ function ns.Apply(quiet)
         if def.key and def.key ~= "" then
             if def.mode == "modifier" then
                 ns.Modifier.Setup(owner, id, def, actions, onDown)
+            elseif def.mode == "target_friend" or def.mode == "target_enemy" then
+                ns.Modifier.SetupTargeting(owner, id, def, actions, onDown)
             elseif def.mode == "simple" then
                 ns.Simple.Setup(owner, id, def, actions, onDown)
             end
         end
     end
-    -- (les cases de « Seul » prises au jeu, les gâchettes, puis les paires :
-    -- après tous les modificateurs)
+    -- (les cases de « Seul » prises au jeu, les boutons de base, puis les
+    -- paires : après tous les modificateurs)
     ns.Modifier.Base(onDown)
-    if ns.TriggersOn() then ns.Modifier.Triggers(owner, onDown) end
+    local cut = ns.SyncEmulation()
+    if cut then ns.Print(L.EMULATION_OFF:format(cut)) end
+    ns.Modifier.Pads(owner, onDown)
     ns.Modifier.Finish(onDown)
+    -- (plus de ciblage allié / ennemi : on le dit une fois, quand ça arrive)
+    local warning = ns.TargetingWarning()
+    if warning and warning ~= lastTargetWarning then ns.Print(warning) end
+    lastTargetWarning = warning
     if ns.Focus then ns.Focus.Push() end
     for _, fn in ipairs(listeners) do pcall(fn, false) end
     return true
@@ -242,30 +302,130 @@ end
 
 function ns.IsPending() return pending end
 
--- Donner LT / RT à l'addon (on) ou les rendre au jeu. En les prenant, les
--- couches LT, RT et LT + RT de l'addon encore vides reprennent ce que la
--- barre du jeu y avait (sorts, objets, macros de la liste), pour ne rien
--- perdre de ce qu'on y avait posé.
-function ns.SetTriggers(on)
-    if not ns.prof then return end
-    ns.prof.triggers = on and "modifier" or "off"
-    if on and ns.Bar and ns.Bar.Available() then
-        local copied = 0
-        for layer, bar in pairs(ns.TRIGGER_BAR) do
-            local combos = ns.ButtonActions(layer).combos
-            if not next(combos) then
-                for i, key in ipairs(ns.Bar.PAD_KEYS) do
-                    local action = ns.Bar.Get(bar, i)
-                    if action and action.kind ~= "slot" then
-                        combos[key] = action
-                        copied = copied + 1
-                    end
-                end
-            end
+---------------------------------------------------------------------------
+-- Boutons de base donnés à l'addon
+---------------------------------------------------------------------------
+-- Un bouton qui imite Maj / Ctrl / Alt (réglages GamePadEmulate* : LT = Maj
+-- et LB = Ctrl chez Forever) n'envoie son propre appui que s'il est tapé
+-- brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant
+-- qu'un tel bouton est donné à l'addon, son imitation est coupée ; elle est
+-- remise quand il revient au jeu (ou par /mgir restore). Le réglage
+-- d'origine est gardé dans MyGamepadIsRichDB.emulation.
+local EMULATE_CVARS = { "GamePadEmulateShift", "GamePadEmulateCtrl", "GamePadEmulateAlt" }
+
+local function SetCVarValue(name, value)
+    local set = (C_CVar and C_CVar.SetCVar) or SetCVar
+    if set then pcall(set, name, value) end
+end
+
+-- Renvoie le bouton de base dont l'imitation vient d'être coupée, ou nil
+function ns.SyncEmulation()
+    ns.db.emulation = ns.db.emulation or {}
+    local saved, cut = ns.db.emulation, nil
+    for _, cvar in ipairs(EMULATE_CVARS) do
+        local current = ns.CVar(cvar)
+        local original = saved[cvar] or current
+        local pad
+        for id, key in pairs(ns.PAD_KEY) do
+            if key == original then pad = id end
         end
+        if pad and ns.PadTaken(pad) then
+            if current ~= "none" then
+                saved[cvar] = original
+                SetCVarValue(cvar, "none")
+                cut = pad
+            end
+        elseif saved[cvar] then
+            SetCVarValue(cvar, saved[cvar])
+            saved[cvar] = nil
+        end
+    end
+    return cut
+end
+
+-- /mgir restore : les boutons de base du profil rendus au jeu, et les
+-- imitations de Maj / Ctrl / Alt remises (à faire avant de désactiver l'addon)
+function ns.RestorePads()
+    if InCombatLockdown() then ns.Print(L.APPLIED_AFTER_COMBAT) return end
+    if ns.prof then ns.prof.pads = {} end
+    for cvar, value in pairs(ns.db.emulation or {}) do SetCVarValue(cvar, value) end
+    ns.db.emulation = {}
+    ns.Apply(true)
+    ns.Print(L.RESTORE_DONE)
+end
+
+-- Les couches de l'addon encore vides reprennent ce que la barre du jeu
+-- avait sur LT, RT ou LT + RT (sorts, objets, macros de la liste)
+local function CopyGameBar(layer)
+    local bar = ns.TRIGGER_BAR[layer]
+    if not (bar and ns.Bar and ns.Bar.Available()) then return 0 end
+    local combos = ns.ButtonActions(layer).combos
+    if next(combos) then return 0 end
+    local copied = 0
+    for i, key in ipairs(ns.Bar.PAD_KEYS) do
+        local action = ns.Bar.Get(bar, i)
+        if action and action.kind ~= "slot" then
+            combos[key] = action
+            copied = copied + 1
+        end
+    end
+    return copied
+end
+
+-- Le mode d'un bouton de base (« game » : rendu au jeu)
+function ns.SetPadMode(id, mode)
+    if not (ns.prof and ns.PAD_KEY[id]) then return end
+    ns.prof.pads = ns.prof.pads or {}
+    ns.prof.pads[id] = (mode ~= "game") and mode or nil
+    if ns.MOD_MODES[mode] then
+        local copied = CopyGameBar(id)
+        if ns.PairReady("LTRT") then copied = copied + CopyGameBar("LTRT") end
         if copied > 0 then ns.Print(L.TRIGGERS_COPIED:format(copied)) end
     end
     ns.Apply()
+end
+
+-- Reste-t-il un ciblage allié / ennemi ? LB / RB au jeu (le ciblage de
+-- Forever), ou un bouton en mode ciblage (un supplémentaire avec sa touche,
+-- ou un bouton de base)
+function ns.TargetingCoverage()
+    local friend = ns.PadMode("LB") == "game"
+    local enemy = ns.PadMode("RB") == "game"
+    for _, id in ipairs(ns.BUTTON_IDS) do
+        local def = ns.Button(id)
+        if def.key then
+            if def.mode == "target_friend" then friend = true end
+            if def.mode == "target_enemy" then enemy = true end
+        end
+    end
+    for _, id in ipairs(ns.PAD_IDS) do
+        local mode = ns.PadMode(id)
+        if mode == "target_friend" then friend = true end
+        if mode == "target_enemy" then enemy = true end
+    end
+    return friend, enemy
+end
+
+-- Le texte d'avertissement s'il manque un ciblage, sinon nil
+function ns.TargetingWarning()
+    local friend, enemy = ns.TargetingCoverage()
+    if not friend and not enemy then return L.TARGET_MISSING_BOTH end
+    if not friend then return L.TARGET_MISSING_FRIEND end
+    if not enemy then return L.TARGET_MISSING_ENEMY end
+end
+
+-- Les boutons en bouton simple, dans l'ordre : les supplémentaires (avec une
+-- touche), puis les boutons de base
+function ns.SimpleIDs()
+    local out = {}
+    for _, id in ipairs(ns.BUTTON_IDS) do
+        local def = ns.Button(id)
+        if def.mode == "simple" and def.key then out[#out + 1] = id end
+    end
+    for _, id in ipairs(ns.PAD_IDS) do
+        if ns.PadMode(id) == "simple" then out[#out + 1] = id end
+    end
+    return out
 end
 
 ---------------------------------------------------------------------------
@@ -321,6 +481,8 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.UI.Show("profiles")
     elseif msg == "selftest" then
         ns.Serialize.SelfTest()
+    elseif msg == "restore" then
+        ns.RestorePads()
     elseif word == "hud" then
         ns.Hud.Command(rest)
     elseif msg == "minimap" then

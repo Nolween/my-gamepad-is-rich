@@ -171,7 +171,7 @@ end
 ---------------------------------------------------------------------------
 -- Nettoyage d'un import (liste blanche)
 ---------------------------------------------------------------------------
-local MODES = { modifier = true, simple = true, off = true }
+local MODES = { modifier = true, target_friend = true, target_enemy = true, simple = true, off = true }
 
 -- Un texte affichable : ni caractère de contrôle ni « | » (codes couleur,
 -- textures), coupé sans casser un caractère accentué
@@ -243,9 +243,12 @@ local function CleanActions(raw)
         local a = raw[id]
         if type(a) == "table" then
             local entry = { combos = {}, layers = {} }
-            for _, pad in ipairs(ns.PAD_KEYS) do
-                local action = type(a.combos) == "table" and CleanAction(a.combos[pad])
-                if action then entry.combos[pad], count = action, count + 1 end
+            -- (cases : la croix et A/B/X/Y, puis une par bouton simple possible)
+            for _, list in ipairs({ ns.PAD_KEYS, ns.BUTTON_IDS, ns.PAD_IDS }) do
+                for _, slot in ipairs(list) do
+                    local action = type(a.combos) == "table" and CleanAction(a.combos[slot])
+                    if action then entry.combos[slot], count = action, count + 1 end
+                end
             end
             for _, layer in ipairs(ns.LAYERS) do
                 local action = type(a.layers) == "table" and CleanAction(a.layers[layer])
@@ -264,9 +267,14 @@ local function Clean(raw)
         name = CleanString(raw.name, ns.Profiles.NAME_MAX) or L.PROFILE_IMPORTED,
         controller = ns.ControllerDef(type(raw.controller) == "string" and raw.controller or nil).id,
         buttons = {},
-        -- (absent des exports d'avant les gâchettes : couches du jeu)
-        triggers = raw.triggers == "modifier" and "modifier" or "off",
+        -- (boutons de base : modes connus seulement ; absents = au jeu)
+        pads = ns.Profiles.CleanPads(raw.pads),
     }
+    -- (exports 1.5 : « triggers = modifier » donnait LT et RT en modificateurs)
+    if raw.triggers == "modifier" then
+        data.pads.LT = data.pads.LT or "modifier"
+        data.pads.RT = data.pads.RT or "modifier"
+    end
     local buttons = type(raw.buttons) == "table" and raw.buttons or {}
     for _, slot in ipairs(ns.BUTTON_IDS) do
         local b = type(buttons[slot]) == "table" and buttons[slot] or {}
@@ -306,7 +314,7 @@ function S.Export(profileID, opts)
     if not prof then return nil end
     opts = opts or {}
     local data = { v = FORMAT, name = prof.name, controller = prof.controller, buttons = {},
-        triggers = prof.triggers }
+        pads = ns.Profiles.CleanPads(prof.pads) }
     for _, slot in ipairs(ns.BUTTON_IDS) do
         local b = prof.buttons[slot]
         data.buttons[slot] = { mode = b.mode, key = b.key, name = b.name }
@@ -327,8 +335,13 @@ function S.Summary(data)
         name = data.name,
         controller = ns.ControllerName(ns.ControllerDef(data.controller)),
         keys = 0, actions = 0, macros = {}, commands = {}, hud = data.hud ~= nil,
-        triggers = data.triggers == "modifier",
+        pads = {},
     }
+    -- (les boutons de base donnés à l'addon : « LB : Cible alliée »...)
+    for _, id in ipairs(ns.PAD_IDS) do
+        local mode = data.pads and data.pads[id]
+        if mode then sum.pads[#sum.pads + 1] = id .. " : " .. ns.ModeLabel(mode) end
+    end
     for _, slot in ipairs(ns.BUTTON_IDS) do
         if data.buttons[slot].key then sum.keys = sum.keys + 1 end
     end
@@ -389,7 +402,7 @@ function S.SelfTest()
     Check(data ~= nil, "import: " .. tostring(info))
     if data then
         Check(data.controller == ns.prof.controller, "controller")
-        Check(data.triggers == ns.prof.triggers, "triggers")
+        Check(Serialize(data.pads) == Serialize(ns.Profiles.CleanPads(ns.prof.pads)), "pads")
         for _, slot in ipairs(ns.BUTTON_IDS) do
             local a, b = ns.prof.buttons[slot], data.buttons[slot]
             Check(a.mode == b.mode and a.key == b.key and a.name == b.name, "button " .. slot)
@@ -417,13 +430,14 @@ function S.SelfTest()
             PAD4 = { kind = "command", command = "NOT_A_BINDING" },
         }, layers = { nope = { kind = "item", id = 6948 } } }, ZZ = { combos = {} } },
         hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 } },
+        pads = { LB = "target_friend", RB = "evil", LT = 5, XX = "modifier" },
     })
     local d = S.Import(forged)
     Check(d ~= nil, "forged import")
     if d then
         Check(d.name == "Acffff0000B", "forged name")
         Check(d.controller == "other", "forged controller")
-        Check(d.triggers == "off", "forged triggers")
+        Check(d.pads.LB == "target_friend" and d.pads.RB == nil and d.pads.LT == nil, "forged pads")
         Check(d.buttons.L5.mode == ns.DEFAULT_BUTTONS.L5.mode and d.buttons.L5.key == nil, "forged L5")
         Check(d.buttons.R5.mode == "simple" and d.buttons.R5.key == "F10", "forged R5")
         local combos = d.actions and d.actions.L5 and d.actions.L5.combos or {}

@@ -330,7 +330,7 @@ ns.AddLocale("koKR", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("koKR", {
-    MENU_GAME_BAR_HINT = "직접 작성한 매크로, WoW 명령: LT / RT를 '애드온 수정키'로 바꾸세요 (버튼 탭)",
+    MENU_GAME_BAR_HINT = "직접 작성한 매크로, WoW 명령: LT / RT를 애드온에 맡기세요 (버튼 탭, 기본 버튼)",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -343,4 +343,51 @@ ns.AddLocale("koKR", {
     GAME_search = "찾기 (대상 오른쪽 클릭)",
     GAME_attack = "자동 공격",
     GAME_interact = "상호작용",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("koKR", {
+    MODE_TARGET_FRIEND = "아군 대상",
+    MODE_TARGET_ENEMY = "적 대상",
+    MODE_TARGET_FRIEND_DESC = "Forever의 LB처럼: 짧게 누르면 가장 가까운 아군을 대상으로 잡고, 누른 채 오른쪽 스틱으로 겨냥해 고를 수 있습니다. 누르고 있으면 수정키이기도 합니다: A, B, X, Y와 십자키로 단축 동작 8개를 씁니다.",
+    MODE_TARGET_ENEMY_DESC = "Forever의 RB처럼: 짧게 누르면 가장 가까운 적을 대상으로 잡고, 누른 채 오른쪽 스틱으로 겨냥해 고를 수 있습니다. 누르고 있으면 수정키이기도 합니다: A, B, X, Y와 십자키로 단축 동작 8개를 씁니다.",
+    TARGET_UNAVAILABLE = "Forever의 대상 지정을 찾을 수 없습니다: %s은(는) 일반 수정키로 동작합니다.",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("koKR", {
+    TAB_DONATE = "후원",
+    DONATE_TITLE = "My Gamepad Is Rich 후원하기",
+    DONATE_INTRO = "My Gamepad Is Rich는 무료이며 앞으로도 무료입니다. 도움이 되었고 감사를 전하고 싶다면 PayPal로 원하는 금액을 후원할 수 있습니다.",
+    DONATE_SCAN = "휴대폰으로 QR 코드를 스캔하세요",
+    DONATE_LINK = "또는 링크를 복사(Ctrl+C)해 브라우저에 붙여 넣으세요:",
+    DONATE_THANKS = "후원은 전적으로 선택 사항이며 아무것도 잠금 해제하지 않습니다. 모든 기능은 누구나 사용할 수 있습니다. 후원해 주셔서 감사합니다!",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("koKR", {
+    MODE_GAME = "게임",
+    MODE_GAME_DESC = "이 버튼은 게임에서의 역할을 유지합니다 (LT / RT: 컨트롤러 바의 층, LB / RB: Forever의 대상 지정).",
+    PADS_LABEL = "기본 버튼:",
+    PADS_PICK = "%s: 모드 선택",
+    IMPORT_SUMMARY_PADS = "애드온에 맡긴 기본 버튼: %s",
+    EMULATION_OFF = "%s 버튼은 애드온에 맡겨진 동안 Shift / Ctrl을 흉내 내지 않습니다. 애드온을 끄기 전에 /mgir restore를 입력하세요.",
+    RESTORE_DONE = "기본 버튼을 게임에 돌려주고 Shift / Ctrl 흉내를 되돌렸습니다.",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("koKR", {
+    TARGET_MISSING_FRIEND = "아군을 대상으로 잡는 버튼이 없습니다: LB를 '게임'으로 되돌리거나 버튼 하나를 '아군 대상'으로 설정하세요 (버튼 탭).",
+    TARGET_MISSING_ENEMY = "적을 대상으로 잡는 버튼이 없습니다: RB를 '게임'으로 되돌리거나 버튼 하나를 '적 대상'으로 설정하세요 (버튼 탭).",
+    TARGET_MISSING_BOTH = "아군도 적도 대상으로 잡는 버튼이 없습니다: LB / RB를 '게임'으로 되돌리거나 버튼을 '아군 대상' / '적 대상'으로 설정하세요 (버튼 탭).",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("koKR", {
+    PAD_HINT = "컨트롤러 버튼: 감지할 필요 없음",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("koKR", {
+    SIMPLE_USUAL = "평소대로",
 })

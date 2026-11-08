@@ -217,6 +217,31 @@ function P.Run(delay)
             S(kind), S(id), S(storage), S(ns.Bar and ns.Bar.IsGameSlot("topBar", i)))
     end
 
+    -- Ciblage de Forever : son API et sa logique (fonctions, valeurs)
+    W("== targeting")
+    W("C_GamepadTargeting: %s", TableKeys(C_GamepadTargeting))
+    W("GamepadTargetLogic: %s", TableKeys(GamepadTargetLogic))
+    if type(GamepadTargetLogic) == "table" then
+        for k, v in pairs(GamepadTargetLogic) do
+            if type(v) ~= "function" then
+                W("logic.%s = %s", S(k), type(v) == "table" and ("{" .. TableKeys(v):sub(1, 300) .. "}") or S(v))
+            end
+        end
+    end
+    -- (les fonctions sans argument qui lisent un état, appelées sans risque)
+    if type(C_GamepadTargeting) == "table" then
+        for k, fn in pairs(C_GamepadTargeting) do
+            if type(fn) == "function" and type(k) == "string" and (k:find("^Get") or k:find("^Is") or k:find("^Has")) then
+                local ok, a, b = pcall(fn)
+                W("api %s() -> %s %s %s", k, S(ok), S(a), S(b))
+            end
+        end
+    end
+    for _, name in ipairs({ "SoftTargetEnemy", "SoftTargetFriend", "SoftTargetInteract", "SoftTargetForce",
+        "SoftTargetMatchLocked", "GamePadTargetingEnabled", "gamepadTargeting" }) do
+        W("cvar %s = %s", name, S(ns.CVar(name)))
+    end
+
     -- Recharges : valeurs brutes, secrètes ou non, et API d'objet de durée
     W("== cooldowns")
     local function Sec(v) return type(issecretvalue) == "function" and issecretvalue(v) and "SECRET" or S(v) end

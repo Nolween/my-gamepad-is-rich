@@ -330,7 +330,7 @@ ns.AddLocale("ruRU", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("ruRU", {
-    MENU_GAME_BAR_HINT = "Макросы и команды WoW: переключите LT / RT в «Модификаторы аддона» (вкладка «Кнопки»)",
+    MENU_GAME_BAR_HINT = "Макросы и команды WoW: отдайте LT / RT аддону (вкладка «Кнопки», «Базовые кнопки»)",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -343,4 +343,51 @@ ns.AddLocale("ruRU", {
     GAME_search = "Поиск (правый щелчок по цели)",
     GAME_attack = "Автоатака",
     GAME_interact = "Взаимодействие",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("ruRU", {
+    MODE_TARGET_FRIEND = "Цель: союзник",
+    MODE_TARGET_ENEMY = "Цель: враг",
+    MODE_TARGET_FRIEND_DESC = "Как LB в Forever: короткое нажатие выбирает ближайшего союзника; удерживайте и наводите правым стиком, чтобы выбрать. При удержании это ещё и модификатор: A, B, X, Y и крестовина запускают его 8 сочетаний.",
+    MODE_TARGET_ENEMY_DESC = "Как RB в Forever: короткое нажатие выбирает ближайшего врага; удерживайте и наводите правым стиком, чтобы выбрать. При удержании это ещё и модификатор: A, B, X, Y и крестовина запускают его 8 сочетаний.",
+    TARGET_UNAVAILABLE = "Выбор цели Forever не найден: %s работает как обычный модификатор.",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("ruRU", {
+    TAB_DONATE = "Поддержать",
+    DONATE_TITLE = "Поддержать My Gamepad Is Rich",
+    DONATE_INTRO = "My Gamepad Is Rich бесплатен и останется бесплатным. Если он вам полезен и вы хотите сказать спасибо, можно сделать пожертвование через PayPal на любую сумму.",
+    DONATE_SCAN = "Отсканируйте QR-код телефоном",
+    DONATE_LINK = "Или скопируйте ссылку (Ctrl+C) и вставьте её в браузер:",
+    DONATE_THANKS = "Пожертвования полностью добровольны и ничего не открывают: все функции доступны всем. Спасибо за поддержку!",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("ruRU", {
+    MODE_GAME = "Игра",
+    MODE_GAME_DESC = "Кнопка сохраняет свою роль в игре (LT / RT: слои панели геймпада; LB / RB: выбор цели Forever).",
+    PADS_LABEL = "Базовые кнопки:",
+    PADS_PICK = "%s: выберите режим",
+    IMPORT_SUMMARY_PADS = "Базовые кнопки, отданные аддону: %s",
+    EMULATION_OFF = "%s больше не имитирует Shift / Ctrl, пока принадлежит аддону. Введите /mgir restore перед отключением аддона.",
+    RESTORE_DONE = "Базовые кнопки возвращены игре, имитация Shift / Ctrl восстановлена.",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("ruRU", {
+    TARGET_MISSING_FRIEND = "Ни одна кнопка не выбирает союзников: верните LB в «Игра» или назначьте кнопке «Цель: союзник» (вкладка «Кнопки»).",
+    TARGET_MISSING_ENEMY = "Ни одна кнопка не выбирает врагов: верните RB в «Игра» или назначьте кнопке «Цель: враг» (вкладка «Кнопки»).",
+    TARGET_MISSING_BOTH = "Ни одна кнопка не выбирает ни союзников, ни врагов: верните LB / RB в «Игра» или назначьте кнопкам «Цель: союзник» / «Цель: враг» (вкладка «Кнопки»).",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("ruRU", {
+    PAD_HINT = "кнопка геймпада: определять не нужно",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("ruRU", {
+    SIMPLE_USUAL = "Обычно",
 })

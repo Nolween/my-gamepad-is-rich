@@ -58,19 +58,22 @@ function S.CommandAllowed(actions, layer)
     return not actions.layers.lt and not actions.layers.rt
 end
 
--- Hors combat
-function S.Setup(owner, id, def, actions, onDown)
+-- Hors combat : prépare le bouton et dit quoi lier à sa touche. Renvoie le
+-- nom du bouton à cliquer, ou nil et la commande WoW (une commande seule),
+-- ou rien (aucune action)
+function S.Prepare(id, actions, onDown)
     local base = actions.layers.base
     -- Une commande seule : liaison directe
     if ns.Actions.IsCommand(base) and S.CommandAllowed(actions, "base") then
-        SetOverrideBinding(owner, true, def.key, ns.Actions.CommandOf(base))
-        return
+        return nil, ns.Actions.CommandOf(base)
     end
     local b = Button(id)
     b:SetAttribute("gps-down", onDown)
     b:SetAttribute("useOnKeyDown", onDown)
-    b:SetAttribute("gps-lt", PadIndex("PADLTRIGGER"))
-    b:SetAttribute("gps-rt", PadIndex("PADRTRIGGER"))
+    -- (LT / RT en bouton simple ne lisent pas leur propre gâchette : elle est
+    -- forcément enfoncée quand on appuie dessus)
+    b:SetAttribute("gps-lt", id ~= "LT" and PadIndex("PADLTRIGGER") or nil)
+    b:SetAttribute("gps-rt", id ~= "RT" and PadIndex("PADRTRIGGER") or nil)
     local any = false
     for _, layer in ipairs(ns.LAYERS) do
         local action = actions.layers[layer]
@@ -91,8 +94,17 @@ function S.Setup(owner, id, def, actions, onDown)
             b:SetAttribute("has-" .. layer, true)
         end
     end
-    if any then
-        SetOverrideBindingClick(owner, true, def.key, b:GetName(), "LeftButton")
+    if any then return b:GetName() end
+end
+
+-- Un bouton supplémentaire : sa touche (du logiciel de la manette) liée tout
+-- le temps
+function S.Setup(owner, id, def, actions, onDown)
+    local click, command = S.Prepare(id, actions, onDown)
+    if click then
+        SetOverrideBindingClick(owner, true, def.key, click, "LeftButton")
+    elseif command then
+        SetOverrideBinding(owner, true, def.key, command)
     end
 end
 

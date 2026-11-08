@@ -92,6 +92,17 @@ function ns.SlotName(id)
     return NameOn(ns.Controller(), id)
 end
 
+-- Les emplacements à montrer : ceux que la manette nomme, plus un emplacement
+-- libre seulement s'il a une touche (déjà utilisé : on ne le cache pas)
+function ns.VisibleIDs()
+    local out = {}
+    for _, id in ipairs(ns.BUTTON_IDS) do
+        local b = ns.prof and ns.prof.buttons[id]
+        if ns.SlotName(id) or (b and b.key) then out[#out + 1] = id end
+    end
+    return out
+end
+
 -- Le libellé d'un emplacement libre : « Bouton 5 »
 function ns.SpareName(id)
     return L.EXTRA .. " " .. (SlotIndex(id) or 0)

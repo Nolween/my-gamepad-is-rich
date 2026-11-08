@@ -330,7 +330,7 @@ ns.AddLocale("ptBR", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("ptBR", {
-    MENU_GAME_BAR_HINT = "Macros escritas, comandos do WoW: coloque LT / RT em “Modificadores do addon” (aba Botões)",
+    MENU_GAME_BAR_HINT = "Macros escritas, comandos do WoW: dê LT / RT ao addon (aba Botões, Botões básicos)",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -343,4 +343,51 @@ ns.AddLocale("ptBR", {
     GAME_search = "Procurar (clique direito no alvo)",
     GAME_attack = "Ataque automático",
     GAME_interact = "Interagir",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("ptBR", {
+    MODE_TARGET_FRIEND = "Alvo aliado",
+    MODE_TARGET_ENEMY = "Alvo inimigo",
+    MODE_TARGET_FRIEND_DESC = "Como o LB no Forever: um toque rápido mira o aliado mais próximo; segure e mire com o analógico direito para escolher um. Segurado, também é um modificador: A, B, X, Y e o direcional disparam seus 8 atalhos.",
+    MODE_TARGET_ENEMY_DESC = "Como o RB no Forever: um toque rápido mira o inimigo mais próximo; segure e mire com o analógico direito para escolher um. Segurado, também é um modificador: A, B, X, Y e o direcional disparam seus 8 atalhos.",
+    TARGET_UNAVAILABLE = "O sistema de alvo do Forever não foi encontrado: %s funciona como um modificador comum.",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("ptBR", {
+    TAB_DONATE = "Apoiar",
+    DONATE_TITLE = "Apoie o My Gamepad Is Rich",
+    DONATE_INTRO = "O My Gamepad Is Rich é gratuito e continuará sendo. Se ele te ajuda e você quiser me agradecer, pode fazer uma doação pelo PayPal, do valor que quiser.",
+    DONATE_SCAN = "Escaneie o QR code com seu celular",
+    DONATE_LINK = "Ou copie o link (Ctrl+C) e cole no seu navegador:",
+    DONATE_THANKS = "As doações são totalmente opcionais e não desbloqueiam nada: todos os recursos continuam disponíveis para todos. Obrigado pelo apoio!",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("ptBR", {
+    MODE_GAME = "Jogo",
+    MODE_GAME_DESC = "Este botão mantém sua função no jogo (LT / RT: camadas da barra de controle; LB / RB: o sistema de alvo do Forever).",
+    PADS_LABEL = "Botões básicos:",
+    PADS_PICK = "%s: escolher um modo",
+    IMPORT_SUMMARY_PADS = "Botões básicos dados ao addon: %s",
+    EMULATION_OFF = "%s não imita mais Shift / Ctrl enquanto pertence ao addon. Digite /mgir restore antes de desativar o addon.",
+    RESTORE_DONE = "Botões básicos devolvidos ao jogo e a imitação de Shift / Ctrl restaurada.",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("ptBR", {
+    TARGET_MISSING_FRIEND = "Nenhum botão mira aliados: volte o LB para “Jogo”, ou coloque um botão em “Alvo aliado” (aba Botões).",
+    TARGET_MISSING_ENEMY = "Nenhum botão mira inimigos: volte o RB para “Jogo”, ou coloque um botão em “Alvo inimigo” (aba Botões).",
+    TARGET_MISSING_BOTH = "Nenhum botão mira aliados nem inimigos: volte LB / RB para “Jogo”, ou coloque botões em “Alvo aliado” / “Alvo inimigo” (aba Botões).",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("ptBR", {
+    PAD_HINT = "botão do controle: nada a detectar",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("ptBR", {
+    SIMPLE_USUAL = "Habitual",
 })

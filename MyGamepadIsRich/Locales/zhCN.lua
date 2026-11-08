@@ -329,7 +329,7 @@ ns.AddLocale("zhCN", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("zhCN", {
-    MENU_GAME_BAR_HINT = "手写宏、WoW 指令：请在“按键”标签页将 LT / RT 设为“插件修饰键”",
+    MENU_GAME_BAR_HINT = "手写宏、WoW 指令：请将 LT / RT 交给插件（“按键”标签页，基础按键）",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -342,4 +342,51 @@ ns.AddLocale("zhCN", {
     GAME_search = "搜索（右键点击目标）",
     GAME_attack = "自动攻击",
     GAME_interact = "互动",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("zhCN", {
+    MODE_TARGET_FRIEND = "友方目标",
+    MODE_TARGET_ENEMY = "敌方目标",
+    MODE_TARGET_FRIEND_DESC = "与 Forever 的 LB 相同：短按选中最近的友方；按住并用右摇杆瞄准来选择。按住时它也是修饰键：A、B、X、Y 和十字键触发它的 8 个快捷动作。",
+    MODE_TARGET_ENEMY_DESC = "与 Forever 的 RB 相同：短按选中最近的敌人；按住并用右摇杆瞄准来选择。按住时它也是修饰键：A、B、X、Y 和十字键触发它的 8 个快捷动作。",
+    TARGET_UNAVAILABLE = "找不到 Forever 的目标选择：%s 作为普通修饰键使用。",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("zhCN", {
+    TAB_DONATE = "支持",
+    DONATE_TITLE = "支持 My Gamepad Is Rich",
+    DONATE_INTRO = "My Gamepad Is Rich 是免费的，并将一直免费。如果它对你有帮助、你想表示感谢，可以通过 PayPal 捐赠任意金额。",
+    DONATE_SCAN = "用手机扫描二维码",
+    DONATE_LINK = "或复制链接（Ctrl+C）并粘贴到浏览器中：",
+    DONATE_THANKS = "捐赠完全自愿，不会解锁任何内容：所有功能对所有人开放。感谢你的支持！",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("zhCN", {
+    MODE_GAME = "游戏",
+    MODE_GAME_DESC = "此按键保留它在游戏中的作用（LT / RT：手柄动作条的层；LB / RB：Forever 的目标选择）。",
+    PADS_LABEL = "基础按键：",
+    PADS_PICK = "%s：选择模式",
+    IMPORT_SUMMARY_PADS = "交给插件的基础按键：%s",
+    EMULATION_OFF = "%s 交给插件期间不再模拟 Shift / Ctrl。停用插件前请输入 /mgir restore。",
+    RESTORE_DONE = "基础按键已还给游戏，Shift / Ctrl 模拟已恢复。",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("zhCN", {
+    TARGET_MISSING_FRIEND = "没有按键可以选中友方：请把 LB 设回“游戏”，或把某个按键设为“友方目标”（“按键”标签页）。",
+    TARGET_MISSING_ENEMY = "没有按键可以选中敌人：请把 RB 设回“游戏”，或把某个按键设为“敌方目标”（“按键”标签页）。",
+    TARGET_MISSING_BOTH = "没有按键可以选中友方或敌人：请把 LB / RB 设回“游戏”，或把按键设为“友方目标” / “敌方目标”（“按键”标签页）。",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("zhCN", {
+    PAD_HINT = "手柄按键：无需检测",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("zhCN", {
+    SIMPLE_USUAL = "照常",
 })

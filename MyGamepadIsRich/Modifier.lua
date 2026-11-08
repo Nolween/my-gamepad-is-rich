@@ -22,15 +22,14 @@ local combos = {}   -- [couche .. touche] = bouton d'action
 local written = {}  -- (attributs de couches posés au dernier Setup, à effacer)
 
 -- (à chaque attribut changé : recalcul complet, idempotent)
--- Les gâchettes LT / RT données à l'addon passent aussi par ici, liées
--- seulement quand le jeu a le focus manette (les fenêtres de Forever gardent
--- leurs gâchettes) :
---   gâchette qui imite une touche (LT = Maj) : ses 8 combinaisons en accord
---     (« SHIFT-PAD1 »), « chord-* » ;
---   gâchette qui n'imite rien (RT) : sa touche va à son gestionnaire,
---     « hkey-* », et elle devient un modificateur comme les autres.
--- Une case vide d'une couche de gâchette ne fait rien (« swallow ») : sans
--- ça, l'action de la barre du jeu partirait.
+-- Liées seulement quand le jeu a le focus manette (les fenêtres de Forever
+-- et le curseur gardent leurs boutons) :
+--   « hkey-* » / « hcmd-* » : les touches des boutons de base donnés à
+--     l'addon (LT, RT, LB, RB) et des boutons de ciblage, vers leur bouton
+--     ou une commande ;
+--   « chord-* » : les cases de « Seul » prises au jeu (Bar.lua).
+-- Une case vide d'une couche de bouton de base ne fait rien (« swallow ») :
+-- sans ça, l'action de la barre du jeu partirait.
 local DISPATCH = [[
     self:ClearBindings()
     if not self:GetAttribute("gps-ingame") then return end
@@ -38,6 +37,10 @@ local DISPATCH = [[
     for j = 1, self:GetAttribute("hcount") or 0 do
         local key, click = self:GetAttribute("hkey-" .. j), self:GetAttribute("hclick-" .. j)
         if key and click then self:SetBindingClick(true, key, click, "LeftButton") end
+    end
+    for j = 1, self:GetAttribute("hcmdcount") or 0 do
+        local key, cmd = self:GetAttribute("hcmdkey-" .. j), self:GetAttribute("hcmd-" .. j)
+        if key and cmd then self:SetBinding(true, key, cmd) end
     end
     for j = 1, self:GetAttribute("chord-count") or 0 do
         local key = self:GetAttribute("chord-key-" .. j)
@@ -76,21 +79,16 @@ local DISPATCH = [[
             self:SetBindingClick(true, key, noop, "LeftButton")
         end
     end
-    -- (RT tenu par son gestionnaire, LT en accord : avec LT, c'est la paire)
-    local extra = (layer == best) and self:GetAttribute("extra-" .. best)
-    if extra then
-        local prefix = self:GetAttribute("extraprefix-" .. best) or ""
-        for i = 1, 8 do
-            local key = self:GetAttribute("key" .. i)
-            local click = self:GetAttribute("click-" .. extra .. "-" .. i)
-            local cmd = self:GetAttribute("cmd-" .. extra .. "-" .. i)
-            if key and click then
-                self:SetBindingClick(true, prefix .. key, click, "LeftButton")
-            elseif key and cmd then
-                self:SetBinding(true, prefix .. key, cmd)
-            elseif key and noop then
-                self:SetBindingClick(true, prefix .. key, noop, "LeftButton")
-            end
+    -- (les boutons simples : leur case dans cette couche, si elle est
+    -- remplie ; sinon le bouton simple garde son action habituelle)
+    for j = 1, self:GetAttribute("skcount") or 0 do
+        local sid, key = self:GetAttribute("skid-" .. j), self:GetAttribute("skkey-" .. j)
+        local click = sid and self:GetAttribute("click-" .. layer .. "-" .. sid)
+        local cmd = sid and self:GetAttribute("cmd-" .. layer .. "-" .. sid)
+        if key and click then
+            self:SetBindingClick(true, key, click, "LeftButton")
+        elseif key and cmd then
+            self:SetBinding(true, key, cmd)
         end
     end
 ]]
@@ -116,6 +114,10 @@ local ONCLICK = [[
 -- choisi, comme les boutons du jeu : ActionButtonUseKeyDown)
 local EDGE = [[
     if not down ~= not self:GetAttribute("gps-down") then return false end
+    -- (un raccourci est parti : un bouton de ciblage tenu ne reciblera pas
+    -- au relâchement)
+    local disp = self:GetFrameRef("disp")
+    if disp and not disp:GetAttribute("comboused") then disp:SetAttribute("comboused", true) end
 ]]
 
 -- Un bouton qui ne fait rien : les cases vides des couches de gâchette
@@ -178,6 +180,7 @@ local function ComboButton(layer, key)
     b:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
     b:RegisterForClicks("AnyDown", "AnyUp")
     b:SetAttribute("type", "macro")
+    SecureHandlerSetFrameRef(b, "disp", Dispatcher())
     SecureHandlerWrapScript(b, "OnClick", b, EDGE)
     combos[layer .. key] = b
     return b
@@ -189,30 +192,51 @@ local function Write(name, value)
 end
 
 -- Les 8 combinaisons d'une couche (un bouton, ou une paire)
-local function WriteLayer(layer, actions, onDown)
-    for i, key in ipairs(ns.PAD_KEYS) do
-        local action = actions.combos[key]
-        if ns.Actions.IsCommand(action) then
-            Write("cmd-" .. layer .. "-" .. i, ns.Actions.CommandOf(action))
-        elseif action then
-            local macro, text = ns.Actions.Secure(action)
-            if macro or text then
-                local b = ComboButton(layer, key)
-                b:SetAttribute("gps-down", onDown)
-                b:SetAttribute("useOnKeyDown", onDown)
-                b:SetAttribute("macro", macro)
-                b:SetAttribute("macrotext", text)
-                Write("click-" .. layer .. "-" .. i, b:GetName())
-            end
+-- Les boutons simples (id, touche), pour leurs cases dans les couches
+local simpleKeys = {}
+
+-- Une case d'une couche : « click-<couche>-<n> » (bouton) ou « cmd-... »
+local function WriteSlot(layer, slot, buttonKey, action, onDown)
+    if ns.Actions.IsCommand(action) then
+        Write("cmd-" .. layer .. "-" .. slot, ns.Actions.CommandOf(action))
+    elseif action then
+        local macro, text = ns.Actions.Secure(action)
+        if macro or text then
+            local b = ComboButton(layer, buttonKey)
+            b:SetAttribute("gps-down", onDown)
+            b:SetAttribute("useOnKeyDown", onDown)
+            b:SetAttribute("macro", macro)
+            b:SetAttribute("macrotext", text)
+            Write("click-" .. layer .. "-" .. slot, b:GetName())
         end
     end
+end
+
+-- Les 8 combinaisons d'une couche, et une case par bouton simple
+local function WriteLayer(layer, actions, onDown)
+    for i, key in ipairs(ns.PAD_KEYS) do
+        WriteSlot(layer, i, key, actions.combos[key], onDown)
+    end
+    for _, s in ipairs(simpleKeys) do
+        WriteSlot(layer, s.id, s.id, actions.combos[s.id], onDown)
+    end
+end
+
+-- La liste des boutons simples : { { id, key }, ... } (après Begin)
+function M.SetSimpleKeys(list)
+    simpleKeys = list
+    for j, s in ipairs(list) do
+        Write("skid-" .. j, s.id)
+        Write("skkey-" .. j, s.key)
+    end
+    Write("skcount", #list)
 end
 
 ---------------------------------------------------------------------------
 -- Application (hors combat) : Begin, Setup pour chaque modificateur, Finish
 ---------------------------------------------------------------------------
 local count = 0
-local chordCount, hcount = 0, 0
+local chordCount, hcount, hcmdCount = 0, 0, 0
 local active = {}
 
 function M.Begin()
@@ -223,7 +247,7 @@ function M.Begin()
     wipe(held)
     wipe(pairOf)
     wipe(active)
-    count, chordCount, hcount = 0, 0, 0
+    count, chordCount, hcount, hcmdCount = 0, 0, 0, 0
     disp:SetAttribute("count", 0)
 end
 
@@ -237,38 +261,129 @@ function M.Setup(owner, id, def, actions, onDown)
     SetOverrideBindingClick(owner, true, def.key, h:GetName(), "LeftButton")
 end
 
--- Les paires dont les deux boutons sont des modificateurs
-function M.Finish(onDown)
-    for _, pair in ipairs(ns.PAIRS) do
-        if active[pair.a] and active[pair.b] then
-            Write("partner-" .. pair.a, pair.b)
-            Write("partner-" .. pair.b, pair.a)
-            Write("pairlayer-" .. pair.a, pair.id)
-            Write("pairlayer-" .. pair.b, pair.id)
-            WriteLayer(pair.id, ns.ButtonActions(pair.id), onDown)
-            pairOf[pair.a], pairOf[pair.b] = pair.id, pair.id
+---------------------------------------------------------------------------
+-- Boutons de ciblage (modes « Ciblage allié » / « Ciblage ennemi »), comme
+-- LB / RB dans Forever (essai) :
+--   appui     : le bouton est tenu (sa couche de 8 raccourcis, comme un
+--               modificateur) et le ciblage du moteur s'allume
+--               (C_GamepadTargeting : le stick droit vise au lieu de la
+--               caméra) ;
+--   relâché   : le ciblage du moteur s'éteint ; si aucun raccourci n'est
+--               parti pendant l'appui, une macro sécurisée cible l'allié /
+--               l'ennemi le plus proche (/targetfriend, /targetenemy).
+-- Forever, lui, déclenche son ciblage sur l'état Ctrl que LB imite (un addon
+-- ne peut pas l'imiter) : on appelle donc le moteur directement.
+---------------------------------------------------------------------------
+local TARGET_MACRO = { target_friend = "/targetfriend", target_enemy = "/targetenemy" }
+
+-- (appui : tenu ; relâché : plus tenu, et l'action — le ciblage du plus
+-- proche — part seulement si aucun raccourci n'est parti. Le bouton n'agit
+-- qu'au relâchement : useOnKeyDown = false)
+local TARGET_CLICK = [[
+    local disp = self:GetFrameRef("disp")
+    local id = self:GetAttribute("gps-id")
+    if not (disp and id) then return false end
+    if down then
+        if not disp:GetAttribute("held-" .. id) then
+            local o = (disp:GetAttribute("order") or 0) + 1
+            disp:SetAttribute("order", o)
+            disp:SetAttribute("comboused", nil)
+            disp:SetAttribute("held-" .. id, o)
+        end
+        -- (rien ne part à l'appui : le bouton n'agit qu'au relâchement)
+        return
+    end
+    disp:SetAttribute("held-" .. id, nil)
+    if disp:GetAttribute("comboused") then return false end
+]]
+
+-- La valeur de filtre du moteur pour un ciblage (énumération du jeu si on la
+-- trouve ; sinon 1 = allié, relevé quand LB est tenu, et 2 = ennemi)
+local filterCache = {}
+local function TargetFilter(mode)
+    if filterCache[mode] ~= nil then return filterCache[mode] end
+    local found
+    for name, t in pairs(Enum or {}) do
+        if type(name) == "string" and name:find("Target") and type(t) == "table" then
+            for k, v in pairs(t) do
+                if type(k) == "string" and type(v) == "number" then
+                    if mode == "target_friend" and (k:find("Friend") or k:find("Ally")) then found = found or v end
+                    if mode == "target_enemy" and (k:find("Hostile") or k:find("Enemy")) then found = found or v end
+                end
+            end
         end
     end
+    filterCache[mode] = found or (mode == "target_friend" and 1 or 2)
+    return filterCache[mode]
 end
 
----------------------------------------------------------------------------
--- Gâchettes LT / RT données à l'addon (couches LT, RT et LT + RT)
----------------------------------------------------------------------------
--- La touche qu'une gâchette imite (réglages GamePadEmulate* du jeu), ou nil
-local EMULATE = { ALT = "GamePadEmulateAlt", CTRL = "GamePadEmulateCtrl", SHIFT = "GamePadEmulateShift" }
-local function Emulated(button)
-    for mod, cvar in pairs(EMULATE) do
-        if ns.CVar(cvar) == button then return mod end
+-- (hors code sécurisé : allume / éteint le ciblage du moteur)
+local function EngineTargeting(mode)
+    local api = C_GamepadTargeting
+    if type(api) ~= "table" then return end
+    if mode then
+        if api.SetFilter then pcall(api.SetFilter, TargetFilter(mode)) end
+        if api.Enable then pcall(api.Enable) end
+    elseif api.Disable then
+        pcall(api.Disable)
     end
 end
 
--- Le préfixe d'une liaison, dans l'ordre du jeu : « ALT-CTRL-SHIFT- »
-local function Prefix(a, b)
-    local out = ""
-    for _, mod in ipairs({ "ALT", "CTRL", "SHIFT" }) do
-        if mod == a or mod == b then out = out .. mod .. "-" end
+local targeters = {}
+local function Targeter(id)
+    local b = targeters[id]
+    if b then return b end
+    b = CreateFrame("Button", "MyGamepadIsRichTarget" .. id, UIParent, "SecureActionButtonTemplate")
+    b:SetSize(1, 1)
+    b:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
+    b:RegisterForClicks("AnyDown", "AnyUp")
+    b:SetAttribute("type", "macro")
+    -- (l'action part au relâchement : le script l'arrête à l'appui)
+    b:SetAttribute("useOnKeyDown", false)
+    b:SetAttribute("gps-id", id)
+    SecureHandlerSetFrameRef(b, "disp", Dispatcher())
+    SecureHandlerWrapScript(b, "OnClick", b, TARGET_CLICK)
+    b:HookScript("OnClick", function(self, _, down)
+        SetHeld(id, down)
+        EngineTargeting(down and self.targetMode or nil)
+    end)
+    targeters[id] = b
+    return b
+end
+
+function M.SetupTargeting(owner, id, def, actions, onDown)
+    local b = Targeter(id)
+    b.targetMode = def.mode
+    b:SetAttribute("macrotext", TARGET_MACRO[def.mode])
+    count = count + 1
+    Write("id" .. count, id)
+    disp:SetAttribute("count", count)
+    WriteLayer(id, actions, onDown)
+    active[id] = true
+    -- (la touche va au bouton de ciblage, quand le jeu a le focus manette)
+    hcount = hcount + 1
+    Write("hkey-" .. hcount, def.key)
+    Write("hclick-" .. hcount, b:GetName())
+    Write("hcount", hcount)
+end
+
+-- Les paires dont les deux boutons sont des modificateurs (les boutons
+-- supplémentaires, puis les boutons de base : LT + RT, LB + RB)
+function M.Finish(onDown)
+    for _, list in ipairs({ ns.PAIRS, ns.PAD_PAIRS }) do
+        for _, pair in ipairs(list) do
+            if active[pair.a] and active[pair.b] then
+                Write("partner-" .. pair.a, pair.b)
+                Write("partner-" .. pair.b, pair.a)
+                Write("pairlayer-" .. pair.a, pair.id)
+                Write("pairlayer-" .. pair.b, pair.id)
+                WriteLayer(pair.id, ns.ButtonActions(pair.id), onDown)
+                -- (paire de boutons de base : ses cases vides ne font rien)
+                if list == ns.PAD_PAIRS then Write("swallow-" .. pair.id, true) end
+                pairOf[pair.a], pairOf[pair.b] = pair.id, pair.id
+            end
+        end
     end
-    return out
 end
 
 -- Une couche en accord : ses cases liées à prefix .. bouton. Les vides ne
@@ -309,9 +424,29 @@ function M.Base(onDown)
     WriteChord("BASE", ns.ButtonActions("BASE"), "", onDown, false)
 end
 
--- Une gâchette qui n'imite rien : un modificateur comme L5, dont la touche
--- n'est liée que quand le jeu a le focus manette
-local function SetupTrigger(id, actions, onDown)
+---------------------------------------------------------------------------
+-- Boutons de base (LT, RT, LB, RB) donnés à l'addon : leur touche n'est
+-- liée que quand le jeu a le focus manette (les fenêtres de Forever et le
+-- curseur gardent leurs gâchettes et LB / RB). Leur imitation de Maj / Ctrl
+-- est coupée par Core.lua (ns.SyncEmulation) : ce sont des boutons ordinaires.
+---------------------------------------------------------------------------
+-- (une touche vers un bouton, ou vers une commande WoW, liée par l'aiguilleur)
+local function GateClick(key, name)
+    hcount = hcount + 1
+    Write("hkey-" .. hcount, key)
+    Write("hclick-" .. hcount, name)
+    Write("hcount", hcount)
+end
+
+local function GateCommand(key, command)
+    hcmdCount = hcmdCount + 1
+    Write("hcmdkey-" .. hcmdCount, key)
+    Write("hcmd-" .. hcmdCount, command)
+    Write("hcmdcount", hcmdCount)
+end
+
+-- Un modificateur comme L5 ; ses cases vides ne font rien
+local function SetupPadModifier(id, actions, onDown)
     local h = Handler(id)
     count = count + 1
     Write("id" .. count, id)
@@ -319,43 +454,26 @@ local function SetupTrigger(id, actions, onDown)
     WriteLayer(id, actions, onDown)
     Write("swallow-" .. id, true)
     active[id] = true
-    hcount = hcount + 1
-    Write("hkey-" .. hcount, ns.TRIGGER_KEY[id])
-    Write("hclick-" .. hcount, h:GetName())
-    Write("hcount", hcount)
+    GateClick(ns.PAD_KEY[id], h:GetName())
 end
 
-function M.Triggers(owner, onDown)
-    local mods = { LT = Emulated(ns.TRIGGER_KEY.LT), RT = Emulated(ns.TRIGGER_KEY.RT) }
-    for _, id in ipairs({ "LT", "RT" }) do
-        if mods[id] then
-            WriteChord(id, ns.ButtonActions(id), mods[id] .. "-", onDown, true)
-        else
-            SetupTrigger(id, ns.ButtonActions(id), onDown)
+function M.Pads(owner, onDown)
+    for _, id in ipairs(ns.PAD_IDS) do
+        local mode = ns.PadMode(id)
+        local actions = ns.ButtonActions(id)
+        if mode == "modifier" then
+            SetupPadModifier(id, actions, onDown)
+        elseif mode == "target_friend" or mode == "target_enemy" then
+            M.SetupTargeting(owner, id, { key = ns.PAD_KEY[id], mode = mode }, actions, onDown)
+            Write("swallow-" .. id, true)
+        elseif mode == "simple" then
+            local click, command = ns.Simple.Prepare(id, actions, onDown)
+            if click then
+                GateClick(ns.PAD_KEY[id], click)
+            elseif command then
+                GateCommand(ns.PAD_KEY[id], command)
+            end
         end
-    end
-    -- La paire LT + RT
-    local pairID = ns.TRIGGER_PAIR.id
-    local pairActions = ns.ButtonActions(pairID)
-    if mods.LT and mods.RT then
-        -- (les deux en accord : « CTRL-SHIFT-PAD1 »...)
-        WriteChord(pairID, pairActions, Prefix(mods.LT, mods.RT), onDown, true)
-    elseif not mods.LT and not mods.RT then
-        -- (deux gestionnaires : une paire comme L5 + R5)
-        Write("partner-LT", "RT")
-        Write("partner-RT", "LT")
-        Write("pairlayer-LT", pairID)
-        Write("pairlayer-RT", pairID)
-        WriteLayer(pairID, pairActions, onDown)
-        Write("swallow-" .. pairID, true)
-        pairOf.LT, pairOf.RT = pairID, pairID
-    else
-        -- (un gestionnaire, l'autre en accord : le gestionnaire tenu lie
-        -- aussi les combinaisons en accord, vers la paire)
-        local handler = mods.LT and "RT" or "LT"
-        WriteLayer(pairID, pairActions, onDown)
-        Write("extra-" .. handler, pairID)
-        Write("extraprefix-" .. handler, (mods.LT or mods.RT) .. "-")
     end
 end
 

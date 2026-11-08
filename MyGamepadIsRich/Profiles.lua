@@ -69,6 +69,19 @@ local function Select()
     ns.cprof = CharProfile(ns.db.profile)
 end
 
+-- Les modes des boutons de base (LT, RT, LB, RB) : seulement les modes
+-- connus, « game » (au jeu) n'étant pas noté
+local PAD_MODE_OK = { modifier = true, target_friend = true, target_enemy = true, simple = true }
+function P.CleanPads(pads)
+    local out = {}
+    if type(pads) == "table" then
+        for _, id in ipairs(ns.PAD_IDS) do
+            if PAD_MODE_OK[pads[id]] then out[id] = pads[id] end
+        end
+    end
+    return out
+end
+
 ---------------------------------------------------------------------------
 -- Chargement : migration, profil par défaut, nettoyage
 ---------------------------------------------------------------------------
@@ -93,8 +106,14 @@ function P.Init()
     for _, prof in pairs(db.profiles) do
         prof.controller = ns.ControllerDef(prof.controller).id
         prof.buttons = FillButtons(type(prof.buttons) == "table" and prof.buttons or {})
-        -- (LT / RT : aux couches du jeu tant qu'on ne les donne pas à l'addon)
-        if prof.triggers ~= "modifier" then prof.triggers = "off" end
+        -- (boutons de base : au jeu tant qu'on ne les donne pas à l'addon ;
+        -- 1.5 : « triggers = modifier » donnait LT et RT en modificateurs)
+        prof.pads = P.CleanPads(prof.pads)
+        if prof.triggers == "modifier" then
+            prof.pads.LT = prof.pads.LT or "modifier"
+            prof.pads.RT = prof.pads.RT or "modifier"
+        end
+        prof.triggers = nil
         if type(prof.name) ~= "string" or prof.name == "" then prof.name = L.PROFILE_DEFAULT end
     end
     if not db.profiles[db.profile] then db.profile = P.List()[1].id end
@@ -212,7 +231,7 @@ function P.New(name, controllerID)
         name = P.UniqueName(name),
         controller = ns.ControllerDef(controllerID).id,
         buttons = FillButtons({}),
-        triggers = "off",
+        pads = {},
     }
     ns.SuggestModes(prof)
     ns.db.profiles[id] = prof
@@ -229,7 +248,7 @@ function P.Copy(fromID, name)
         name = P.UniqueName(name),
         controller = from.controller,
         buttons = ns.DeepCopy(from.buttons),
-        triggers = from.triggers,
+        pads = P.CleanPads(from.pads),
     }
     local actions = ns.char.profiles[fromID] and ns.char.profiles[fromID].actions
     ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(actions or {})) }
@@ -283,7 +302,7 @@ function P.Import(data, opts)
     local prof = ns.db.profiles[id]
     prof.controller = ns.ControllerDef(data.controller).id
     prof.buttons = FillButtons(ns.DeepCopy(data.buttons))
-    prof.triggers = data.triggers == "modifier" and "modifier" or "off"
+    prof.pads = P.CleanPads(data.pads)
     if opts.actions and data.actions then
         ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(data.actions)) }
     end

@@ -8,7 +8,8 @@ Support des boutons supplémentaires des manettes (palettes arrière, gâchettes
   - **Bouton simple** — une action, une autre avec LT maintenu, une autre avec RT maintenu (une couche vide reprend l'action « Seul ») ;
   - **Désactivé**.
 - **Paires** : les boutons vont par deux (gauche + droite : emplacements 1 + 2, 3 + 4, 5 + 6). Quand les deux sont des modificateurs, les maintenir ensemble donne 8 combinaisons de plus, comme LT + RT.
-- **Gâchettes LT / RT** (au choix, par profil) : elles peuvent devenir des modificateurs de l'addon, qui remplacent les couches LT, RT et LT + RT de la barre manette du jeu. Voir [Gâchettes LT / RT](#gâchettes-lt--rt).
+- **Boutons de base LT, RT, LB, RB** (au choix, par profil) : chacun peut devenir modificateur, cible alliée / ennemie ou bouton simple. Voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb).
+- **Modes de ciblage** : n'importe quel bouton peut cibler comme LB / RB dans Forever (appui = le plus proche, maintien + stick droit = visée), avec ses propres raccourcis. Voir [Modes de ciblage](#modes-de-ciblage).
 - Interface en glisser-déposer (sorts, objets, macros, montures, jouets, ensembles d'équipement, macro écrite à la main, commande WoW).
 - Fonctionne en combat.
 
@@ -99,28 +100,32 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | Attaque automatique | `/startattack` |
 | Interagir | commande WoW « Interagir avec la cible » |
 
-Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut passer les gâchettes en « Modificateurs de l'addon » (voir plus bas) ; le menu d'une case l'indique.
+Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut donner LT / RT à l'addon (voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb)) ; le menu d'une case l'indique.
 
 La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage**, dans ce même profil.
 
 Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
 
-## Gâchettes LT / RT
+## Modes de ciblage
 
-Dans l'onglet **Boutons**, la ligne **Gâchettes LT / RT** propose deux choix, enregistrés dans le profil :
+Un bouton (L5, R5… ou un bouton de base) peut être en **Cible alliée** ou **Cible ennemie**, comme LB / RB dans Forever :
+- **appui bref** : cible l'allié (ou l'ennemi) le plus proche ;
+- **maintenu + stick droit** : vise la cible voulue (le ciblage du moteur du jeu, `C_GamepadTargeting`) ;
+- **maintenu + A / B / X / Y / croix** : ses 8 raccourcis, comme un modificateur. Un raccourci lancé pendant l'appui empêche le reciblage au relâchement.
 
-- **Couches du jeu** (par défaut) : LT et RT gardent les couches de la barre manette de Forever. On les remplit depuis l'onglet Actions, avec ce que la barre du jeu accepte (sorts, objets, montures, macros de la liste).
-- **Modificateurs de l'addon** : LT, RT et LT + RT deviennent des couches de l'addon, comme L5. Maintenir LT puis appuyer sur A lance l'action de l'addon, avec tout ce qu'il permet (macros écrites à la main, commandes WoW, ensembles d'équipement). Elles remplacent les couches LT, RT et LT + RT de la barre du jeu ; une case vide ne fait rien. Ce ne sont jamais des boutons simples.
+Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâchement cible à nouveau le plus proche.
 
-En passant aux modificateurs de l'addon, les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Rien n'est perdu, et revenir aux couches du jeu les retrouve telles quelles.
+## Boutons de base (LT, RT, LB, RB)
 
-**LB et RB ne sont jamais touchés** (ciblage).
+Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil :
+- **Jeu** (par défaut) : le bouton garde son rôle dans Forever. LT / RT gardent les couches de la barre manette, à remplir depuis l'onglet Actions avec ce que la barre du jeu accepte. LB / RB gardent le ciblage de Forever.
+- **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires. Les cases vides d'un modificateur ou d'une cible ne font rien. LT + RT et LB + RB forment une paire quand les deux sont modificateurs ou cibles.
 
-Technique : l'addon suit les réglages de manette du jeu.
-- Une gâchette qui **imite une touche** (`GamePadEmulateShift = PADLTRIGGER`, le réglage de Forever pour LT) est liée en accord : LT + A = `SHIFT-PAD1`.
-- Une gâchette qui **n'imite rien** (RT chez Forever) a sa touche reprise par un gestionnaire, comme la touche de L5.
+En donnant LT ou RT à l'addon (modificateur ou cible), les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Revenir sur « Jeu » retrouve la barre du jeu telle quelle.
 
-Ces liaisons n'existent que quand le jeu a le focus manette : dans les fenêtres de Forever (sacs, carte…), les gâchettes gardent leur rôle.
+**Imitation de Maj / Ctrl.** Chez Forever, LT imite Maj et LB imite Ctrl (`GamePadEmulateShift`, `GamePadEmulateCtrl`). Un bouton qui imite une touche n'envoie son appui que s'il est tapé brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant qu'un tel bouton est donné à l'addon, l'addon coupe son imitation ; il la remet quand le bouton revient sur « Jeu ». Le réglage d'origine est noté dans les réglages du compte. **Avant de désactiver l'addon**, tape `/mgir restore` : les boutons de base reviennent au jeu et les imitations sont remises.
+
+Ces liaisons n'existent que quand le jeu a le focus manette. Dans les fenêtres de Forever (sacs, carte…), LT, RT, LB et RB gardent leur rôle, et RB garde son clic droit avec le curseur.
 
 ## Profils
 
@@ -164,6 +169,7 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir minimap` | Masquer / remontrer le bouton autour de la minimap |
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
 | `/mgir reset` | Vider les actions du personnage courant (dans le profil utilisé) |
+| `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (à faire avant de désactiver l'addon) |
 | `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
 
 Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccourcis › AddOns, ainsi qu'une page dans Options › AddOns.

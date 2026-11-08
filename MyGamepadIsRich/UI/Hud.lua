@@ -45,7 +45,6 @@ local CARD_W, CARD_H = CROSS * 2 + 8 + 12, CROSS + 32
 local STRIP_GAP = 6
 local HEIGHT = MAIN_H + 14 + CARD_H
 local PADDLE = 44
-local GCD_MAX = 1.6
 local IDLE_ALPHA = 0.8
 -- Le HUD est dessiné au-dessus des caches posés sur la barre de Forever
 -- (même strate qu'elle au minimum, niveau plus haut)
@@ -400,9 +399,10 @@ local function ClearCooldown(t)
     t.cdStart, t.cdDuration = nil, nil
 end
 
--- (aucune ou recharge globale : rien). Une recharge secrète ne se lit ni ne
--- se compare : elle est donnée telle quelle au voile (objet de durée si le
--- jeu en fournit un, sinon les valeurs brutes)
+-- (aucune : rien ; la recharge globale s'affiche, comme sur les barres du
+-- jeu). Une recharge secrète ne se lit ni ne se compare : elle est donnée
+-- telle quelle au voile (objet de durée si le jeu en fournit un, sinon les
+-- valeurs brutes)
 local function SetCooldown(t, start, duration, durObj)
     if Secret(start) or Secret(duration) then
         local cd = t.cooldown
@@ -412,7 +412,7 @@ local function SetCooldown(t, start, duration, durObj)
         t.cdStart, t.cdDuration = ok and true or nil, nil
         return
     end
-    if type(start) ~= "number" or type(duration) ~= "number" or start <= 0 or duration <= GCD_MAX then
+    if type(start) ~= "number" or type(duration) ~= "number" or start <= 0 or duration <= 0 then
         ClearCooldown(t)
         return
     end
@@ -782,9 +782,10 @@ local function Relayout()
     for _, name in ipairs(BARS) do
         if not ns.GameBarReplaced(name) then list[#list + 1] = { bar = name } end
     end
-    -- (à leur place : les couches LT / RT / LT + RT de l'addon)
-    if ns.TriggersOn() then
-        for _, id in ipairs({ "LT", "RT", ns.TRIGGER_PAIR.id }) do list[#list + 1] = { mod = id } end
+    -- (à leur place : les couches des boutons de base donnés à l'addon,
+    -- LT, RT, LT + RT, LB, RB, LB + RB)
+    for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB" }) do
+        if ns.IsModLayer(id) then list[#list + 1] = { mod = id } end
     end
     -- (les modificateurs, puis les paires prêtes)
     for _, id in ipairs(ns.LIST_IDS) do
@@ -824,11 +825,7 @@ local function Relayout()
     if editing and editing.mod and not ns.IsModLayer(editing.mod) then editing = nil end
     if editing and editing.bar and ns.GameBarReplaced(editing.bar) then editing = nil end
 
-    local simple = {}
-    for _, id in ipairs(ns.BUTTON_IDS) do
-        local def = ns.Button(id)
-        if def.mode == "simple" and def.key then simple[#simple + 1] = id end
-    end
+    local simple = ns.SimpleIDs()
     local gapX = 76
     local x0 = -(#simple - 1) * gapX / 2
     for i, id in ipairs(simple) do
@@ -959,11 +956,6 @@ local function Update(pu)
     local lt, rt = Triggers()
     local mod = ns.Modifier.Held and ns.Modifier.Held()
     if mod and not ns.IsModLayer(mod) then mod = nil end
-    -- Gâchettes données à l'addon : lues sur la manette (LT, qui imite Maj,
-    -- n'a pas de gestionnaire) ; un autre modificateur tenu passe avant
-    if ns.TriggersOn() and (lt or rt) and (not mod or ns.TRIGGER_LAYERS[mod]) then
-        mod = (lt and rt) and ns.TRIGGER_PAIR.id or (lt and "LT" or "RT")
-    end
 
     -- La barre active de Forever, par son nom
     local active = pu.activeBar
@@ -988,16 +980,25 @@ local function Update(pu)
 
     -- Boutons simples : l'action de la couche que la gâchette choisit
     -- (comme Simple.lua : LT d'abord), ou celle choisie à la souris
+    -- (une couche de modificateur affichée : sa case pour ce bouton simple ;
+    -- vide, le bouton garde son action habituelle, montrée estompée)
     local held = lt and "lt" or (rt and "rt" or nil)
+    local modView = view.mod
     for _, p in ipairs(paddles) do
         if p:IsShown() and p.id then
             local layers = ns.ButtonActions(p.id).layers
             local layer = held or paddleView[p.id] or "base"
-            local action = layers[layer]
-            local fallback = not action and layer ~= "base"
-            MirrorAction(p, action or layers.base, fallback, pressed[p.id])
-            p.target = { layer = layer, id = p.id }
-            p:SetAlpha(mod and 0.5 or 1)
+            local own = modView and ns.ButtonActions(modView).combos[p.id]
+            if own then
+                MirrorAction(p, own, false, pressed[p.id])
+                p:SetAlpha(1)
+            else
+                local action = layers[layer]
+                local fallback = (not action and layer ~= "base") or modView ~= nil
+                MirrorAction(p, action or layers.base, fallback, pressed[p.id])
+                p:SetAlpha((mod and not modView) and 0.5 or 1)
+            end
+            p.target = modView and { combo = modView, key = p.id } or { layer = layer, id = p.id }
             for k, id in ipairs(LAYERS) do
                 local pip = p.pips[k]
                 if id == layer then

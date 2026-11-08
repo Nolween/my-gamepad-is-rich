@@ -331,7 +331,7 @@ ns.AddLocale("enUS", {
 
 -- Menu d'une case : pourquoi des choix sont grisés
 ns.AddLocale("enUS", {
-    MENU_GAME_BAR_HINT = "Custom macros, WoW commands: set LT / RT to \"Addon modifiers\" (Buttons tab)",
+    MENU_GAME_BAR_HINT = "Custom macros, WoW commands: give LT / RT to the addon (Buttons tab, Base buttons)",
 })
 
 -- Actions de base (celles de Forever sur A/B/X/Y)
@@ -344,4 +344,51 @@ ns.AddLocale("enUS", {
     GAME_search = "Search (right-click on target)",
     GAME_attack = "Auto attack",
     GAME_interact = "Interact",
+})
+
+-- Modes de ciblage (comme LB / RB dans Forever)
+ns.AddLocale("enUS", {
+    MODE_TARGET_FRIEND = "Ally target",
+    MODE_TARGET_ENEMY = "Enemy target",
+    MODE_TARGET_FRIEND_DESC = "Like LB in Forever: a short press targets the nearest ally; hold it and aim with the right stick to pick one. Held, it is also a modifier: A, B, X, Y and the D-pad fire its 8 shortcuts.",
+    MODE_TARGET_ENEMY_DESC = "Like RB in Forever: a short press targets the nearest enemy; hold it and aim with the right stick to pick one. Held, it is also a modifier: A, B, X, Y and the D-pad fire its 8 shortcuts.",
+    TARGET_UNAVAILABLE = "Forever's targeting can't be found: %s works as a plain modifier.",
+})
+
+-- Onglet « Soutenir » (don PayPal)
+ns.AddLocale("enUS", {
+    TAB_DONATE = "Support",
+    DONATE_TITLE = "Support My Gamepad Is Rich",
+    DONATE_INTRO = "My Gamepad Is Rich is free and will stay free. If it makes your game better and you want to thank me, you can make a donation on PayPal, of any amount.",
+    DONATE_SCAN = "Scan the QR code with your phone",
+    DONATE_LINK = "Or copy the link (Ctrl+C) and paste it in your browser:",
+    DONATE_THANKS = "Donations are entirely optional and unlock nothing: every feature stays available to everyone. Thank you for your support!",
+})
+
+-- Boutons de base (LT, RT, LB, RB)
+ns.AddLocale("enUS", {
+    MODE_GAME = "Game",
+    MODE_GAME_DESC = "This button keeps its role in the game (LT / RT: layers of the controller bar; LB / RB: Forever's targeting).",
+    PADS_LABEL = "Base buttons:",
+    PADS_PICK = "%s: choose a mode",
+    IMPORT_SUMMARY_PADS = "Base buttons given to the addon: %s",
+    EMULATION_OFF = "%s no longer imitates Shift / Ctrl while it is given to the addon. Type /mgir restore before disabling the addon.",
+    RESTORE_DONE = "Base buttons given back to the game, and their Shift / Ctrl imitation restored.",
+})
+
+-- Plus aucun ciblage allié / ennemi configuré
+ns.AddLocale("enUS", {
+    TARGET_MISSING_FRIEND = "No button targets allies: set LB to \"Game\", or a button to \"Ally target\" (Buttons tab).",
+    TARGET_MISSING_ENEMY = "No button targets enemies: set RB to \"Game\", or a button to \"Enemy target\" (Buttons tab).",
+    TARGET_MISSING_BOTH = "No button targets allies or enemies: set LB / RB to \"Game\", or buttons to \"Ally target\" / \"Enemy target\" (Buttons tab).",
+})
+
+-- Onglet Boutons : mention des boutons de base
+ns.AddLocale("enUS", {
+    PAD_HINT = "controller button: nothing to detect",
+})
+
+-- Case vide d'un bouton simple dans une couche : son action habituelle
+ns.AddLocale("enUS", {
+    SIMPLE_USUAL = "Usual",
 })

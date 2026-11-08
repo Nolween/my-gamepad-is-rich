@@ -25,11 +25,9 @@ local READY = "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14|t "
 local frame, current, finished
 local quietUntil = 0 -- (manette ignorée juste après une détection)
 
-local function ModeLabel(mode)
-    if mode == "modifier" then return L.MODE_MODIFIER end
-    if mode == "simple" then return L.MODE_SIMPLE end
-    return L.MODE_OFF
-end
+-- (le tutoriel propose les trois modes de base ; les modes de ciblage se
+-- choisissent dans l'onglet Boutons)
+local ModeLabel = ns.ModeLabel
 
 local function Mark()
     if ns.db then ns.db.tutorialSeen = T.VERSION end

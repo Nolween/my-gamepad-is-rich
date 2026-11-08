@@ -80,10 +80,16 @@ function UI.BuildTestPage(page)
     local log = {}
 
     local function RefreshExtra()
-        for _, id in ipairs(ns.BUTTON_IDS) do
+        -- (les boutons de la manette, et un emplacement libre seulement s'il
+        -- a une touche ; placés à la suite)
+        for _, f in pairs(extra) do f:Hide() end
+        for i, id in ipairs(ns.VisibleIDs()) do
             local f, def = extra[id], ns.Button(id)
+            f:ClearAllPoints()
+            f:SetPoint("TOPLEFT", 16 + (i - 1) * 104, -216)
+            f:Show()
             f.glyph:SetKey(id)
-            local mode = def.mode == "modifier" and L.MODE_MODIFIER or def.mode == "simple" and L.MODE_SIMPLE or L.MODE_OFF
+            local mode = ns.ModeLabel(def.mode)
             f.text:SetText((def.key and ns.KeyLabel(def.key) or L.TEST_UNKNOWN) .. " · " .. mode)
         end
     end

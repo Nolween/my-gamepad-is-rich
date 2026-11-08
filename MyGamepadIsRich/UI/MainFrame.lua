@@ -5,7 +5,8 @@
 --   Boutons : les boutons supplémentaires (nom, touche, mode) et les paires ;
 --   Profils : UI/ProfilesTab.lua (liste, export, import) ;
 --   HUD     : affichage, miniatures, taille, position, bouton de la minimap ;
---   Test manette, Aide.
+--   Test manette, Aide ;
+--   Soutenir : UI/DonateTab.lua (don PayPal, QR code et lien).
 -- Et la page dans Options > AddOns.
 local _, ns = ...
 local L = ns.L
@@ -26,11 +27,7 @@ local function IsLoaded(name)
     return IsAddOnLoaded and IsAddOnLoaded(name)
 end
 
-local function ModeLabel(mode)
-    if mode == "modifier" then return L.MODE_MODIFIER end
-    if mode == "simple" then return L.MODE_SIMPLE end
-    return L.MODE_OFF
-end
+local ModeLabel = ns.ModeLabel
 
 local function Separator(parent, x1, y1, x2, y2)
     local t = parent:CreateTexture(nil, "BACKGROUND")
@@ -84,23 +81,20 @@ end
 
 local function Sections()
     -- (la barre manette : ses couches LT / RT / LT + RT sont celles de
-    -- l'addon quand le profil lui donne les gâchettes)
+    -- l'addon quand le profil lui donne les gâchettes ; LB / RB aussi)
     local pad = { title = L.SECTION_PAD, items = {} }
     for _, name in ipairs(ns.Bar.NAMES) do
         if not ns.GameBarReplaced(name) then pad.items[#pad.items + 1] = { bar = name } end
     end
-    if ns.TriggersOn() then
-        for _, id in ipairs({ "LT", "RT", ns.TRIGGER_PAIR.id }) do pad.items[#pad.items + 1] = { mod = id } end
+    for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB" }) do
+        if ns.IsModLayer(id) then pad.items[#pad.items + 1] = { mod = id } end
     end
     local mods = { title = L.SECTION_MODS, items = {}, empty = L.SECTION_MODS_EMPTY }
     for _, id in ipairs(ns.LIST_IDS) do
         if ns.IsModLayer(id) and not ns.TRIGGER_LAYERS[id] then mods.items[#mods.items + 1] = { mod = id } end
     end
     local simple = { title = L.SECTION_SIMPLE, items = {}, empty = L.SECTION_SIMPLE_EMPTY }
-    for _, id in ipairs(ns.BUTTON_IDS) do
-        local def = ns.Button(id)
-        if def.mode == "simple" and def.key then simple.items[#simple.items + 1] = { simple = id } end
-    end
+    for _, id in ipairs(ns.SimpleIDs()) do simple.items[#simple.items + 1] = { simple = id } end
     return { pad, mods, simple }
 end
 
@@ -269,6 +263,38 @@ local function SetCross(i, action)
     end
 end
 
+-- Les boutons simples dans la couche choisie : leur case (couche de
+-- modificateur), ou leur propre couche Seul / LT / RT (barre du jeu)
+local BAR_SIMPLE_LAYER = { topBar = "base", leftBar = "lt", rightBar = "rt" }
+
+local function SimpleGet(sid)
+    if not sid then return nil end
+    if selected.mod then return ns.ButtonActions(selected.mod).combos[sid] end
+    local layer = BAR_SIMPLE_LAYER[selected.bar]
+    return layer and ns.ButtonActions(sid).layers[layer]
+end
+
+local function SimpleSet(sid, action)
+    if not sid then return end
+    if selected.mod then
+        ns.ButtonActions(selected.mod).combos[sid] = action
+    else
+        local layer = BAR_SIMPLE_LAYER[selected.bar]
+        if not layer then return end
+        local a = ns.ButtonActions(sid)
+        a.layers[layer] = action
+        if layer ~= "base" and action and ns.Actions.IsCommand(a.layers.base) then ns.Print(L.COMMAND_LT_RT) end
+    end
+    ns.Apply()
+end
+
+local function SimpleCommandAllowed(sid)
+    if not sid then return false end
+    if selected.mod then return true end
+    local layer = BAR_SIMPLE_LAYER[selected.bar]
+    return layer ~= nil and ns.Simple.CommandAllowed(ns.ButtonActions(sid), layer)
+end
+
 local function BuildDetail(page)
     detail = CreateFrame("Frame", nil, page)
     detail:SetPoint("TOPLEFT", LIST_W + 10, 0)
@@ -323,6 +349,32 @@ local function BuildDetail(page)
             glyph:SetKey(CrossKey(i))
             detail.slots[i] = slot
         end
+    end
+
+    -- Sous la croix : une case par bouton simple, dans cette couche
+    detail.simpleRow = CreateFrame("Frame", nil, detail)
+    detail.simpleRow:SetPoint("TOPLEFT", 0, -352)
+    detail.simpleRow:SetSize(w, 130)
+    local rowTitle = UI.Text(detail.simpleRow, "GameFontNormal", L.SECTION_SIMPLE)
+    rowTitle:SetPoint("TOPLEFT", 10, 0)
+    detail.simpleSlots = {}
+    for k = 1, #ns.BUTTON_IDS + #ns.PAD_IDS do
+        -- (la case se rafraîchit à sa création, avant que slot soit posé)
+        local slot
+        local function Sid() return slot and slot.sid end
+        slot = UI.CreateActionSlot(detail.simpleRow, {
+            get = function() return SimpleGet(Sid()) end,
+            set = function(action) SimpleSet(Sid(), action) end,
+            allowCommand = function() return SimpleCommandAllowed(Sid()) end,
+            -- (vide dans une couche de modificateur : le bouton garde son action habituelle)
+            emptyLabel = function() return selected.mod and L.SIMPLE_USUAL or nil end,
+            labelWidth = 62,
+        })
+        slot:SetPoint("CENTER", detail.simpleRow, "TOPLEFT", 44 + ((k - 1) % 8) * 66, -44 - math.floor((k - 1) / 8) * 70)
+        slot.glyph = UI.CreateGlyph(slot, 20)
+        slot.glyph:SetPoint("CENTER", slot, "TOPLEFT", 0, 0)
+        slot.glyph:SetFrameLevel(slot:GetFrameLevel() + 5)
+        detail.simpleSlots[k] = slot
     end
 
     -- Un bouton simple : seul, avec LT, avec RT
@@ -397,6 +449,20 @@ local function RefreshDetail()
         for _, slot in ipairs(detail.slots) do slot:Refresh() end
     end
 
+    -- (les cases des boutons simples : couche de modificateur, ou Seul / LT / RT)
+    local simpleIDs = ns.SimpleIDs()
+    local showSimple = not isSimple and #simpleIDs > 0
+        and (selected.mod ~= nil or BAR_SIMPLE_LAYER[selected.bar] ~= nil)
+    detail.simpleRow:SetShown(showSimple)
+    for k, slot in ipairs(detail.simpleSlots) do
+        slot.sid = showSimple and simpleIDs[k] or nil
+        slot:SetShown(slot.sid ~= nil)
+        if slot.sid then
+            slot.glyph:SetKey(ns.PAD_KEY[slot.sid] or slot.sid)
+            slot:Refresh()
+        end
+    end
+
     local warn
     if selected.bar and not ns.Bar.Available() then
         warn = L.BAR_UNAVAILABLE
@@ -407,13 +473,15 @@ local function RefreshDetail()
 end
 
 ---------------------------------------------------------------------------
--- Onglet Boutons : la manette ; nom, touche, mode de chaque emplacement
--- (les boutons de la manette, puis les emplacements libres) ; les paires
+-- Onglet Boutons : la manette ; puis, dans une liste qui défile, une ligne
+-- par bouton de la manette (nom, touche, mode ; les emplacements libres
+-- seulement s'ils ont une touche), une ligne par bouton de base (LT, RT, LB,
+-- RB : mode seulement), et l'état des paires
 ---------------------------------------------------------------------------
-local rows, pairRows = {}, {}
-local buttonsWarning, controllerName, triggerChecks
-local ROWS_TOP, ROW_STEP = -68, 50
-local TRIGGERS_H = 30 -- (la ligne des gâchettes, sous les boutons)
+local rows, padRows, pairRows = {}, {}, {}
+local buttonsWarning, controllerName, btnList, padTitle, extraTitle, pairsTitle
+local ROW_STEP = 47
+local LIST_WIDTH = WIDTH - 16 - 34
 
 -- La liste des manettes (préréglages), avec leur logiciel
 local function PickController()
@@ -425,6 +493,43 @@ local function PickController()
         ns.SetController(id)
         RefreshAll()
     end)
+end
+
+-- Une ligne : fond, icône, et la ligne des modes (une case par mode, son
+-- explication au survol). onPick(mode) quand on coche.
+local function ModeRow(parent, modes, onPick)
+    local row = CreateFrame("Frame", nil, parent)
+    row:SetSize(LIST_WIDTH - 4, ROW_STEP - 4)
+    local bg = row:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    bg:SetColorTexture(1, 1, 1, 0.04)
+    row.glyph = UI.CreateGlyph(row, 34)
+    row.glyph:SetPoint("LEFT", 10, 0)
+    local modeLabel = UI.Text(row, "GameFontNormal", L.MODE)
+    modeLabel:SetPoint("TOPLEFT", 60, -27)
+    row.modes = {}
+    local x = modeLabel:GetStringWidth() + 10
+    for _, mode in ipairs(modes) do
+        local cb = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
+        cb:SetSize(22, 22)
+        cb:SetPoint("LEFT", modeLabel, "LEFT", x, 0)
+        local text = UI.Text(cb, "GameFontHighlight", ModeLabel(mode))
+        text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
+        cb:SetScript("OnClick", function()
+            onPick(mode)
+            RefreshAll()
+        end)
+        cb:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOP")
+            GameTooltip:SetText(ModeLabel(mode), 1, 0.82, 0, 1, true)
+            GameTooltip:AddLine(ns.ModeDesc(mode), 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        row.modes[mode] = cb
+        x = x + 26 + text:GetStringWidth() + 12
+    end
+    return row
 end
 
 local function BuildButtons(page)
@@ -442,16 +547,20 @@ local function BuildButtons(page)
     change:SetPoint("LEFT", controllerName, "RIGHT", 12, 0)
     change:SetScript("OnClick", PickController)
 
-    for i, id in ipairs(ns.BUTTON_IDS) do
-        local row = CreateFrame("Frame", nil, page)
-        row:SetSize(WIDTH - 40, ROW_STEP - 4)
-        row:SetPoint("TOPLEFT", 12, ROWS_TOP - (i - 1) * ROW_STEP)
-        local bg = row:CreateTexture(nil, "BACKGROUND")
-        bg:SetAllPoints()
-        bg:SetColorTexture(1, 1, 1, 0.04)
+    -- La liste qui défile
+    local scroll = CreateFrame("ScrollFrame", nil, page, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", 12, -64)
+    scroll:SetPoint("BOTTOMRIGHT", -30, 28)
+    btnList = CreateFrame("Frame", nil, scroll)
+    btnList:SetSize(LIST_WIDTH, 10)
+    scroll:SetScrollChild(btnList)
 
-        row.glyph = UI.CreateGlyph(row, 34)
-        row.glyph:SetPoint("LEFT", 10, 0)
+    -- Les boutons de la manette : nom, touche (Détecter / Effacer), mode
+    for i, id in ipairs(ns.BUTTON_IDS) do
+        local row = ModeRow(btnList, ns.MODES, function(mode)
+            ns.Button(id).mode = mode
+            ns.Apply()
+        end)
 
         local name = CreateFrame("EditBox", nil, row, "InputBoxTemplate")
         name:SetSize(120, 20)
@@ -487,85 +596,33 @@ local function BuildButtons(page)
             ns.Apply()
             RefreshAll()
         end)
-
-        -- (le mode : une case à cocher par mode, son explication au survol)
-        local modeLabel = UI.Text(row, "GameFontNormal", L.MODE)
-        modeLabel:SetPoint("TOPLEFT", 60, -30)
-        row.modes = {}
-        local x = modeLabel:GetStringWidth() + 10
-        local DESC = { modifier = L.MODE_MODIFIER_DESC, simple = L.MODE_SIMPLE_DESC, off = L.MODE_OFF_DESC }
-        for _, mode in ipairs({ "modifier", "simple", "off" }) do
-            local cb = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
-            cb:SetSize(22, 22)
-            cb:SetPoint("LEFT", modeLabel, "LEFT", x, 0)
-            local text = UI.Text(cb, "GameFontHighlight", ModeLabel(mode))
-            text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-            cb:SetScript("OnClick", function()
-                ns.Button(id).mode = mode
-                ns.Apply()
-                RefreshAll()
-            end)
-            cb:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_TOP")
-                GameTooltip:SetText(ModeLabel(mode), 1, 0.82, 0)
-                GameTooltip:AddLine(DESC[mode], 1, 1, 1, true)
-                GameTooltip:Show()
-            end)
-            cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
-            row.modes[mode] = cb
-            x = x + 30 + text:GetStringWidth() + 18
-        end
         row.id = id
         rows[i] = row
     end
 
-    -- Les gâchettes LT / RT : couches du jeu, ou modificateurs de l'addon
-    -- (jamais des boutons simples)
-    local ty = ROWS_TOP - #ns.BUTTON_IDS * ROW_STEP - 2
-    local trow = CreateFrame("Frame", nil, page)
-    trow:SetSize(WIDTH - 40, TRIGGERS_H - 4)
-    trow:SetPoint("TOPLEFT", 12, ty)
-    local tbg = trow:CreateTexture(nil, "BACKGROUND")
-    tbg:SetAllPoints()
-    tbg:SetColorTexture(1, 1, 1, 0.04)
-    local ttag = Tag(trow, 20)
-    ttag:SetPoint("LEFT", 10, 0)
-    SetTag(ttag, { "PADLTRIGGER", "PADRTRIGGER" })
-    local tlabel = UI.Text(trow, "GameFontNormal", L.TRIGGERS_LABEL)
-    tlabel:SetPoint("LEFT", 76, 0)
-    triggerChecks = {}
-    local tx = 76 + tlabel:GetStringWidth() + 14
-    local TDESC = { modifier = L.TRIGGERS_ADDON_DESC, off = L.TRIGGERS_GAME_DESC }
-    for _, def in ipairs({ { "modifier", L.TRIGGERS_ADDON }, { "off", L.TRIGGERS_GAME } }) do
-        local mode = def[1]
-        local cb = CreateFrame("CheckButton", nil, trow, "UICheckButtonTemplate")
-        cb:SetSize(22, 22)
-        cb:SetPoint("LEFT", tx, 0)
-        local text = UI.Text(cb, "GameFontHighlight", def[2])
-        text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-        cb:SetScript("OnClick", function()
-            ns.SetTriggers(mode == "modifier")
-            RefreshAll()
-        end)
-        cb:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOP")
-            GameTooltip:SetText(def[2], 1, 0.82, 0, 1, true)
-            GameTooltip:AddLine(TDESC[mode], 1, 1, 1, true)
-            GameTooltip:Show()
-        end)
-        cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
-        triggerChecks[mode] = cb
-        tx = tx + 30 + text:GetStringWidth() + 18
+    -- Les boutons de base : leur nom et leur mode (leur touche est celle de
+    -- la manette : ni détection ni effacement)
+    padTitle = UI.Text(btnList, "GameFontNormal", L.PADS_LABEL)
+    extraTitle = UI.Text(btnList, "GameFontNormal", L.TEST_EXTRA)
+    for i, id in ipairs(ns.PAD_IDS) do
+        local row = ModeRow(btnList, ns.PAD_MODES, function(mode) ns.SetPadMode(id, mode) end)
+        row.glyph:SetKey(ns.PAD_KEY[id])
+        row.name = UI.Text(row, "GameFontHighlightLarge", id)
+        row.name:SetPoint("TOPLEFT", 64, -6)
+        row.hint = UI.Text(row, "GameFontDisable", L.PAD_HINT)
+        row.hint:SetPoint("LEFT", row.name, "RIGHT", 12, 0)
+        row.id = id
+        padRows[i] = row
     end
 
-    -- Les paires
-    local y = ty - TRIGGERS_H - 4
-    local title = UI.Text(page, "GameFontNormal", L.PAIRS_TITLE)
-    title:SetPoint("TOPLEFT", 14, y)
-    for i, pair in ipairs(ns.PAIRS) do
-        local row = CreateFrame("Frame", nil, page)
-        row:SetSize(WIDTH - 40, 24)
-        row:SetPoint("TOPLEFT", 12, y - 20 - (i - 1) * 26)
+    -- Les paires (celles des boutons affichés, puis LT + RT et LB + RB)
+    pairsTitle = UI.Text(btnList, "GameFontNormal", L.PAIRS_TITLE)
+    local allPairs = {}
+    for _, pair in ipairs(ns.PAIRS) do allPairs[#allPairs + 1] = pair end
+    for _, pair in ipairs(ns.PAD_PAIRS) do allPairs[#allPairs + 1] = pair end
+    for i, pair in ipairs(allPairs) do
+        local row = CreateFrame("Frame", nil, btnList)
+        row:SetSize(LIST_WIDTH - 4, 24)
         row.tag = Tag(row, 20)
         row.tag:SetPoint("LEFT", 6, 0)
         row.text = UI.Text(row, "GameFontHighlight")
@@ -584,28 +641,67 @@ end
 
 local function RefreshButtons()
     controllerName:SetText(ns.ControllerName(ns.Controller()))
+    local y = 0
+    local visible = {}
+    for _, id in ipairs(ns.VisibleIDs()) do visible[id] = true end
+
+    -- Les boutons de base d'abord
+    padTitle:ClearAllPoints()
+    padTitle:SetPoint("TOPLEFT", 2, y - 6)
+    y = y - 24
+    for _, row in ipairs(padRows) do
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", 0, y)
+        y = y - ROW_STEP
+        local current = ns.PadMode(row.id)
+        for mode, cb in pairs(row.modes) do cb:SetChecked(current == mode) end
+    end
+
+    -- Puis les boutons supplémentaires de la manette
+    extraTitle:ClearAllPoints()
+    extraTitle:SetPoint("TOPLEFT", 2, y - 6)
+    y = y - 26
     for _, row in ipairs(rows) do
         local id, def = row.id, ns.Button(row.id)
-        row.glyph:SetKey(id)
-        if not row.name:HasFocus() then row.name:SetText(ns.ButtonLabel(id)) end
-        row.key:SetText(def.key and ns.KeyLabel(def.key) or ("|cffff6060" .. L.KEY_NONE .. "|r"))
-        for mode, cb in pairs(row.modes) do cb:SetChecked(def.mode == mode) end
-    end
-    local on = ns.TriggersOn()
-    triggerChecks.modifier:SetChecked(on)
-    triggerChecks.off:SetChecked(not on)
-    for _, row in ipairs(pairRows) do
-        local pair = row.pair
-        SetTag(row.tag, { pair.a, pair.b })
-        if ns.PairReady(pair.id) then
-            row.text:SetText("|cff40ff40" .. L.PAIR_READY .. "|r")
-        else
-            row.text:SetText("|cff999999" .. L.PAIR_NEEDS:format(ns.ButtonLabel(pair.a), ns.ButtonLabel(pair.b)) .. "|r")
+        row:SetShown(visible[id] == true)
+        if visible[id] then
+            row:ClearAllPoints()
+            row:SetPoint("TOPLEFT", 0, y)
+            y = y - ROW_STEP
+            row.glyph:SetKey(id)
+            if not row.name:HasFocus() then row.name:SetText(ns.ButtonLabel(id)) end
+            row.key:SetText(def.key and ns.KeyLabel(def.key) or ("|cffff6060" .. L.KEY_NONE .. "|r"))
+            for mode, cb in pairs(row.modes) do cb:SetChecked(def.mode == mode) end
         end
     end
+
+    pairsTitle:ClearAllPoints()
+    pairsTitle:SetPoint("TOPLEFT", 2, y - 6)
+    y = y - 26
+    for _, row in ipairs(pairRows) do
+        local pair = row.pair
+        local shown = (visible[pair.a] and visible[pair.b]) or ns.PAD_KEY[pair.a] ~= nil
+        row:SetShown(shown)
+        if shown then
+            row:ClearAllPoints()
+            row:SetPoint("TOPLEFT", 0, y)
+            y = y - 26
+            SetTag(row.tag, { pair.a, pair.b })
+            if ns.PairReady(pair.id) then
+                row.text:SetText("|cff40ff40" .. L.PAIR_READY .. "|r")
+            else
+                row.text:SetText("|cff999999" .. L.PAIR_NEEDS:format(ns.ButtonLabel(pair.a), ns.ButtonLabel(pair.b)) .. "|r")
+            end
+        end
+    end
+    btnList:SetHeight(-y + 8)
+
     local warn
+    local targeting = ns.TargetingWarning()
     if ns.IsPending() then
         warn = "|cffff6060" .. L.APPLIED_AFTER_COMBAT .. "|r"
+    elseif targeting then
+        warn = "|cffff6060" .. targeting .. "|r"
     elseif IsLoaded("ImprovedForever") then
         warn = "|cffffd100" .. L.IF_WARNING .. "|r"
     end
@@ -749,8 +845,8 @@ end
 ---------------------------------------------------------------------------
 -- Fenêtre
 ---------------------------------------------------------------------------
-local TAB_ORDER = { "actions", "buttons", "profiles", "hud", "test", "help" }
-local TAB_W = math.floor((WIDTH - 28 - (#TAB_ORDER - 1) * 4) / #TAB_ORDER)
+local TAB_ORDER = { "actions", "buttons", "profiles", "hud", "test", "help", "donate" }
+local TAB_GAP = 4
 local titleText
 
 function RefreshAll()
@@ -812,11 +908,11 @@ local function Build()
     titleText = title
 
     local labels = { actions = L.TAB_ACTIONS, buttons = L.TAB_BUTTONS, profiles = L.TAB_PROFILES,
-        hud = L.TAB_HUD, test = L.TAB_TEST, help = L.TAB_HELP }
+        hud = L.TAB_HUD, test = L.TAB_TEST, help = L.TAB_HELP, donate = L.TAB_DONATE }
     local prev
     for _, key in ipairs(TAB_ORDER) do
-        local tab = UI.Button(f, labels[key], TAB_W, 24)
-        if prev then tab:SetPoint("LEFT", prev, "RIGHT", 4, 0) else tab:SetPoint("TOPLEFT", 14, -30) end
+        local tab = UI.Button(f, labels[key], 100, 24)
+        if prev then tab:SetPoint("LEFT", prev, "RIGHT", TAB_GAP, 0) else tab:SetPoint("TOPLEFT", 14, -30) end
         tab:SetScript("OnClick", function() SelectTab(key) end)
         tabs[key] = tab
         prev = tab
@@ -826,6 +922,18 @@ local function Build()
         page:SetPoint("BOTTOMRIGHT", -8, 8)
         page:Hide()
         pages[key] = page
+    end
+    -- (chaque onglet à la largeur de son texte, la place restante partagée :
+    -- les noms longs de certaines langues tiennent)
+    local natural, total = {}, 0
+    for _, key in ipairs(TAB_ORDER) do
+        local fs = tabs[key]:GetFontString()
+        natural[key] = (fs and fs:GetStringWidth() or 80) + 16
+        total = total + natural[key]
+    end
+    local extra = (WIDTH - 28 - (#TAB_ORDER - 1) * TAB_GAP - total) / #TAB_ORDER
+    for _, key in ipairs(TAB_ORDER) do
+        tabs[key]:SetWidth(math.floor(natural[key] + extra))
     end
 
     -- Actions : la liste à gauche, la couche à droite
@@ -841,6 +949,7 @@ local function Build()
     BuildHudPage(pages.hud)
     UI.BuildTestPage(pages.test)
     BuildHelp(pages.help)
+    UI.BuildDonatePage(pages.donate)
 
     f:SetScript("OnShow", RefreshAll)
     f:SetScript("OnHide", function() UI.HideMenu() end)
