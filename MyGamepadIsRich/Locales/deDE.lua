@@ -12,7 +12,6 @@ ns.AddLocale("deDE", {
     KEY_NONE = "nicht festgelegt",
     DETECT = "Erkennen",
     CLEAR = "Löschen",
-    MODE = "Modus:",
     MODE_MODIFIER = "Modifikator",
     MODE_SIMPLE = "Einfache Taste",
     MODE_OFF = "Deaktiviert",
@@ -87,7 +86,6 @@ ns.AddLocale("deDE", {
     TUTO_SKIP = "Tutorial überspringen",
     TUTO_FINISH = "Konfiguration öffnen",
     TUTO_REOPEN = "Tutorial geschlossen. Gib /mgir tuto ein, um es erneut zu sehen.",
-    TUTO_SUGGESTED = "Empfohlene Modi verwenden",
     HELP_REPLAY = "Tutorial erneut ansehen",
 
     TUTO_WELCOME_TITLE = "Willkommen bei My Gamepad Is Rich",
@@ -97,18 +95,8 @@ ns.AddLocale("deDE", {
         .. "Die gesendete Taste erscheint daneben.",
 
 
-    TUTO_ACTIONS_TEXT = "Im Konfigurationsfenster zeigt jede Taste ihre Plätze.\n\n"
-        .. "- Ziehe einen Zauber aus dem Zauberbuch, einen Gegenstand aus den Taschen, ein Makro, Reittier oder Spielzeug auf einen Platz.\n"
-        .. "- Oder Rechtsklick auf einen Platz: Zauber oder Taschengegenstand wählen, Makro schreiben, WoW-Befehl wählen (z. B. Automatisch laufen) oder leeren.\n\n"
-        .. "Aktionen werden pro Charakter gespeichert, Tasten und Modi für den ganzen Account. "
-        .. "Alles funktioniert im Kampf; nur Änderungen während des Kampfes warten auf sein Ende.",
 
     TUTO_DONE_TITLE = "Alles bereit",
-    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen festzulegen.\n\n"
-        .. "|cffffd100/mgir|r: Konfiguration öffnen\n"
-        .. "|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n"
-        .. "|cffffd100/mgir tuto|r: dieses Tutorial\n"
-        .. "|cffffd100/mgir reset|r: Aktionen dieses Charakters löschen",
 })
 
 -- HUD
@@ -201,22 +189,11 @@ ns.AddLocale("deDE", {
     CONTROLLER_OTHER = "Anderer Controller",
     EXTRA = "Taste",
     SOFTWARE_GENERIC = "die Software deines Controllers",
-    SETTINGS_DESC = "Richte die Zusatztasten deines Controllers ein (Rückseiten-Paddel, zusätzliche Trigger). Befehl: /mgir",
-    BUTTONS_INTRO = "Dein Controller und seine Zusatztasten: die Taste, die jede sendet, und was sie tut. Fahre über einen Modus, um zu sehen, was er macht.",
     TEST_INTRO = "Drücke eine beliebige Taste: Was WoW empfängt, leuchtet auf. Zeigen deine Zusatztasten nichts an, belege sie in der Software deines Controllers mit Tastaturtasten (siehe Hilfe).",
     LEARN_MODKEY = "Achtung: %s ist eine Umschalt- / Strg- / Alt-Taste; nimm in der Software deines Controllers lieber eine Taste wie F9-F12.",
 
-    TUTO_WELCOME_TEXT = "Dieses Addon bringt die Zusatztasten deines Controllers in WoW: Rückseiten-Paddel, zusätzliche Trigger oder Schultertasten "
-        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
-        .. "Jede davon kann ein gehaltener Modifikator sein (8 neue Kombinationen mit A, B, X, Y und dem Steuerkreuz) "
-        .. "oder eine einfache Taste mit eigenen LT- und RT-Ebenen.\n\n"
-        .. "Dieses Tutorial dauert etwa zwei Minuten. Du kannst es jederzeit verlassen und mit |cffffd100/mgir tuto|r wieder öffnen.",
 
-    TUTO_CONTROLLER_TITLE = "Schritt 1: Dein Controller",
-    TUTO_CONTROLLER_TEXT = "Wähle deinen Controller: Das Addon übernimmt dann die Namen seiner Tasten und sagt dir, mit welcher Software du sie einrichtest. "
-        .. "Nicht in der Liste? Wähle |cffffd100Anderer Controller|r (bis zu 6 Tasten, die du umbenennen kannst).",
 
-    TUTO_SOFTWARE_TITLE = "Schritt 2: Tastaturtasten zuweisen",
     TUTO_SOFTWARE_WHY = "Windows erkennt die meisten Controller als Xbox-Controller (XInput). Dieser Modus überträgt nur die Standardtasten, "
         .. "daher empfängt WoW die Zusatztasten nie. Die Lösung: Jede soll eine Tastaturtaste senden.",
     TUTO_SOFTWARE_VENDOR = "1. Schließe den Controller an und öffne |cffffd100%s|r.\n"
@@ -235,26 +212,10 @@ ns.AddLocale("deDE", {
         .. "4. Vermeide Umschalt, Strg und Alt: Sie würden deine anderen Belegungen verändern.\n\n"
         .. "|cffffd100reWASD|r (kostenpflichtig) kann das auch ohne Steam.",
 
-    TUTO_DETECT_TITLE = "Schritt 3: Tasten erkennen",
     TUTO_DETECT_ALL = "|cff40ff40Alle deine Tasten sind erkannt.|r",
-    TUTO_DETECT_MISSING = "Passiert beim Drücken nichts? Prüfe die Belegung in der Software deines Controllers (Schritt 2) und versuche es erneut.",
 
-    TUTO_MODES_TITLE = "Schritt 4: Modus wählen",
-    TUTO_MODES_TEXT = "|cffffd100Modifikator|r: Halte die Taste und drücke A, B, X, Y oder das Steuerkreuz. 8 Aktionen pro Taste, wie bei LT und RT.\n"
-        .. "|cffffd100Einfache Taste|r: eine Aktion, dazu eine mit gehaltenem LT und eine mit gehaltenem RT.\n"
-        .. "|cffffd100Deaktiviert|r: Die Taste bleibt frei.\n\n"
-        .. "Empfehlung: Modifikatoren auf die Tasten, die sich am leichtesten halten lassen, einfache Tasten auf die anderen.",
-    TUTO_PAIRS_TEXT = "|cffffd100Paare|r: Die Tasten bilden Paare (links + rechts). Sind beide Tasten eines Paares Modifikatoren, "
-        .. "ergibt das gemeinsame Halten 8 weitere Kombinationen.",
 
-    TUTO_ACTIONS_TITLE = "Schritt 5: Aktionen festlegen",
 
-    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch ein eigenes HUD unten am Bildschirm:\n\n"
-        .. "- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte LT, RT oder einen Modifikator und sie wechselt.\n"
-        .. "- |cffffd100In der Leiste|r (unten, oder oben mit /mgir hud strip): alle Ebenen in Miniatur (Allein, LT, RT, LT+RT, deine Modifikatoren und Paare); die gehaltene leuchtet auf.\n"
-        .. "- |cffffd100In der Mitte|r: deine einfachen Tasten, mit der Aktion, die zum gehaltenen Trigger ausgelöst wird.\n\n"
-        .. "Außerhalb des Kampfes wird es blasser, solange du nichts hältst.\n"
-        .. "|cffffd100/mgir hud|r: verschieben  -  |cffffd100/mgir hud scale 1.2|r: Größe  -  |cffffd100/mgir hud off|r: zurück zur Leiste des Spiels",
 })
 
 -- Profils : liste, export, import
@@ -403,16 +364,57 @@ ns.AddLocale("deDE", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("deDE", {
-    PAIRS_HINT = "Hake die gewünschten Paare an: Beide Modifikatoren zusammen gehalten ergeben 8 weitere Kombinationen. Zwei beliebige Modifikatoren können ein Paar bilden (L5 + LT, LB + RT...).",
-    PAIRS_NONE = "Stelle mindestens zwei Tasten auf Modifikator, Verbündete oder Feinde, um Paare zu bilden.",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("deDE", {
-    PAIR_WAITS = "%s steht auf Spiel: auf Modifikator, Verbündete oder Feinde stellen (oben)",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("deDE", {
     MODE_IS_DEFAULT = "Standard für diese Taste: Sie funktioniert wie im Spiel.",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("deDE", {
+    MODE = "Typ:",
+    TUTO_WELCOME_TEXT = "Mit diesem Addon legst du fest, was jede Taste deines Controllers tut: die Zusatztasten (Paddles hinten, zusätzliche Trigger: GameSir, Xbox Elite, DualSense Edge, SCUF...) und die Grundtasten LT, RT, LB und RB.\n\n|cffffd100Das Prinzip: Ebenen.|r Allein lösen A, B, X, Y und das Steuerkreuz 8 Aktionen aus. Halte eine Taste (LT, RT, ein Paddle...) und dieselben 8 Tasten lösen 8 andere Aktionen aus: Das ist eine neue Ebene. Jede gehaltene Taste gibt eine.\n\nDieses Tutorial dauert etwa zwei Minuten. Du kannst es jederzeit verlassen und mit |cffffd100/mgir tuto|r wieder öffnen.",
+    TUTO_CONTROLLER_TITLE = "Dein Controller",
+    TUTO_CONTROLLER_TEXT = "Wähle deinen Controller: Das Addon übernimmt die Namen seiner Zusatztasten und zeigt dir die Software, mit der sie eingerichtet werden. Ein normaler Xbox- oder PlayStation-Controller ohne Zusatztasten? Wähle ihn auch: LT, RT, LB und RB kannst du trotzdem einrichten. Nicht in der Liste? Wähle |cffffd100Anderer Controller|r (bis zu 6 Tasten, die du umbenennen kannst).",
+    TUTO_TYPES_TITLE = "Die 4 Tastentypen",
+    TUTO_TYPES_TEXT = "Jede Taste bekommt einen Typ, der festlegt, was sie tut. Du wählst ihn in den nächsten Schritten und jederzeit im Reiter |cffffd100Tasten|r (fahre über einen Typ, um seine Erklärung erneut zu lesen).",
+    TYPE_MODIFIER_HOW = "Halte sie und drücke dann A, B, X, Y oder das Steuerkreuz: eine Ebene mit 8 Aktionen. Allein tut sie nichts.",
+    TYPE_MODIFIER_FOR = "Für: Tasten, die sich leicht gedrückt halten lassen. Standard für LT und RT, wie im Spiel.",
+    TYPE_TARGET_HOW = "Ein kurzer Druck wählt den nächsten Verbündeten (oder Feind) als Ziel; halte sie und ziele mit dem rechten Stick, um einen anderen zu wählen. Gehalten mit A, B, X, Y oder dem Steuerkreuz: 8 Kürzel, wie ein Modifikator.",
+    TYPE_TARGET_FOR = "Für: Heilungen und Zauber auf ein Ziel. Standard für LB (Verbündete) und RB (Feinde), wie im Spiel.",
+    TYPE_SIMPLE_HOW = "Ein Druck löst eine Aktion aus. Mit gehaltenem LT oder RT löst sie eine andere aus. Sie hat auch ein Feld in jeder Modifikator-Ebene.",
+    TYPE_SIMPLE_FOR = "Für: einen Zauber, den du oft wirkst, einen Trank, ein Reittier.",
+    TYPE_OFF_HOW = "Die Taste tut nichts: Ihre Taste bleibt für anderes frei.",
+    TYPE_OFF_FOR = "Für: Zusatztasten, die du nicht benutzt (Grundtasten haben diesen Typ nicht).",
+    TUTO_SOFTWARE_TITLE = "Den Zusatztasten eine Taste zuweisen",
+    TUTO_DETECT_TITLE = "Deine Zusatztasten erkennen",
+    TUTO_DETECT_MISSING = "Beim Drücken passiert nichts? Prüfe die Taste in der Software deines Controllers und versuche es erneut.",
+    TUTO_MODES_TITLE = "Der Typ deiner Zusatztasten",
+    TUTO_MODES_TEXT = "Wähle für jede Zusatztaste einen Typ (fahre über einen Typ, um zu sehen, was er tut).\nTipp: Modifikatoren auf die Tasten, die sich am leichtesten halten lassen, einfache Tasten auf die anderen. |cffffd100Empfohlene Typen verwenden|r erledigt das für dich.",
+    TUTO_SUGGESTED = "Empfohlene Typen verwenden",
+    TUTO_PADS_TITLE = "Deine Grundtasten: LT, RT, LB, RB",
+    TUTO_PADS_TEXT = "Standardmäßig (in Grün) funktionieren sie wie im Spiel: LT und RT sind Modifikatoren, LB wählt Verbündete und RB Feinde als Ziel. Die Aktionen der Controller-Leiste des Spiels werden in ihre Ebenen übernommen. Du kannst sie ändern: zum Beispiel RB als einfache Taste oder LB als Modifikator.",
+    TUTO_PADS_DEFAULT = "Zurück zu den Standardtypen",
+    TUTO_PAIRS_TITLE = "Paare: zwei gemeinsam gehaltene Tasten",
+    TUTO_PAIRS_TEXT = "Halte zwei Tasten zusammen (Modifikatoren oder Zielerfassung): noch eine Ebene mit 8 Aktionen. Zwei beliebige Tasten können ein Paar bilden: L5 + R5, LT + RT, LB + LT... Hake die gewünschten an (du kannst sie später im Reiter |cffffd100Tasten|r ändern). Standard: die Paare links + rechts.",
+    TUTO_ACTIONS_TITLE = "Deine Aktionen platzieren",
+    TUTO_ACTIONS_TEXT = "Im Reiter |cffffd100Aktionen|r: links alle deine Ebenen (Allein, LT, RT, deine Modifikatoren und Paare); rechts die gewählte Ebene, angeordnet wie der Controller.\n\n- Ziehe einen Zauber aus deinem Zauberbuch, einen Gegenstand aus deinen Taschen, ein Makro, ein Reittier oder ein Spielzeug auf ein Feld.\n- Oder klicke auf ein Feld: einen Zauber oder Gegenstand wählen, ein Makro schreiben, einen WoW-Befehl (Automatisch laufen...) oder eine Grundaktion (Springen, Interagieren...) wählen. Rechtsklick: leeren.\n- Die Zeile unter dem Steuerkreuz: die Felder deiner einfachen Tasten in dieser Ebene.\n\nDu kannst auch auf eine Ebenen-Miniatur im HUD klicken, um sie direkt zu bearbeiten.\n\nAktionen werden pro Charakter gespeichert; Typen und Tasten im Profil, für den ganzen Account. Alles funktioniert im Kampf; nur Änderungen im Kampf warten auf sein Ende.",
+    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD:\n\n- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte eine Taste und sie wechselt.\n- |cffffd100Miniaturen|r: alle deine Ebenen, in der Mitte die Felder deiner einfachen Tasten; die gehaltene leuchtet auf. Klicke auf eine, um sie zu bearbeiten.\n- |cffffd100In der Mitte|r: deine einfachen Tasten mit der Aktion, die sie auslösen.\n\nEinstellungen (Größe, Position, Miniaturen): Reiter |cffffd100HUD|r. |cffffd100/mgir hud off|r: zurück zur Leiste des Spiels.",
+    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben (vor dem Deaktivieren des Addons)",
+    SETTINGS_DESC = "Lege fest, was jede Taste deines Controllers tut: Zusatztasten (Paddles hinten, zusätzliche Trigger) und Grundtasten (LT, RT, LB, RB). Befehl: /mgir",
+    BUTTONS_INTRO = "Wähle für jede Taste einen Typ: Fahre über einen Typ, um zu sehen, was er tut. In Grün: der Standardtyp der Grundtasten, der wie im Spiel funktioniert.",
+    BUTTONS_TYPES_HELP = "Die Tastentypen",
+    PAIRS_HINT = "Hake die gewünschten Paare an: Beide Tasten zusammen gehalten ergeben 8 weitere Aktionen. Zwei beliebige Modifikatoren oder Zieltasten können ein Paar bilden (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Stelle mindestens zwei Tasten auf Modifikator, Verbündete oder Feinde, um Paare zu bilden.",
+    PAIR_WAITS = "%s steht auf Spiel: auf Modifikator, Verbündete oder Feinde stellen (oben)",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("deDE", {
+    TUTO_PAIRS_PRESS = "Drücke eine Taste an deinem Controller: Ihre Paare leuchten grün auf. Drücke zwei Tasten zusammen: Ihr Paar leuchtet auf.",
 })

@@ -12,7 +12,6 @@ ns.AddLocale("enUS", {
     KEY_NONE = "not set",
     DETECT = "Detect",
     CLEAR = "Clear",
-    MODE = "Mode:",
     MODE_MODIFIER = "Modifier",
     MODE_SIMPLE = "Simple button",
     MODE_OFF = "Disabled",
@@ -88,7 +87,6 @@ ns.AddLocale("enUS", {
     TUTO_SKIP = "Skip tutorial",
     TUTO_FINISH = "Open the configuration",
     TUTO_REOPEN = "Tutorial closed. Type /mgir tuto to see it again.",
-    TUTO_SUGGESTED = "Use the suggested modes",
     HELP_REPLAY = "Replay the tutorial",
 
     TUTO_WELCOME_TITLE = "Welcome to My Gamepad Is Rich",
@@ -98,18 +96,8 @@ ns.AddLocale("enUS", {
         .. "The key it sends appears next to it.",
 
 
-    TUTO_ACTIONS_TEXT = "In the configuration window, each button shows its slots.\n\n"
-        .. "- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n"
-        .. "- Or right-click a slot: pick a spell or a bag item, write a macro, choose a WoW command (such as Auto Run), or clear it.\n\n"
-        .. "Actions are saved per character; keys and modes for the whole account. "
-        .. "Everything works in combat; only changes made during combat wait for it to end.",
 
     TUTO_DONE_TITLE = "You're ready",
-    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n"
-        .. "|cffffd100/mgir|r: open the configuration\n"
-        .. "|cffffd100/mgir test|r: controller test, to see what WoW receives\n"
-        .. "|cffffd100/mgir tuto|r: this tutorial\n"
-        .. "|cffffd100/mgir reset|r: clear this character's actions",
 })
 
 -- HUD
@@ -202,22 +190,11 @@ ns.AddLocale("enUS", {
     CONTROLLER_OTHER = "Other controller",
     EXTRA = "Button",
     SOFTWARE_GENERIC = "your controller's software",
-    SETTINGS_DESC = "Configure your controller's extra buttons (back paddles, extra triggers). Command: /mgir",
-    BUTTONS_INTRO = "Your controller and its extra buttons: the key each one sends, and what it does. Hover a mode to see what it does.",
     TEST_INTRO = "Press any button: what WoW receives lights up. If your extra buttons show nothing, give them keyboard keys in your controller's software (see Help).",
     LEARN_MODKEY = "Warning: %s is a Shift / Ctrl / Alt key; in your controller's software, prefer a key like F9-F12.",
 
-    TUTO_WELCOME_TEXT = "This addon brings your controller's extra buttons into WoW: back paddles, extra triggers or bumpers "
-        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
-        .. "Each one can be a held modifier (8 new combos with A, B, X, Y and the D-pad), "
-        .. "or a simple button with its own LT and RT layers.\n\n"
-        .. "This tutorial takes about two minutes. You can leave it at any time and open it again with |cffffd100/mgir tuto|r.",
 
-    TUTO_CONTROLLER_TITLE = "Step 1: Your controller",
-    TUTO_CONTROLLER_TEXT = "Pick your controller: the addon then uses the names of its buttons and tells you which software sets them up. "
-        .. "Not in the list? Choose |cffffd100Other controller|r (up to 6 buttons, which you can rename).",
 
-    TUTO_SOFTWARE_TITLE = "Step 2: Make the buttons send a key",
     TUTO_SOFTWARE_WHY = "Windows sees most controllers as an Xbox controller (XInput). That mode only carries the standard buttons, "
         .. "so WoW never receives the extra ones. The fix is to make each of them send a keyboard key.",
     TUTO_SOFTWARE_VENDOR = "1. Plug in the controller and open |cffffd100%s|r.\n"
@@ -236,26 +213,10 @@ ns.AddLocale("enUS", {
         .. "4. Avoid Shift, Ctrl and Alt: they would change your other bindings.\n\n"
         .. "|cffffd100reWASD|r (paid) can do the same without Steam.",
 
-    TUTO_DETECT_TITLE = "Step 3: Detect your buttons",
     TUTO_DETECT_ALL = "|cff40ff40All your buttons are detected.|r",
-    TUTO_DETECT_MISSING = "Nothing happens when you press a button? Check its key in your controller's software (step 2), then try again.",
 
-    TUTO_MODES_TITLE = "Step 4: Choose a mode",
-    TUTO_MODES_TEXT = "|cffffd100Modifier|r: hold the button, then press A, B, X, Y or the D-pad. 8 actions per button, like LT and RT.\n"
-        .. "|cffffd100Simple button|r: one action, plus one with LT held and one with RT held.\n"
-        .. "|cffffd100Disabled|r: the key is left free.\n\n"
-        .. "Suggested: modifiers on the buttons that are easiest to hold, simple buttons on the others.",
-    TUTO_PAIRS_TEXT = "|cffffd100Pairs|r: the buttons go in left + right pairs. When both buttons of a pair are modifiers, "
-        .. "holding them together gives 8 more combos.",
 
-    TUTO_ACTIONS_TITLE = "Step 5: Place your actions",
 
-    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD at the bottom of the screen:\n\n"
-        .. "- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold LT, RT or a modifier and it switches.\n"
-        .. "- |cffffd100In the strip|r (below, or above with /mgir hud strip): every layer in miniature (Alone, LT, RT, LT+RT, your modifiers and pairs); the one you hold lights up.\n"
-        .. "- |cffffd100In the middle|r: your simple buttons, with the action that will fire for the trigger you hold.\n\n"
-        .. "It fades out of combat while you hold nothing.\n"
-        .. "|cffffd100/mgir hud|r: move it  -  |cffffd100/mgir hud scale 1.2|r: size  -  |cffffd100/mgir hud off|r: back to the game's bar",
 })
 
 -- Profils : liste, export, import
@@ -404,16 +365,57 @@ ns.AddLocale("enUS", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("enUS", {
-    PAIRS_HINT = "Tick the pairs you want: holding both modifiers together gives 8 more combinations. Any two modifiers can form a pair (L5 + LT, LB + RT...).",
-    PAIRS_NONE = "Set at least two buttons as Modifier, Ally target or Enemy target to form pairs.",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("enUS", {
-    PAIR_WAITS = "%s is on Game: set it to Modifier, Ally target or Enemy target (above)",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("enUS", {
     MODE_IS_DEFAULT = "Default for this button: it works like in the game.",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("enUS", {
+    MODE = "Type:",
+    TUTO_WELCOME_TEXT = "This addon lets you choose what every button of your controller does: the extra buttons (back paddles, extra triggers: GameSir, Xbox Elite, DualSense Edge, SCUF...) and the base buttons LT, RT, LB and RB.\n\n|cffffd100The idea: layers.|r On their own, A, B, X, Y and the D-pad cast 8 actions. Hold a button (LT, RT, a paddle...) and those same 8 buttons cast 8 other actions: that is a new layer. Every button you hold gives one.\n\nThis tutorial takes about two minutes. You can leave at any time and reopen it with |cffffd100/mgir tuto|r.",
+    TUTO_CONTROLLER_TITLE = "Your controller",
+    TUTO_CONTROLLER_TEXT = "Pick your controller: the addon then uses the names of its extra buttons and tells you which software sets them up. A standard Xbox or PlayStation controller with no extra buttons? Pick it too: you can still set up LT, RT, LB and RB. Not in the list? Pick |cffffd100Other controller|r (up to 6 buttons, which you can rename).",
+    TUTO_TYPES_TITLE = "The 4 button types",
+    TUTO_TYPES_TEXT = "Each button gets a type, which says what it does. You pick it in the next steps, and at any time in the |cffffd100Buttons|r tab (hover a type to read its explanation again).",
+    TYPE_MODIFIER_HOW = "Hold it, then press A, B, X, Y or the D-pad: a layer of 8 actions. On its own, it does nothing.",
+    TYPE_MODIFIER_FOR = "For: buttons that are easy to keep pressed. Default for LT and RT, like in the game.",
+    TYPE_TARGET_HOW = "A short press targets the nearest ally (or enemy); hold it and aim with the right stick to pick another one. Held with A, B, X, Y or the D-pad: 8 shortcuts, like a modifier.",
+    TYPE_TARGET_FOR = "For: heals and spells cast on a target. Default for LB (ally) and RB (enemy), like in the game.",
+    TYPE_SIMPLE_HOW = "One press casts one action. With LT or RT held, it casts another one. It also has a slot in each modifier layer.",
+    TYPE_SIMPLE_FOR = "For: a spell you cast often, a potion, a mount.",
+    TYPE_OFF_HOW = "The button does nothing: its key stays free for something else.",
+    TYPE_OFF_FOR = "For: extra buttons you do not use (base buttons do not have this type).",
+    TUTO_SOFTWARE_TITLE = "Make the extra buttons send a key",
+    TUTO_DETECT_TITLE = "Detect your extra buttons",
+    TUTO_DETECT_MISSING = "Nothing happens when you press? Check the button's key in your controller's software, then try again.",
+    TUTO_MODES_TITLE = "The type of your extra buttons",
+    TUTO_MODES_TEXT = "Pick a type for each extra button (hover a type to read what it does).\nTip: modifiers on the buttons easiest to hold, simple buttons on the others. |cffffd100Use the suggested types|r does it for you.",
+    TUTO_SUGGESTED = "Use the suggested types",
+    TUTO_PADS_TITLE = "Your base buttons: LT, RT, LB, RB",
+    TUTO_PADS_TEXT = "By default (in green), they work like in the game: LT and RT are modifiers, LB targets allies and RB enemies. The actions of the game's controller bar are copied into their layers. You can change them: for example RB as a simple button, or LB as a modifier.",
+    TUTO_PADS_DEFAULT = "Back to the default types",
+    TUTO_PAIRS_TITLE = "Pairs: two buttons held together",
+    TUTO_PAIRS_TEXT = "Hold two buttons together (modifiers or targeting): yet another layer of 8 actions. Any two can make a pair: L5 + R5, LT + RT, LB + LT... Tick the ones you want (you can change them later in the |cffffd100Buttons|r tab). By default: the left + right pairs.",
+    TUTO_ACTIONS_TITLE = "Place your actions",
+    TUTO_ACTIONS_TEXT = "In the |cffffd100Actions|r tab: on the left, all your layers (Alone, LT, RT, your modifiers and pairs); on the right, the chosen layer, laid out like the controller.\n\n- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n- Or click a slot: pick a spell or an item, write a macro, pick a WoW command (Auto run...) or a basic action (Jump, Interact...). Right-click: clear.\n- The row under the D-pad holds your simple buttons' slots in that layer.\n\nYou can also click a layer thumbnail on the HUD to edit it right there.\n\nActions are saved per character; types and keys in the profile, for the whole account. Everything works in combat; only changes made in combat wait for it to end.",
+    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD:\n\n- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold a button and it changes.\n- |cffffd100Thumbnails|r: all your layers, with your simple buttons' slots in the middle; the one you hold lights up. Click one to edit it.\n- |cffffd100In the center|r: your simple buttons, with the action they will cast.\n\nSettings (size, position, thumbnails): |cffffd100HUD|r tab. |cffffd100/mgir hud off|r: back to the game's bar.",
+    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game (before disabling the addon)",
+    SETTINGS_DESC = "Choose what every button of your controller does: extra buttons (back paddles, extra triggers) and base buttons (LT, RT, LB, RB). Command: /mgir",
+    BUTTONS_INTRO = "Pick a type for each button: hover a type to see what it does. In green: the default type of the base buttons, which works like the game.",
+    BUTTONS_TYPES_HELP = "The button types",
+    PAIRS_HINT = "Tick the pairs you want: holding both buttons together gives 8 more actions. Any two modifiers or targeting buttons can form a pair (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Set at least two buttons as Modifier, Ally target or Enemy target to form pairs.",
+    PAIR_WAITS = "%s is on Game: set it to Modifier, Ally target or Enemy target (above)",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("enUS", {
+    TUTO_PAIRS_PRESS = "Press a button on your controller: its pairs light up in green. Press two buttons together: their pair lights up.",
 })

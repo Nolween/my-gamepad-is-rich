@@ -12,7 +12,6 @@ ns.AddLocale("itIT", {
     KEY_NONE = "non impostato",
     DETECT = "Rileva",
     CLEAR = "Cancella",
-    MODE = "Modalità:",
     MODE_MODIFIER = "Modificatore",
     MODE_SIMPLE = "Pulsante semplice",
     MODE_OFF = "Disattivato",
@@ -87,7 +86,6 @@ ns.AddLocale("itIT", {
     TUTO_SKIP = "Salta il tutorial",
     TUTO_FINISH = "Apri la configurazione",
     TUTO_REOPEN = "Tutorial chiuso. Scrivi /mgir tuto per rivederlo.",
-    TUTO_SUGGESTED = "Usa le modalità consigliate",
     HELP_REPLAY = "Rivedi il tutorial",
 
     TUTO_WELCOME_TITLE = "Benvenuto in My Gamepad Is Rich",
@@ -97,18 +95,8 @@ ns.AddLocale("itIT", {
         .. "Il tasto inviato appare accanto.",
 
 
-    TUTO_ACTIONS_TEXT = "Nella finestra di configurazione, ogni pulsante mostra i suoi spazi.\n\n"
-        .. "- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su uno spazio.\n"
-        .. "- Oppure clic destro su uno spazio: scegli un incantesimo o un oggetto della borsa, scrivi una macro, scegli un comando di WoW (come Corsa automatica) o svuotalo.\n\n"
-        .. "Le azioni sono salvate per personaggio; tasti e modalità per tutto l'account. "
-        .. "Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano che finisca.",
 
     TUTO_DONE_TITLE = "Tutto pronto",
-    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n"
-        .. "|cffffd100/mgir|r: apri la configurazione\n"
-        .. "|cffffd100/mgir test|r: test controller, per vedere cosa riceve WoW\n"
-        .. "|cffffd100/mgir tuto|r: questo tutorial\n"
-        .. "|cffffd100/mgir reset|r: svuota le azioni di questo personaggio",
 })
 
 -- HUD
@@ -201,22 +189,11 @@ ns.AddLocale("itIT", {
     CONTROLLER_OTHER = "Altro controller",
     EXTRA = "Pulsante",
     SOFTWARE_GENERIC = "il software del tuo controller",
-    SETTINGS_DESC = "Configura i pulsanti aggiuntivi del tuo controller (palette posteriori, grilletti extra). Comando: /mgir",
-    BUTTONS_INTRO = "Il tuo controller e i suoi pulsanti aggiuntivi: il tasto che ognuno invia e cosa fa. Passa sopra una modalità per vedere cosa fa.",
     TEST_INTRO = "Premi un pulsante qualsiasi: ciò che WoW riceve si illumina. Se i tuoi pulsanti aggiuntivi non mostrano nulla, assegna loro dei tasti nel software del tuo controller (vedi Aiuto).",
     LEARN_MODKEY = "Attenzione: %s è un tasto Maiusc / Ctrl / Alt; nel software del tuo controller meglio un tasto come F9-F12.",
 
-    TUTO_WELCOME_TEXT = "Questo addon porta in WoW i pulsanti aggiuntivi del tuo controller: palette posteriori, grilletti o pulsanti extra "
-        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
-        .. "Ognuno può essere un modificatore da tenere premuto (8 nuove combinazioni con A, B, X, Y e la croce direzionale) "
-        .. "o un pulsante semplice con i propri strati LT e RT.\n\n"
-        .. "Questo tutorial dura circa due minuti. Puoi uscire in qualsiasi momento e riaprirlo con |cffffd100/mgir tuto|r.",
 
-    TUTO_CONTROLLER_TITLE = "Passo 1: Il tuo controller",
-    TUTO_CONTROLLER_TEXT = "Scegli il tuo controller: l'addon userà i nomi dei suoi pulsanti e ti dirà quale software li configura. "
-        .. "Non è nell'elenco? Scegli |cffffd100Altro controller|r (fino a 6 pulsanti, che puoi rinominare).",
 
-    TUTO_SOFTWARE_TITLE = "Passo 2: Far inviare un tasto ai pulsanti",
     TUTO_SOFTWARE_WHY = "Windows vede la maggior parte dei controller come un controller Xbox (XInput). Questa modalità trasmette solo i pulsanti standard, "
         .. "quindi WoW non riceve mai quelli aggiuntivi. La soluzione: far inviare a ognuno un tasto della tastiera.",
     TUTO_SOFTWARE_VENDOR = "1. Collega il controller e apri |cffffd100%s|r.\n"
@@ -235,26 +212,10 @@ ns.AddLocale("itIT", {
         .. "4. Evita Maiusc, Ctrl e Alt: cambierebbero le tue altre assegnazioni.\n\n"
         .. "|cffffd100reWASD|r (a pagamento) fa lo stesso senza Steam.",
 
-    TUTO_DETECT_TITLE = "Passo 3: Rileva i tuoi pulsanti",
     TUTO_DETECT_ALL = "|cff40ff40Tutti i tuoi pulsanti sono rilevati.|r",
-    TUTO_DETECT_MISSING = "Non succede nulla quando premi? Controlla il tasto del pulsante nel software del tuo controller (passo 2) e riprova.",
 
-    TUTO_MODES_TITLE = "Passo 4: Scegli una modalità",
-    TUTO_MODES_TEXT = "|cffffd100Modificatore|r: tieni premuto il pulsante, poi premi A, B, X, Y o la croce. 8 azioni per pulsante, come LT e RT.\n"
-        .. "|cffffd100Pulsante semplice|r: un'azione, più una con LT tenuto premuto e una con RT tenuto premuto.\n"
-        .. "|cffffd100Disattivato|r: il tasto resta libero.\n\n"
-        .. "Consiglio: modificatori sui pulsanti più facili da tenere premuti, pulsanti semplici sugli altri.",
-    TUTO_PAIRS_TEXT = "|cffffd100Coppie|r: i pulsanti vanno in coppie sinistra + destra. Se entrambi i pulsanti di una coppia sono modificatori, "
-        .. "tenerli premuti insieme dà 8 combinazioni in più.",
 
-    TUTO_ACTIONS_TITLE = "Passo 5: Posiziona le tue azioni",
 
-    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD, in basso sullo schermo:\n\n"
-        .. "- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto LT, RT o un modificatore e cambia.\n"
-        .. "- |cffffd100Nella striscia|r (in basso, o in alto con /mgir hud strip): tutti gli strati in miniatura (Da solo, LT, RT, LT+RT, i tuoi modificatori e coppie); quello tenuto si illumina.\n"
-        .. "- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che partirà in base al grilletto tenuto.\n\n"
-        .. "Si attenua fuori dal combattimento quando non tieni premuto nulla.\n"
-        .. "|cffffd100/mgir hud|r: spostarlo  -  |cffffd100/mgir hud scale 1.2|r: dimensione  -  |cffffd100/mgir hud off|r: tornare alla barra del gioco",
 })
 
 -- Profils : liste, export, import
@@ -403,16 +364,57 @@ ns.AddLocale("itIT", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("itIT", {
-    PAIRS_HINT = "Spunta le coppie da usare: tenere premuti entrambi i modificatori dà 8 combinazioni in più. Due modificatori qualsiasi possono formare una coppia (L5 + LT, LB + RT...).",
-    PAIRS_NONE = "Imposta almeno due pulsanti come Modificatore, Alleato o Nemico per formare coppie.",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("itIT", {
-    PAIR_WAITS = "%s è su Gioco: impostalo su Modificatore, Alleato o Nemico (sopra)",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("itIT", {
     MODE_IS_DEFAULT = "Predefinito per questo pulsante: funziona come nel gioco.",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("itIT", {
+    MODE = "Tipo:",
+    TUTO_WELCOME_TEXT = "Questo addon ti permette di scegliere cosa fa ogni pulsante del tuo controller: i pulsanti aggiuntivi (palette posteriori, grilletti extra: GameSir, Xbox Elite, DualSense Edge, SCUF...) e i pulsanti di base LT, RT, LB e RB.\n\n|cffffd100Il principio: gli strati.|r Da soli, A, B, X, Y e la croce lanciano 8 azioni. Tieni premuto un pulsante (LT, RT, una paletta...) e quegli stessi 8 pulsanti lanciano altre 8 azioni: è un nuovo strato. Ogni pulsante tenuto premuto ne dà uno.\n\nQuesto tutorial dura circa due minuti. Puoi uscire in qualsiasi momento e riaprirlo con |cffffd100/mgir tuto|r.",
+    TUTO_CONTROLLER_TITLE = "Il tuo controller",
+    TUTO_CONTROLLER_TEXT = "Scegli il tuo controller: l'addon usa i nomi dei suoi pulsanti aggiuntivi e ti indica il software che li configura. Un normale controller Xbox o PlayStation, senza pulsanti extra? Sceglilo comunque: potrai configurare LT, RT, LB e RB. Non è nella lista? Scegli |cffffd100Altro controller|r (fino a 6 pulsanti, che puoi rinominare).",
+    TUTO_TYPES_TITLE = "I 4 tipi di pulsante",
+    TUTO_TYPES_TEXT = "Ogni pulsante riceve un tipo, che dice cosa fa. Lo scegli nei passi successivi, e in qualsiasi momento nella scheda |cffffd100Pulsanti|r (passa il mouse su un tipo per rileggerne la spiegazione).",
+    TYPE_MODIFIER_HOW = "Tienilo premuto, poi premi A, B, X, Y o la croce: uno strato di 8 azioni. Da solo non fa nulla.",
+    TYPE_MODIFIER_FOR = "Per: i pulsanti facili da tenere premuti. Predefinito per LT e RT, come nel gioco.",
+    TYPE_TARGET_HOW = "Una pressione breve seleziona l'alleato (o il nemico) più vicino; tienilo premuto e mira con lo stick destro per sceglierne un altro. Tenuto con A, B, X, Y o la croce: 8 scorciatoie, come un modificatore.",
+    TYPE_TARGET_FOR = "Per: cure e incantesimi su un bersaglio. Predefinito per LB (alleato) e RB (nemico), come nel gioco.",
+    TYPE_SIMPLE_HOW = "Una pressione lancia un'azione. Con LT o RT tenuto premuto, ne lancia un'altra. Ha anche una casella in ogni strato di modificatore.",
+    TYPE_SIMPLE_FOR = "Per: un incantesimo che lanci spesso, una pozione, una cavalcatura.",
+    TYPE_OFF_HOW = "Il pulsante non fa nulla: il suo tasto resta libero per altro.",
+    TYPE_OFF_FOR = "Per: i pulsanti aggiuntivi che non usi (i pulsanti di base non hanno questo tipo).",
+    TUTO_SOFTWARE_TITLE = "Far inviare un tasto ai pulsanti aggiuntivi",
+    TUTO_DETECT_TITLE = "Rileva i tuoi pulsanti aggiuntivi",
+    TUTO_DETECT_MISSING = "Non succede nulla quando premi? Controlla il tasto del pulsante nel software del controller, poi riprova.",
+    TUTO_MODES_TITLE = "Il tipo dei tuoi pulsanti aggiuntivi",
+    TUTO_MODES_TEXT = "Scegli il tipo di ogni pulsante aggiuntivo (passa il mouse su un tipo per vedere cosa fa).\nConsiglio: modificatori sui pulsanti più facili da tenere premuti, pulsanti semplici sugli altri. |cffffd100Usa i tipi consigliati|r lo fa per te.",
+    TUTO_SUGGESTED = "Usa i tipi consigliati",
+    TUTO_PADS_TITLE = "I tuoi pulsanti di base: LT, RT, LB, RB",
+    TUTO_PADS_TEXT = "Di base (in verde) funzionano come nel gioco: LT e RT sono modificatori, LB seleziona gli alleati e RB i nemici. Le azioni della barra del controller del gioco vengono copiate nei loro strati. Puoi cambiarli: per esempio RB come pulsante semplice, o LB come modificatore.",
+    TUTO_PADS_DEFAULT = "Torna ai tipi predefiniti",
+    TUTO_PAIRS_TITLE = "Coppie: due pulsanti tenuti insieme",
+    TUTO_PAIRS_TEXT = "Tieni premuti due pulsanti insieme (modificatori o di selezione bersaglio): un altro strato di 8 azioni. Due pulsanti qualsiasi possono formare una coppia: L5 + R5, LT + RT, LB + LT... Spunta quelle che vuoi (potrai cambiarle nella scheda |cffffd100Pulsanti|r). Predefinite: le coppie sinistra + destra.",
+    TUTO_ACTIONS_TITLE = "Posiziona le tue azioni",
+    TUTO_ACTIONS_TEXT = "Nella scheda |cffffd100Azioni|r: a sinistra, tutti i tuoi strati (Da solo, LT, RT, i tuoi modificatori e coppie); a destra, lo strato scelto, disposto come il controller.\n\n- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su una casella.\n- Oppure clicca su una casella: scegliere un incantesimo o un oggetto, scrivere una macro, scegliere un comando di WoW (Corsa automatica...) o un'azione di base (Salta, Interagisci...). Clic destro: svuota.\n- La riga sotto la croce: le caselle dei tuoi pulsanti semplici in quello strato.\n\nPuoi anche cliccare su una miniatura di strato nell'HUD per modificarla lì.\n\nLe azioni sono salvate per personaggio; tipi e tasti nel profilo, per tutto l'account. Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano la sua fine.",
+    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD:\n\n- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto un pulsante e cambia.\n- |cffffd100Le miniature|r: tutti i tuoi strati, con al centro le caselle dei tuoi pulsanti semplici; quello tenuto si illumina. Clicca su una per modificarla.\n- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che lanceranno.\n\nImpostazioni (dimensione, posizione, miniature): scheda |cffffd100HUD|r. |cffffd100/mgir hud off|r: torna alla barra del gioco.",
+    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco (prima di disattivare l'addon)",
+    SETTINGS_DESC = "Scegli cosa fa ogni pulsante del tuo controller: pulsanti aggiuntivi (palette posteriori, grilletti extra) e pulsanti di base (LT, RT, LB, RB). Comando: /mgir",
+    BUTTONS_INTRO = "Scegli il tipo di ogni pulsante: passa il mouse su un tipo per vedere cosa fa. In verde: il tipo predefinito dei pulsanti di base, che funziona come nel gioco.",
+    BUTTONS_TYPES_HELP = "I tipi di pulsante",
+    PAIRS_HINT = "Spunta le coppie da usare: tenere premuti i due pulsanti insieme dà 8 azioni in più. Due modificatori o pulsanti di selezione bersaglio qualsiasi possono formare una coppia (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Imposta almeno due pulsanti come Modificatore, Alleato o Nemico per formare coppie.",
+    PAIR_WAITS = "%s è su Gioco: impostalo su Modificatore, Alleato o Nemico (sopra)",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("itIT", {
+    TUTO_PAIRS_PRESS = "Premi un pulsante del controller: le sue coppie si illuminano di verde. Premi due pulsanti insieme: si illumina la loro coppia.",
 })

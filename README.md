@@ -74,7 +74,7 @@ La solution : les programmer dans le logiciel de la manette (ou Steam Input) pou
 
 ## Étape 2 — Dans WoW
 
-Au premier lancement, un **tutoriel** s'ouvre et guide ces étapes : choix de la manette, logiciel à utiliser, détection des boutons et choix des modes directement dans la fenêtre. On peut le revoir avec `/mgir tuto` ou depuis l'onglet Aide.
+Au premier lancement (et une fois après la mise à jour qui l'a refait), un **tutoriel** s'ouvre : le principe des couches, le choix de la manette, **les 4 types de boutons** (Modificateur, Cible alliée / ennemie, Bouton simple, Désactivé) expliqués en cartes, les boutons de base (types par défaut en vert), puis — seulement si la manette a des boutons en plus — le logiciel, la détection et le type de ces boutons ; ensuite les paires à cocher, la pose des actions et le HUD. Tout se règle directement dans la fenêtre. On peut le revoir avec `/mgir tuto`, depuis l'onglet Aide, ou ouvrir l'explication des types avec le bouton « Les types de boutons » de l'onglet Boutons. La page de l'addon dans Options > AddOns reprend aussi cette explication.
 
 La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 

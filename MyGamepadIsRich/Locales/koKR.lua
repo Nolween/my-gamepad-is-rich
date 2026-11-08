@@ -12,7 +12,6 @@ ns.AddLocale("koKR", {
     KEY_NONE = "설정 안 됨",
     DETECT = "감지",
     CLEAR = "지우기",
-    MODE = "모드:",
     MODE_MODIFIER = "수정키",
     MODE_SIMPLE = "단일 버튼",
     MODE_OFF = "사용 안 함",
@@ -87,7 +86,6 @@ ns.AddLocale("koKR", {
     TUTO_SKIP = "튜토리얼 건너뛰기",
     TUTO_FINISH = "설정 열기",
     TUTO_REOPEN = "튜토리얼을 닫았습니다. 다시 보려면 /mgir tuto를 입력하세요.",
-    TUTO_SUGGESTED = "추천 모드 사용",
     HELP_REPLAY = "튜토리얼 다시 보기",
 
     TUTO_WELCOME_TITLE = "My Gamepad Is Rich에 오신 것을 환영합니다",
@@ -97,18 +95,8 @@ ns.AddLocale("koKR", {
         .. "버튼이 보내는 키가 옆에 표시됩니다.",
 
 
-    TUTO_ACTIONS_TEXT = "설정 창에서 각 버튼의 칸을 볼 수 있습니다.\n\n"
-        .. "- 마법책의 주문, 가방의 아이템, 매크로, 탈것, 장난감을 칸으로 끌어 놓으세요.\n"
-        .. "- 또는 칸을 오른쪽 클릭: 주문이나 가방 아이템 선택, 매크로 작성, WoW 명령 선택(예: 자동 달리기), 비우기.\n\n"
-        .. "동작은 캐릭터별로, 키와 모드는 계정 전체에 저장됩니다. "
-        .. "모든 기능은 전투 중에도 작동하며, 전투 중에 바꾼 설정만 전투가 끝난 뒤 적용됩니다.",
 
     TUTO_DONE_TITLE = "준비 완료",
-    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n"
-        .. "|cffffd100/mgir|r: 설정 열기\n"
-        .. "|cffffd100/mgir test|r: 컨트롤러 테스트 (WoW가 받는 입력 확인)\n"
-        .. "|cffffd100/mgir tuto|r: 이 튜토리얼\n"
-        .. "|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기",
 })
 
 -- HUD
@@ -201,22 +189,11 @@ ns.AddLocale("koKR", {
     CONTROLLER_OTHER = "기타 컨트롤러",
     EXTRA = "버튼",
     SOFTWARE_GENERIC = "컨트롤러 소프트웨어",
-    SETTINGS_DESC = "컨트롤러의 추가 버튼(후면 패들, 추가 트리거)을 설정합니다. 명령어: /mgir",
-    BUTTONS_INTRO = "컨트롤러와 추가 버튼: 각 버튼이 보내는 키와 기능. 모드 위에 마우스를 올리면 설명이 나옵니다.",
     TEST_INTRO = "아무 버튼이나 누르세요. WoW가 받은 입력이 켜집니다. 추가 버튼에 아무것도 표시되지 않으면 컨트롤러 소프트웨어에서 키보드 키를 지정하세요 (도움말 참고).",
     LEARN_MODKEY = "주의: %s 키는 Shift / Ctrl / Alt 키입니다. 컨트롤러 소프트웨어에서는 F9-F12 같은 키를 권장합니다.",
 
-    TUTO_WELCOME_TEXT = "이 애드온은 컨트롤러의 추가 버튼(후면 패들, 추가 트리거나 범퍼: "
-        .. "GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...)을 WoW에서 쓸 수 있게 해 줍니다.\n\n"
-        .. "각 버튼은 누르고 있는 수정키(A, B, X, Y와 십자키로 새로운 조합 8개)가 되거나, "
-        .. "LT와 RT 층을 따로 가진 단일 버튼이 될 수 있습니다.\n\n"
-        .. "튜토리얼은 2분 정도 걸립니다. 언제든 나갈 수 있으며 |cffffd100/mgir tuto|r로 다시 열 수 있습니다.",
 
-    TUTO_CONTROLLER_TITLE = "1단계: 컨트롤러",
-    TUTO_CONTROLLER_TEXT = "컨트롤러를 선택하세요. 애드온이 해당 컨트롤러의 버튼 이름을 쓰고, 버튼을 설정할 소프트웨어를 알려 줍니다. "
-        .. "목록에 없나요? |cffffd100기타 컨트롤러|r를 선택하세요(버튼 최대 6개, 이름 변경 가능).",
 
-    TUTO_SOFTWARE_TITLE = "2단계: 버튼이 키를 보내게 하기",
     TUTO_SOFTWARE_WHY = "Windows는 대부분의 컨트롤러를 Xbox 컨트롤러(XInput)로 인식합니다. 이 모드는 기본 버튼만 전달하므로 "
         .. "WoW는 추가 버튼을 받지 못합니다. 해결 방법은 각 버튼이 키보드 키를 보내게 하는 것입니다.",
     TUTO_SOFTWARE_VENDOR = "1. 컨트롤러를 연결하고 |cffffd100%s|r을(를) 여세요.\n"
@@ -235,26 +212,10 @@ ns.AddLocale("koKR", {
         .. "4. Shift, Ctrl, Alt는 피하세요. 다른 단축키가 바뀝니다.\n\n"
         .. "|cffffd100reWASD|r(유료)로도 Steam 없이 같은 설정을 할 수 있습니다.",
 
-    TUTO_DETECT_TITLE = "3단계: 버튼 감지",
     TUTO_DETECT_ALL = "|cff40ff40모든 버튼이 감지되었습니다.|r",
-    TUTO_DETECT_MISSING = "눌러도 아무 반응이 없나요? 컨트롤러 소프트웨어(2단계)에서 버튼의 키를 확인한 뒤 다시 시도하세요.",
 
-    TUTO_MODES_TITLE = "4단계: 모드 선택",
-    TUTO_MODES_TEXT = "|cffffd100수정키|r: 버튼을 누른 채로 A, B, X, Y 또는 십자키를 누르세요. LT, RT처럼 버튼마다 동작 8개.\n"
-        .. "|cffffd100단일 버튼|r: 기본 동작 하나, LT를 누른 상태의 동작 하나, RT를 누른 상태의 동작 하나.\n"
-        .. "|cffffd100사용 안 함|r: 키를 비워 둡니다.\n\n"
-        .. "추천: 누르고 있기 쉬운 버튼은 수정키, 나머지는 단일 버튼.",
-    TUTO_PAIRS_TEXT = "|cffffd100쌍|r: 버튼은 왼쪽 + 오른쪽 쌍을 이룹니다. 한 쌍의 두 버튼이 모두 수정키이면 "
-        .. "함께 눌러 조합 8개를 더 쓸 수 있습니다.",
 
-    TUTO_ACTIONS_TITLE = "5단계: 동작 배치",
 
-    TUTO_HUD_TEXT = "애드온은 게임의 컨트롤러 바 대신 화면 아래쪽에 자체 HUD를 표시합니다.\n\n"
-        .. "- |cffffd100크게|r: 지금 사용하는 층. 왼쪽은 십자키, 오른쪽은 A/B/X/Y. LT, RT 또는 수정키를 누르고 있으면 바뀝니다.\n"
-        .. "- |cffffd100미리보기 줄|r(아래, 또는 /mgir hud strip으로 위): 모든 층의 미리보기(단독, LT, RT, LT+RT, 수정키와 쌍). 누르고 있는 층이 켜집니다.\n"
-        .. "- |cffffd100가운데|r: 단일 버튼, 그리고 누르고 있는 트리거에 따라 나갈 동작.\n\n"
-        .. "전투 중이 아니고 아무것도 누르지 않으면 흐려집니다.\n"
-        .. "|cffffd100/mgir hud|r: 이동  -  |cffffd100/mgir hud scale 1.2|r: 크기  -  |cffffd100/mgir hud off|r: 게임 바로 돌아가기",
 })
 
 -- Profils : liste, export, import
@@ -403,16 +364,57 @@ ns.AddLocale("koKR", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("koKR", {
-    PAIRS_HINT = "사용할 쌍을 선택하세요. 두 수정키를 함께 누르면 8개의 조합이 추가됩니다. 어떤 두 수정키든 쌍이 될 수 있습니다 (L5 + LT, LB + RT...).",
-    PAIRS_NONE = "쌍을 만들려면 버튼 두 개 이상을 수정키, 아군 대상 또는 적 대상으로 설정하세요.",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("koKR", {
-    PAIR_WAITS = "%s: 게임 모드입니다. 수정키, 아군 대상 또는 적 대상으로 설정하세요 (위)",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("koKR", {
     MODE_IS_DEFAULT = "이 버튼의 기본값: 게임에서와 같이 동작합니다.",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("koKR", {
+    MODE = "유형:",
+    TUTO_WELCOME_TEXT = "이 애드온으로 컨트롤러의 모든 버튼이 할 일을 정할 수 있습니다: 추가 버튼(뒷면 패들, 추가 트리거: GameSir, Xbox Elite, DualSense Edge, SCUF...)과 기본 버튼 LT, RT, LB, RB.\n\n|cffffd100원리: 층.|r A, B, X, Y와 십자키는 그 자체로 동작 8개를 실행합니다. 버튼 하나(LT, RT, 패들...)를 누르고 있으면 같은 8개 버튼이 다른 동작 8개를 실행합니다: 새로운 층입니다. 누르고 있는 버튼마다 층이 하나씩 생깁니다.\n\n이 튜토리얼은 약 2분 걸립니다. 언제든 닫을 수 있고 |cffffd100/mgir tuto|r로 다시 열 수 있습니다.",
+    TUTO_CONTROLLER_TITLE = "컨트롤러",
+    TUTO_CONTROLLER_TEXT = "컨트롤러를 선택하세요. 애드온이 추가 버튼의 이름을 가져오고 설정용 프로그램을 알려 줍니다. 추가 버튼이 없는 일반 Xbox나 PlayStation 컨트롤러인가요? 그래도 선택하세요. LT, RT, LB, RB는 설정할 수 있습니다. 목록에 없나요? |cffffd100기타 컨트롤러|r를 선택하세요(버튼 최대 6개, 이름 변경 가능).",
+    TUTO_TYPES_TITLE = "버튼 유형 4가지",
+    TUTO_TYPES_TEXT = "각 버튼에는 하는 일을 정하는 유형이 있습니다. 다음 단계에서, 그리고 언제든 |cffffd100버튼|r 탭에서 선택할 수 있습니다(유형 위에 마우스를 올리면 설명을 다시 볼 수 있습니다).",
+    TYPE_MODIFIER_HOW = "누른 채로 A, B, X, Y 또는 십자키를 누르세요: 동작 8개의 층. 혼자서는 아무것도 하지 않습니다.",
+    TYPE_MODIFIER_FOR = "추천: 누르고 있기 쉬운 버튼. 게임처럼 LT와 RT의 기본값입니다.",
+    TYPE_TARGET_HOW = "짧게 누르면 가장 가까운 아군(또는 적)을 대상으로 잡습니다. 누른 채로 오른쪽 스틱으로 조준하면 다른 대상을 고를 수 있습니다. 누른 채로 A, B, X, Y 또는 십자키: 수정키처럼 단축 동작 8개.",
+    TYPE_TARGET_FOR = "추천: 대상에게 쓰는 치유와 주문. 게임처럼 LB(아군)와 RB(적)의 기본값입니다.",
+    TYPE_SIMPLE_HOW = "한 번 누르면 동작 하나를 실행합니다. LT나 RT를 누른 채로는 다른 동작을 실행합니다. 각 수정키 층에도 칸이 하나 있습니다.",
+    TYPE_SIMPLE_FOR = "추천: 자주 쓰는 주문, 물약, 탈것.",
+    TYPE_OFF_HOW = "버튼이 아무것도 하지 않습니다: 키는 다른 용도로 비워 둡니다.",
+    TYPE_OFF_FOR = "추천: 사용하지 않는 추가 버튼(기본 버튼에는 이 유형이 없습니다).",
+    TUTO_SOFTWARE_TITLE = "추가 버튼이 키를 보내게 하기",
+    TUTO_DETECT_TITLE = "추가 버튼 감지",
+    TUTO_DETECT_MISSING = "눌러도 아무 일도 없나요? 컨트롤러 프로그램에서 버튼의 키를 확인하고 다시 시도하세요.",
+    TUTO_MODES_TITLE = "추가 버튼의 유형",
+    TUTO_MODES_TEXT = "추가 버튼마다 유형을 선택하세요(유형 위에 마우스를 올리면 하는 일을 볼 수 있습니다).\n팁: 누르고 있기 가장 쉬운 버튼에는 수정키, 나머지에는 단일 버튼. |cffffd100추천 유형 사용|r을 누르면 자동으로 설정됩니다.",
+    TUTO_SUGGESTED = "추천 유형 사용",
+    TUTO_PADS_TITLE = "기본 버튼: LT, RT, LB, RB",
+    TUTO_PADS_TEXT = "기본값(초록색)은 게임과 같이 동작합니다: LT와 RT는 수정키, LB는 아군 대상, RB는 적 대상. 게임 컨트롤러 바의 동작이 해당 층으로 복사됩니다. 바꿀 수도 있습니다: 예를 들어 RB를 단일 버튼으로, LB를 수정키로.",
+    TUTO_PADS_DEFAULT = "기본 유형으로 되돌리기",
+    TUTO_PAIRS_TITLE = "쌍: 함께 누르는 두 버튼",
+    TUTO_PAIRS_TEXT = "두 버튼(수정키 또는 대상 지정)을 함께 누르세요: 동작 8개의 층이 하나 더 생깁니다. 어떤 두 버튼이든 쌍이 될 수 있습니다: L5 + R5, LT + RT, LB + LT... 원하는 쌍을 선택하세요(나중에 |cffffd100버튼|r 탭에서 바꿀 수 있습니다). 기본값: 왼쪽 + 오른쪽 쌍.",
+    TUTO_ACTIONS_TITLE = "동작 배치",
+    TUTO_ACTIONS_TEXT = "|cffffd100동작|r 탭: 왼쪽에는 모든 층(단독, LT, RT, 수정키와 쌍), 오른쪽에는 선택한 층이 컨트롤러 모양으로 표시됩니다.\n\n- 주문서의 주문, 가방의 아이템, 매크로, 탈것, 장난감을 칸으로 끌어다 놓으세요.\n- 또는 칸을 클릭: 주문이나 아이템 선택, 매크로 작성, WoW 명령(자동 달리기...) 또는 기본 동작(점프, 상호작용...) 선택. 오른쪽 클릭: 비우기.\n- 십자키 아래 줄: 이 층에서 단일 버튼의 칸.\n\nHUD의 층 미리보기를 클릭해 그 자리에서 수정할 수도 있습니다.\n\n동작은 캐릭터별로 저장되고, 유형과 키는 계정 전체의 프로필에 저장됩니다. 모든 기능은 전투 중에도 작동하며, 전투 중 변경만 전투가 끝난 뒤 적용됩니다.",
+    TUTO_HUD_TEXT = "애드온이 게임의 컨트롤러 바를 자체 HUD로 대체합니다:\n\n- |cffffd100크게|r: 지금 사용하는 층. 왼쪽은 십자키, 오른쪽은 A/B/X/Y. 버튼을 누르고 있으면 바뀝니다.\n- |cffffd100미리보기|r: 모든 층, 가운데에는 단일 버튼의 칸. 누르고 있는 층이 강조됩니다. 클릭하면 수정할 수 있습니다.\n- |cffffd100가운데|r: 단일 버튼과 실행될 동작.\n\n설정(크기, 위치, 미리보기): |cffffd100HUD|r 탭. |cffffd100/mgir hud off|r: 게임 바로 돌아가기.",
+    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n|cffffd100/mgir|r: 설정 열기\n|cffffd100/mgir test|r: 컨트롤러 테스트, WoW가 받는 입력 보기\n|cffffd100/mgir tuto|r: 이 튜토리얼\n|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기\n|cffffd100/mgir restore|r: LT, RT, LB, RB를 게임에 돌려주기(애드온을 끄기 전에)",
+    SETTINGS_DESC = "컨트롤러의 모든 버튼이 할 일을 정하세요: 추가 버튼(뒷면 패들, 추가 트리거)과 기본 버튼(LT, RT, LB, RB). 명령어: /mgir",
+    BUTTONS_INTRO = "버튼마다 유형을 선택하세요. 유형 위에 마우스를 올리면 하는 일을 볼 수 있습니다. 초록색: 게임처럼 동작하는 기본 버튼의 기본 유형.",
+    BUTTONS_TYPES_HELP = "버튼 유형",
+    PAIRS_HINT = "사용할 쌍을 선택하세요. 두 버튼을 함께 누르면 동작 8개가 추가됩니다. 어떤 두 수정키나 대상 지정 버튼이든 쌍이 될 수 있습니다 (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "쌍을 만들려면 버튼 두 개 이상을 수정키, 아군 대상 또는 적 대상으로 설정하세요.",
+    PAIR_WAITS = "%s: 게임 모드입니다. 수정키, 아군 대상 또는 적 대상으로 설정하세요 (위)",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("koKR", {
+    TUTO_PAIRS_PRESS = "컨트롤러의 버튼을 누르면 그 버튼의 쌍이 초록색으로 표시됩니다. 두 버튼을 함께 누르면 그 쌍이 표시됩니다.",
 })

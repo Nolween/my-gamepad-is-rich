@@ -12,7 +12,6 @@ ns.AddLocale("zhCN", {
     KEY_NONE = "未设置",
     DETECT = "检测",
     CLEAR = "清除",
-    MODE = "模式：",
     MODE_MODIFIER = "修饰键",
     MODE_SIMPLE = "普通按键",
     MODE_OFF = "禁用",
@@ -87,7 +86,6 @@ ns.AddLocale("zhCN", {
     TUTO_SKIP = "跳过教程",
     TUTO_FINISH = "打开设置",
     TUTO_REOPEN = "教程已关闭。输入 /mgir tuto 可再次查看。",
-    TUTO_SUGGESTED = "使用推荐模式",
     HELP_REPLAY = "重新查看教程",
 
     TUTO_WELCOME_TITLE = "欢迎使用 My Gamepad Is Rich",
@@ -97,18 +95,8 @@ ns.AddLocale("zhCN", {
         .. "它发送的键位会显示在旁边。",
 
 
-    TUTO_ACTIONS_TEXT = "在设置窗口中，每个按键都会显示它的格子。\n\n"
-        .. "- 将法术书中的法术、背包里的物品、宏、坐骑或玩具拖到格子上。\n"
-        .. "- 或右键点击格子：选择法术或背包物品、编写宏、选择 WoW 命令（如自动奔跑），或清空。\n\n"
-        .. "动作按角色保存；键位和模式对整个账号生效。"
-        .. "所有功能在战斗中都可用；只有战斗中做的更改会等到战斗结束后生效。",
 
     TUTO_DONE_TITLE = "一切就绪",
-    TUTO_DONE_TEXT = "打开设置，放置你的第一批动作。\n\n"
-        .. "|cffffd100/mgir|r：打开设置\n"
-        .. "|cffffd100/mgir test|r：手柄测试，查看 WoW 收到的输入\n"
-        .. "|cffffd100/mgir tuto|r：本教程\n"
-        .. "|cffffd100/mgir reset|r：清空此角色的动作",
 })
 
 -- HUD
@@ -201,22 +189,11 @@ ns.AddLocale("zhCN", {
     CONTROLLER_OTHER = "其他手柄",
     EXTRA = "按键",
     SOFTWARE_GENERIC = "手柄的配套软件",
-    SETTINGS_DESC = "设置手柄的额外按键（背键、额外扳机）。命令：/mgir",
-    BUTTONS_INTRO = "你的手柄及其额外按键：每个键发送的键位，以及它的作用。将鼠标移到模式上可查看说明。",
     TEST_INTRO = "按任意按键：WoW 收到的输入会亮起。如果额外按键没有反应，请在手柄的配套软件中为它们设置键盘按键（见帮助）。",
     LEARN_MODKEY = "注意：%s 是 Shift / Ctrl / Alt 键；在手柄的配套软件中最好使用 F9-F12 之类的键。",
 
-    TUTO_WELCOME_TEXT = "本插件让你在 WoW 中使用手柄的额外按键：背键、额外扳机或肩键"
-        .. "（GameSir、Xbox Elite、DualSense Edge、SCUF、8BitDo、飞智…）。\n\n"
-        .. "每个键都可以作为按住的修饰键（与 A、B、X、Y 和十字键组成 8 个新组合），"
-        .. "也可以作为拥有独立 LT 和 RT 层的普通按键。\n\n"
-        .. "本教程大约需要两分钟。你可以随时退出，并用 |cffffd100/mgir tuto|r 再次打开。",
 
-    TUTO_CONTROLLER_TITLE = "第 1 步：你的手柄",
-    TUTO_CONTROLLER_TEXT = "选择你的手柄：插件会使用它的按键名称，并告诉你用哪个软件设置这些按键。"
-        .. "列表里没有？请选择 |cffffd100其他手柄|r（最多 6 个按键，可重命名）。",
 
-    TUTO_SOFTWARE_TITLE = "第 2 步：让按键发送键盘按键",
     TUTO_SOFTWARE_WHY = "Windows 会把大多数手柄识别为 Xbox 手柄（XInput）。此模式只传输标准按键，"
         .. "因此 WoW 永远收不到额外按键。解决办法：让每个额外按键发送一个键盘按键。",
     TUTO_SOFTWARE_VENDOR = "1. 连接手柄并打开 |cffffd100%s|r。\n"
@@ -235,25 +212,10 @@ ns.AddLocale("zhCN", {
         .. "4. 避免使用 Shift、Ctrl 和 Alt：它们会改变你的其他快捷键。\n\n"
         .. "|cffffd100reWASD|r（付费）无需 Steam 也能做到。",
 
-    TUTO_DETECT_TITLE = "第 3 步：检测按键",
     TUTO_DETECT_ALL = "|cff40ff40所有按键都已检测到。|r",
-    TUTO_DETECT_MISSING = "按下后没有反应？请在手柄的配套软件（第 2 步）中检查该键的设置，然后重试。",
 
-    TUTO_MODES_TITLE = "第 4 步：选择模式",
-    TUTO_MODES_TEXT = "|cffffd100修饰键|r：按住该键，再按 A、B、X、Y 或十字键。每个键 8 个动作，与 LT、RT 相同。\n"
-        .. "|cffffd100普通按键|r：一个动作，外加按住 LT 时一个、按住 RT 时一个。\n"
-        .. "|cffffd100禁用|r：键位保持空闲。\n\n"
-        .. "推荐：最容易按住的键设为修饰键，其余设为普通按键。",
-    TUTO_PAIRS_TEXT = "|cffffd100组合|r：按键按左 + 右成对。当一对中的两个键都是修饰键时，同时按住它们可再获得 8 个组合。",
 
-    TUTO_ACTIONS_TITLE = "第 5 步：放置动作",
 
-    TUTO_HUD_TEXT = "本插件用自己的 HUD 取代游戏的手柄动作条，位于屏幕下方：\n\n"
-        .. "- |cffffd100大图|r：你正在使用的层，左边是十字键，右边是 A/B/X/Y。按住 LT、RT 或修饰键即可切换。\n"
-        .. "- |cffffd100缩略图栏|r（在下方，或用 /mgir hud strip 移到上方）：所有层的缩略图（单独、LT、RT、LT+RT、你的修饰键和组合）；按住的那一层会亮起。\n"
-        .. "- |cffffd100中间|r：你的普通按键，以及按住扳机时将触发的动作。\n\n"
-        .. "非战斗状态且没有按住任何键时，它会变淡。\n"
-        .. "|cffffd100/mgir hud|r：移动  -  |cffffd100/mgir hud scale 1.2|r：大小  -  |cffffd100/mgir hud off|r：恢复游戏动作条",
 })
 
 -- Profils : liste, export, import
@@ -402,16 +364,57 @@ ns.AddLocale("zhCN", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("zhCN", {
-    PAIRS_HINT = "勾选要使用的组合：同时按住两个修饰键可再获得 8 个组合。任意两个修饰键都能组成组合（L5 + LT、LB + RT……）。",
-    PAIRS_NONE = "至少将两个按键设为修饰键、友方目标或敌方目标，才能组成组合。",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("zhCN", {
-    PAIR_WAITS = "%s 处于“游戏”：请设为修饰键、友方目标或敌方目标（上方）",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("zhCN", {
     MODE_IS_DEFAULT = "此按键的默认设置：与游戏中的作用相同。",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("zhCN", {
+    MODE = "类型：",
+    TUTO_WELCOME_TEXT = "这个插件让你决定手柄上每个按键的作用：额外按键（背键、额外扳机：GameSir、Xbox Elite、DualSense Edge、SCUF……）以及基础按键 LT、RT、LB 和 RB。\n\n|cffffd100原理：层。|r单独按下时，A、B、X、Y 和十字键触发 8 个动作。按住一个按键（LT、RT、背键……），同样这 8 个按键会触发另外 8 个动作：这就是一个新的层。每个按住的按键都对应一层。\n\n本教程大约需要两分钟。你可以随时退出，并用 |cffffd100/mgir tuto|r 重新打开。",
+    TUTO_CONTROLLER_TITLE = "你的手柄",
+    TUTO_CONTROLLER_TEXT = "选择你的手柄：插件会使用其额外按键的名称，并告诉你用哪个软件来设置它们。没有额外按键的普通 Xbox 或 PlayStation 手柄？也选择它：你仍然可以设置 LT、RT、LB 和 RB。列表里没有？选择 |cffffd100其他手柄|r（最多 6 个按键，可以重命名）。",
+    TUTO_TYPES_TITLE = "4 种按键类型",
+    TUTO_TYPES_TEXT = "每个按键都有一个类型，决定它的作用。你可以在接下来的步骤中选择，也可以随时在 |cffffd100按键|r 标签页中更改（将鼠标悬停在类型上可再次查看说明）。",
+    TYPE_MODIFIER_HOW = "按住它，再按 A、B、X、Y 或十字键：一层 8 个动作。单独按下时什么也不做。",
+    TYPE_MODIFIER_FOR = "适合：容易一直按住的按键。LT 和 RT 默认为此类型，与游戏中相同。",
+    TYPE_TARGET_HOW = "短按选择最近的友方（或敌方）目标；按住并用右摇杆瞄准可以选择其他目标。按住时配合 A、B、X、Y 或十字键：8 个快捷动作，和修饰键一样。",
+    TYPE_TARGET_FOR = "适合：对目标施放的治疗和法术。LB（友方）和 RB（敌方）默认为此类型，与游戏中相同。",
+    TYPE_SIMPLE_HOW = "按一下触发一个动作。按住 LT 或 RT 时触发另一个动作。它在每个修饰键层中也有一个格子。",
+    TYPE_SIMPLE_FOR = "适合：常用的法术、药水、坐骑。",
+    TYPE_OFF_HOW = "按键不做任何事：它的按键留作他用。",
+    TYPE_OFF_FOR = "适合：你不使用的额外按键（基础按键没有此类型）。",
+    TUTO_SOFTWARE_TITLE = "让额外按键发送一个按键",
+    TUTO_DETECT_TITLE = "检测你的额外按键",
+    TUTO_DETECT_MISSING = "按下后没有反应？在手柄软件中检查该按键的设置，然后重试。",
+    TUTO_MODES_TITLE = "额外按键的类型",
+    TUTO_MODES_TEXT = "为每个额外按键选择类型（将鼠标悬停在类型上可查看其作用）。\n建议：最容易按住的按键设为修饰键，其他设为普通按键。|cffffd100使用推荐类型|r 会帮你完成。",
+    TUTO_SUGGESTED = "使用推荐类型",
+    TUTO_PADS_TITLE = "你的基础按键：LT、RT、LB、RB",
+    TUTO_PADS_TEXT = "默认（绿色）与游戏中相同：LT 和 RT 是修饰键，LB 选择友方目标，RB 选择敌方目标。游戏手柄动作条上的动作会复制到它们的层中。你也可以更改：例如把 RB 设为普通按键，或把 LB 设为修饰键。",
+    TUTO_PADS_DEFAULT = "恢复默认类型",
+    TUTO_PAIRS_TITLE = "组合：同时按住两个按键",
+    TUTO_PAIRS_TEXT = "同时按住两个按键（修饰键或目标选择）：再多一层 8 个动作。任意两个都能组成组合：L5 + R5、LT + RT、LB + LT……勾选你想要的（之后可在 |cffffd100按键|r 标签页中更改）。默认：左 + 右组合。",
+    TUTO_ACTIONS_TITLE = "放置你的动作",
+    TUTO_ACTIONS_TEXT = "在 |cffffd100动作|r 标签页：左边是你所有的层（单独、LT、RT、你的修饰键和组合）；右边是所选的层，按手柄布局排列。\n\n- 从法术书拖入法术，从背包拖入物品、宏、坐骑或玩具到格子上。\n- 或点击格子：选择法术或物品、编写宏、选择 WoW 命令（自动奔跑……）或基础动作（跳跃、互动……）。右键：清空。\n- 十字键下方那一行：你的普通按键在该层中的格子。\n\n你也可以点击 HUD 上的层缩略图直接编辑。\n\n动作按角色保存；类型和按键保存在配置档中，整个账号通用。所有功能在战斗中都能使用；只有在战斗中做的修改会等到战斗结束后生效。",
+    TUTO_HUD_TEXT = "插件用自己的 HUD 替换游戏的手柄动作条：\n\n- |cffffd100大图|r：你正在使用的层，左边是十字键，右边是 A/B/X/Y。按住一个按键即可切换。\n- |cffffd100缩略图|r：你所有的层，中间是普通按键的格子；正在按住的层会高亮。点击缩略图即可编辑。\n- |cffffd100中央|r：你的普通按键，以及它们将触发的动作。\n\n设置（大小、位置、缩略图）：|cffffd100HUD|r 标签页。|cffffd100/mgir hud off|r：恢复游戏动作条。",
+    TUTO_DONE_TEXT = "打开设置来放置你的第一批动作。\n\n|cffffd100/mgir|r：打开设置\n|cffffd100/mgir test|r：手柄测试，查看 WoW 收到的输入\n|cffffd100/mgir tuto|r：本教程\n|cffffd100/mgir reset|r：清空此角色的动作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 还给游戏（停用插件前）",
+    SETTINGS_DESC = "决定手柄上每个按键的作用：额外按键（背键、额外扳机）和基础按键（LT、RT、LB、RB）。命令：/mgir",
+    BUTTONS_INTRO = "为每个按键选择类型：将鼠标悬停在类型上可查看其作用。绿色：基础按键的默认类型，与游戏中相同。",
+    BUTTONS_TYPES_HELP = "按键类型",
+    PAIRS_HINT = "勾选要使用的组合：同时按住两个按键可再获得 8 个动作。任意两个修饰键或目标选择按键都能组成组合（L5 + LT、LB + RT……）。",
+    PAIRS_NONE = "至少将两个按键设为修饰键、友方目标或敌方目标，才能组成组合。",
+    PAIR_WAITS = "%s 处于“游戏”：请设为修饰键、友方目标或敌方目标（上方）",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("zhCN", {
+    TUTO_PAIRS_PRESS = "按下手柄上的一个按键：它所在的组合会以绿色高亮。同时按下两个按键：它们的组合会高亮。",
 })

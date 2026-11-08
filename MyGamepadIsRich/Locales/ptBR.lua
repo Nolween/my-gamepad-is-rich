@@ -12,7 +12,6 @@ ns.AddLocale("ptBR", {
     KEY_NONE = "não definida",
     DETECT = "Detectar",
     CLEAR = "Apagar",
-    MODE = "Modo:",
     MODE_MODIFIER = "Modificador",
     MODE_SIMPLE = "Botão simples",
     MODE_OFF = "Desativado",
@@ -87,7 +86,6 @@ ns.AddLocale("ptBR", {
     TUTO_SKIP = "Pular o tutorial",
     TUTO_FINISH = "Abrir a configuração",
     TUTO_REOPEN = "Tutorial fechado. Digite /mgir tuto para vê-lo de novo.",
-    TUTO_SUGGESTED = "Usar os modos sugeridos",
     HELP_REPLAY = "Ver o tutorial de novo",
 
     TUTO_WELCOME_TITLE = "Bem-vindo ao My Gamepad Is Rich",
@@ -97,18 +95,8 @@ ns.AddLocale("ptBR", {
         .. "A tecla enviada aparece ao lado.",
 
 
-    TUTO_ACTIONS_TEXT = "Na janela de configuração, cada botão mostra seus espaços.\n\n"
-        .. "- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n"
-        .. "- Ou clique com o botão direito em um espaço: escolha um feitiço ou item da bolsa, escreva uma macro, escolha um comando do WoW (como Correr automaticamente) ou esvazie-o.\n\n"
-        .. "As ações são salvas por personagem; as teclas e os modos, para a conta toda. "
-        .. "Tudo funciona em combate; só as mudanças feitas em combate esperam ele terminar.",
 
     TUTO_DONE_TITLE = "Tudo pronto",
-    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n"
-        .. "|cffffd100/mgir|r: abrir a configuração\n"
-        .. "|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n"
-        .. "|cffffd100/mgir tuto|r: este tutorial\n"
-        .. "|cffffd100/mgir reset|r: esvaziar as ações deste personagem",
 })
 
 -- HUD
@@ -201,22 +189,11 @@ ns.AddLocale("ptBR", {
     CONTROLLER_OTHER = "Outro controle",
     EXTRA = "Botão",
     SOFTWARE_GENERIC = "o software do seu controle",
-    SETTINGS_DESC = "Configure os botões extras do seu controle (paddles traseiros, gatilhos extras). Comando: /mgir",
-    BUTTONS_INTRO = "Seu controle e seus botões extras: a tecla que cada um envia e o que ele faz. Passe o mouse sobre um modo para ver o que ele faz.",
     TEST_INTRO = "Aperte qualquer botão: o que o WoW recebe se acende. Se seus botões extras não mostrarem nada, atribua teclas a eles no software do seu controle (veja Ajuda).",
     LEARN_MODKEY = "Atenção: %s é uma tecla Shift / Ctrl / Alt; no software do seu controle, prefira uma tecla como F9-F12.",
 
-    TUTO_WELCOME_TEXT = "Este addon traz para o WoW os botões extras do seu controle: paddles traseiros, gatilhos ou botões extras "
-        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
-        .. "Cada um pode ser um modificador segurado (8 novas combinações com A, B, X, Y e o direcional) "
-        .. "ou um botão simples com suas próprias camadas LT e RT.\n\n"
-        .. "Este tutorial leva uns dois minutos. Você pode sair a qualquer momento e abri-lo de novo com |cffffd100/mgir tuto|r.",
 
-    TUTO_CONTROLLER_TITLE = "Passo 1: Seu controle",
-    TUTO_CONTROLLER_TEXT = "Escolha seu controle: o addon passa a usar os nomes dos botões dele e diz qual software os configura. "
-        .. "Não está na lista? Escolha |cffffd100Outro controle|r (até 6 botões, que você pode renomear).",
 
-    TUTO_SOFTWARE_TITLE = "Passo 2: Fazer os botões enviarem uma tecla",
     TUTO_SOFTWARE_WHY = "O Windows vê a maioria dos controles como um controle de Xbox (XInput). Esse modo só transmite os botões padrão, "
         .. "então o WoW nunca recebe os extras. A solução: fazer cada um enviar uma tecla do teclado.",
     TUTO_SOFTWARE_VENDOR = "1. Conecte o controle e abra |cffffd100%s|r.\n"
@@ -235,26 +212,10 @@ ns.AddLocale("ptBR", {
         .. "4. Evite Shift, Ctrl e Alt: eles mudariam suas outras teclas de atalho.\n\n"
         .. "O |cffffd100reWASD|r (pago) faz o mesmo sem a Steam.",
 
-    TUTO_DETECT_TITLE = "Passo 3: Detectar seus botões",
     TUTO_DETECT_ALL = "|cff40ff40Todos os seus botões foram detectados.|r",
-    TUTO_DETECT_MISSING = "Nada acontece ao apertar? Verifique a tecla do botão no software do seu controle (passo 2) e tente de novo.",
 
-    TUTO_MODES_TITLE = "Passo 4: Escolher um modo",
-    TUTO_MODES_TEXT = "|cffffd100Modificador|r: segure o botão e aperte A, B, X, Y ou o direcional. 8 ações por botão, como LT e RT.\n"
-        .. "|cffffd100Botão simples|r: uma ação, mais uma com LT segurado e outra com RT segurado.\n"
-        .. "|cffffd100Desativado|r: a tecla fica livre.\n\n"
-        .. "Sugestão: modificadores nos botões mais fáceis de segurar, botões simples nos outros.",
-    TUTO_PAIRS_TEXT = "|cffffd100Pares|r: os botões formam pares esquerda + direita. Quando os dois botões de um par são modificadores, "
-        .. "segurá-los juntos dá mais 8 combinações.",
 
-    TUTO_ACTIONS_TITLE = "Passo 5: Colocar suas ações",
 
-    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo próprio HUD, na parte de baixo da tela:\n\n"
-        .. "- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure LT, RT ou um modificador e ela muda.\n"
-        .. "- |cffffd100Na faixa|r (embaixo, ou em cima com /mgir hud strip): todas as camadas em miniatura (Sozinho, LT, RT, LT+RT, seus modificadores e pares); a que você segura se acende.\n"
-        .. "- |cffffd100No centro|r: seus botões simples, com a ação que vai sair conforme o gatilho segurado.\n\n"
-        .. "Ele fica mais apagado fora de combate enquanto você não segura nada.\n"
-        .. "|cffffd100/mgir hud|r: mover  -  |cffffd100/mgir hud scale 1.2|r: tamanho  -  |cffffd100/mgir hud off|r: voltar à barra do jogo",
 })
 
 -- Profils : liste, export, import
@@ -403,16 +364,57 @@ ns.AddLocale("ptBR", {
 
 -- Paires libres (deux modificateurs quelconques)
 ns.AddLocale("ptBR", {
-    PAIRS_HINT = "Marque os pares que quer usar: segurar os dois modificadores juntos dá 8 combinações a mais. Quaisquer dois modificadores podem formar um par (L5 + LT, LB + RT...).",
-    PAIRS_NONE = "Coloque pelo menos dois botões em Modificador, Alvo aliado ou Alvo inimigo para formar pares.",
 })
 
 -- Paire avec un bouton de base resté au jeu
 ns.AddLocale("ptBR", {
-    PAIR_WAITS = "%s está em Jogo: coloque em Modificador, Alvo aliado ou Alvo inimigo (acima)",
 })
 
 -- Boutons de base : mode par défaut
 ns.AddLocale("ptBR", {
     MODE_IS_DEFAULT = "Padrão para este botão: funciona como no jogo.",
+})
+
+-- Tutoriel : les types de boutons, boutons de base, paires ; options
+ns.AddLocale("ptBR", {
+    MODE = "Tipo:",
+    TUTO_WELCOME_TEXT = "Este addon permite escolher o que cada botão do seu controle faz: os botões extras (paletas traseiras, gatilhos extras: GameSir, Xbox Elite, DualSense Edge, SCUF...) e os botões básicos LT, RT, LB e RB.\n\n|cffffd100A ideia: camadas.|r Sozinhos, A, B, X, Y e o direcional lançam 8 ações. Segure um botão (LT, RT, uma paleta...) e esses mesmos 8 botões lançam outras 8 ações: é uma nova camada. Cada botão que você segura dá uma.\n\nEste tutorial leva cerca de dois minutos. Você pode sair a qualquer momento e reabri-lo com |cffffd100/mgir tuto|r.",
+    TUTO_CONTROLLER_TITLE = "Seu controle",
+    TUTO_CONTROLLER_TEXT = "Escolha seu controle: o addon usa os nomes dos botões extras e mostra o programa que os configura. Um controle Xbox ou PlayStation comum, sem botões extras? Escolha-o também: você ainda poderá configurar LT, RT, LB e RB. Não está na lista? Escolha |cffffd100Outro controle|r (até 6 botões, que você pode renomear).",
+    TUTO_TYPES_TITLE = "Os 4 tipos de botão",
+    TUTO_TYPES_TEXT = "Cada botão recebe um tipo, que diz o que ele faz. Você o escolhe nas próximas etapas e a qualquer momento na aba |cffffd100Botões|r (passe o mouse sobre um tipo para rever a explicação).",
+    TYPE_MODIFIER_HOW = "Segure-o e aperte A, B, X, Y ou o direcional: uma camada de 8 ações. Sozinho, não faz nada.",
+    TYPE_MODIFIER_FOR = "Para: botões fáceis de manter pressionados. Padrão para LT e RT, como no jogo.",
+    TYPE_TARGET_HOW = "Um toque rápido seleciona o aliado (ou inimigo) mais próximo; segure e mire com o analógico direito para escolher outro. Segurado com A, B, X, Y ou o direcional: 8 atalhos, como um modificador.",
+    TYPE_TARGET_FOR = "Para: curas e feitiços em um alvo. Padrão para LB (aliado) e RB (inimigo), como no jogo.",
+    TYPE_SIMPLE_HOW = "Um toque lança uma ação. Com LT ou RT segurado, lança outra. Também tem um espaço em cada camada de modificador.",
+    TYPE_SIMPLE_FOR = "Para: um feitiço que você usa muito, uma poção, uma montaria.",
+    TYPE_OFF_HOW = "O botão não faz nada: sua tecla fica livre para outra coisa.",
+    TYPE_OFF_FOR = "Para: botões extras que você não usa (os botões básicos não têm este tipo).",
+    TUTO_SOFTWARE_TITLE = "Fazer os botões extras enviarem uma tecla",
+    TUTO_DETECT_TITLE = "Detectar seus botões extras",
+    TUTO_DETECT_MISSING = "Nada acontece ao apertar? Verifique a tecla do botão no programa do seu controle e tente de novo.",
+    TUTO_MODES_TITLE = "O tipo dos seus botões extras",
+    TUTO_MODES_TEXT = "Escolha o tipo de cada botão extra (passe o mouse sobre um tipo para ver o que ele faz).\nDica: modificadores nos botões mais fáceis de segurar, botões simples nos outros. |cffffd100Usar os tipos sugeridos|r faz isso por você.",
+    TUTO_SUGGESTED = "Usar os tipos sugeridos",
+    TUTO_PADS_TITLE = "Seus botões básicos: LT, RT, LB, RB",
+    TUTO_PADS_TEXT = "Por padrão (em verde), funcionam como no jogo: LT e RT são modificadores, LB seleciona aliados e RB inimigos. As ações da barra de controle do jogo são copiadas para as camadas deles. Você pode mudá-los: por exemplo RB como botão simples, ou LB como modificador.",
+    TUTO_PADS_DEFAULT = "Voltar aos tipos padrão",
+    TUTO_PAIRS_TITLE = "Pares: dois botões segurados juntos",
+    TUTO_PAIRS_TEXT = "Segure dois botões juntos (modificadores ou de alvo): mais uma camada de 8 ações. Quaisquer dois podem formar um par: L5 + R5, LT + RT, LB + LT... Marque os que quiser (você pode mudar depois na aba |cffffd100Botões|r). Padrão: os pares esquerda + direita.",
+    TUTO_ACTIONS_TITLE = "Colocar suas ações",
+    TUTO_ACTIONS_TEXT = "Na aba |cffffd100Ações|r: à esquerda, todas as suas camadas (Sozinho, LT, RT, seus modificadores e pares); à direita, a camada escolhida, organizada como o controle.\n\n- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n- Ou clique em um espaço: escolher um feitiço ou item, escrever uma macro, escolher um comando do WoW (Correr automaticamente...) ou uma ação básica (Pular, Interagir...). Clique direito: limpar.\n- A linha abaixo do direcional: os espaços dos seus botões simples nessa camada.\n\nVocê também pode clicar em uma miniatura de camada no HUD para editá-la ali mesmo.\n\nAs ações são salvas por personagem; tipos e teclas no perfil, para toda a conta. Tudo funciona em combate; só as mudanças feitas em combate esperam ele acabar.",
+    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo seu próprio HUD:\n\n- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure um botão e ela muda.\n- |cffffd100Miniaturas|r: todas as suas camadas, com os espaços dos botões simples no meio; a que você segura acende. Clique em uma para editá-la.\n- |cffffd100No centro|r: seus botões simples, com a ação que vão lançar.\n\nAjustes (tamanho, posição, miniaturas): aba |cffffd100HUD|r. |cffffd100/mgir hud off|r: voltar à barra do jogo.",
+    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo (antes de desativar o addon)",
+    SETTINGS_DESC = "Escolha o que cada botão do seu controle faz: botões extras (paletas traseiras, gatilhos extras) e botões básicos (LT, RT, LB, RB). Comando: /mgir",
+    BUTTONS_INTRO = "Escolha o tipo de cada botão: passe o mouse sobre um tipo para ver o que ele faz. Em verde: o tipo padrão dos botões básicos, que funciona como o jogo.",
+    BUTTONS_TYPES_HELP = "Os tipos de botão",
+    PAIRS_HINT = "Marque os pares que quer usar: segurar os dois botões juntos dá 8 ações a mais. Quaisquer dois modificadores ou botões de alvo podem formar um par (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Coloque pelo menos dois botões em Modificador, Alvo aliado ou Alvo inimigo para formar pares.",
+    PAIR_WAITS = "%s está em Jogo: coloque em Modificador, Alvo aliado ou Alvo inimigo (acima)",
+})
+
+-- Tutoriel, paires : appuyer sur les boutons pour les trouver
+ns.AddLocale("ptBR", {
+    TUTO_PAIRS_PRESS = "Aperte um botão do controle: os pares dele acendem em verde. Aperte dois botões juntos: o par deles acende.",
 })

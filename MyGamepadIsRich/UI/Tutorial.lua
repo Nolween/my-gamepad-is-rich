@@ -1,9 +1,11 @@
 -- Tutoriel : une fenêtre pas à pas, montrée au premier lancement (une fois
 -- par compte et par version du tutoriel), revue avec /mgir tuto ou depuis
 -- l'onglet Aide, qui reprend les mêmes textes (T.HelpText).
--- Étapes : bienvenue, choix de la manette, logiciel de la manette (texte
--- selon la manette), détection des boutons (en direct), choix des modes
--- (en direct), pose des actions, HUD, fin.
+-- Étapes : bienvenue (le principe des couches), choix de la manette, les
+-- types de boutons, les boutons de base (LT, RT, LB, RB), puis — seulement
+-- si la manette a des boutons en plus — logiciel de la manette, détection
+-- et type de ces boutons ; ensuite les paires, la pose des actions, le
+-- HUD, fin. Les étapes interactives agissent en direct.
 -- À la manette : A = Suivant, B = Précédent (cadre qui prend la manette
 -- tant que la fenêtre est ouverte, comme le conseille Improved Forever).
 local _, ns = ...
@@ -14,23 +16,95 @@ local T = {}
 ns.Tutorial = T
 
 -- (à augmenter quand le tutoriel change assez pour être remontré à tous)
-T.VERSION = 1
+T.VERSION = 2
 
-local MODES = { "modifier", "simple", "off" }
 local ROW_H = 38 -- (une ligne de bouton, détection et modes)
-local WIDTH, MIN_HEIGHT = 640, 360
+local WIDTH, MIN_HEIGHT = 720, 360
 local TEXT_WIDTH = WIDTH - 56
 local READY = "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14|t "
+local GREEN = { 0.25, 1, 0.25 }
 
 local frame, current, finished
 local quietUntil = 0 -- (manette ignorée juste après une détection)
 
--- (le tutoriel propose les trois modes de base ; les modes de ciblage se
--- choisissent dans l'onglet Boutons)
 local ModeLabel = ns.ModeLabel
 
 local function Mark()
     if ns.db then ns.db.tutorialSeen = T.VERSION end
+end
+
+---------------------------------------------------------------------------
+-- Les types de boutons : une carte par type (tutoriel), ou un texte (Aide,
+-- page des options)
+---------------------------------------------------------------------------
+local TYPES = {
+    { modes = { "modifier" }, how = "TYPE_MODIFIER_HOW", use = "TYPE_MODIFIER_FOR", color = { 0.35, 0.75, 1 } },
+    { modes = { "target_friend", "target_enemy" }, how = "TYPE_TARGET_HOW", use = "TYPE_TARGET_FOR",
+        color = { 0.3, 0.95, 0.4 } },
+    { modes = { "simple" }, how = "TYPE_SIMPLE_HOW", use = "TYPE_SIMPLE_FOR", color = { 1, 0.75, 0.2 } },
+    { modes = { "off" }, how = "TYPE_OFF_HOW", use = "TYPE_OFF_FOR", color = { 0.6, 0.6, 0.6 } },
+}
+
+local function TypeName(t)
+    local names = {}
+    for _, mode in ipairs(t.modes) do names[#names + 1] = ModeLabel(mode) end
+    return table.concat(names, " / ")
+end
+
+local function Hex(c)
+    return ("|cff%02x%02x%02x"):format(c[1] * 255, c[2] * 255, c[3] * 255)
+end
+
+function T.TypesText()
+    local parts = {}
+    for _, t in ipairs(TYPES) do
+        parts[#parts + 1] = Hex(t.color) .. TypeName(t) .. "|r\n" .. L[t.how] .. "\n|cffaaaaaa" .. L[t.use] .. "|r"
+    end
+    return table.concat(parts, "\n\n")
+end
+
+local function BuildTypes(c)
+    c.cards = {}
+    for i, t in ipairs(TYPES) do
+        local card = CreateFrame("Frame", nil, c)
+        card:SetWidth(TEXT_WIDTH)
+        local bg = card:CreateTexture(nil, "BACKGROUND")
+        bg:SetAllPoints()
+        bg:SetColorTexture(1, 1, 1, 0.05)
+        local stripe = card:CreateTexture(nil, "BORDER")
+        stripe:SetPoint("TOPLEFT")
+        stripe:SetPoint("BOTTOMLEFT")
+        stripe:SetWidth(4)
+        stripe:SetColorTexture(t.color[1], t.color[2], t.color[3], 0.9)
+        card.name = UI.Text(card, "GameFontNormalLarge", TypeName(t))
+        card.name:SetTextColor(t.color[1], t.color[2], t.color[3])
+        card.name:SetPoint("TOPLEFT", 14, -6)
+        card.how = UI.Text(card, "GameFontHighlight", L[t.how])
+        card.how:SetPoint("TOPLEFT", card.name, "BOTTOMLEFT", 0, -4)
+        card.how:SetWidth(TEXT_WIDTH - 24)
+        card.how:SetJustifyH("LEFT")
+        card.use = UI.Text(card, "GameFontHighlightSmall", L[t.use])
+        card.use:SetTextColor(0.7, 0.7, 0.7)
+        card.use:SetPoint("TOPLEFT", card.how, "BOTTOMLEFT", 0, -3)
+        card.use:SetWidth(TEXT_WIDTH - 24)
+        card.use:SetJustifyH("LEFT")
+        c.cards[i] = card
+    end
+    return 10
+end
+
+-- (hauteurs selon la langue : calculées quand l'étape est montrée)
+local function RefreshTypes(c)
+    local y = 0
+    for _, card in ipairs(c.cards) do
+        local h = 6 + card.name:GetStringHeight() + 4 + card.how:GetStringHeight() + 3
+            + card.use:GetStringHeight() + 8
+        card:SetHeight(h)
+        card:ClearAllPoints()
+        card:SetPoint("TOPLEFT", 0, -y)
+        y = y + h + 6
+    end
+    return y
 end
 
 ---------------------------------------------------------------------------
@@ -64,8 +138,14 @@ local function BuildController(c)
 end
 
 local function RefreshController(c)
-    local current = ns.Controller().id
-    for id, cb in pairs(c.checks) do cb:SetChecked(id == current) end
+    local id = ns.Controller().id
+    for key, cb in pairs(c.checks) do cb:SetChecked(key == id) end
+end
+
+-- La manette a-t-elle des boutons supplémentaires ? (sinon, leurs étapes
+-- sont sautées)
+local function HasExtra()
+    return #ns.ActiveIDs() > 0
 end
 
 -- Le texte de l'étape « logiciel », selon la manette choisie
@@ -98,21 +178,27 @@ local function ShowRows(c)
     return ids
 end
 
+local function RowFrame(c, i)
+    local row = CreateFrame("Frame", nil, c)
+    row:SetSize(TEXT_WIDTH, 34)
+    row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
+    local bg = row:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    bg:SetColorTexture(1, 1, 1, 0.05)
+    row.glyph = UI.CreateGlyph(row, 26)
+    row.glyph:SetPoint("LEFT", 6, 0)
+    row.name = UI.Text(row, "GameFontNormal")
+    row.name:SetPoint("LEFT", row.glyph, "RIGHT", 10, 0)
+    row.name:SetJustifyH("LEFT")
+    row.name:SetWordWrap(false)
+    return row
+end
+
 local function BuildDetect(c)
     c.rows = {}
     for i in ipairs(ns.BUTTON_IDS) do
-        local row = CreateFrame("Frame", nil, c)
-        row:SetSize(TEXT_WIDTH, 34)
-        row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
-        local bg = row:CreateTexture(nil, "BACKGROUND")
-        bg:SetAllPoints()
-        bg:SetColorTexture(1, 1, 1, 0.05)
-        row.glyph = UI.CreateGlyph(row, 26)
-        row.glyph:SetPoint("LEFT", 6, 0)
-        row.name = UI.Text(row, "GameFontNormal")
-        row.name:SetPoint("LEFT", row.glyph, "RIGHT", 10, 0)
+        local row = RowFrame(c, i)
         row.name:SetWidth(110)
-        row.name:SetJustifyH("LEFT")
         row.key = UI.Text(row, "GameFontHighlight")
         row.key:SetPoint("LEFT", row.name, "RIGHT", 8, 0)
         row.key:SetPoint("RIGHT", -150, 0)
@@ -153,49 +239,60 @@ local function RefreshDetect(c)
     return #ids * ROW_H + 30
 end
 
-local function SetMode(id, mode)
-    ns.Button(id).mode = mode
-    ns.Apply()
-    Refresh()
-end
-
-local function BuildModes(c)
-    c.rows = {}
-    -- (colonnes à la largeur des libellés, qui changent avec la langue)
-    local col = {}
+-- Les cases de type d'une ligne (largeur des colonnes selon la langue ;
+-- en petit si elles ne tiennent pas). onPick(row, mode) quand on coche ;
+-- defaults[id] : le type par défaut d'un bouton, en vert.
+local function ModeChecks(c, rows, modes, startX, onPick)
     local measure = UI.Text(c, "GameFontHighlight")
-    for i, mode in ipairs(MODES) do
+    local widths, total = {}, 0
+    for i, mode in ipairs(modes) do
         measure:SetText(ModeLabel(mode))
-        col[i] = 28 + measure:GetStringWidth() + 14
+        widths[i] = measure:GetStringWidth()
+        total = total + 24 + widths[i] + 10
     end
     measure:Hide()
-    for i in ipairs(ns.BUTTON_IDS) do
-        local row = CreateFrame("Frame", nil, c)
-        row:SetSize(TEXT_WIDTH, 34)
-        row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
-        local bg = row:CreateTexture(nil, "BACKGROUND")
-        bg:SetAllPoints()
-        bg:SetColorTexture(1, 1, 1, 0.05)
-        row.glyph = UI.CreateGlyph(row, 26)
-        row.glyph:SetPoint("LEFT", 6, 0)
-        row.name = UI.Text(row, "GameFontNormal")
-        row.name:SetPoint("LEFT", row.glyph, "RIGHT", 10, 0)
-        row.name:SetWidth(90)
-        row.name:SetJustifyH("LEFT")
+    local font, scale = "GameFontHighlight", 1
+    if total > TEXT_WIDTH - startX then
+        font = "GameFontHighlightSmall"
+        scale = 0.85
+    end
+    for _, row in ipairs(rows) do
         row.checks = {}
-        local x = 150
-        for m, mode in ipairs(MODES) do
+        local x = startX
+        for i, mode in ipairs(modes) do
             local cb = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
             cb:SetSize(24, 24)
             cb:SetPoint("LEFT", x, 0)
-            local text = UI.Text(cb, "GameFontHighlight", ModeLabel(mode))
-            text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-            cb:SetScript("OnClick", function() if row.id then SetMode(row.id, mode) end end)
+            cb.label = UI.Text(cb, font, ModeLabel(mode))
+            cb.label:SetPoint("LEFT", cb, "RIGHT", 1, 0)
+            cb:SetScript("OnClick", function() if row.id then onPick(row, mode) end end)
+            cb:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOP")
+                GameTooltip:SetText(ModeLabel(mode), 1, 0.82, 0, 1, true)
+                GameTooltip:AddLine(ns.ModeDesc(mode), 1, 1, 1, true)
+                if self.isDefault then GameTooltip:AddLine(L.MODE_IS_DEFAULT, GREEN[1], GREEN[2], GREEN[3], true) end
+                GameTooltip:Show()
+            end)
+            cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
             row.checks[mode] = cb
-            x = x + col[m]
+            x = x + 24 + widths[i] * scale + 10
         end
+    end
+end
+
+-- Le type des boutons supplémentaires
+local function BuildModes(c)
+    c.rows = {}
+    for i in ipairs(ns.BUTTON_IDS) do
+        local row = RowFrame(c, i)
+        row.name:SetWidth(70)
         c.rows[i] = row
     end
+    ModeChecks(c, c.rows, ns.MODES, 116, function(row, mode)
+        ns.Button(row.id).mode = mode
+        ns.Apply()
+        Refresh()
+    end)
     c.suggest = UI.Button(c, L.TUTO_SUGGESTED, 240, 24)
     c.suggest:SetScript("OnClick", function()
         ns.ApplySuggestedModes()
@@ -215,6 +312,146 @@ local function RefreshModes(c)
         for mode, cb in pairs(row.checks) do cb:SetChecked(def.mode == mode) end
     end
     return #ids * ROW_H + 34
+end
+
+-- Le type des boutons de base (LT, RT, LB, RB) : le type par défaut en vert
+local function BuildPads(c)
+    c.rows = {}
+    for i, id in ipairs(ns.PAD_IDS) do
+        local row = RowFrame(c, i)
+        row.name:SetWidth(50)
+        row.id = id
+        c.rows[i] = row
+    end
+    ModeChecks(c, c.rows, ns.PAD_MODES, 96, function(row, mode)
+        ns.SetPadMode(row.id, mode)
+        Refresh()
+    end)
+    for _, row in ipairs(c.rows) do
+        local default = row.checks[ns.DEFAULT_PADS[row.id]]
+        if default then
+            default.isDefault = true
+            default.label:SetTextColor(GREEN[1], GREEN[2], GREEN[3])
+        end
+    end
+    c.reset = UI.Button(c, L.TUTO_PADS_DEFAULT, 240, 24)
+    c.reset:SetPoint("TOPLEFT", 0, -#ns.PAD_IDS * ROW_H - 6)
+    c.reset:SetScript("OnClick", function()
+        for _, id in ipairs(ns.PAD_IDS) do ns.SetPadMode(id, ns.DEFAULT_PADS[id]) end
+        Refresh()
+    end)
+    return #ns.PAD_IDS * ROW_H + 34
+end
+
+local function RefreshPads(c)
+    for _, row in ipairs(c.rows) do
+        row.glyph:SetKey(row.id)
+        row.name:SetText(ns.ButtonLabel(row.id))
+        local mode = ns.PadMode(row.id)
+        for m, cb in pairs(row.checks) do cb:SetChecked(m == mode) end
+    end
+end
+
+-- Les paires : toutes celles de deux boutons prêts, à cocher (deux colonnes).
+-- Appuyer sur un bouton de la manette met ses paires en vert ; sur deux
+-- ensemble, leur paire (le vert reste après le relâchement, pour cocher à
+-- la souris).
+local PAIR_ROW = 24
+local pressed, pressOrder = {}, 0 -- [id] = ordre d'appui (boutons tenus)
+local pairFocus = {}              -- (les 1 ou 2 derniers boutons pressés)
+
+local function BuildPairs(c)
+    c.rows = {}
+    c.press = UI.Text(c, "GameFontHighlight", L.TUTO_PAIRS_PRESS)
+    c.press:SetTextColor(GREEN[1], GREEN[2], GREEN[3])
+    c.press:SetPoint("TOPLEFT", 0, 0)
+    c.press:SetWidth(TEXT_WIDTH)
+    c.press:SetJustifyH("LEFT")
+    c.none = UI.Text(c, "GameFontDisable", L.PAIRS_NONE)
+    c.none:SetPoint("TOPLEFT", 0, -4)
+    c.none:SetWidth(TEXT_WIDTH)
+    c.none:SetJustifyH("LEFT")
+    return 30
+end
+
+local function PairCheck(c, i)
+    local cb = c.rows[i]
+    if cb then return cb end
+    cb = CreateFrame("CheckButton", nil, c, "UICheckButtonTemplate")
+    cb:SetSize(24, 24)
+    cb.hl = cb:CreateTexture(nil, "BACKGROUND")
+    cb.hl:SetPoint("LEFT", cb, "LEFT", -2, 0)
+    cb.hl:SetSize(TEXT_WIDTH / 2 - 12, PAIR_ROW - 2)
+    cb.hl:SetColorTexture(GREEN[1], GREEN[2], GREEN[3], 0.18)
+    cb.label = UI.Text(cb, "GameFontHighlight")
+    cb.label:SetPoint("LEFT", cb, "RIGHT", 2, 0)
+    cb:SetScript("OnClick", function(self)
+        if self.pair then ns.SetPairEnabled(self.pair.id, self:GetChecked()) end
+        Refresh()
+    end)
+    c.rows[i] = cb
+    return cb
+end
+
+-- (une ligne en vert : la paire des deux boutons pressés, ou toutes celles
+-- du bouton pressé)
+local function Focused(pair)
+    local a, b = pairFocus[1], pairFocus[2]
+    if a and b then return ns.PairOf(a, b) == pair end
+    return a ~= nil and (pair.a == a or pair.b == a)
+end
+
+local function RefreshPairs(c)
+    local list = {}
+    for _, pair in ipairs(ns.ALL_PAIRS) do
+        if ns.PairPossible(pair.id) then list[#list + 1] = pair end
+    end
+    c.none:SetShown(#list == 0)
+    c.press:SetShown(#list > 0)
+    local top = #list > 0 and (c.press:GetStringHeight() + 10) or 0
+    local perCol = math.ceil(#list / 2)
+    for i, pair in ipairs(list) do
+        local cb = PairCheck(c, i)
+        local col, row = math.floor((i - 1) / perCol), (i - 1) % perCol
+        cb:ClearAllPoints()
+        cb:SetPoint("TOPLEFT", col * (TEXT_WIDTH / 2), -top - row * PAIR_ROW)
+        cb.pair = pair
+        cb:SetChecked(ns.PairEnabled(pair.id))
+        cb.label:SetText(ns.ButtonLabel(pair.id))
+        local lit = Focused(pair)
+        cb.hl:SetShown(lit)
+        if lit then
+            cb.label:SetTextColor(GREEN[1], GREEN[2], GREEN[3])
+        else
+            cb.label:SetTextColor(1, 1, 1)
+        end
+        cb:Show()
+    end
+    for i = #list + 1, #c.rows do
+        c.rows[i]:Hide()
+        c.rows[i].pair = nil
+    end
+    return #list == 0 and 30 or top + perCol * PAIR_ROW + 4
+end
+
+-- Un bouton de la manette pressé / relâché pendant l'étape des paires :
+-- un bouton de base (manette) ou supplémentaire (sa touche clavier)
+local function PairPress(id, down)
+    if not id then return end
+    if down then
+        if not pressed[id] then
+            pressOrder = pressOrder + 1
+            pressed[id] = pressOrder
+        end
+        -- (les deux derniers tenus, le plus récent d'abord)
+        local list = {}
+        for held in pairs(pressed) do list[#list + 1] = held end
+        table.sort(list, function(x, y) return pressed[x] > pressed[y] end)
+        pairFocus = { list[1], list[2] }
+        Refresh()
+    else
+        pressed[id] = nil
+    end
 end
 
 -- Le HUD : où va la bande des miniatures (en bas par défaut), appliqué tout de suite
@@ -243,42 +480,54 @@ local function BuildHud(c)
 end
 
 local function RefreshHud(c)
-    local current = ns.Hud and ns.Hud.Strip() or "bottom"
-    for pos, cb in pairs(c.checks) do cb:SetChecked(pos == current) end
+    local pos = ns.Hud and ns.Hud.Strip() or "bottom"
+    for key, cb in pairs(c.checks) do cb:SetChecked(key == pos) end
 end
 
 ---------------------------------------------------------------------------
--- Les étapes
+-- Les étapes (skip : sautée tant que la fonction renvoie vrai)
 ---------------------------------------------------------------------------
+local function NoExtra() return not HasExtra() end
+
 local STEPS = {
-    { title = "TUTO_WELCOME_TITLE", text = "TUTO_WELCOME_TEXT" },
-    { title = "TUTO_CONTROLLER_TITLE", text = "TUTO_CONTROLLER_TEXT", build = BuildController,
+    { key = "welcome", title = "TUTO_WELCOME_TITLE", text = "TUTO_WELCOME_TEXT" },
+    { key = "controller", title = "TUTO_CONTROLLER_TITLE", text = "TUTO_CONTROLLER_TEXT", build = BuildController,
         refresh = RefreshController },
-    { title = "TUTO_SOFTWARE_TITLE", textFn = T.SetupText },
-    { title = "TUTO_DETECT_TITLE", text = "TUTO_DETECT_TEXT", build = BuildDetect, refresh = RefreshDetect,
-        help = "TUTO_DETECT_MISSING" },
-    { title = "TUTO_MODES_TITLE", text = "TUTO_MODES_TEXT", extra = "TUTO_PAIRS_TEXT",
-        build = BuildModes, refresh = RefreshModes },
-    { title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT" },
-    { title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", build = BuildHud, refresh = RefreshHud },
-    { title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },
+    { key = "types", title = "TUTO_TYPES_TITLE", text = "TUTO_TYPES_TEXT", build = BuildTypes, refresh = RefreshTypes,
+        helpExtra = T.TypesText },
+    { key = "pads", title = "TUTO_PADS_TITLE", text = "TUTO_PADS_TEXT", build = BuildPads, refresh = RefreshPads },
+    { key = "software", title = "TUTO_SOFTWARE_TITLE", textFn = T.SetupText, skip = NoExtra },
+    { key = "detect", title = "TUTO_DETECT_TITLE", text = "TUTO_DETECT_TEXT", build = BuildDetect,
+        refresh = RefreshDetect, help = "TUTO_DETECT_MISSING", skip = NoExtra },
+    { key = "modes", title = "TUTO_MODES_TITLE", text = "TUTO_MODES_TEXT", build = BuildModes, refresh = RefreshModes,
+        skip = NoExtra },
+    { key = "pairs", title = "TUTO_PAIRS_TITLE", text = "TUTO_PAIRS_TEXT", build = BuildPairs, refresh = RefreshPairs },
+    { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT" },
+    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", build = BuildHud, refresh = RefreshHud },
+    { key = "done", title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },
 }
 
--- Le texte d'une étape (et son paragraphe en plus)
-local function StepText(s)
-    local text = s.textFn and s.textFn() or L[s.text]
-    return text .. (s.extra and ("\n\n" .. L[s.extra]) or "")
+local function Skipped(s)
+    return s.skip ~= nil and s.skip()
 end
 
--- Le texte de l'onglet Aide : les étapes (sauf la bienvenue), à la suite
+local function StepText(s)
+    return s.textFn and s.textFn() or L[s.text]
+end
+
+-- Le texte de l'onglet Aide : les étapes (sauf la bienvenue et la fin), à la suite
 function T.HelpText()
-    local parts = {}
-    for i = 2, #STEPS do
+    local parts = { L.TUTO_WELCOME_TEXT:match("^(.-)\n\n[^\n]*$") or L.TUTO_WELCOME_TEXT }
+    for i = 2, #STEPS - 1 do
         local s = STEPS[i]
-        local block = "|cffffd100" .. L[s.title] .. "|r\n" .. StepText(s)
-        if s.help then block = block .. "\n" .. L[s.help] end
-        parts[#parts + 1] = block
+        if not Skipped(s) then
+            local block = "|cffffd100" .. L[s.title] .. "|r\n" .. StepText(s)
+            if s.helpExtra then block = block .. "\n\n" .. s.helpExtra() end
+            if s.help then block = block .. "\n" .. L[s.help] end
+            parts[#parts + 1] = block
+        end
     end
+    parts[#parts + 1] = "|cffffd100" .. L.TUTO_DONE_TITLE .. "|r\n" .. L.TUTO_DONE_TEXT
     return table.concat(parts, "\n\n")
 end
 
@@ -293,9 +542,29 @@ local function SetPadInput(on)
     if frame and frame.EnableGamePadButton then pcall(frame.EnableGamePadButton, frame, on and true or false) end
 end
 
+-- La position d'une étape parmi celles montrées, et leur nombre
+local function Position(i)
+    local n, pos = 0, 0
+    for k, s in ipairs(STEPS) do
+        if not Skipped(s) then
+            n = n + 1
+            if k == i then pos = n end
+        end
+    end
+    return pos, n
+end
+
 local function Show(i)
+    local was = current
     current = math.max(1, math.min(#STEPS, i))
     local step = STEPS[current]
+    -- (étape des paires : touches des boutons supplémentaires lues ;
+    -- en y arrivant, plus rien en vert)
+    if step.key == "pairs" and was ~= current then
+        wipe(pressed)
+        pairFocus = {}
+    end
+    if not InCombatLockdown() then pcall(frame.EnableKeyboard, frame, step.key == "pairs") end
     for _, s in ipairs(STEPS) do
         if s.content then s.content:Hide() end
     end
@@ -318,7 +587,8 @@ local function Show(i)
         contentHeight = height + 16
     end
 
-    frame.progress:SetText(("%d / %d"):format(current, #STEPS))
+    local pos, n = Position(current)
+    frame.progress:SetText(("%d / %d"):format(pos, n))
     frame.back:SetEnabled(current > 1)
     frame.next:SetText(current == #STEPS and L.TUTO_FINISH or L.TUTO_NEXT)
 
@@ -328,15 +598,18 @@ local function Show(i)
     frame:SetHeight(math.max(MIN_HEIGHT, height))
 end
 
+-- (le contenu change de hauteur : paires, boutons de la manette...)
 function Refresh()
     if not (frame and frame:IsShown() and current) then return end
     local step = STEPS[current]
-    if step.refresh and step.content then step.refresh(step.content) end
+    if step.refresh and step.content then Show(current) end
 end
 
 local function Next()
-    if current < #STEPS then
-        Show(current + 1)
+    local i = current + 1
+    while i <= #STEPS and Skipped(STEPS[i]) do i = i + 1 end
+    if i <= #STEPS then
+        Show(i)
     else
         finished = true
         Mark()
@@ -346,7 +619,9 @@ local function Next()
 end
 
 local function Back()
-    if current > 1 then Show(current - 1) end
+    local i = current - 1
+    while i > 1 and Skipped(STEPS[i]) do i = i - 1 end
+    if i >= 1 then Show(i) end
 end
 
 -- Une indication de bouton de manette à gauche d'un bouton
@@ -411,11 +686,35 @@ local function Build()
 
     f.padHints = { PadHint(f.next, "PAD1"), PadHint(f.back, "PAD2") }
 
-    -- Manette : A = Suivant, B = Précédent
-    f:SetScript("OnGamePadButtonDown", function(_, button)
+    -- Manette : A = Suivant, B = Précédent ; à l'étape des paires, LT, RT,
+    -- LB et RB allument leurs paires
+    local padOf = {}
+    for id, key in pairs(ns.PAD_KEY) do padOf[key] = id end
+    local function OnPairsStep() return current and STEPS[current].key == "pairs" end
+    -- (ne rien laisser passer au jeu, ou laisser passer cette touche :
+    -- vaut aussi pour les boutons de la manette)
+    local function Propagate(self, on)
+        if not InCombatLockdown() then pcall(self.SetPropagateKeyboardInput, self, on) end
+    end
+    f:SetScript("OnGamePadButtonDown", function(self, button)
+        Propagate(self, false)
         if ns.Learn.IsActive() or GetTime() < quietUntil then return end
+        if OnPairsStep() and padOf[button] then PairPress(padOf[button], true) return end
         if button == "PAD1" then Next() elseif button == "PAD2" then Back() end
     end)
+    f:SetScript("OnGamePadButtonUp", function(_, button)
+        if padOf[button] then PairPress(padOf[button], false) end
+    end)
+    -- (étape des paires : les boutons supplémentaires arrivent en touches
+    -- clavier ; gardées par la fenêtre, les autres touches vont au jeu)
+    f:SetScript("OnKeyDown", function(self, key)
+        local id = OnPairsStep() and (ns.ButtonOfKey(key) or padOf[key])
+        Propagate(self, not id)
+        if id then PairPress(id, true) end
+    end)
+    f:SetScript("OnKeyUp", function(_, key) PairPress(ns.ButtonOfKey(key) or padOf[key], false) end)
+    Propagate(f, false)
+    f:EnableKeyboard(false)
     SetPadInput(false) -- (poser le script l'active : on le coupe tout de suite)
     f:SetScript("OnUpdate", function()
         if ns.Learn.IsActive() then quietUntil = GetTime() + 0.4 end
@@ -429,6 +728,8 @@ local function Build()
     end)
     f:SetScript("OnHide", function()
         SetPadInput(false)
+        if not InCombatLockdown() then pcall(f.EnableKeyboard, f, false) end
+        wipe(pressed)
         if not finished then
             Mark()
             ns.Print(L.TUTO_REOPEN)
@@ -438,13 +739,22 @@ local function Build()
     f:Hide()
 end
 
--- Ouvre le tutoriel (à l'étape donnée, sinon la première)
+-- Ouvre le tutoriel à une étape (son numéro ou sa clé : « types »...),
+-- sinon à la première
 function T.Open(step)
     if not ns.db then return end
     if not frame then Build() end
     if ns.UI.Hide then ns.UI.Hide() end
+    local index = 1
+    if type(step) == "number" then
+        index = step
+    elseif type(step) == "string" then
+        for i, s in ipairs(STEPS) do
+            if s.key == step then index = i end
+        end
+    end
     frame:Show()
-    Show(step or 1)
+    Show(index)
 end
 
 -- Au premier lancement (ou après une nouvelle version du tutoriel) ; en
