@@ -1,0 +1,3 @@
+-- Toutes les langues sont lues : la table de la langue du client devient ns.L
+local _, ns = ...
+ns.FinishLocales()

@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="MYGAMEPADISRICH_TOGGLE" header="MYGAMEPADISRICH" category="ADDONS">
+		MyGamepadIsRich_Toggle()
+	</Binding>
+</Bindings>

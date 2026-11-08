@@ -1,0 +1,101 @@
+-- Mode Bouton simple : la touche du bouton lance une action, une autre si LT
+-- est maintenu, une autre si RT est maintenu. Une couche vide reprend
+-- l'action « Seul ». Les gâchettes sont lues dans le code sécurisé
+-- (GetGamePadState, comme Improved Forever), donc ça marche en combat.
+local _, ns = ...
+
+local S = {}
+ns.Simple = S
+
+local buttons = {} -- [id] = bouton d'action
+
+local PRECLICK = [[
+    if not down ~= not self:GetAttribute("gps-down") then return false end
+    local layer = "base"
+    local state = GetGamePadState()
+    local pad = state and state.buttons
+    if pad then
+        local lt, rt = self:GetAttribute("gps-lt"), self:GetAttribute("gps-rt")
+        if lt and pad[lt] and self:GetAttribute("has-lt") then
+            layer = "lt"
+        elseif rt and pad[rt] and self:GetAttribute("has-rt") then
+            layer = "rt"
+        end
+    end
+    if not self:GetAttribute("has-" .. layer) then return false end
+    self:SetAttribute("type", "macro")
+    self:SetAttribute("macro", self:GetAttribute(layer .. "-macro"))
+    self:SetAttribute("macrotext", self:GetAttribute(layer .. "-macrotext"))
+]]
+
+-- La place d'un bouton dans GetGamePadState().buttons
+local function PadIndex(button)
+    if not (C_GamePad and C_GamePad.ButtonBindingToIndex) then return nil end
+    local ok, index = pcall(C_GamePad.ButtonBindingToIndex, button)
+    return ok and index and (index + 1) or nil
+end
+
+local function Button(id)
+    local b = buttons[id]
+    if b then return b end
+    b = CreateFrame("Button", "MyGamepadIsRichSimple" .. id, UIParent, "SecureActionButtonTemplate")
+    b:SetSize(1, 1)
+    b:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
+    b:RegisterForClicks("AnyDown", "AnyUp")
+    b:SetAttribute("type", "macro")
+    SecureHandlerWrapScript(b, "OnClick", b, PRECLICK)
+    -- (pour le HUD : la case s'allume pendant l'appui)
+    b:HookScript("OnClick", function(_, _, down)
+        if ns.Hud then ns.Hud.Pressed(id, down) end
+    end)
+    buttons[id] = b
+    return b
+end
+
+-- Une commande WoW n'est possible que seule (couche « Seul » sans LT/RT)
+function S.CommandAllowed(actions, layer)
+    if layer ~= "base" then return false end
+    return not actions.layers.lt and not actions.layers.rt
+end
+
+-- Hors combat
+function S.Setup(owner, id, def, actions, onDown)
+    local base = actions.layers.base
+    -- Une commande seule : liaison directe
+    if ns.Actions.IsCommand(base) and S.CommandAllowed(actions, "base") then
+        SetOverrideBinding(owner, true, def.key, base.command)
+        return
+    end
+    local b = Button(id)
+    b:SetAttribute("gps-down", onDown)
+    b:SetAttribute("useOnKeyDown", onDown)
+    b:SetAttribute("gps-lt", PadIndex("PADLTRIGGER"))
+    b:SetAttribute("gps-rt", PadIndex("PADRTRIGGER"))
+    local any = false
+    for _, layer in ipairs(ns.LAYERS) do
+        local action = actions.layers[layer]
+        local macro, text
+        if action and not ns.Actions.IsCommand(action) then
+            macro, text = ns.Actions.Secure(action)
+        end
+        b:SetAttribute(layer .. "-macro", macro)
+        b:SetAttribute(layer .. "-macrotext", text)
+        b:SetAttribute("has-" .. layer, (macro or text) and true or nil)
+        if macro or text then any = true end
+    end
+    -- (une couche LT/RT vide reprend « Seul »)
+    for _, layer in ipairs({ "lt", "rt" }) do
+        if not b:GetAttribute("has-" .. layer) and b:GetAttribute("has-base") then
+            b:SetAttribute(layer .. "-macro", b:GetAttribute("base-macro"))
+            b:SetAttribute(layer .. "-macrotext", b:GetAttribute("base-macrotext"))
+            b:SetAttribute("has-" .. layer, true)
+        end
+    end
+    if any then
+        SetOverrideBindingClick(owner, true, def.key, b:GetName(), "LeftButton")
+    end
+end
+
+function S.Disable(id)
+    -- (les liaisons appartiennent au propriétaire commun, vidé par ns.Apply)
+end

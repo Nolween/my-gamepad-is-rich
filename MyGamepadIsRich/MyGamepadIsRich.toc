@@ -1,0 +1,47 @@
+## Interface: 16001, 16002, 16003, 16100, 16101, 16200
+## Title: My Gamepad Is Rich
+## Notes: Extra buttons of the GameSir G7 Pro (L5/R5 third triggers, L4/R4 back paddles): hold modifiers with A/B/X/Y/D-pad, or simple buttons with LT/RT layers.
+## Notes-frFR: Boutons supplémentaires de la GameSir G7 Pro (3es gâchettes L5/R5, palettes L4/R4) : modificateurs maintenus avec A/B/X/Y/croix, ou boutons simples avec couches LT/RT.
+## Notes-deDE: Zusatztasten des GameSir G7 Pro (dritte Trigger L5/R5, Paddel L4/R4): gehaltene Modifikatoren mit A/B/X/Y/Steuerkreuz oder einfache Tasten mit LT/RT-Ebenen.
+## Notes-esES: Botones adicionales del GameSir G7 Pro (terceros gatillos L5/R5, paletas L4/R4): modificadores con A/B/X/Y/cruceta o botones simples con capas LT/RT.
+## Notes-esMX: Botones adicionales del GameSir G7 Pro (terceros gatillos L5/R5, paletas L4/R4): modificadores con A/B/X/Y/cruceta o botones simples con capas LT/RT.
+## Notes-itIT: Pulsanti aggiuntivi del GameSir G7 Pro (terzi grilletti L5/R5, palette L4/R4): modificatori con A/B/X/Y/croce o pulsanti semplici con strati LT/RT.
+## Notes-ptBR: Botões extras do GameSir G7 Pro (terceiros gatilhos L5/R5, paddles L4/R4): modificadores com A/B/X/Y/direcional ou botões simples com camadas LT/RT.
+## Notes-ruRU: Дополнительные кнопки GameSir G7 Pro (третьи курки L5/R5, лепестки L4/R4): модификаторы с A/B/X/Y/крестовиной или простые кнопки со слоями LT/RT.
+## Notes-koKR: GameSir G7 Pro의 추가 버튼(세 번째 트리거 L5/R5, 패들 L4/R4): A/B/X/Y/십자키와 쓰는 수정키 또는 LT/RT 층이 있는 단일 버튼.
+## Notes-zhCN: GameSir G7 Pro 的额外按键（第三扳机 L5/R5，背键 L4/R4）：配合 A/B/X/Y/十字键的修饰键，或带 LT/RT 层的普通按键。
+## Notes-zhTW: GameSir G7 Pro 的額外按鍵（第三扳機 L5/R5，背鍵 L4/R4）：搭配 A/B/X/Y/十字鍵的修飾鍵，或帶 LT/RT 層的一般按鍵。
+## Author: nolwe
+## Version: 1.2.0
+## IconTexture: Interface\Icons\INV_Misc_EngGizmos_20
+## SavedVariables: MyGamepadIsRichDB
+## SavedVariablesPerCharacter: MyGamepadIsRichCharDB
+
+Locales\Locales.lua
+Locales\enUS.lua
+Locales\frFR.lua
+Locales\deDE.lua
+Locales\esES.lua
+Locales\itIT.lua
+Locales\ptBR.lua
+Locales\ruRU.lua
+Locales\koKR.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+Locales\Init.lua
+Core.lua
+Actions.lua
+Bar.lua
+Focus.lua
+Modifier.lua
+Simple.lua
+Learn.lua
+Probe.lua
+UI\Glyphs.lua
+UI\Widgets.lua
+UI\ActionSlot.lua
+UI\TestTab.lua
+UI\Tutorial.lua
+UI\Hud.lua
+UI\MinimapButton.lua
+UI\MainFrame.lua
