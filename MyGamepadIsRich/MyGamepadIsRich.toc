@@ -13,7 +13,7 @@
 ## Notes-zhTW: 手把的額外按鍵（背鍵、額外扳機：GameSir、Xbox Elite、DualSense Edge、SCUF、8BitDo、飛智…）：搭配 A/B/X/Y/十字鍵的修飾鍵，或帶 LT/RT 層的一般按鍵。
 ## Author: nolwe
 ## Version: 1.6.0
-## IconTexture: Interface\Icons\INV_Misc_EngGizmos_20
+## IconTexture: Interface\AddOns\MyGamepadIsRich\Media\Icon
 ## SavedVariables: MyGamepadIsRichDB
 ## SavedVariablesPerCharacter: MyGamepadIsRichCharDB
 
