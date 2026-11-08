@@ -43,6 +43,13 @@ try {
             $zip, $file.FullName, $entry, [System.IO.Compression.CompressionLevel]::Optimal) | Out-Null
         $count++
     }
+    # (le journal des versions, à la racine du dépôt, va dans le dossier de l'addon)
+    $changelog = Join-Path $root 'CHANGELOG.md'
+    if (Test-Path $changelog) {
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
+            $zip, $changelog, "$addon/CHANGELOG.md", [System.IO.Compression.CompressionLevel]::Optimal) | Out-Null
+        $count++
+    }
 } finally {
     $zip.Dispose()
 }

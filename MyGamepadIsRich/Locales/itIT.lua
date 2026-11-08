@@ -435,7 +435,7 @@ ns.AddLocale("itIT", {
     FOREVER_STUCK = "Forever è rimasto sulla sua barra %s (il rilascio di un pulsante è andato perso). Premi %s una volta per tornare a «Da solo».",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("itIT", {
     SPEC_NUMBER = "Specializzazione %d",
     SPEC_SWITCHED = "Azioni della specializzazione «%s».",
@@ -446,19 +446,13 @@ ns.AddLocale("itIT", {
     REPORT_TITLE = "Rapporto del controller",
     REPORT_HINT = "Premi prima ogni pulsante nella scheda Test, poi copia questo testo (Ctrl+C) e invialo all'autore dell'addon, con ciò che funziona e ciò che non funziona. Aiuta a confermare le impostazioni di altri controller. Non contiene nomi di personaggi né di reami.",
     WHATSNEW_TITLE = "Novità di My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD: le azioni dell'addon appaiono come sulle barre del gioco. Rosse fuori portata, blu senza risorse sufficienti, grigie se inutilizzabili, bordo dorato durante un proc, cariche rimanenti, illuminate mentre sono attive (attacco automatico, forma...).\n• Ogni specializzazione ha le sue azioni. Una nuova specializzazione parte con una copia delle azioni della precedente.\n• Non serve più /mgir restore prima di disattivare l'addon: a ogni disconnessione, LT e LB ritrovano l'imitazione di Maiusc / Ctrl, e l'addon la toglie di nuovo all'accesso.\n• Profili: opzione «Ricorda il profilo di ogni personaggio».\n• Scheda Azioni: «Riempi gli spazi vuoti» mette pietra del ritorno, monili e consumabili delle borse su uno strato di modificatore.\n• Scheda Test controller: «Copia un rapporto», da inviare per aiutare a confermare altri controller.\n• /mgir news: rivedere questa finestra.",
     QUICKFILL_BUTTON = "Riempi gli spazi vuoti",
     QUICKFILL_DESC = "Mette negli spazi vuoti di questo strato la pietra del ritorno, i monili utilizzabili indossati e i consumabili delle borse (pozioni, cibo, bende, elisir...), tranne quelli già presenti. Clic destro su uno spazio per svuotarlo.",
     QUICKFILL_DONE = "Spazi riempiti: %d.",
     QUICKFILL_NONE = "Niente da mettere: nessun oggetto utilizzabile nelle borse che non sia già su questo strato.",
 })
 
--- 1.3.0
-ns.AddLocale("itIT", {
-    WHATSNEW_1_3_0 = "• Forever non resta più bloccato sulla sua barra RT (o LT) dopo un incantesimo lanciato con RT + A, come un sigillo del paladino: non serve più premere A per tornare a «Da solo».\n• Se Forever si blocca comunque, RT restituito per una pressione viene ripreso all'inizio di un combattimento: il tuo strato RT dell'addon resta disponibile in combattimento.\n• /mgir etat mostra anche le assegnazioni di LT, RT, LB e RB.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("itIT", {
     SLASH_HELP = "/mgir : apri  |  /mgir profile <nome> : cambia profilo  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio  |  /mgir undo : annulla l'ultima modifica delle azioni",
     LEARN_PAD_REFUSED = "%s è un pulsante di base del controller: l'addon lo combina o lo configura da sé. Premi il pulsante aggiuntivo (il tasto inviato dal suo software).",
@@ -496,5 +490,9 @@ ns.AddLocale("itIT", {
     SPEC_COPIED = "Azioni di «%s» copiate.",
     LATCH = "Bloccabile",
     LATCH_DESC = "Una pressione attiva lo strato di questo modificatore, la successiva lo disattiva: non serve tenerlo premuto. Un altro modificatore tenuto premuto prende il controllo finché è premuto. Qualsiasi modifica delle impostazioni lo sblocca. Solo pulsanti aggiuntivi (non LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Scheda Azioni: «Copia / scambia…» copia uno strato di combinazioni in un altro, oppure scambia due strati.\n• Modelli di classe: salva le tue azioni per tutto l'account, poi caricale su un altro personaggio della stessa classe («Modelli e specializzazioni…» sotto l'elenco degli strati). Puoi anche copiare le azioni di un'altra specializzazione.\n• Modificatore bloccabile (scheda Pulsanti): una pressione attiva lo strato, la successiva lo disattiva.\n• /mgir reset chiede conferma, e /mgir undo torna indietro dopo un azzeramento, un modello o una copia di specializzazione o di strato.\n• Veicoli, barre sostitutive e scontri tra mascotte: l'addon si fa da parte e i pulsanti del gioco funzionano, anche in combattimento.\n• Rileva rifiuta A, B, X, Y, la croce e LT, RT, LB, RB (premuti per errore, diventerebbero il tasto di un pulsante aggiuntivo).\n• «Copia un rapporto» include il registro recente degli strati.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("itIT", {
+    WHATSNEW_1_1_0 = "• HUD: le azioni dell'addon appaiono come sulle barre del gioco. Rosse fuori portata, blu senza risorse sufficienti, grigie se inutilizzabili, bordo dorato durante un proc, cariche rimanenti, illuminate mentre sono attive (attacco automatico, forma...).\n• HUD: l'ordine delle miniature degli strati si può scegliere (frecce della scheda HUD, oppure trascina una miniatura su un'altra).\n• Ogni specializzazione ha le sue azioni. Una nuova specializzazione parte con una copia delle azioni della precedente.\n• Scheda Azioni: «Riempi gli spazi vuoti» mette pietra del ritorno, monili e consumabili delle borse su uno strato di modificatore, e «Copia / scambia…» copia uno strato di combinazioni in un altro, oppure scambia due strati.\n• Modelli di classe: salva le tue azioni per tutto l'account, poi caricale su un altro personaggio della stessa classe («Modelli e specializzazioni…» sotto l'elenco degli strati). Puoi anche copiare le azioni di un'altra specializzazione.\n• Modificatore bloccabile (scheda Pulsanti): una pressione attiva lo strato, la successiva lo disattiva.\n• /mgir reset chiede conferma, e /mgir undo torna indietro dopo un azzeramento, un modello o una copia di specializzazione o di strato.\n• Profili: opzione «Ricorda il profilo di ogni personaggio».\n• Strati bloccati: un pulsante di base dato all'addon resta a chi ha ricevuto la pressione finché non viene rilasciato, e Forever non resta più bloccato sulla sua barra RT (o LT), per esempio dopo un incantesimo lanciato con RT + A come un sigillo del paladino.\n• Veicoli, barre sostitutive e scontri tra mascotte: l'addon si fa da parte e i pulsanti del gioco funzionano, anche in combattimento.\n• Non serve più /mgir restore prima di disattivare l'addon: a ogni disconnessione, LT e LB ritrovano l'imitazione di Maiusc / Ctrl, e l'addon la toglie di nuovo all'accesso.\n• Rileva rifiuta A, B, X, Y, la croce e LT, RT, LB, RB (premuti per errore, diventerebbero il tasto di un pulsante aggiuntivo).\n• Scheda Test controller: «Copia un rapporto» (con il registro recente degli strati), da inviare per aiutare a confermare altri controller. /mgir etat mostra lo stato degli strati.\n• /mgir news: rivedere questa finestra.",
 })

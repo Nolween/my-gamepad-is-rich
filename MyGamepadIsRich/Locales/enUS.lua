@@ -436,7 +436,7 @@ ns.AddLocale("enUS", {
     FOREVER_STUCK = "Forever stayed on its %s bar (a button release went missing). Press %s once to bring it back to \"Alone\".",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("enUS", {
     SPEC_NUMBER = "Specialization %d",
     SPEC_SWITCHED = "Actions of the \"%s\" specialization.",
@@ -447,19 +447,13 @@ ns.AddLocale("enUS", {
     REPORT_TITLE = "Controller report",
     REPORT_HINT = "First press every button in the Test tab, then copy this text (Ctrl+C) and send it to the addon's author, with what works and what doesn't. It helps confirm the settings of other controllers. No character or realm name is included.",
     WHATSNEW_TITLE = "What's new in My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD: the addon's actions look like the game's bars. Red out of range, blue without enough resource, grey when unusable, golden edge during a proc, remaining charges, lit while active (auto attack, form...).\n• Each specialization has its own actions. A new spec starts with a copy of the previous one's actions.\n• No more /mgir restore before disabling the addon: on every logout, LT and LB get their Shift / Ctrl imitation back, and the addon cuts it again on login.\n• Profiles: \"Remember each character's profile\" option.\n• Actions tab: \"Fill empty slots\" places your hearthstone, trinkets and bag consumables on a modifier layer.\n• Controller test tab: \"Copy a report\", to send and help confirm other controllers.\n• /mgir news: show this window again.",
     QUICKFILL_BUTTON = "Fill empty slots",
     QUICKFILL_DESC = "Places your hearthstone, equipped usable trinkets and bag consumables (potions, food, bandages, elixirs...) in this layer's empty slots, except those already there. Right-click a slot to clear it.",
     QUICKFILL_DONE = "%d slot(s) filled.",
     QUICKFILL_NONE = "Nothing to place: no usable item found in your bags that isn't already on this layer.",
 })
 
--- 1.3.0
-ns.AddLocale("enUS", {
-    WHATSNEW_1_3_0 = "• Forever no longer stays stuck on its RT (or LT) bar after a spell cast with RT + A, such as a paladin seal: no need to press A to get back to \"Alone\".\n• If Forever still gets stuck, RT handed back for one press is taken back when combat starts: your addon RT layer stays available in combat.\n• /mgir etat also shows the LT, RT, LB and RB bindings.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("enUS", {
     SLASH_HELP = "/mgir : open  |  /mgir profile <name> : switch profile  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions  |  /mgir undo : undo the last change of actions",
     LEARN_PAD_REFUSED = "%s is a base controller button: the addon combines or configures it itself. Press the extra button (the key its software sends).",
@@ -497,5 +491,9 @@ ns.AddLocale("enUS", {
     SPEC_COPIED = "Actions of \"%s\" copied.",
     LATCH = "Latching",
     LATCH_DESC = "One press turns this modifier's layer on, the next press turns it off: no need to hold it. Another modifier held takes over while it is held. Any settings change releases the latch. Extra buttons only (not LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Actions tab: \"Copy / swap...\" copies a combo layer to another one, or swaps two layers.\n• Class templates: save your actions for the whole account, then load them on another character of the same class (\"Templates and specs...\" under the layer list). You can also copy the actions of another specialization.\n• Latching modifier (Buttons tab): one press turns the layer on, the next press turns it off.\n• /mgir reset asks for confirmation, and /mgir undo goes back after a reset, a template, a spec copy or a layer copy.\n• Vehicles, override bars and pet battles: the addon steps aside and the game's buttons work, in combat too.\n• Detect refuses A, B, X, Y, the D-pad and LT, RT, LB, RB (pressed by mistake, they would become an extra button's key).\n• \"Copy a report\" includes the recent layer log.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("enUS", {
+    WHATSNEW_1_1_0 = "• HUD: the addon's actions look like the game's bars. Red out of range, blue without enough resource, grey when unusable, golden edge during a proc, remaining charges, lit while active (auto attack, form...).\n• HUD: choose the order of the layer miniatures (arrows in the HUD tab, or drag a miniature onto another one).\n• Each specialization has its own actions. A new spec starts with a copy of the previous one's actions.\n• Actions tab: \"Fill empty slots\" places your hearthstone, trinkets and bag consumables on a modifier layer, and \"Copy / swap...\" copies a combo layer to another one, or swaps two layers.\n• Class templates: save your actions for the whole account, then load them on another character of the same class (\"Templates and specs...\" under the layer list). You can also copy the actions of another specialization.\n• Latching modifier (Buttons tab): one press turns the layer on, the next press turns it off.\n• /mgir reset asks for confirmation, and /mgir undo goes back after a reset, a template, a spec copy or a layer copy.\n• Profiles: \"Remember each character's profile\" option.\n• Stuck layers: a base button given to the addon stays with whoever got the press until it is released, and Forever no longer stays stuck on its RT (or LT) bar, for example after a spell cast with RT + A such as a paladin seal.\n• Vehicles, override bars and pet battles: the addon steps aside and the game's buttons work, in combat too.\n• No more /mgir restore before disabling the addon: on every logout, LT and LB get their Shift / Ctrl imitation back, and the addon cuts it again on login.\n• Detect refuses A, B, X, Y, the D-pad and LT, RT, LB, RB (pressed by mistake, they would become an extra button's key).\n• Controller test tab: \"Copy a report\" (with the recent layer log), to send and help confirm other controllers. /mgir etat shows the state of the layers.\n• /mgir news: show this window again.",
 })

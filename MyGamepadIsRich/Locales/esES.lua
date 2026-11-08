@@ -435,7 +435,7 @@ ns.AddLocale("esES", {
     FOREVER_STUCK = "Forever se quedó en su barra %s (se perdió el soltar de un botón). Pulsa %s una vez para volver a «Solo».",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("esES", {
     SPEC_NUMBER = "Especialización %d",
     SPEC_SWITCHED = "Acciones de la especialización «%s».",
@@ -446,19 +446,13 @@ ns.AddLocale("esES", {
     REPORT_TITLE = "Informe del mando",
     REPORT_HINT = "Pulsa primero cada botón en la pestaña Prueba, luego copia este texto (Ctrl+C) y envíalo al autor del addon, con lo que funciona y lo que no. Ayuda a confirmar los ajustes de otros mandos. No incluye ningún nombre de personaje ni de reino.",
     WHATSNEW_TITLE = "Novedades de My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD: las acciones del addon se ven como en las barras del juego. Rojas fuera de alcance, azules sin recurso suficiente, grises si no se pueden usar, borde dorado durante un proc, cargas restantes, iluminadas mientras están activas (ataque automático, forma...).\n• Cada especialización tiene sus propias acciones. Una especialización nueva empieza con una copia de las acciones de la anterior.\n• Ya no hace falta /mgir restore antes de desactivar el addon: en cada desconexión, LT y LB recuperan su imitación de Mayús / Ctrl, y el addon la vuelve a quitar al conectarse.\n• Perfiles: opción «Recordar el perfil de cada personaje».\n• Pestaña Acciones: «Rellenar casillas vacías» coloca la piedra de hogar, los abalorios y los consumibles de las bolsas en una capa de modificador.\n• Pestaña Prueba del mando: «Copiar un informe», para enviarlo y ayudar a confirmar otros mandos.\n• /mgir news: volver a ver esta ventana.",
     QUICKFILL_BUTTON = "Rellenar casillas vacías",
     QUICKFILL_DESC = "Coloca en las casillas vacías de esta capa la piedra de hogar, los abalorios usables equipados y los consumibles de las bolsas (pociones, comida, vendas, elixires...), salvo los que ya están. Clic derecho en una casilla para vaciarla.",
     QUICKFILL_DONE = "%d casilla(s) rellenada(s).",
     QUICKFILL_NONE = "Nada que colocar: ningún objeto usable en las bolsas que no esté ya en esta capa.",
 })
 
--- 1.3.0
-ns.AddLocale("esES", {
-    WHATSNEW_1_3_0 = "• Forever ya no se queda bloqueado en su barra RT (o LT) tras un hechizo lanzado con RT + A, como un sello de paladín: ya no hace falta pulsar A para volver a «Solo».\n• Si Forever se bloquea de todos modos, RT devuelto para una pulsación se recupera al empezar un combate: tu capa RT del addon sigue disponible en combate.\n• /mgir etat también muestra las asignaciones de LT, RT, LB y RB.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("esES", {
     SLASH_HELP = "/mgir : abrir  |  /mgir profile <nombre> : cambiar de perfil  |  /mgir test : prueba del mando  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reiniciar las acciones de este personaje  |  /mgir undo : deshacer el último cambio de acciones",
     LEARN_PAD_REFUSED = "%s es un botón básico del mando: el addon lo combina o lo configura él mismo. Pulsa el botón adicional (la tecla que envía su software).",
@@ -496,5 +490,9 @@ ns.AddLocale("esES", {
     SPEC_COPIED = "Acciones de «%s» copiadas.",
     LATCH = "Fijable",
     LATCH_DESC = "Una pulsación activa la capa de este modificador y la siguiente la desactiva: no hace falta mantenerlo. Otro modificador mantenido toma el control mientras se mantiene. Cualquier cambio de ajustes lo libera. Solo botones adicionales (no LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Pestaña Acciones: «Copiar / intercambiar…» copia una capa de combinaciones a otra, o intercambia dos capas.\n• Plantillas de clase: guarda tus acciones para toda la cuenta y cárgalas en otro personaje de la misma clase («Plantillas y especializaciones…» bajo la lista de capas). También puedes copiar las acciones de otra especialización.\n• Modificador fijable (pestaña Botones): una pulsación activa la capa, la siguiente la desactiva.\n• /mgir reset pide confirmación, y /mgir undo vuelve atrás tras un reinicio, una plantilla o una copia de especialización o de capa.\n• Vehículos, barras de reemplazo y duelos de mascotas: el addon se aparta y los botones del juego funcionan, también en combate.\n• Detectar rechaza A, B, X, Y, la cruceta y LT, RT, LB, RB (pulsados por error, se convertirían en la tecla de un botón adicional).\n• «Copiar un informe» incluye el registro reciente de las capas.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("esES", {
+    WHATSNEW_1_1_0 = "• HUD: las acciones del addon se ven como en las barras del juego. Rojas fuera de alcance, azules sin recurso suficiente, grises si no se pueden usar, borde dorado durante un proc, cargas restantes, iluminadas mientras están activas (ataque automático, forma...).\n• HUD: el orden de las miniaturas de las capas se puede elegir (flechas de la pestaña HUD, o arrastrar una miniatura sobre otra).\n• Cada especialización tiene sus propias acciones. Una especialización nueva empieza con una copia de las acciones de la anterior.\n• Pestaña Acciones: «Rellenar casillas vacías» coloca la piedra de hogar, los abalorios y los consumibles de las bolsas en una capa de modificador, y «Copiar / intercambiar…» copia una capa de combinaciones a otra, o intercambia dos capas.\n• Plantillas de clase: guarda tus acciones para toda la cuenta y cárgalas en otro personaje de la misma clase («Plantillas y especializaciones…» bajo la lista de capas). También puedes copiar las acciones de otra especialización.\n• Modificador fijable (pestaña Botones): una pulsación activa la capa, la siguiente la desactiva.\n• /mgir reset pide confirmación, y /mgir undo vuelve atrás tras un reinicio, una plantilla o una copia de especialización o de capa.\n• Perfiles: opción «Recordar el perfil de cada personaje».\n• Capas bloqueadas: un botón básico dado al addon se queda con quien recibió la pulsación hasta que se suelta, y Forever ya no se queda bloqueado en su barra RT (o LT), por ejemplo tras un hechizo lanzado con RT + A como un sello de paladín.\n• Vehículos, barras de reemplazo y duelos de mascotas: el addon se aparta y los botones del juego funcionan, también en combate.\n• Ya no hace falta /mgir restore antes de desactivar el addon: en cada desconexión, LT y LB recuperan su imitación de Mayús / Ctrl, y el addon la vuelve a quitar al conectarse.\n• Detectar rechaza A, B, X, Y, la cruceta y LT, RT, LB, RB (pulsados por error, se convertirían en la tecla de un botón adicional).\n• Pestaña Prueba del mando: «Copiar un informe» (con el registro reciente de las capas), para enviarlo y ayudar a confirmar otros mandos. /mgir etat muestra el estado de las capas.\n• /mgir news: volver a ver esta ventana.",
 })

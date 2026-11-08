@@ -215,7 +215,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 
 ## Publier
 
-`.\build.ps1` (à la racine du dépôt) crée `dist\MyGamepadIsRich-<version>.zip`, la version étant lue dans le .toc, sans `Probe.lua`, avec des chemins en `/`.
+`.\build.ps1` (à la racine du dépôt) crée `dist\MyGamepadIsRich-<version>.zip`, la version étant lue dans le .toc, sans `Probe.lua`, avec des chemins en `/` et le `CHANGELOG.md` dans le dossier de l'addon. Les nouveautés d'une version publiée : `CHANGELOG.md`, et une note `WHATSNEW_x_y_z` dans `UI/WhatsNew.lua` et les Locales.
 
 ## Fichiers
 

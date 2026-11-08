@@ -435,7 +435,7 @@ ns.AddLocale("frFR", {
     FOREVER_STUCK = "Forever est resté sur sa barre %s (un relâchement de bouton lui a échappé). Appuie une fois sur %s pour le remettre sur « Seul ».",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("frFR", {
     SPEC_NUMBER = "Spécialisation %d",
     SPEC_SWITCHED = "Actions de la spécialisation « %s ».",
@@ -446,19 +446,13 @@ ns.AddLocale("frFR", {
     REPORT_TITLE = "Rapport de manette",
     REPORT_HINT = "Appuie d'abord sur chaque bouton dans l'onglet Test, puis copie ce texte (Ctrl+C) et envoie-le à l'auteur de l'addon, avec ce qui marche ou pas. Il aide à confirmer les réglages des autres manettes. Aucun nom de personnage ni de royaume n'y figure.",
     WHATSNEW_TITLE = "Nouveautés de My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD : les actions de l'addon s'affichent comme sur les barres du jeu. Rouges hors de portée, bleues sans assez de ressource, grises si inutilisables, bord doré pendant un proc, charges restantes, case allumée pour une action en cours (attaque auto, forme...).\n• Chaque spécialisation a ses propres actions. Une nouvelle spé commence avec une copie des actions de la précédente.\n• Plus besoin de /mgir restore avant de désactiver l'addon : à chaque déconnexion, LT et LB retrouvent leur imitation de Maj / Ctrl, et l'addon la recoupe à la connexion.\n• Profils : option « Retenir le profil de chaque personnage ».\n• Onglet Actions : « Remplir les cases vides » pose la pierre de foyer, les bijoux et les consommables des sacs sur une couche de modificateur.\n• Onglet Test manette : « Copier un rapport », à envoyer pour aider à confirmer les autres manettes.\n• /mgir news : revoir cette fenêtre.",
     QUICKFILL_BUTTON = "Remplir les cases vides",
     QUICKFILL_DESC = "Pose dans les cases vides de cette couche la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs...), sauf ceux déjà présents. Clic droit sur une case pour la vider.",
     QUICKFILL_DONE = "%d case(s) remplie(s).",
     QUICKFILL_NONE = "Rien à poser : aucun objet utilisable trouvé dans les sacs qui ne soit pas déjà sur cette couche.",
 })
 
--- 1.3.0
-ns.AddLocale("frFR", {
-    WHATSNEW_1_3_0 = "• Forever ne reste plus bloqué sur sa barre RT (ou LT) après un sort lancé avec RT + A, comme un sceau de paladin : plus besoin d'appuyer sur A pour revenir sur « Seul ».\n• Si Forever se bloque malgré tout, RT rendu le temps d'un appui est repris au début d'un combat : ta couche RT de l'addon reste disponible en combat.\n• /mgir etat montre aussi les liaisons de LT, RT, LB et RB.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("frFR", {
     SLASH_HELP = "/mgir : ouvrir  |  /mgir profil <nom> : changer de profil  |  /mgir test : test manette  |  /mgir tuto : tutoriel  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : remettre à zéro les actions de ce personnage  |  /mgir undo : annuler le dernier changement d'actions",
     LEARN_PAD_REFUSED = "%s est un bouton de base de la manette : l'addon le combine ou le configure lui-même. Appuie sur le bouton supplémentaire (la touche que son logiciel envoie).",
@@ -496,5 +490,9 @@ ns.AddLocale("frFR", {
     SPEC_COPIED = "Actions de « %s » copiées.",
     LATCH = "Verrouillable",
     LATCH_DESC = "Un appui active la couche de ce modificateur, l'appui suivant la quitte : plus besoin de le maintenir. Un autre modificateur maintenu prend la main tant qu'il est tenu. Tout changement de réglage libère le verrou. Boutons supplémentaires seulement (pas LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Onglet Actions : « Copier / échanger… » copie une couche de combinaisons vers une autre, ou échange deux couches.\n• Modèles de classe : enregistre tes actions pour tout le compte, puis reprends-les sur un autre personnage de la même classe (« Modèles et spés… » sous la liste des couches). Tu peux aussi copier les actions d'une autre spécialisation.\n• Modificateur verrouillable (onglet Boutons) : un appui active la couche, l'appui suivant la quitte.\n• /mgir reset demande confirmation, et /mgir undo revient en arrière après une remise à zéro, un modèle, une copie de spé ou de couche.\n• Véhicules, barres de remplacement et combats de mascottes : l'addon s'efface et les boutons du jeu fonctionnent, en combat aussi.\n• Détecter refuse A, B, X, Y, la croix et LT, RT, LB, RB (pressés par erreur, ils deviendraient la touche d'un bouton supplémentaire).\n• « Copier un rapport » contient le journal récent des couches.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("frFR", {
+    WHATSNEW_1_1_0 = "• HUD : les actions de l'addon s'affichent comme sur les barres du jeu. Rouges hors de portée, bleues sans assez de ressource, grises si inutilisables, bord doré pendant un proc, charges restantes, case allumée pour une action en cours (attaque auto, forme...).\n• HUD : l'ordre des miniatures des couches se choisit (flèches de l'onglet HUD, ou glisser une miniature sur une autre).\n• Chaque spécialisation a ses propres actions. Une nouvelle spé commence avec une copie des actions de la précédente.\n• Onglet Actions : « Remplir les cases vides » pose la pierre de foyer, les bijoux et les consommables des sacs sur une couche de modificateur, et « Copier / échanger… » copie une couche de combinaisons vers une autre, ou échange deux couches.\n• Modèles de classe : enregistre tes actions pour tout le compte, puis reprends-les sur un autre personnage de la même classe (« Modèles et spés… » sous la liste des couches). Tu peux aussi copier les actions d'une autre spécialisation.\n• Modificateur verrouillable (onglet Boutons) : un appui active la couche, l'appui suivant la quitte.\n• /mgir reset demande confirmation, et /mgir undo revient en arrière après une remise à zéro, un modèle, une copie de spé ou de couche.\n• Profils : option « Retenir le profil de chaque personnage ».\n• Couches bloquées : un bouton de base donné à l'addon reste à qui a reçu l'appui jusqu'à son relâchement, et Forever ne reste plus bloqué sur sa barre RT (ou LT), par exemple après un sort lancé avec RT + A comme un sceau de paladin.\n• Véhicules, barres de remplacement et combats de mascottes : l'addon s'efface et les boutons du jeu fonctionnent, en combat aussi.\n• Plus besoin de /mgir restore avant de désactiver l'addon : à chaque déconnexion, LT et LB retrouvent leur imitation de Maj / Ctrl, et l'addon la recoupe à la connexion.\n• Détecter refuse A, B, X, Y, la croix et LT, RT, LB, RB (pressés par erreur, ils deviendraient la touche d'un bouton supplémentaire).\n• Onglet Test manette : « Copier un rapport » (avec le journal récent des couches), à envoyer pour aider à confirmer les autres manettes. /mgir etat montre l'état des couches.\n• /mgir news : revoir cette fenêtre.",
 })

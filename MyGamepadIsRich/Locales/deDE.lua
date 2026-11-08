@@ -435,7 +435,7 @@ ns.AddLocale("deDE", {
     FOREVER_STUCK = "Forever ist auf seiner %s-Leiste hängen geblieben (ein Loslassen der Taste ging verloren). Drücke einmal %s, um zu „Allein“ zurückzukehren.",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("deDE", {
     SPEC_NUMBER = "Spezialisierung %d",
     SPEC_SWITCHED = "Aktionen der Spezialisierung „%s“.",
@@ -446,19 +446,13 @@ ns.AddLocale("deDE", {
     REPORT_TITLE = "Controller-Bericht",
     REPORT_HINT = "Drücke zuerst jede Taste im Test-Reiter, kopiere dann diesen Text (Strg+C) und schicke ihn dem Autor des Addons, mit dem, was funktioniert und was nicht. Er hilft, die Einstellungen anderer Controller zu bestätigen. Kein Charakter- oder Realmname ist enthalten.",
     WHATSNEW_TITLE = "Neues in My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD: Die Aktionen des Addons sehen aus wie auf den Leisten des Spiels. Rot außer Reichweite, blau ohne genug Ressource, grau wenn unbenutzbar, goldener Rand bei einem Proc, verbleibende Aufladungen, hervorgehoben solange aktiv (automatischer Angriff, Gestalt...).\n• Jede Spezialisierung hat ihre eigenen Aktionen. Eine neue Spezialisierung beginnt mit einer Kopie der Aktionen der vorherigen.\n• Kein /mgir restore mehr vor dem Deaktivieren: Bei jedem Ausloggen bekommen LT und LB ihre Umschalt-/Strg-Imitation zurück, und das Addon schaltet sie beim Einloggen wieder ab.\n• Profile: Option „Profil jedes Charakters merken“.\n• Reiter Aktionen: „Leere Felder füllen“ legt Ruhestein, Schmuckstücke und Verbrauchsgüter aus den Taschen auf eine Modifikator-Ebene.\n• Reiter Controller-Test: „Bericht kopieren“, zum Verschicken, um andere Controller zu bestätigen.\n• /mgir news: dieses Fenster erneut zeigen.",
     QUICKFILL_BUTTON = "Leere Felder füllen",
     QUICKFILL_DESC = "Legt Ruhestein, angelegte benutzbare Schmuckstücke und Verbrauchsgüter aus den Taschen (Tränke, Essen, Verbände, Elixiere...) in die leeren Felder dieser Ebene, außer denen, die schon da sind. Rechtsklick auf ein Feld leert es.",
     QUICKFILL_DONE = "%d Feld(er) gefüllt.",
     QUICKFILL_NONE = "Nichts zu legen: kein benutzbarer Gegenstand in den Taschen, der nicht schon auf dieser Ebene ist.",
 })
 
--- 1.3.0
-ns.AddLocale("deDE", {
-    WHATSNEW_1_3_0 = "• Forever bleibt nach einem mit RT + A gewirkten Zauber, etwa einem Siegel des Paladins, nicht mehr auf seiner RT- (oder LT-)Leiste hängen: Du musst nicht mehr A drücken, um zu „Allein“ zurückzukehren.\n• Bleibt Forever trotzdem hängen, wird RT, das für einen Druck zurückgegeben wurde, bei Kampfbeginn wieder übernommen: Deine RT-Ebene des Addons bleibt im Kampf verfügbar.\n• /mgir etat zeigt auch die Belegungen von LT, RT, LB und RB.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("deDE", {
     SLASH_HELP = "/mgir : öffnen  |  /mgir profile <Name> : Profil wechseln  |  /mgir test : Controller-Test  |  /mgir tuto : Tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : Aktionen dieses Charakters zurücksetzen  |  /mgir undo : letzte Änderung der Aktionen rückgängig machen",
     LEARN_PAD_REFUSED = "%s ist eine Grundtaste des Controllers: Das Addon kombiniert oder konfiguriert sie selbst. Drücke die Zusatztaste (die Taste, die ihre Software sendet).",
@@ -496,5 +490,9 @@ ns.AddLocale("deDE", {
     SPEC_COPIED = "Aktionen von „%s“ kopiert.",
     LATCH = "Einrastend",
     LATCH_DESC = "Ein Druck schaltet die Ebene dieses Modifikators ein, der nächste schaltet sie aus: Du musst ihn nicht halten. Ein anderer gehaltener Modifikator hat Vorrang, solange er gehalten wird. Jede Änderung der Einstellungen löst die Einrastung. Nur für Zusatztasten (nicht LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Reiter Aktionen: „Kopieren / tauschen…“ kopiert eine Kombinationsebene auf eine andere oder tauscht zwei Ebenen.\n• Klassenvorlagen: Speichere deine Aktionen für den ganzen Account und lade sie auf einem anderen Charakter derselben Klasse („Vorlagen und Spezialisierungen…“ unter der Ebenenliste). Du kannst auch die Aktionen einer anderen Spezialisierung kopieren.\n• Einrastender Modifikator (Reiter Tasten): Ein Druck schaltet die Ebene ein, der nächste schaltet sie aus.\n• /mgir reset fragt nach einer Bestätigung, und /mgir undo macht ein Zurücksetzen, eine Vorlage oder eine kopierte Spezialisierung bzw. Ebene rückgängig.\n• Fahrzeuge, Ersatzleisten und Haustierkämpfe: Das Addon tritt zurück und die Tasten des Spiels funktionieren, auch im Kampf.\n• Erkennen lehnt A, B, X, Y, das Steuerkreuz und LT, RT, LB, RB ab (versehentlich gedrückt, würden sie zur Taste einer Zusatztaste).\n• „Bericht kopieren“ enthält das aktuelle Ebenenprotokoll.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("deDE", {
+    WHATSNEW_1_1_0 = "• HUD: Die Aktionen des Addons sehen aus wie auf den Leisten des Spiels. Rot außer Reichweite, blau ohne genug Ressource, grau wenn unbenutzbar, goldener Rand bei einem Proc, verbleibende Aufladungen, hervorgehoben solange aktiv (automatischer Angriff, Gestalt...).\n• HUD: Die Reihenfolge der Ebenen-Miniaturen ist wählbar (Pfeile im Reiter HUD, oder eine Miniatur auf eine andere ziehen).\n• Jede Spezialisierung hat ihre eigenen Aktionen. Eine neue Spezialisierung beginnt mit einer Kopie der Aktionen der vorherigen.\n• Reiter Aktionen: „Leere Felder füllen“ legt Ruhestein, Schmuckstücke und Verbrauchsgüter aus den Taschen auf eine Modifikator-Ebene, und „Kopieren / tauschen…“ kopiert eine Kombinationsebene auf eine andere oder tauscht zwei Ebenen.\n• Klassenvorlagen: Speichere deine Aktionen für den ganzen Account und lade sie auf einem anderen Charakter derselben Klasse („Vorlagen und Spezialisierungen…“ unter der Ebenenliste). Du kannst auch die Aktionen einer anderen Spezialisierung kopieren.\n• Einrastender Modifikator (Reiter Tasten): Ein Druck schaltet die Ebene ein, der nächste schaltet sie aus.\n• /mgir reset fragt nach einer Bestätigung, und /mgir undo macht ein Zurücksetzen, eine Vorlage oder eine kopierte Spezialisierung bzw. Ebene rückgängig.\n• Profile: Option „Profil jedes Charakters merken“.\n• Hängende Ebenen: Eine dem Addon gegebene Grundtaste bleibt bei dem, der den Druck erhalten hat, bis sie losgelassen wird, und Forever bleibt nicht mehr auf seiner RT- (oder LT-)Leiste hängen, etwa nach einem mit RT + A gewirkten Zauber wie einem Siegel des Paladins.\n• Fahrzeuge, Ersatzleisten und Haustierkämpfe: Das Addon tritt zurück und die Tasten des Spiels funktionieren, auch im Kampf.\n• Kein /mgir restore mehr vor dem Deaktivieren: Bei jedem Ausloggen bekommen LT und LB ihre Umschalt-/Strg-Imitation zurück, und das Addon schaltet sie beim Einloggen wieder ab.\n• Erkennen lehnt A, B, X, Y, das Steuerkreuz und LT, RT, LB, RB ab (versehentlich gedrückt, würden sie zur Taste einer Zusatztaste).\n• Reiter Controller-Test: „Bericht kopieren“ (mit dem aktuellen Ebenenprotokoll), zum Verschicken, um andere Controller zu bestätigen. /mgir etat zeigt den Zustand der Ebenen.\n• /mgir news: dieses Fenster erneut zeigen.",
 })

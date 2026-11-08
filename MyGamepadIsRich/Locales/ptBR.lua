@@ -435,7 +435,7 @@ ns.AddLocale("ptBR", {
     FOREVER_STUCK = "O Forever ficou preso na barra %s (a soltura de um botão se perdeu). Aperte %s uma vez para voltar a \"Sozinho\".",
 })
 
--- 1.2.0
+-- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
 ns.AddLocale("ptBR", {
     SPEC_NUMBER = "Especialização %d",
     SPEC_SWITCHED = "Ações da especialização \"%s\".",
@@ -446,19 +446,13 @@ ns.AddLocale("ptBR", {
     REPORT_TITLE = "Relatório do controle",
     REPORT_HINT = "Primeiro aperte cada botão na aba Teste, depois copie este texto (Ctrl+C) e envie ao autor do addon, com o que funciona e o que não funciona. Ele ajuda a confirmar as configurações de outros controles. Nenhum nome de personagem ou de reino é incluído.",
     WHATSNEW_TITLE = "Novidades do My Gamepad Is Rich",
-    WHATSNEW_1_2_0 = "• HUD: as ações do addon aparecem como nas barras do jogo. Vermelhas fora de alcance, azuis sem recurso suficiente, cinza quando inutilizáveis, borda dourada durante um proc, cargas restantes, acesas enquanto ativas (ataque automático, forma...).\n• Cada especialização tem suas próprias ações. Uma nova especialização começa com uma cópia das ações da anterior.\n• Não precisa mais de /mgir restore antes de desativar o addon: a cada saída, LT e LB recuperam a imitação de Shift / Ctrl, e o addon a corta de novo ao entrar.\n• Perfis: opção \"Lembrar o perfil de cada personagem\".\n• Aba Ações: \"Preencher espaços vazios\" coloca a pedra de regresso, os berloques e os consumíveis das bolsas numa camada de modificador.\n• Aba Teste do controle: \"Copiar um relatório\", para enviar e ajudar a confirmar outros controles.\n• /mgir news: rever esta janela.",
     QUICKFILL_BUTTON = "Preencher espaços vazios",
     QUICKFILL_DESC = "Coloca nos espaços vazios desta camada a pedra de regresso, os berloques usáveis equipados e os consumíveis das bolsas (poções, comida, ataduras, elixires...), exceto os que já estão lá. Clique direito num espaço para esvaziá-lo.",
     QUICKFILL_DONE = "%d espaço(s) preenchido(s).",
     QUICKFILL_NONE = "Nada a colocar: nenhum item usável nas bolsas que já não esteja nesta camada.",
 })
 
--- 1.3.0
-ns.AddLocale("ptBR", {
-    WHATSNEW_1_3_0 = "• O Forever não fica mais preso na barra RT (ou LT) depois de um feitiço lançado com RT + A, como um selo de paladino: não precisa mais apertar A para voltar a \"Sozinho\".\n• Se o Forever travar mesmo assim, o RT devolvido por um aperto é retomado no início de um combate: sua camada RT do addon continua disponível em combate.\n• /mgir etat também mostra as atribuições de LT, RT, LB e RB.",
-})
-
--- 1.4.0
+-- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("ptBR", {
     SLASH_HELP = "/mgir : abrir  |  /mgir profile <nome> : trocar de perfil  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem  |  /mgir undo : desfazer a última mudança de ações",
     LEARN_PAD_REFUSED = "%s é um botão básico do controle: o addon o combina ou o configura sozinho. Aperte o botão extra (a tecla que o software dele envia).",
@@ -496,5 +490,9 @@ ns.AddLocale("ptBR", {
     SPEC_COPIED = "Ações de \"%s\" copiadas.",
     LATCH = "Travável",
     LATCH_DESC = "Um toque ativa a camada deste modificador e o toque seguinte a desativa: não precisa segurá-lo. Outro modificador segurado assume enquanto estiver segurado. Qualquer mudança de configuração libera a trava. Só botões extras (não LT, RT, LB, RB).",
-    WHATSNEW_1_4_0 = "• Aba Ações: \"Copiar / trocar…\" copia uma camada de combinações para outra, ou troca duas camadas.\n• Modelos de classe: salve suas ações para a conta inteira e carregue-as em outro personagem da mesma classe (\"Modelos e especializações…\" abaixo da lista de camadas). Você também pode copiar as ações de outra especialização.\n• Modificador travável (aba Botões): um toque ativa a camada, o seguinte a desativa.\n• /mgir reset pede confirmação, e /mgir undo volta atrás depois de zerar, de um modelo ou de uma cópia de especialização ou de camada.\n• Veículos, barras de substituição e batalhas de mascotes: o addon sai do caminho e os botões do jogo funcionam, também em combate.\n• Detectar recusa A, B, X, Y, o direcional e LT, RT, LB, RB (apertados por engano, virariam a tecla de um botão extra).\n• \"Copiar um relatório\" inclui o registro recente das camadas.",
+})
+
+-- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
+ns.AddLocale("ptBR", {
+    WHATSNEW_1_1_0 = "• HUD: as ações do addon aparecem como nas barras do jogo. Vermelhas fora de alcance, azuis sem recurso suficiente, cinza quando inutilizáveis, borda dourada durante um proc, cargas restantes, acesas enquanto ativas (ataque automático, forma...).\n• HUD: a ordem das miniaturas das camadas pode ser escolhida (setas da aba HUD, ou arraste uma miniatura sobre outra).\n• Cada especialização tem suas próprias ações. Uma nova especialização começa com uma cópia das ações da anterior.\n• Aba Ações: \"Preencher espaços vazios\" coloca a pedra de regresso, os berloques e os consumíveis das bolsas numa camada de modificador, e \"Copiar / trocar…\" copia uma camada de combinações para outra, ou troca duas camadas.\n• Modelos de classe: salve suas ações para a conta inteira e carregue-as em outro personagem da mesma classe (\"Modelos e especializações…\" abaixo da lista de camadas). Você também pode copiar as ações de outra especialização.\n• Modificador travável (aba Botões): um toque ativa a camada, o seguinte a desativa.\n• /mgir reset pede confirmação, e /mgir undo volta atrás depois de zerar, de um modelo ou de uma cópia de especialização ou de camada.\n• Perfis: opção \"Lembrar o perfil de cada personagem\".\n• Camadas travadas: um botão básico dado ao addon fica com quem recebeu o aperto até ser solto, e o Forever não fica mais preso na barra RT (ou LT), por exemplo depois de um feitiço lançado com RT + A como um selo de paladino.\n• Veículos, barras de substituição e batalhas de mascotes: o addon sai do caminho e os botões do jogo funcionam, também em combate.\n• Não precisa mais de /mgir restore antes de desativar o addon: a cada saída, LT e LB recuperam a imitação de Shift / Ctrl, e o addon a corta de novo ao entrar.\n• Detectar recusa A, B, X, Y, o direcional e LT, RT, LB, RB (apertados por engano, virariam a tecla de um botão extra).\n• Aba Teste do controle: \"Copiar um relatório\" (com o registro recente das camadas), para enviar e ajudar a confirmar outros controles. /mgir etat mostra o estado das camadas.\n• /mgir news: rever esta janela.",
 })

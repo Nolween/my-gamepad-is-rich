@@ -9,11 +9,10 @@ local W = {}
 ns.WhatsNew = W
 
 -- Les versions qui ont des nouveautés à montrer, de la plus récente à la
--- plus ancienne (clé du texte dans les Locales)
+-- plus ancienne (clé du texte dans les Locales). Une note par version
+-- publiée : la 1.1.0 reprend tout ce qui a changé depuis la 1.0.0.
 local NOTES = {
-    { version = "1.4.0", text = "WHATSNEW_1_4_0" },
-    { version = "1.3.0", text = "WHATSNEW_1_3_0" },
-    { version = "1.2.0", text = "WHATSNEW_1_2_0" },
+    { version = "1.1.0", text = "WHATSNEW_1_1_0" },
 }
 
 -- « 1.10.2 » > « 1.9 » : comparaison nombre par nombre
@@ -76,7 +75,7 @@ function W.MaybeShow()
     ns.db.lastVersion = current
     if ns.Tutorial and (ns.db.tutorialSeen or 0) < ns.Tutorial.VERSION then return end
     -- (rien de noté : installé avant que l'addon ne retienne sa version,
-    -- donc une mise à jour depuis la 1.1.0)
-    if last == nil then last = "1.1.0" end
+    -- donc une mise à jour depuis la 1.0.0, la seule publiée sans elle)
+    if last == nil then last = "1.0.0" end
     if Newer(current, last) then W.Open(last) end
 end
