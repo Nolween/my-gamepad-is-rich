@@ -337,7 +337,7 @@ ns.AddLocale("enUS", {
     PADS_LABEL = "Base buttons:",
     PADS_PICK = "%s: choose a mode",
     IMPORT_SUMMARY_PADS = "Base buttons given to the addon: %s",
-    EMULATION_OFF = "%s no longer imitates Shift / Ctrl while it is given to the addon. Type /mgir restore before disabling the addon.",
+    EMULATION_OFF = "%s no longer imitates Shift / Ctrl while it is given to the addon. It is put back automatically when you log out.",
     RESTORE_DONE = "Base buttons given back to the game, and their Shift / Ctrl imitation restored.",
 })
 
@@ -410,7 +410,7 @@ ns.AddLocale("enUS", {
     TUTO_ACTIONS_TITLE = "Place your actions",
     TUTO_ACTIONS_TEXT = "In the |cffffd100Actions|r tab: on the left, all your layers (Alone, LT, RT, your modifiers and pairs); on the right, the chosen layer, laid out like the controller.\n\n- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n- Or click a slot: pick a spell or an item, write a macro, pick a WoW command (Auto run...) or a basic action (Jump, Interact...). Right-click: clear.\n- The row under the D-pad holds your simple buttons' slots in that layer.\n\nYou can also click a layer thumbnail on the HUD to edit it right there.\n\nActions are saved per character; types and keys in the profile, for the whole account. Everything works in combat; only changes made in combat wait for it to end.",
     TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD:\n\n- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold a button and it changes.\n- |cffffd100Thumbnails|r: all your layers, with your simple buttons' slots in the middle; the one you hold lights up. Click one to edit it.\n- |cffffd100In the center|r: your simple buttons, with the action they will cast.\n\nSettings (size, position, thumbnails): |cffffd100HUD|r tab. |cffffd100/mgir hud off|r: back to the game's bar.",
-    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game (before disabling the addon)",
+    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game",
     SETTINGS_DESC = "Choose what every button of your controller does: extra buttons (back paddles, extra triggers) and base buttons (LT, RT, LB, RB). Command: /mgir",
     BUTTONS_INTRO = "Pick a type for each button: hover a type to see what it does. In green: the default type of the base buttons, which works like the game.",
     BUTTONS_TYPES_HELP = "The button types",
@@ -434,4 +434,22 @@ ns.AddLocale("enUS", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("enUS", {
     FOREVER_STUCK = "Forever stayed on its %s bar (a button release went missing). Press %s once to bring it back to \"Alone\".",
+})
+
+-- 1.2.0
+ns.AddLocale("enUS", {
+    SPEC_NUMBER = "Specialization %d",
+    SPEC_SWITCHED = "Actions of the \"%s\" specialization.",
+    SPEC_NEW = "New specialization \"%s\": it starts with a copy of the previous one's actions.",
+    PROFILE_PER_CHAR = "Remember each character's profile",
+    PROFILE_PER_CHAR_DESC = "On login, each character goes back to the last profile it used. Without this option, they all take the last profile used on the account.",
+    REPORT_BUTTON = "Copy a report",
+    REPORT_TITLE = "Controller report",
+    REPORT_HINT = "First press every button in the Test tab, then copy this text (Ctrl+C) and send it to the addon's author, with what works and what doesn't. It helps confirm the settings of other controllers. No character or realm name is included.",
+    WHATSNEW_TITLE = "What's new in My Gamepad Is Rich",
+    WHATSNEW_1_2_0 = "• HUD: the addon's actions look like the game's bars. Red out of range, blue without enough resource, grey when unusable, golden edge during a proc, remaining charges, lit while active (auto attack, form...).\n• Each specialization has its own actions. A new spec starts with a copy of the previous one's actions.\n• No more /mgir restore before disabling the addon: on every logout, LT and LB get their Shift / Ctrl imitation back, and the addon cuts it again on login.\n• Profiles: \"Remember each character's profile\" option.\n• Actions tab: \"Fill empty slots\" places your hearthstone, trinkets and bag consumables on a modifier layer.\n• Controller test tab: \"Copy a report\", to send and help confirm other controllers.\n• /mgir news: show this window again.",
+    QUICKFILL_BUTTON = "Fill empty slots",
+    QUICKFILL_DESC = "Places your hearthstone, equipped usable trinkets and bag consumables (potions, food, bandages, elixirs...) in this layer's empty slots, except those already there. Right-click a slot to clear it.",
+    QUICKFILL_DONE = "%d slot(s) filled.",
+    QUICKFILL_NONE = "Nothing to place: no usable item found in your bags that isn't already on this layer.",
 })

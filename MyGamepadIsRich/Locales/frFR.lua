@@ -336,7 +336,7 @@ ns.AddLocale("frFR", {
     PADS_LABEL = "Boutons de base :",
     PADS_PICK = "%s : choisir un mode",
     IMPORT_SUMMARY_PADS = "Boutons de base donnés à l'addon : %s",
-    EMULATION_OFF = "%s n'imite plus Maj / Ctrl tant qu'il est donné à l'addon. Tape /mgir restore avant de désactiver l'addon.",
+    EMULATION_OFF = "%s n'imite plus Maj / Ctrl tant qu'il est donné à l'addon. Elle est remise d'elle-même à la déconnexion.",
     RESTORE_DONE = "Boutons de base rendus au jeu, et leur imitation de Maj / Ctrl remise.",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("frFR", {
     TUTO_ACTIONS_TITLE = "Poser tes actions",
     TUTO_ACTIONS_TEXT = "Dans l'onglet |cffffd100Actions|r : à gauche, toutes tes couches (Seul, LT, RT, tes modificateurs et tes paires) ; à droite, la couche choisie, disposée comme la manette.\n\n- Glisse un sort depuis ton grimoire, un objet depuis tes sacs, une macro, une monture ou un jouet sur une case.\n- Ou clique sur une case : choisir un sort ou un objet, écrire une macro, choisir une commande WoW (Course automatique...) ou une action de base (Sauter, Interagir...). Clic droit : vider.\n- La ligne sous la croix : les cases de tes boutons simples dans cette couche.\n\nTu peux aussi cliquer sur une miniature de couche du HUD pour la modifier sur place.\n\nLes actions sont enregistrées par personnage ; les types et les touches dans le profil, pour tout le compte. Tout fonctionne en combat ; seules les modifications faites en combat attendent sa fin.",
     TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD :\n\n- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens un bouton et elle change.\n- |cffffd100Les miniatures|r : toutes tes couches, avec au milieu les cases de tes boutons simples ; celle que tu maintiens s'allume. Clique sur une miniature pour la modifier.\n- |cffffd100Au centre|r : tes boutons simples, avec l'action qui partira.\n\nRéglages (taille, position, miniatures) : onglet |cffffd100HUD|r. |cffffd100/mgir hud off|r : revenir à la barre du jeu.",
-    TUTO_DONE_TEXT = "Ouvre la configuration pour poser tes premières actions.\n\n|cffffd100/mgir|r : ouvrir la configuration\n|cffffd100/mgir test|r : test manette, pour voir ce que WoW reçoit\n|cffffd100/mgir tuto|r : ce tutoriel\n|cffffd100/mgir reset|r : vider les actions de ce personnage\n|cffffd100/mgir restore|r : rendre LT, RT, LB et RB au jeu (avant de désactiver l'addon)",
+    TUTO_DONE_TEXT = "Ouvre la configuration pour poser tes premières actions.\n\n|cffffd100/mgir|r : ouvrir la configuration\n|cffffd100/mgir test|r : test manette, pour voir ce que WoW reçoit\n|cffffd100/mgir tuto|r : ce tutoriel\n|cffffd100/mgir reset|r : vider les actions de ce personnage\n|cffffd100/mgir restore|r : rendre LT, RT, LB et RB au jeu",
     SETTINGS_DESC = "Choisis ce que fait chaque bouton de ta manette : boutons supplémentaires (palettes arrière, gâchettes en plus) et boutons de base (LT, RT, LB, RB). Commande : /mgir",
     BUTTONS_INTRO = "Choisis le type de chaque bouton : survole un type pour voir ce qu'il fait. En vert : le type par défaut des boutons de base, qui fait comme le jeu.",
     BUTTONS_TYPES_HELP = "Les types de boutons",
@@ -433,4 +433,22 @@ ns.AddLocale("frFR", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("frFR", {
     FOREVER_STUCK = "Forever est resté sur sa barre %s (un relâchement de bouton lui a échappé). Appuie une fois sur %s pour le remettre sur « Seul ».",
+})
+
+-- 1.2.0
+ns.AddLocale("frFR", {
+    SPEC_NUMBER = "Spécialisation %d",
+    SPEC_SWITCHED = "Actions de la spécialisation « %s ».",
+    SPEC_NEW = "Nouvelle spécialisation « %s » : elle commence avec une copie des actions de la précédente.",
+    PROFILE_PER_CHAR = "Retenir le profil de chaque personnage",
+    PROFILE_PER_CHAR_DESC = "À la connexion, chaque personnage reprend le dernier profil qu'il a utilisé. Sans cette option, tous prennent le dernier profil utilisé sur le compte.",
+    REPORT_BUTTON = "Copier un rapport",
+    REPORT_TITLE = "Rapport de manette",
+    REPORT_HINT = "Appuie d'abord sur chaque bouton dans l'onglet Test, puis copie ce texte (Ctrl+C) et envoie-le à l'auteur de l'addon, avec ce qui marche ou pas. Il aide à confirmer les réglages des autres manettes. Aucun nom de personnage ni de royaume n'y figure.",
+    WHATSNEW_TITLE = "Nouveautés de My Gamepad Is Rich",
+    WHATSNEW_1_2_0 = "• HUD : les actions de l'addon s'affichent comme sur les barres du jeu. Rouges hors de portée, bleues sans assez de ressource, grises si inutilisables, bord doré pendant un proc, charges restantes, case allumée pour une action en cours (attaque auto, forme...).\n• Chaque spécialisation a ses propres actions. Une nouvelle spé commence avec une copie des actions de la précédente.\n• Plus besoin de /mgir restore avant de désactiver l'addon : à chaque déconnexion, LT et LB retrouvent leur imitation de Maj / Ctrl, et l'addon la recoupe à la connexion.\n• Profils : option « Retenir le profil de chaque personnage ».\n• Onglet Actions : « Remplir les cases vides » pose la pierre de foyer, les bijoux et les consommables des sacs sur une couche de modificateur.\n• Onglet Test manette : « Copier un rapport », à envoyer pour aider à confirmer les autres manettes.\n• /mgir news : revoir cette fenêtre.",
+    QUICKFILL_BUTTON = "Remplir les cases vides",
+    QUICKFILL_DESC = "Pose dans les cases vides de cette couche la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs...), sauf ceux déjà présents. Clic droit sur une case pour la vider.",
+    QUICKFILL_DONE = "%d case(s) remplie(s).",
+    QUICKFILL_NONE = "Rien à poser : aucun objet utilisable trouvé dans les sacs qui ne soit pas déjà sur cette couche.",
 })

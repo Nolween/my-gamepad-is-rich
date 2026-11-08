@@ -336,7 +336,7 @@ ns.AddLocale("ptBR", {
     PADS_LABEL = "Botões básicos:",
     PADS_PICK = "%s: escolher um modo",
     IMPORT_SUMMARY_PADS = "Botões básicos dados ao addon: %s",
-    EMULATION_OFF = "%s não imita mais Shift / Ctrl enquanto pertence ao addon. Digite /mgir restore antes de desativar o addon.",
+    EMULATION_OFF = "%s não imita mais Shift / Ctrl enquanto pertence ao addon. Ela volta sozinha ao sair do jogo.",
     RESTORE_DONE = "Botões básicos devolvidos ao jogo e a imitação de Shift / Ctrl restaurada.",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("ptBR", {
     TUTO_ACTIONS_TITLE = "Colocar suas ações",
     TUTO_ACTIONS_TEXT = "Na aba |cffffd100Ações|r: à esquerda, todas as suas camadas (Sozinho, LT, RT, seus modificadores e pares); à direita, a camada escolhida, organizada como o controle.\n\n- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n- Ou clique em um espaço: escolher um feitiço ou item, escrever uma macro, escolher um comando do WoW (Correr automaticamente...) ou uma ação básica (Pular, Interagir...). Clique direito: limpar.\n- A linha abaixo do direcional: os espaços dos seus botões simples nessa camada.\n\nVocê também pode clicar em uma miniatura de camada no HUD para editá-la ali mesmo.\n\nAs ações são salvas por personagem; tipos e teclas no perfil, para toda a conta. Tudo funciona em combate; só as mudanças feitas em combate esperam ele acabar.",
     TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo seu próprio HUD:\n\n- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure um botão e ela muda.\n- |cffffd100Miniaturas|r: todas as suas camadas, com os espaços dos botões simples no meio; a que você segura acende. Clique em uma para editá-la.\n- |cffffd100No centro|r: seus botões simples, com a ação que vão lançar.\n\nAjustes (tamanho, posição, miniaturas): aba |cffffd100HUD|r. |cffffd100/mgir hud off|r: voltar à barra do jogo.",
-    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo (antes de desativar o addon)",
+    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo",
     SETTINGS_DESC = "Escolha o que cada botão do seu controle faz: botões extras (paletas traseiras, gatilhos extras) e botões básicos (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Escolha o tipo de cada botão: passe o mouse sobre um tipo para ver o que ele faz. Em verde: o tipo padrão dos botões básicos, que funciona como o jogo.",
     BUTTONS_TYPES_HELP = "Os tipos de botão",
@@ -433,4 +433,22 @@ ns.AddLocale("ptBR", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("ptBR", {
     FOREVER_STUCK = "O Forever ficou preso na barra %s (a soltura de um botão se perdeu). Aperte %s uma vez para voltar a \"Sozinho\".",
+})
+
+-- 1.2.0
+ns.AddLocale("ptBR", {
+    SPEC_NUMBER = "Especialização %d",
+    SPEC_SWITCHED = "Ações da especialização \"%s\".",
+    SPEC_NEW = "Nova especialização \"%s\": ela começa com uma cópia das ações da anterior.",
+    PROFILE_PER_CHAR = "Lembrar o perfil de cada personagem",
+    PROFILE_PER_CHAR_DESC = "Ao entrar, cada personagem volta ao último perfil que usou. Sem esta opção, todos usam o último perfil usado na conta.",
+    REPORT_BUTTON = "Copiar um relatório",
+    REPORT_TITLE = "Relatório do controle",
+    REPORT_HINT = "Primeiro aperte cada botão na aba Teste, depois copie este texto (Ctrl+C) e envie ao autor do addon, com o que funciona e o que não funciona. Ele ajuda a confirmar as configurações de outros controles. Nenhum nome de personagem ou de reino é incluído.",
+    WHATSNEW_TITLE = "Novidades do My Gamepad Is Rich",
+    WHATSNEW_1_2_0 = "• HUD: as ações do addon aparecem como nas barras do jogo. Vermelhas fora de alcance, azuis sem recurso suficiente, cinza quando inutilizáveis, borda dourada durante um proc, cargas restantes, acesas enquanto ativas (ataque automático, forma...).\n• Cada especialização tem suas próprias ações. Uma nova especialização começa com uma cópia das ações da anterior.\n• Não precisa mais de /mgir restore antes de desativar o addon: a cada saída, LT e LB recuperam a imitação de Shift / Ctrl, e o addon a corta de novo ao entrar.\n• Perfis: opção \"Lembrar o perfil de cada personagem\".\n• Aba Ações: \"Preencher espaços vazios\" coloca a pedra de regresso, os berloques e os consumíveis das bolsas numa camada de modificador.\n• Aba Teste do controle: \"Copiar um relatório\", para enviar e ajudar a confirmar outros controles.\n• /mgir news: rever esta janela.",
+    QUICKFILL_BUTTON = "Preencher espaços vazios",
+    QUICKFILL_DESC = "Coloca nos espaços vazios desta camada a pedra de regresso, os berloques usáveis equipados e os consumíveis das bolsas (poções, comida, ataduras, elixires...), exceto os que já estão lá. Clique direito num espaço para esvaziá-lo.",
+    QUICKFILL_DONE = "%d espaço(s) preenchido(s).",
+    QUICKFILL_NONE = "Nada a colocar: nenhum item usável nas bolsas que já não esteja nesta camada.",
 })

@@ -292,6 +292,50 @@ local function SimpleCommandAllowed(sid)
     return layer ~= nil and ns.Simple.CommandAllowed(ns.ButtonActions(sid), layer)
 end
 
+-- Remplissage rapide d'une couche de modificateur : ses cases vides (la
+-- croix, puis X/Y/B/A) reçoivent la pierre de foyer, les bijoux et les
+-- consommables des sacs qui n'y sont pas déjà
+local function EmptyCrossSlots()
+    if not selected.mod then return 0 end
+    local combos, n = ns.ButtonActions(selected.mod).combos, 0
+    for i = 1, 8 do
+        if not combos[CrossKey(i)] then n = n + 1 end
+    end
+    return n
+end
+
+local function QuickFill()
+    if not selected.mod then return end
+    if InCombatLockdown() then
+        ns.Print(L.HUD_COMBAT)
+        return
+    end
+    local combos = ns.ButtonActions(selected.mod).combos
+    local function Present(action)
+        for _, a in pairs(combos) do
+            if ns.Actions.Same(a, action) then return true end
+        end
+    end
+    local queue = {}
+    for _, action in ipairs(ns.Actions.QuickFillActions()) do
+        if not Present(action) then queue[#queue + 1] = action end
+    end
+    local placed = 0
+    for i = 1, 8 do
+        local key = CrossKey(i)
+        if not combos[key] and #queue > 0 then
+            combos[key] = table.remove(queue, 1)
+            placed = placed + 1
+        end
+    end
+    if placed == 0 then
+        ns.Print(L.QUICKFILL_NONE)
+        return
+    end
+    ns.Print(L.QUICKFILL_DONE:format(placed))
+    ns.Apply()
+end
+
 local function BuildDetail(page)
     detail = CreateFrame("Frame", nil, page)
     detail:SetPoint("TOPLEFT", LIST_W + 10, 0)
@@ -304,6 +348,18 @@ local function BuildDetail(page)
     detail.title:SetPoint("LEFT", detail.tag, "RIGHT", 10, 0)
     detail.count = UI.Text(detail, "GameFontHighlight")
     detail.count:SetPoint("TOPRIGHT", -14, -16)
+    -- (une couche de modificateur : ses cases vides remplies d'un coup avec
+    -- les objets utiles des sacs)
+    detail.fill = UI.Button(detail, L.QUICKFILL_BUTTON, 180, 22)
+    detail.fill:SetPoint("RIGHT", detail.count, "LEFT", -12, 0)
+    detail.fill:SetScript("OnClick", QuickFill)
+    detail.fill:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:SetText(L.QUICKFILL_BUTTON, 1, 0.82, 0, 1, true)
+        GameTooltip:AddLine(L.QUICKFILL_DESC, 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    detail.fill:SetScript("OnLeave", function() GameTooltip:Hide() end)
     detail.desc = UI.Text(detail, "GameFontHighlight")
     detail.desc:SetPoint("TOPLEFT", 10, -48)
     detail.desc:SetWidth(w - 24)
@@ -426,6 +482,7 @@ local function RefreshDetail()
     detail.desc:SetText(LayerDesc(selected))
     local n, total = LayerCount(selected)
     detail.count:SetText(("%d/%d"):format(n, total))
+    detail.fill:SetShown(EmptyCrossSlots() > 0)
 
     local isSimple = selected.simple ~= nil
     detail.cross:SetShown(not isSimple)

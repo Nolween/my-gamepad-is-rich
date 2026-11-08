@@ -219,6 +219,13 @@ ns.DEFAULT_BUTTONS = {
     EX2 = { mode = "off" },
 }
 
+-- La version de l'addon (celle du .toc)
+function ns.Version()
+    local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+    local ok, v = pcall(get or error, ADDON, "Version")
+    return (ok and type(v) == "string" and v ~= "") and v or "?"
+end
+
 function ns.Print(msg)
     print("|cff33ff99My Gamepad Is Rich|r : " .. tostring(msg))
 end
@@ -260,6 +267,9 @@ local function InitDB()
     MyGamepadIsRichCharDB = MyGamepadIsRichCharDB or {}
     local db, char = MyGamepadIsRichDB, MyGamepadIsRichCharDB
     db.options = db.options or {}
+    -- (relevés de développement d'anciennes versions : sans Probe.lua, plus
+    -- rien ne les lit)
+    if not ns.Probe then db.probe, db.probeWatch = nil, nil end
     ns.db, ns.char = db, char
     ns.Profiles.Init()
 end
@@ -438,9 +448,11 @@ function ns.SyncEmulation()
         end
         if pad and ns.PadTaken(pad) then
             if current ~= "none" then
+                -- (déjà coupée avant la déconnexion, qui l'avait remise :
+                -- recoupée sans le redire)
+                if not saved[cvar] then cut = pad end
                 saved[cvar] = original
                 SetCVarValue(cvar, "none")
-                cut = pad
             end
         elseif saved[cvar] then
             SetCVarValue(cvar, saved[cvar])
@@ -448,6 +460,15 @@ function ns.SyncEmulation()
         end
     end
     return cut
+end
+
+-- À la déconnexion (et au /reload) : les imitations coupées sont remises
+-- dans les réglages du jeu, sans oublier qu'elles étaient coupées
+-- (MyGamepadIsRichDB.emulation garde l'original). Si l'addon est désactivé
+-- avant la prochaine connexion, LT et LB retrouvent leur rôle d'origine ;
+-- sinon SyncEmulation les recoupe à la connexion.
+function ns.ReleaseEmulation()
+    for cvar, value in pairs(ns.db and ns.db.emulation or {}) do SetCVarValue(cvar, value) end
 end
 
 -- /mgir restore : les boutons de base du profil rendus au jeu, et les
@@ -567,23 +588,50 @@ events:RegisterEvent("PLAYER_LOGIN")
 events:RegisterEvent("PLAYER_REGEN_ENABLED")
 events:RegisterEvent("CVAR_UPDATE")
 events:RegisterEvent("UPDATE_MACROS")
+events:RegisterEvent("PLAYER_LOGOUT")
+-- (changement de spé : des événements qui n'existent pas dans toutes les
+-- versions du jeu ; en enregistrer un inconnu est une erreur)
+local SPEC_EVENTS = { PLAYER_SPECIALIZATION_CHANGED = true, ACTIVE_TALENT_GROUP_CHANGED = true,
+    ACTIVE_PLAYER_SPECIALIZATION_CHANGED = true }
+for name in pairs(SPEC_EVENTS) do pcall(events.RegisterEvent, events, name) end
 events:SetScript("OnEvent", function(_, event, arg1)
+    if SPEC_EVENTS[event] then
+        if ns.db and (event ~= "PLAYER_SPECIALIZATION_CHANGED" or arg1 == "player") then
+            ns.Profiles.SyncSpec()
+        end
+        return
+    end
     if event == "ADDON_LOADED" then
         if arg1 == ADDON then InitDB() end
     elseif event == "PLAYER_LOGIN" then
         if not ns.db then InitDB() end
+        -- (connexion en combat, après un /reload : les liaisons attendent la
+        -- fin du combat, mais les imitations, rendues au jeu à la
+        -- déconnexion, sont recoupées tout de suite)
+        if InCombatLockdown() then ns.SyncEmulation() end
+        -- (la spé n'est pas toujours connue au chargement de l'addon)
+        ns.Profiles.SyncSpec()
         ns.Apply(true)
         ns.Print(L.LOADED)
         if ns.UI and ns.UI.RegisterSettings then ns.UI.RegisterSettings() end
         if ns.MinimapButton then ns.MinimapButton.Init() end
         -- (premier lancement : le tutoriel, une fois l'écran de chargement passé)
-        if C_Timer and ns.Tutorial then C_Timer.After(3, ns.Tutorial.MaybeShow) end
+        -- (sinon, après une mise à jour : les nouveautés ; avant le tutoriel,
+        -- qui note qu'il a été vu)
+        if C_Timer and ns.Tutorial then
+            C_Timer.After(3, function()
+                if ns.WhatsNew then ns.WhatsNew.MaybeShow() end
+                ns.Tutorial.MaybeShow()
+            end)
+        end
     elseif event == "PLAYER_REGEN_ENABLED" then
         if pending then ns.Apply(true) end
     elseif event == "CVAR_UPDATE" then
         if arg1 == "ActionButtonUseKeyDown" or arg1 == "ACTION_BUTTON_USE_KEY_DOWN" then ns.Apply(true) end
     elseif event == "UPDATE_MACROS" then
         if ns.db then ns.Apply(true) end
+    elseif event == "PLAYER_LOGOUT" then
+        ns.ReleaseEmulation()
     end
 end)
 
@@ -617,12 +665,15 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.Hud.Command(rest)
     elseif msg == "minimap" then
         ns.MinimapButton.Toggle()
-    elseif word == "probe" then
-        -- (/mgir probe 5 : relevé dans 5 secondes ; /mgir probe watch : ce
+    elseif word == "probe" and ns.Probe then
+        -- (outil de développement, Probe.lua, absent du .toc publié :
+        -- /mgir probe 5 : relevé dans 5 secondes ; /mgir probe watch : ce
         -- qui se passe pendant 25 s quand on appuie)
         if rest == "watch" then ns.Probe.Watch() else ns.Probe.Run(tonumber(rest)) end
     elseif msg == "etat" or msg == "état" or msg == "state" then
-        ns.Probe.State()
+        ns.Diag.State()
+    elseif msg == "news" or msg == "nouveautes" or msg == "nouveautés" then
+        ns.WhatsNew.Open()
     elseif msg == "tuto" or msg == "tutorial" or msg == "tutoriel" then
         ns.Tutorial.Open(1)
     elseif msg == "test" then

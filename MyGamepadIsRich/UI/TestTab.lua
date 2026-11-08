@@ -94,7 +94,80 @@ function UI.BuildTestPage(page)
         end
     end
 
+    -- (ce que la page a reçu depuis l'ouverture du jeu : pour le rapport)
+    local seenExtra, seenPad, seenOther, nOther = {}, {}, {}, 0
+    local function Remember(key)
+        local id = ns.ButtonOfKey(key)
+        if id then
+            seenExtra[id] = true
+        elseif key:find("^PAD") then
+            seenPad[key] = true
+        elseif not seenOther[key] and nOther < 20 then
+            seenOther[key] = true
+            nOther = nOther + 1
+        end
+    end
+
+    -- Un rapport à copier (Discord, GitHub...) : la manette choisie, ce que
+    -- chaque bouton envoie et ce que WoW en a reçu. En anglais technique,
+    -- lisible quelle que soit la langue du joueur ; aucune donnée
+    -- personnelle (ni nom de personnage, ni royaume).
+    local function Report()
+        local lines = {}
+        local function Add(fmt, ...) lines[#lines + 1] = fmt:format(...) end
+        local version, build = "?", "?"
+        if GetBuildInfo then version, build = GetBuildInfo() end
+        Add("My Gamepad Is Rich %s | WoW %s (%s) | %s", ns.Version(), tostring(version), tostring(build),
+            GetLocale and GetLocale() or "?")
+        local def = ns.Controller()
+        Add("Controller: %s (%s)", def.id, ns.ControllerName(def))
+        for _, id in ipairs(ns.VisibleIDs()) do
+            local b = ns.Button(id)
+            Add("%s \"%s\": key=%s mode=%s received=%s", id, ns.ButtonLabel(id), b.key or "-", b.mode,
+                seenExtra[id] and "yes" or "no")
+        end
+        local pads = {}
+        for _, id in ipairs(ns.PAD_IDS) do pads[#pads + 1] = id .. "=" .. ns.PadMode(id) end
+        Add("Base buttons: %s", table.concat(pads, " "))
+        local function Keys(set)
+            local out = {}
+            for k in pairs(set) do out[#out + 1] = k end
+            table.sort(out)
+            return #out > 0 and table.concat(out, " ") or "-"
+        end
+        Add("Gamepad buttons received: %s", Keys(seenPad))
+        Add("Other keys received: %s", Keys(seenOther))
+        Add("Works / does not work: ")
+        return table.concat(lines, "\n")
+    end
+
+    local reportDialog
+    local function OpenReport()
+        if not reportDialog then
+            local d = UI.Dialog("MyGamepadIsRichReport", 560, 380, L.REPORT_TITLE)
+            local hint = UI.Text(d, "GameFontHighlight", L.REPORT_HINT)
+            hint:SetPoint("TOPLEFT", 16, -40)
+            hint:SetPoint("RIGHT", -16, 0)
+            hint:SetJustifyH("LEFT")
+            d.area = UI.TextArea(d, -84, 240)
+            d.area.edit:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+            local close = UI.Button(d, L.CLOSE, 120, 24)
+            close:SetPoint("BOTTOM", 0, 12)
+            close:SetScript("OnClick", function() d:Hide() end)
+            reportDialog = d
+        end
+        reportDialog.area.edit:SetText(Report())
+        reportDialog:Show()
+        reportDialog.area.edit:SetFocus()
+        reportDialog.area.edit:HighlightText()
+    end
+
+    local reportButton = UI.Button(page, L.REPORT_BUTTON, 200, 22)
+    reportButton:SetPoint("TOPRIGHT", -16, -274)
+    reportButton:SetScript("OnClick", OpenReport)
+
     local function Push(key)
+        Remember(key)
         local id = ns.ButtonOfKey(key)
         local who = id and ("|cffffd100" .. ns.ButtonLabel(id) .. "|r")
             or (key:find("^PAD") and ("|cff88ff88" .. L.TEST_GAME .. "|r"))

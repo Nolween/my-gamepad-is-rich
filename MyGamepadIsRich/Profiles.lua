@@ -5,7 +5,7 @@
 --
 --   MyGamepadIsRichDB.profile  = id du profil actif
 --   MyGamepadIsRichDB.profiles = { [id] = { name, controller, buttons, pads, pairs } }
---   MyGamepadIsRichCharDB.profiles = { [id] = { actions } }
+--   MyGamepadIsRichCharDB.profiles = { [id] = { actions, spec, specActions } }
 --
 -- Des identifiants, pas des noms : renommer ne touche pas aux données des
 -- autres personnages (l'addon ne les voit pas). Le profil actif n'est
@@ -67,9 +67,108 @@ local function CharProfile(id)
     return c
 end
 
+---------------------------------------------------------------------------
+-- Spécialisations : chaque spé a ses actions, comme les barres du jeu.
+-- c.actions reste le jeu d'actions utilisé (tout le reste de l'addon ne lit
+-- que lui) ; c.spec dit à quelle spé il appartient, c.specActions garde
+-- ceux des autres spés. Une spé jamais vue commence avec une copie des
+-- actions de la précédente.
+---------------------------------------------------------------------------
+local function Number(fn)
+    if type(fn) ~= "function" then return nil end
+    local ok, n = pcall(fn)
+    if ok and type(n) == "number" and n > 0 then return n end
+end
+
+-- La spé active : { key, index, talentGroup }, ou nil (pas de spés dans ce
+-- jeu, ou pas encore connue au chargement)
+local function CurrentSpec()
+    local info = C_SpecializationInfo
+    local spec = Number(info and info.GetSpecialization) or Number(GetSpecialization)
+    if spec then return { key = "s" .. spec, index = spec } end
+    -- (double spécialisation des versions Classic : le groupe de talents)
+    local group = Number(info and info.GetActiveSpecGroup) or Number(GetActiveTalentGroup)
+    if group then return { key = "g" .. group, group = group } end
+end
+
+function P.SpecName(spec)
+    spec = spec or CurrentSpec()
+    if not spec then return nil end
+    if spec.index then
+        local get = (C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo) or GetSpecializationInfo
+        if get then
+            local ok, _, name = pcall(get, spec.index)
+            if ok and type(name) == "string" and name ~= "" then return name end
+        end
+        return L.SPEC_NUMBER:format(spec.index)
+    end
+    return L.SPEC_NUMBER:format(spec.group)
+end
+
+-- Range les actions en cours sous leur spé, et prend celles de la spé
+-- active. Renvoie vrai si le jeu d'actions a changé (et vrai en second si la
+-- spé est nouvelle : copie de la précédente).
+local function SwapSpec(c, spec)
+    if not spec then return false end
+    if c.spec == nil then
+        c.spec = spec.key
+        return false
+    end
+    if c.spec == spec.key then return false end
+    c.specActions = c.specActions or {}
+    c.specActions[c.spec] = c.actions
+    local saved = c.specActions[spec.key]
+    c.specActions[spec.key] = nil
+    c.actions = FillActions(saved or ns.DeepCopy(c.actions))
+    c.spec = spec.key
+    return true, saved == nil
+end
+
+-- Les actions de ce personnage pour un profil remplacées (import) : elles
+-- vont à la spé active, celles des autres spés restent
+local function SetCurrentActions(id, actions)
+    local c = ns.char.profiles[id] or {}
+    ns.char.profiles[id] = c
+    local spec = CurrentSpec()
+    if spec and c.spec and c.spec ~= spec.key and c.actions then
+        c.specActions = c.specActions or {}
+        c.specActions[c.spec] = c.actions
+    end
+    if c.specActions and spec then c.specActions[spec.key] = nil end
+    c.actions = FillActions(actions)
+    c.spec = spec and spec.key or c.spec
+end
+
 local function Select()
     ns.prof = ns.db.profiles[ns.db.profile]
     ns.cprof = CharProfile(ns.db.profile)
+    -- (le dernier profil de ce personnage : repris à sa connexion si
+    -- l'option « un profil par personnage » est cochée)
+    ns.char.profile = ns.db.profile
+    SwapSpec(ns.cprof, CurrentSpec())
+end
+
+-- Option : chaque personnage reprend, à sa connexion, le dernier profil
+-- qu'il a utilisé (sinon : le profil utilisé en dernier sur le compte)
+function P.PerCharacter()
+    return ns.db.options.profilePerChar == true
+end
+
+function P.SetPerCharacter(on)
+    ns.db.options.profilePerChar = on and true or nil
+end
+
+-- La spé a peut-être changé (connexion, changement de spé) : les actions de
+-- la nouvelle sont appliquées. Hors combat (le jeu ne change pas de spé en
+-- combat ; sinon, ns.Apply attend la fin du combat).
+function P.SyncSpec()
+    if not ns.cprof then return end
+    local spec = CurrentSpec()
+    local changed, fresh = SwapSpec(ns.cprof, spec)
+    if not changed then return end
+    ns.Apply(true)
+    local name = P.SpecName(spec)
+    ns.Print((fresh and L.SPEC_NEW or L.SPEC_SWITCHED):format(name))
 end
 
 -- Les modes des boutons de base (LT, RT, LB, RB) : seulement les modes
@@ -151,6 +250,7 @@ function P.Init()
         if type(prof.name) ~= "string" or prof.name == "" then prof.name = L.PROFILE_DEFAULT end
     end
     db.padDefaults = 2
+    if P.PerCharacter() and char.profile and db.profiles[char.profile] then db.profile = char.profile end
     if not db.profiles[db.profile] then db.profile = P.List()[1].id end
 
     char.profiles = char.profiles or {}
@@ -342,7 +442,7 @@ function P.Import(data, opts)
     prof.pads = P.CleanPads(data.pads)
     prof.pairs = P.CleanPairs(data.pairs)
     if opts.actions and data.actions then
-        ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(data.actions)) }
+        SetCurrentActions(id, ns.DeepCopy(data.actions))
     end
     if opts.hud and data.hud and ns.Hud then ns.Hud.ImportSettings(data.hud) end
     if id == ns.db.profile then

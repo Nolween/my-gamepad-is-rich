@@ -336,7 +336,7 @@ ns.AddLocale("koKR", {
     PADS_LABEL = "기본 버튼:",
     PADS_PICK = "%s: 모드 선택",
     IMPORT_SUMMARY_PADS = "애드온에 맡긴 기본 버튼: %s",
-    EMULATION_OFF = "%s 버튼은 애드온에 맡겨진 동안 Shift / Ctrl을 흉내 내지 않습니다. 애드온을 끄기 전에 /mgir restore를 입력하세요.",
+    EMULATION_OFF = "%s 버튼은 애드온에 맡겨진 동안 Shift / Ctrl을 흉내 내지 않습니다. 로그아웃하면 자동으로 되돌아갑니다.",
     RESTORE_DONE = "기본 버튼을 게임에 돌려주고 Shift / Ctrl 흉내를 되돌렸습니다.",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("koKR", {
     TUTO_ACTIONS_TITLE = "동작 배치",
     TUTO_ACTIONS_TEXT = "|cffffd100동작|r 탭: 왼쪽에는 모든 층(단독, LT, RT, 수정키와 쌍), 오른쪽에는 선택한 층이 컨트롤러 모양으로 표시됩니다.\n\n- 주문서의 주문, 가방의 아이템, 매크로, 탈것, 장난감을 칸으로 끌어다 놓으세요.\n- 또는 칸을 클릭: 주문이나 아이템 선택, 매크로 작성, WoW 명령(자동 달리기...) 또는 기본 동작(점프, 상호작용...) 선택. 오른쪽 클릭: 비우기.\n- 십자키 아래 줄: 이 층에서 단일 버튼의 칸.\n\nHUD의 층 미리보기를 클릭해 그 자리에서 수정할 수도 있습니다.\n\n동작은 캐릭터별로 저장되고, 유형과 키는 계정 전체의 프로필에 저장됩니다. 모든 기능은 전투 중에도 작동하며, 전투 중 변경만 전투가 끝난 뒤 적용됩니다.",
     TUTO_HUD_TEXT = "애드온이 게임의 컨트롤러 바를 자체 HUD로 대체합니다:\n\n- |cffffd100크게|r: 지금 사용하는 층. 왼쪽은 십자키, 오른쪽은 A/B/X/Y. 버튼을 누르고 있으면 바뀝니다.\n- |cffffd100미리보기|r: 모든 층, 가운데에는 단일 버튼의 칸. 누르고 있는 층이 강조됩니다. 클릭하면 수정할 수 있습니다.\n- |cffffd100가운데|r: 단일 버튼과 실행될 동작.\n\n설정(크기, 위치, 미리보기): |cffffd100HUD|r 탭. |cffffd100/mgir hud off|r: 게임 바로 돌아가기.",
-    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n|cffffd100/mgir|r: 설정 열기\n|cffffd100/mgir test|r: 컨트롤러 테스트, WoW가 받는 입력 보기\n|cffffd100/mgir tuto|r: 이 튜토리얼\n|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기\n|cffffd100/mgir restore|r: LT, RT, LB, RB를 게임에 돌려주기(애드온을 끄기 전에)",
+    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n|cffffd100/mgir|r: 설정 열기\n|cffffd100/mgir test|r: 컨트롤러 테스트, WoW가 받는 입력 보기\n|cffffd100/mgir tuto|r: 이 튜토리얼\n|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기\n|cffffd100/mgir restore|r: LT, RT, LB, RB를 게임에 돌려주기",
     SETTINGS_DESC = "컨트롤러의 모든 버튼이 할 일을 정하세요: 추가 버튼(뒷면 패들, 추가 트리거)과 기본 버튼(LT, RT, LB, RB). 명령어: /mgir",
     BUTTONS_INTRO = "버튼마다 유형을 선택하세요. 유형 위에 마우스를 올리면 하는 일을 볼 수 있습니다. 초록색: 게임처럼 동작하는 기본 버튼의 기본 유형.",
     BUTTONS_TYPES_HELP = "버튼 유형",
@@ -433,4 +433,22 @@ ns.AddLocale("koKR", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("koKR", {
     FOREVER_STUCK = "Forever가 %s 바에 머물러 있습니다(버튼 떼기 입력이 누락됨). %s를 한 번 누르면 \"단독\"으로 돌아갑니다.",
+})
+
+-- 1.2.0
+ns.AddLocale("koKR", {
+    SPEC_NUMBER = "전문화 %d",
+    SPEC_SWITCHED = "\"%s\" 전문화의 동작입니다.",
+    SPEC_NEW = "새 전문화 \"%s\": 이전 전문화의 동작을 복사해서 시작합니다.",
+    PROFILE_PER_CHAR = "캐릭터마다 프로필 기억",
+    PROFILE_PER_CHAR_DESC = "접속할 때 각 캐릭터가 마지막으로 쓴 프로필로 돌아갑니다. 이 옵션이 없으면 모든 캐릭터가 계정에서 마지막으로 쓴 프로필을 씁니다.",
+    REPORT_BUTTON = "보고서 복사",
+    REPORT_TITLE = "컨트롤러 보고서",
+    REPORT_HINT = "먼저 테스트 탭에서 모든 버튼을 눌러 본 뒤, 이 텍스트를 복사(Ctrl+C)해서 되는 것과 안 되는 것을 함께 애드온 제작자에게 보내 주세요. 다른 컨트롤러의 설정을 확인하는 데 도움이 됩니다. 캐릭터나 서버 이름은 들어 있지 않습니다.",
+    WHATSNEW_TITLE = "My Gamepad Is Rich 새 기능",
+    WHATSNEW_1_2_0 = "• HUD: 애드온의 동작이 게임 행동 단축바처럼 표시됩니다. 사거리 밖이면 빨간색, 자원이 부족하면 파란색, 쓸 수 없으면 회색, 발동 효과 중에는 금색 테두리, 남은 충전 수, 실행 중인 동작(자동 공격, 변신...)은 밝게 표시됩니다.\n• 전문화마다 동작이 따로 있습니다. 새 전문화는 이전 전문화의 동작을 복사해서 시작합니다.\n• 애드온을 끄기 전에 /mgir restore를 입력할 필요가 없습니다. 로그아웃할 때마다 LT와 LB가 Shift / Ctrl 흉내를 되찾고, 접속하면 애드온이 다시 끕니다.\n• 프로필: \"캐릭터마다 프로필 기억\" 옵션.\n• 동작 탭: \"빈 칸 채우기\"로 귀환석, 장신구, 가방의 소모품을 수정키 층에 놓습니다.\n• 컨트롤러 테스트 탭: \"보고서 복사\"로 다른 컨트롤러 확인을 도와주세요.\n• /mgir news: 이 창을 다시 봅니다.",
+    QUICKFILL_BUTTON = "빈 칸 채우기",
+    QUICKFILL_DESC = "이 층의 빈 칸에 귀환석, 착용 중인 사용 가능 장신구, 가방의 소모품(물약, 음식, 붕대, 비약...)을 놓습니다. 이미 있는 것은 빼고 놓습니다. 칸을 오른쪽 클릭하면 비웁니다.",
+    QUICKFILL_DONE = "%d칸을 채웠습니다.",
+    QUICKFILL_NONE = "놓을 것이 없습니다: 이 층에 아직 없는 사용 가능한 아이템이 가방에 없습니다.",
 })

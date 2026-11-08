@@ -422,6 +422,67 @@ function A.ItemEntries()
 end
 
 ---------------------------------------------------------------------------
+-- Remplissage rapide : les objets utiles à avoir sous la main, dans l'ordre
+-- où les poser. La pierre de foyer, les bijoux utilisables équipés, puis les
+-- consommables des sacs : potions, nourriture et boissons, bandages,
+-- élixirs et flacons, autres. Seulement des objets qui ont un effet à
+-- l'utilisation (pas d'équipement, pas d'objet de quête).
+---------------------------------------------------------------------------
+local HEARTHSTONE = 6948
+local CONSUMABLE = 0
+-- (sous-classes des consommables, par priorité : potion, nourriture et
+-- boisson, bandage, élixir, flacon ; les autres après)
+local CONSUMABLE_ORDER = { [1] = 1, [5] = 2, [7] = 3, [2] = 4, [3] = 5 }
+
+local function ItemClass(id)
+    local get = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
+    if not get then return nil end
+    local ok, _, _, _, _, _, classID, subclassID = pcall(get, id)
+    if ok then return classID, subclassID end
+end
+
+function A.QuickFillActions()
+    local out, seen = {}, {}
+    local function add(id)
+        if seen[id] then return end
+        seen[id] = true
+        out[#out + 1] = { kind = "item", id = id }
+    end
+    if ItemCount(HEARTHSTONE) > 0 then add(HEARTHSTONE) end
+    for _, slot in ipairs({ 13, 14 }) do
+        local id = GetInventoryItemID and GetInventoryItemID("player", slot)
+        if id and ItemSpell(id) then add(id) end
+    end
+    local found = {}
+    for bag = 0, NUM_BAG_SLOTS or 4 do
+        for slot = 1, ContainerSlots(bag) do
+            local id = ContainerItemID(bag, slot)
+            if id and not seen[id] and not found[id] and ItemSpell(id) then
+                local classID, subclassID = ItemClass(id)
+                if classID == CONSUMABLE then
+                    found[id] = { id = id, rank = CONSUMABLE_ORDER[subclassID] or 9, name = ItemName(id) or "" }
+                end
+            end
+        end
+    end
+    local list = {}
+    for _, e in pairs(found) do list[#list + 1] = e end
+    table.sort(list, function(a, b)
+        if a.rank ~= b.rank then return a.rank < b.rank end
+        if a.name ~= b.name then return a.name < b.name end
+        return a.id < b.id
+    end)
+    for _, e in ipairs(list) do add(e.id) end
+    return out
+end
+
+-- Deux actions identiques (même type, même sort / objet / macro...)
+function A.Same(a, b)
+    if not (a and b) or a.kind ~= b.kind then return false end
+    return a.id == b.id and a.name == b.name and a.text == b.text and a.command == b.command
+end
+
+---------------------------------------------------------------------------
 -- Commandes WoW (les bindings du jeu)
 ---------------------------------------------------------------------------
 -- Un texte lu dans les globales du jeu : seulement si c'en est un (un autre

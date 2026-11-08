@@ -25,51 +25,7 @@ end
 
 local Confirm = UI.Confirm
 
--- Une fenêtre à nous, au-dessus de la fenêtre de configuration
-local function Dialog(name, w, h, title)
-    local d = UI.Panel(UIParent, name, "HIGH")
-    d:SetSize(w, h)
-    d:SetPoint("CENTER", 0, 20)
-    d:EnableMouse(true)
-    d:SetToplevel(true)
-    d:SetMovable(true)
-    d:RegisterForDrag("LeftButton")
-    d:SetScript("OnDragStart", d.StartMoving)
-    d:SetScript("OnDragStop", d.StopMovingOrSizing)
-    d:SetFrameLevel(50)
-    tinsert(UISpecialFrames, name)
-    d.title = UI.Text(d, "GameFontNormalLarge", title)
-    d.title:SetPoint("TOP", 0, -12)
-    return d
-end
-
--- Une zone de texte multi-ligne qui défile, sur toute la largeur de parent,
--- à y pixels sous son haut
-local function TextArea(parent, y, height)
-    local box = UI.Panel(parent)
-    box:SetHeight(height)
-    box:SetPoint("TOPLEFT", 14, y)
-    box:SetPoint("TOPRIGHT", -14, y)
-    local scroll = CreateFrame("ScrollFrame", nil, box, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 8, -8)
-    scroll:SetPoint("BOTTOMRIGHT", -28, 8)
-    local edit = CreateFrame("EditBox", nil, scroll)
-    edit:SetMultiLine(true)
-    edit:SetAutoFocus(false)
-    edit:SetFontObject("ChatFontNormal")
-    edit:SetMaxLetters(0)
-    if edit.SetMaxBytes then edit:SetMaxBytes(0) end
-    -- (largeur du texte : celle de la fenêtre, moins marges et ascenseur)
-    edit:SetWidth(parent:GetWidth() - 28 - 36)
-    edit:SetHeight(height - 16)
-    scroll:SetScrollChild(edit)
-    scroll:SetScript("OnSizeChanged", function(_, w) edit:SetWidth(math.max(10, w)) end)
-    edit:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
-    box:EnableMouse(true)
-    box:SetScript("OnMouseDown", function() edit:SetFocus() end)
-    box.edit = edit
-    return box
-end
+local Dialog, TextArea = UI.Dialog, UI.TextArea
 
 local function Check(parent, text)
     local cb = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
@@ -342,6 +298,7 @@ local function Refresh()
     local isActive = current == P.ActiveID()
     page.use:SetEnabled(not isActive)
     page.delete:SetEnabled(#list > 1)
+    page.perChar:SetChecked(P.PerCharacter())
 end
 
 local function Run(fn)
@@ -456,6 +413,20 @@ function UI.BuildProfilesPage(p)
     end)
     Add(L.PROFILE_EXPORT, function() OpenExport(Selected()) end, 12)
     Add(L.PROFILE_IMPORT, OpenImport)
+
+    -- (option : un profil retenu par personnage)
+    p.perChar = Check(p, L.PROFILE_PER_CHAR)
+    p.perChar:SetPoint("TOPLEFT", x - 4, y - 16)
+    p.perChar.label:SetWidth(260)
+    p.perChar.label:SetJustifyH("LEFT")
+    p.perChar:SetScript("OnClick", function(self) P.SetPerCharacter(self:GetChecked()) end)
+    p.perChar:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(L.PROFILE_PER_CHAR, 1, 0.82, 0, 1, true)
+        GameTooltip:AddLine(L.PROFILE_PER_CHAR_DESC, 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    p.perChar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     p.Refresh = Refresh
 end

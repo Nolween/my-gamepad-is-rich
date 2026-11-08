@@ -80,12 +80,14 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 
 | Onglet | Rôle |
 |---|---|
-| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. |
+| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà. |
 | **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
-| **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. |
+| **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. Option « Retenir le profil de chaque personnage ». |
 | **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, ordre des miniatures, déplacer, bouton de la minimap. |
-| **Test manette** | Ce que WoW reçoit de chaque bouton. |
+| **Test manette** | Ce que WoW reçoit de chaque bouton. **Copier un rapport** : un texte à envoyer à l'auteur (manette choisie, touche et mode de chaque bouton, ce que WoW en a reçu, version du jeu ; ni nom de personnage ni royaume), pour confirmer les préréglages des manettes non testées. |
 | **Aide** | Les textes du tutoriel (pour la manette choisie), et un bouton pour le relancer. |
+
+**État des actions sur le HUD** : les actions de l'addon s'affichent comme sur les barres du jeu. Elles sont rouges hors de portée de la cible, bleues sans assez de ressource (mana, énergie…) et grises si elles sont inutilisables. Le bord est doré pendant un proc, les charges restantes s'affichent, et la case s'allume pendant une action en cours (attaque automatique, forme…). Une information que le jeu rend secrète n'est pas affichée (la case reste normale).
 
 **Ordre des miniatures du HUD** : dans l'onglet HUD, les flèches montent ou descendent une couche ; sur le HUD, on peut aussi glisser une miniature sur une autre (hors combat). « Ordre d'origine » remet l'ordre de l'interface. Une couche ajoutée plus tard (nouveau modificateur, paire cochée) se place après sa voisine habituelle ; une couche retirée garde sa place pour son retour. L'ordre fait partie des réglages du HUD (export / import compris).
 
@@ -106,7 +108,7 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 
 Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut donner LT / RT à l'addon (voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb)) ; le menu d'une case l'indique.
 
-La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage**, dans ce même profil.
+La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage et par spécialisation**, dans ce même profil. Comme les barres du jeu, chaque spé (ou chaque groupe de talents d'une double spécialisation) a ses actions. Une spé jamais jouée commence avec une copie des actions de la précédente, et un message le dit au changement. L'export et `/mgir reset` concernent la spé active.
 
 Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
 
@@ -127,7 +129,7 @@ Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT
 
 Quand LT ou RT devient modificateur (ou cible), les couches de l'addon encore vides reprennent une fois, pour chaque personnage, ce que la barre du jeu avait sur LT, RT et LT + RT.
 
-**Imitation de Maj / Ctrl.** Chez Forever, LT imite Maj et LB imite Ctrl (`GamePadEmulateShift`, `GamePadEmulateCtrl`). Un bouton qui imite une touche n'envoie son appui que s'il est tapé brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant qu'un tel bouton est donné à l'addon, l'addon coupe son imitation ; il la remet avec `/mgir restore`. Le réglage d'origine est noté dans les réglages du compte. **Avant de désactiver l'addon**, tape `/mgir restore` : les boutons de base reviennent au jeu et les imitations sont remises.
+**Imitation de Maj / Ctrl.** Chez Forever, LT imite Maj et LB imite Ctrl (`GamePadEmulateShift`, `GamePadEmulateCtrl`). Un bouton qui imite une touche n'envoie son appui que s'il est tapé brièvement, et l'état Ctrl de LB déclenche le ciblage de Forever. Tant qu'un tel bouton est donné à l'addon, l'addon coupe son imitation ; il la remet avec `/mgir restore`. Le réglage d'origine est noté dans les réglages du compte. **À chaque déconnexion** (et à chaque `/reload`), l'addon remet les imitations dans les réglages du jeu, puis les recoupe à la connexion : désactiver l'addon ne laisse donc pas LT ou LB sans leur rôle. `/mgir restore` reste utile pour rendre tout de suite les boutons de base au jeu.
 
 Ces liaisons n'existent que quand le jeu a le focus manette. Dans les fenêtres de Forever (sacs, carte…), LT, RT, LB et RB gardent leur rôle, et RB garde son clic droit avec le curseur.
 
@@ -136,6 +138,7 @@ Ces liaisons n'existent que quand le jeu a le focus manette. Dans les fenêtres 
 Un **profil** contient une manette, ses boutons (touches, modes, noms) et, pour chaque personnage, ses actions. Pratique avec plusieurs manettes : un profil « G7 Pro », un profil « DualSense Edge »…
 
 - **Un seul profil utilisé à la fois, pour tout le compte.** On en change à la main, dans l'onglet **Profils** (bouton « Utiliser ce profil » ou double-clic) ou avec `/mgir profil <nom>`. WoW ne sait pas quelle manette est branchée, l'addon ne peut donc pas changer de profil tout seul. Impossible en combat.
+- **Retenir le profil de chaque personnage** (case de l'onglet Profils, décochée par défaut) : à sa connexion, chaque personnage reprend le dernier profil qu'il a utilisé, au lieu du dernier utilisé sur le compte. Pratique quand un personnage est toujours joué avec la même manette.
 - **Nouveau** : choisir la manette, puis le nom. Le profil est créé avec les modes conseillés, sans touche, et devient le profil utilisé : il reste à détecter ses touches dans l'onglet Boutons.
 - **Copier** reprend la manette, les boutons et les actions **du personnage connecté**. Les autres personnages commencent ce profil sans actions.
 - **Supprimer** efface aussi les actions de tous les personnages pour ce profil. Le dernier profil ne peut pas être supprimé.
@@ -164,6 +167,7 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir profils` (ou `profiles`) | Ouvrir l'onglet Profils |
 | `/mgir test` | Ouvrir l'onglet Test manette |
 | `/mgir tuto` | Revoir le tutoriel |
+| `/mgir news` (ou `nouveautes`) | Revoir les nouveautés (la fenêtre s'ouvre seule une fois après chaque mise à jour) |
 | `/mgir hud` | Déverrouiller / verrouiller le HUD pour le déplacer à la souris |
 | `/mgir hud scale 1.2` | Taille du HUD (0.5 à 2) |
 | `/mgir hud off` / `on` | Revenir à la barre manette du jeu / réafficher le HUD |
@@ -171,7 +175,7 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir minimap` | Masquer / remontrer le bouton autour de la minimap |
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
 | `/mgir reset` | Vider les actions du personnage courant (dans le profil utilisé) |
-| `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (à faire avant de désactiver l'addon) |
+| `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (plus nécessaire avant de désactiver l'addon : c'est fait à chaque déconnexion) |
 | `/mgir etat` (ou `state`) | Afficher dans le chat l'état des couches (boutons tenus, barre active de Forever, liaisons de A et LT), à taper quand une couche semble bloquée |
 | `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
 
@@ -212,6 +216,9 @@ MyGamepadIsRich/
   Simple.lua              mode Bouton simple (couches LT/RT)
   Learn.lua               « Détecter »
   Bar.lua                 lecture / écriture de la barre manette du jeu
+  Diag.lua                /mgir etat
+  Probe.lua               relevés de développement (/mgir probe) : hors du .toc
+                          publié, à y ajouter après Diag.lua pour s'en servir
   UI/                     icônes, emplacements, menus, test, tutoriel, fenêtre,
-                          onglet Profils (ProfilesTab.lua)
+                          onglet Profils (ProfilesTab.lua), nouveautés (WhatsNew.lua)
 ```

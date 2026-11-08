@@ -336,7 +336,7 @@ ns.AddLocale("zhTW", {
     PADS_LABEL = "基礎按鍵：",
     PADS_PICK = "%s：選擇模式",
     IMPORT_SUMMARY_PADS = "交給插件的基礎按鍵：%s",
-    EMULATION_OFF = "%s 交給插件期間不再模擬 Shift / Ctrl。停用插件前請輸入 /mgir restore。",
+    EMULATION_OFF = "%s 交給插件期間不再模擬 Shift / Ctrl。登出時會自動恢復。",
     RESTORE_DONE = "基礎按鍵已還給遊戲，Shift / Ctrl 模擬已恢復。",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("zhTW", {
     TUTO_ACTIONS_TITLE = "放置你的動作",
     TUTO_ACTIONS_TEXT = "在 |cffffd100動作|r 分頁：左邊是你所有的層（單獨、LT、RT、你的修飾鍵和組合）；右邊是所選的層，按手把配置排列。\n\n- 從法術書拖入法術，從背包拖入物品、巨集、坐騎或玩具到格子上。\n- 或點擊格子：選擇法術或物品、編寫巨集、選擇 WoW 指令（自動奔跑……）或基礎動作（跳躍、互動……）。右鍵：清空。\n- 十字鍵下方那一列：你的一般按鍵在該層中的格子。\n\n你也可以點擊 HUD 上的層縮圖直接編輯。\n\n動作按角色儲存；類型和按鍵儲存在設定檔中，整個帳號通用。所有功能在戰鬥中都能使用；只有在戰鬥中做的修改會等到戰鬥結束後生效。",
     TUTO_HUD_TEXT = "插件用自己的 HUD 取代遊戲的手把動作條：\n\n- |cffffd100大圖|r：你正在使用的層，左邊是十字鍵，右邊是 A/B/X/Y。按住一個按鍵即可切換。\n- |cffffd100縮圖|r：你所有的層，中間是一般按鍵的格子；正在按住的層會亮起。點擊縮圖即可編輯。\n- |cffffd100中央|r：你的一般按鍵，以及它們將觸發的動作。\n\n設定（大小、位置、縮圖）：|cffffd100HUD|r 分頁。|cffffd100/mgir hud off|r：恢復遊戲動作條。",
-    TUTO_DONE_TEXT = "開啟設定來放置你的第一批動作。\n\n|cffffd100/mgir|r：開啟設定\n|cffffd100/mgir test|r：手把測試，查看 WoW 收到的輸入\n|cffffd100/mgir tuto|r：本教學\n|cffffd100/mgir reset|r：清空此角色的動作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 還給遊戲（停用插件前）",
+    TUTO_DONE_TEXT = "開啟設定來放置你的第一批動作。\n\n|cffffd100/mgir|r：開啟設定\n|cffffd100/mgir test|r：手把測試，查看 WoW 收到的輸入\n|cffffd100/mgir tuto|r：本教學\n|cffffd100/mgir reset|r：清空此角色的動作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 還給遊戲",
     SETTINGS_DESC = "決定手把上每個按鍵的作用：額外按鍵（背鍵、額外扳機）和基礎按鍵（LT、RT、LB、RB）。指令：/mgir",
     BUTTONS_INTRO = "為每個按鍵選擇類型：將滑鼠停在類型上可查看其作用。綠色：基礎按鍵的預設類型，與遊戲中相同。",
     BUTTONS_TYPES_HELP = "按鍵類型",
@@ -433,4 +433,22 @@ ns.AddLocale("zhTW", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("zhTW", {
     FOREVER_STUCK = "Forever 停留在它的 %s 動作條上（漏掉了一次按鍵放開）。按一次 %s 即可回到「單獨」。",
+})
+
+-- 1.2.0
+ns.AddLocale("zhTW", {
+    SPEC_NUMBER = "專精 %d",
+    SPEC_SWITCHED = "「%s」專精的動作。",
+    SPEC_NEW = "新專精「%s」：以上一個專精動作的副本開始。",
+    PROFILE_PER_CHAR = "記住每個角色的設定檔",
+    PROFILE_PER_CHAR_DESC = "登入時，每個角色會回到自己上次使用的設定檔。不勾選時，所有角色都使用帳號上次使用的設定檔。",
+    REPORT_BUTTON = "複製報告",
+    REPORT_TITLE = "手把報告",
+    REPORT_HINT = "先在測試分頁按一遍每個按鍵，然後複製這段文字（Ctrl+C），連同哪些可用、哪些不可用一起寄給插件作者。這有助於確認其他手把的設定。其中不包含角色名稱或伺服器名稱。",
+    WHATSNEW_TITLE = "My Gamepad Is Rich 新內容",
+    WHATSNEW_1_2_0 = "• HUD：插件的動作像遊戲快捷列一樣顯示。超出距離為紅色，資源不足為藍色，無法使用為灰色，觸發特效時金色邊框，顯示剩餘充能，進行中的動作（自動攻擊、形態……）高亮。\n• 每個專精有自己的動作。新專精以上一個專精動作的副本開始。\n• 停用插件前不再需要輸入 /mgir restore：每次登出時 LT 和 LB 恢復模擬 Shift / Ctrl，登入時插件再關閉它。\n• 設定檔：新增「記住每個角色的設定檔」選項。\n• 動作分頁：「填滿空格」把爐石、飾品和背包裡的消耗品放到修飾鍵層上。\n• 手把測試分頁：「複製報告」，寄出它來幫助確認其他手把。\n• /mgir news：再次顯示此視窗。",
+    QUICKFILL_BUTTON = "填滿空格",
+    QUICKFILL_DESC = "把爐石、已裝備的可使用飾品和背包裡的消耗品（藥水、食物、繃帶、藥劑……）放進此層的空格，已有的除外。右鍵點擊格子可清空。",
+    QUICKFILL_DONE = "已填入 %d 格。",
+    QUICKFILL_NONE = "沒有可放的：背包裡沒有此層尚未有的可使用物品。",
 })

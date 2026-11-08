@@ -433,6 +433,114 @@ local function ItemCount(id)
 end
 
 ---------------------------------------------------------------------------
+-- L'état d'une de nos actions, comme sur les barres du jeu : utilisable,
+-- ressource suffisante, à portée, sort en surbrillance (proc), en cours
+-- (attaque auto, forme...), charges. Une valeur secrète ne se lit pas :
+-- elle compte comme « on ne sait pas » (l'action reste affichée normale).
+---------------------------------------------------------------------------
+-- (une API, si elle existe, appelée sans erreur : ses deux premiers retours)
+local function Call(fn, ...)
+    if type(fn) ~= "function" then return nil end
+    local ok, a, b = pcall(fn, ...)
+    if not ok then return nil end
+    return a, b
+end
+
+-- (« utilisable » : vrai / faux, et « ressource insuffisante » ; les
+-- anciennes API disent 1 / nil. Une API absente, en erreur ou secrète : nil)
+local function Usable(fn, ...)
+    if type(fn) ~= "function" then return nil end
+    local ok, usable, noPower = pcall(fn, ...)
+    if not ok or Secret(usable) or Secret(noPower) then return nil end
+    return (usable and usable ~= 0) and true or false, (noPower and noPower ~= 0) and true or false
+end
+
+-- (vrai / faux / nil (inconnu), jamais un secret)
+local function Flag(v)
+    if v == nil or Secret(v) then return nil end
+    if v == 0 then return false end
+    return v and true or false
+end
+
+-- Le sort et l'objet qu'une action utilise (macro du jeu comprise)
+local function ActionItem(action)
+    local k = action.kind
+    if k == "item" or k == "toy" then return action.id end
+    if k == "macro" and GetMacroItem and GetMacroIndexByName then
+        local index = GetMacroIndexByName(action.name)
+        if index and index > 0 then
+            local _, link = Call(GetMacroItem, index)
+            if type(link) == "string" and not Secret(link) then
+                return tonumber(link:match("item:(%d+)"))
+            end
+        end
+    end
+end
+
+local function GameSpell(action)
+    if action.kind ~= "game" then return nil end
+    local def = ns.Actions.GameDef(action.id)
+    return def and def.spell
+end
+
+local function SpellState(spell, st)
+    st.usable, st.noPower = Usable(C_Spell and C_Spell.IsSpellUsable or IsUsableSpell, spell)
+    if UnitExists("target") then
+        local inRange
+        if C_Spell and C_Spell.IsSpellInRange then
+            inRange = Call(C_Spell.IsSpellInRange, spell, "target")
+        else
+            inRange = Call(IsSpellInRange, ns.Actions.SpellInfo(spell), "target")
+        end
+        st.outOfRange = Flag(inRange) == false
+    end
+    local overlay = C_SpellActivationOverlay and C_SpellActivationOverlay.IsSpellOverlayed or IsSpellOverlayed
+    st.proc = Flag((Call(overlay, spell))) == true
+    local current = C_Spell and C_Spell.IsCurrentSpell or IsCurrentSpell
+    local repeating = C_Spell and C_Spell.IsAutoRepeatSpell or IsAutoRepeatSpell
+    st.active = Flag((Call(current, spell))) == true or Flag((Call(repeating, spell))) == true
+    -- (charges : le nombre restant, pour un sort qui en a plusieurs)
+    if C_Spell and C_Spell.GetSpellCharges then
+        local info = Call(C_Spell.GetSpellCharges, spell)
+        if type(info) == "table" then
+            local cur, max = info.currentCharges, info.maxCharges
+            if type(cur) == "number" and type(max) == "number" and not Secret(cur) and not Secret(max) and max > 1 then
+                st.charges = cur
+            end
+        end
+    elseif GetSpellCharges then
+        local cur, max = Call(GetSpellCharges, spell)
+        if type(cur) == "number" and type(max) == "number" and not Secret(cur) and not Secret(max) and max > 1 then
+            st.charges = cur
+        end
+    end
+end
+
+local function ItemState(id, st)
+    st.usable, st.noPower = Usable(C_Item and C_Item.IsUsableItem or IsUsableItem, id)
+    -- (la portée d'un objet n'est plus lisible en combat sur une cible
+    -- hostile, selon les versions : erreur ou nil, alors on ne dit rien)
+    if UnitExists("target") then
+        st.outOfRange = Flag((Call(C_Item and C_Item.IsItemInRange or IsItemInRange, id, "target"))) == false
+    end
+end
+
+local stateCache = {}
+local function ActionState(action)
+    local st = stateCache
+    st.usable, st.noPower, st.outOfRange, st.proc, st.active, st.charges = nil, nil, nil, nil, nil, nil
+    local spell = ActionSpell(action) or GameSpell(action)
+    if spell and action.kind ~= "mount" then
+        SpellState(spell, st)
+    elseif action.kind ~= "toy" then
+        local item = ActionItem(action)
+        if item then ItemState(item, st) end
+    end
+    return st
+end
+H.ActionState = ActionState
+
+---------------------------------------------------------------------------
 -- Écriture : une action sur une case (hors combat)
 ---------------------------------------------------------------------------
 -- target = { native = barName, i = 1-8 } | { combo = id, key = "PAD1" }
@@ -615,6 +723,12 @@ local function Tile(parent, size)
     t.top:SetFrameLevel(t.cooldown:GetFrameLevel() + 2)
     t.count = t.top:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
     t.count:SetPoint("BOTTOMRIGHT", -3, 3)
+    -- (action en cours : attaque auto, forme, aura... comme la case cochée
+    -- des barres du jeu)
+    t.checked = t.top:CreateTexture(nil, "ARTWORK")
+    t.checked:SetAllPoints(t.icon)
+    t.checked:SetColorTexture(1, 0.85, 0.3, 0.22)
+    t.checked:Hide()
     t.hl = t:CreateTexture(nil, "HIGHLIGHT")
     t.hl:SetAllPoints(t.icon)
     t.hl:SetColorTexture(1, 1, 1, 0.15)
@@ -634,10 +748,14 @@ local function MirrorNative(t, native)
     if not has then
         SetPicture(t)
         t.count:SetText("")
+        t.checked:Hide()
         ClearCooldown(t)
         SetEdge(t, DIM_EDGE)
         return
     end
+    -- (case cochée de Forever : action en cours)
+    local okChecked, checked = pcall(function() return native.GetChecked and native:GetChecked() end)
+    t.checked:SetShown(okChecked and not Secret(checked) and checked and true or false)
     SetPicture(t, tex, atlas)
     -- (sa teinte : inutilisable, hors de portée)
     if not (icon and pcall(t.icon.SetVertexColor, t.icon, icon:GetVertexColor())) then t.icon:SetVertexColor(1, 1, 1) end
@@ -672,12 +790,30 @@ local function MirrorAction(t, action, dim, lit)
     if not action then
         SetPicture(t)
         t.count:SetText("")
+        t.checked:Hide()
         ClearCooldown(t)
         return
     end
     SetPicture(t, ns.Actions.Icon(action))
-    t.icon:SetVertexColor(dim and 0.6 or 1, dim and 0.6 or 1, dim and 0.6 or 1)
+    -- (sa teinte, comme les barres du jeu : hors de portée en rouge,
+    -- ressource insuffisante en bleu, inutilisable en gris ; estompée quand
+    -- la case reprend « Seul »)
+    local st = ActionState(action)
+    if dim then
+        t.icon:SetVertexColor(0.6, 0.6, 0.6)
+    elseif st.outOfRange then
+        t.icon:SetVertexColor(0.8, 0.1, 0.1)
+    elseif st.noPower then
+        t.icon:SetVertexColor(0.5, 0.5, 1)
+    elseif st.usable == false then
+        t.icon:SetVertexColor(0.4, 0.4, 0.4)
+    else
+        t.icon:SetVertexColor(1, 1, 1)
+    end
     t.icon:SetDesaturated(dim and true or false)
+    t.checked:SetShown(st.active and not dim or false)
+    -- (un sort en surbrillance (proc) : bord doré, comme une case pressée)
+    if st.proc and not dim then SetEdge(t, GOLD_EDGE) end
     local s, d, durObj
     local spell = ActionSpell(action)
     if spell then
@@ -687,8 +823,12 @@ local function MirrorAction(t, action, dim, lit)
         s, d = ItemCooldown(action.id)
     end
     SetCooldown(t, s, d, durObj)
-    local n = action.kind == "item" and ItemCount(action.id) or 0
-    t.count:SetText(n > 1 and n or "")
+    if st.charges then
+        t.count:SetText(st.charges)
+    else
+        local n = action.kind == "item" and ItemCount(action.id) or 0
+        t.count:SetText(n > 1 and n or "")
+    end
 end
 
 ---------------------------------------------------------------------------

@@ -336,7 +336,7 @@ ns.AddLocale("itIT", {
     PADS_LABEL = "Pulsanti di base:",
     PADS_PICK = "%s: scegli una modalità",
     IMPORT_SUMMARY_PADS = "Pulsanti di base dati all'addon: %s",
-    EMULATION_OFF = "%s non imita più Maiusc / Ctrl finché appartiene all'addon. Scrivi /mgir restore prima di disattivare l'addon.",
+    EMULATION_OFF = "%s non imita più Maiusc / Ctrl finché appartiene all'addon. Viene ripristinata da sola alla disconnessione.",
     RESTORE_DONE = "Pulsanti di base restituiti al gioco e imitazione di Maiusc / Ctrl ripristinata.",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("itIT", {
     TUTO_ACTIONS_TITLE = "Posiziona le tue azioni",
     TUTO_ACTIONS_TEXT = "Nella scheda |cffffd100Azioni|r: a sinistra, tutti i tuoi strati (Da solo, LT, RT, i tuoi modificatori e coppie); a destra, lo strato scelto, disposto come il controller.\n\n- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su una casella.\n- Oppure clicca su una casella: scegliere un incantesimo o un oggetto, scrivere una macro, scegliere un comando di WoW (Corsa automatica...) o un'azione di base (Salta, Interagisci...). Clic destro: svuota.\n- La riga sotto la croce: le caselle dei tuoi pulsanti semplici in quello strato.\n\nPuoi anche cliccare su una miniatura di strato nell'HUD per modificarla lì.\n\nLe azioni sono salvate per personaggio; tipi e tasti nel profilo, per tutto l'account. Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano la sua fine.",
     TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD:\n\n- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto un pulsante e cambia.\n- |cffffd100Le miniature|r: tutti i tuoi strati, con al centro le caselle dei tuoi pulsanti semplici; quello tenuto si illumina. Clicca su una per modificarla.\n- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che lanceranno.\n\nImpostazioni (dimensione, posizione, miniature): scheda |cffffd100HUD|r. |cffffd100/mgir hud off|r: torna alla barra del gioco.",
-    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco (prima di disattivare l'addon)",
+    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco",
     SETTINGS_DESC = "Scegli cosa fa ogni pulsante del tuo controller: pulsanti aggiuntivi (palette posteriori, grilletti extra) e pulsanti di base (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Scegli il tipo di ogni pulsante: passa il mouse su un tipo per vedere cosa fa. In verde: il tipo predefinito dei pulsanti di base, che funziona come nel gioco.",
     BUTTONS_TYPES_HELP = "I tipi di pulsante",
@@ -433,4 +433,22 @@ ns.AddLocale("itIT", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("itIT", {
     FOREVER_STUCK = "Forever è rimasto sulla sua barra %s (il rilascio di un pulsante è andato perso). Premi %s una volta per tornare a «Da solo».",
+})
+
+-- 1.2.0
+ns.AddLocale("itIT", {
+    SPEC_NUMBER = "Specializzazione %d",
+    SPEC_SWITCHED = "Azioni della specializzazione «%s».",
+    SPEC_NEW = "Nuova specializzazione «%s»: parte con una copia delle azioni della precedente.",
+    PROFILE_PER_CHAR = "Ricorda il profilo di ogni personaggio",
+    PROFILE_PER_CHAR_DESC = "All'accesso, ogni personaggio riprende l'ultimo profilo che ha usato. Senza questa opzione, tutti prendono l'ultimo profilo usato sull'account.",
+    REPORT_BUTTON = "Copia un rapporto",
+    REPORT_TITLE = "Rapporto del controller",
+    REPORT_HINT = "Premi prima ogni pulsante nella scheda Test, poi copia questo testo (Ctrl+C) e invialo all'autore dell'addon, con ciò che funziona e ciò che non funziona. Aiuta a confermare le impostazioni di altri controller. Non contiene nomi di personaggi né di reami.",
+    WHATSNEW_TITLE = "Novità di My Gamepad Is Rich",
+    WHATSNEW_1_2_0 = "• HUD: le azioni dell'addon appaiono come sulle barre del gioco. Rosse fuori portata, blu senza risorse sufficienti, grigie se inutilizzabili, bordo dorato durante un proc, cariche rimanenti, illuminate mentre sono attive (attacco automatico, forma...).\n• Ogni specializzazione ha le sue azioni. Una nuova specializzazione parte con una copia delle azioni della precedente.\n• Non serve più /mgir restore prima di disattivare l'addon: a ogni disconnessione, LT e LB ritrovano l'imitazione di Maiusc / Ctrl, e l'addon la toglie di nuovo all'accesso.\n• Profili: opzione «Ricorda il profilo di ogni personaggio».\n• Scheda Azioni: «Riempi gli spazi vuoti» mette pietra del ritorno, monili e consumabili delle borse su uno strato di modificatore.\n• Scheda Test controller: «Copia un rapporto», da inviare per aiutare a confermare altri controller.\n• /mgir news: rivedere questa finestra.",
+    QUICKFILL_BUTTON = "Riempi gli spazi vuoti",
+    QUICKFILL_DESC = "Mette negli spazi vuoti di questo strato la pietra del ritorno, i monili utilizzabili indossati e i consumabili delle borse (pozioni, cibo, bende, elisir...), tranne quelli già presenti. Clic destro su uno spazio per svuotarlo.",
+    QUICKFILL_DONE = "Spazi riempiti: %d.",
+    QUICKFILL_NONE = "Niente da mettere: nessun oggetto utilizzabile nelle borse che non sia già su questo strato.",
 })

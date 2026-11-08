@@ -42,6 +42,55 @@ function UI.Text(parent, font, text)
 end
 
 ---------------------------------------------------------------------------
+-- Fenêtres à nous (export / import, rapport de manette, nouveautés)
+---------------------------------------------------------------------------
+-- Une fenêtre à nous, au-dessus de la fenêtre de configuration
+function UI.Dialog(name, w, h, title)
+    local d = UI.Panel(UIParent, name, "HIGH")
+    d:SetSize(w, h)
+    d:SetPoint("CENTER", 0, 20)
+    d:EnableMouse(true)
+    d:SetToplevel(true)
+    d:SetMovable(true)
+    d:RegisterForDrag("LeftButton")
+    d:SetScript("OnDragStart", d.StartMoving)
+    d:SetScript("OnDragStop", d.StopMovingOrSizing)
+    d:SetFrameLevel(50)
+    tinsert(UISpecialFrames, name)
+    d.title = UI.Text(d, "GameFontNormalLarge", title)
+    d.title:SetPoint("TOP", 0, -12)
+    return d
+end
+
+-- Une zone de texte multi-ligne qui défile, sur toute la largeur de parent,
+-- à y pixels sous son haut
+function UI.TextArea(parent, y, height)
+    local box = UI.Panel(parent)
+    box:SetHeight(height)
+    box:SetPoint("TOPLEFT", 14, y)
+    box:SetPoint("TOPRIGHT", -14, y)
+    local scroll = CreateFrame("ScrollFrame", nil, box, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", 8, -8)
+    scroll:SetPoint("BOTTOMRIGHT", -28, 8)
+    local edit = CreateFrame("EditBox", nil, scroll)
+    edit:SetMultiLine(true)
+    edit:SetAutoFocus(false)
+    edit:SetFontObject("ChatFontNormal")
+    edit:SetMaxLetters(0)
+    if edit.SetMaxBytes then edit:SetMaxBytes(0) end
+    -- (largeur du texte : celle de la fenêtre, moins marges et ascenseur)
+    edit:SetWidth(parent:GetWidth() - 28 - 36)
+    edit:SetHeight(height - 16)
+    scroll:SetScrollChild(edit)
+    scroll:SetScript("OnSizeChanged", function(_, w) edit:SetWidth(math.max(10, w)) end)
+    edit:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
+    box:EnableMouse(true)
+    box:SetScript("OnMouseDown", function() edit:SetFocus() end)
+    box.edit = edit
+    return box
+end
+
+---------------------------------------------------------------------------
 -- Menu contextuel
 ---------------------------------------------------------------------------
 local menu, blocker

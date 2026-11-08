@@ -336,7 +336,7 @@ ns.AddLocale("deDE", {
     PADS_LABEL = "Grundtasten:",
     PADS_PICK = "%s: Modus wählen",
     IMPORT_SUMMARY_PADS = "Dem Addon gegebene Grundtasten: %s",
-    EMULATION_OFF = "%s imitiert kein Umschalt / Strg mehr, solange sie dem Addon gehört. Gib /mgir restore ein, bevor du das Addon deaktivierst.",
+    EMULATION_OFF = "%s imitiert kein Umschalt / Strg mehr, solange sie dem Addon gehört. Beim Ausloggen wird sie automatisch zurückgesetzt.",
     RESTORE_DONE = "Grundtasten an das Spiel zurückgegeben und ihre Umschalt-/Strg-Imitation wiederhergestellt.",
 })
 
@@ -409,7 +409,7 @@ ns.AddLocale("deDE", {
     TUTO_ACTIONS_TITLE = "Deine Aktionen platzieren",
     TUTO_ACTIONS_TEXT = "Im Reiter |cffffd100Aktionen|r: links alle deine Ebenen (Allein, LT, RT, deine Modifikatoren und Paare); rechts die gewählte Ebene, angeordnet wie der Controller.\n\n- Ziehe einen Zauber aus deinem Zauberbuch, einen Gegenstand aus deinen Taschen, ein Makro, ein Reittier oder ein Spielzeug auf ein Feld.\n- Oder klicke auf ein Feld: einen Zauber oder Gegenstand wählen, ein Makro schreiben, einen WoW-Befehl (Automatisch laufen...) oder eine Grundaktion (Springen, Interagieren...) wählen. Rechtsklick: leeren.\n- Die Zeile unter dem Steuerkreuz: die Felder deiner einfachen Tasten in dieser Ebene.\n\nDu kannst auch auf eine Ebenen-Miniatur im HUD klicken, um sie direkt zu bearbeiten.\n\nAktionen werden pro Charakter gespeichert; Typen und Tasten im Profil, für den ganzen Account. Alles funktioniert im Kampf; nur Änderungen im Kampf warten auf sein Ende.",
     TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD:\n\n- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte eine Taste und sie wechselt.\n- |cffffd100Miniaturen|r: alle deine Ebenen, in der Mitte die Felder deiner einfachen Tasten; die gehaltene leuchtet auf. Klicke auf eine, um sie zu bearbeiten.\n- |cffffd100In der Mitte|r: deine einfachen Tasten mit der Aktion, die sie auslösen.\n\nEinstellungen (Größe, Position, Miniaturen): Reiter |cffffd100HUD|r. |cffffd100/mgir hud off|r: zurück zur Leiste des Spiels.",
-    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben (vor dem Deaktivieren des Addons)",
+    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben",
     SETTINGS_DESC = "Lege fest, was jede Taste deines Controllers tut: Zusatztasten (Paddles hinten, zusätzliche Trigger) und Grundtasten (LT, RT, LB, RB). Befehl: /mgir",
     BUTTONS_INTRO = "Wähle für jede Taste einen Typ: Fahre über einen Typ, um zu sehen, was er tut. In Grün: der Standardtyp der Grundtasten, der wie im Spiel funktioniert.",
     BUTTONS_TYPES_HELP = "Die Tastentypen",
@@ -433,4 +433,22 @@ ns.AddLocale("deDE", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("deDE", {
     FOREVER_STUCK = "Forever ist auf seiner %s-Leiste hängen geblieben (ein Loslassen der Taste ging verloren). Drücke einmal %s, um zu „Allein“ zurückzukehren.",
+})
+
+-- 1.2.0
+ns.AddLocale("deDE", {
+    SPEC_NUMBER = "Spezialisierung %d",
+    SPEC_SWITCHED = "Aktionen der Spezialisierung „%s“.",
+    SPEC_NEW = "Neue Spezialisierung „%s“: Sie beginnt mit einer Kopie der Aktionen der vorherigen.",
+    PROFILE_PER_CHAR = "Profil jedes Charakters merken",
+    PROFILE_PER_CHAR_DESC = "Beim Einloggen nimmt jeder Charakter wieder das zuletzt von ihm genutzte Profil. Ohne diese Option nehmen alle das zuletzt auf dem Account genutzte Profil.",
+    REPORT_BUTTON = "Bericht kopieren",
+    REPORT_TITLE = "Controller-Bericht",
+    REPORT_HINT = "Drücke zuerst jede Taste im Test-Reiter, kopiere dann diesen Text (Strg+C) und schicke ihn dem Autor des Addons, mit dem, was funktioniert und was nicht. Er hilft, die Einstellungen anderer Controller zu bestätigen. Kein Charakter- oder Realmname ist enthalten.",
+    WHATSNEW_TITLE = "Neues in My Gamepad Is Rich",
+    WHATSNEW_1_2_0 = "• HUD: Die Aktionen des Addons sehen aus wie auf den Leisten des Spiels. Rot außer Reichweite, blau ohne genug Ressource, grau wenn unbenutzbar, goldener Rand bei einem Proc, verbleibende Aufladungen, hervorgehoben solange aktiv (automatischer Angriff, Gestalt...).\n• Jede Spezialisierung hat ihre eigenen Aktionen. Eine neue Spezialisierung beginnt mit einer Kopie der Aktionen der vorherigen.\n• Kein /mgir restore mehr vor dem Deaktivieren: Bei jedem Ausloggen bekommen LT und LB ihre Umschalt-/Strg-Imitation zurück, und das Addon schaltet sie beim Einloggen wieder ab.\n• Profile: Option „Profil jedes Charakters merken“.\n• Reiter Aktionen: „Leere Felder füllen“ legt Ruhestein, Schmuckstücke und Verbrauchsgüter aus den Taschen auf eine Modifikator-Ebene.\n• Reiter Controller-Test: „Bericht kopieren“, zum Verschicken, um andere Controller zu bestätigen.\n• /mgir news: dieses Fenster erneut zeigen.",
+    QUICKFILL_BUTTON = "Leere Felder füllen",
+    QUICKFILL_DESC = "Legt Ruhestein, angelegte benutzbare Schmuckstücke und Verbrauchsgüter aus den Taschen (Tränke, Essen, Verbände, Elixiere...) in die leeren Felder dieser Ebene, außer denen, die schon da sind. Rechtsklick auf ein Feld leert es.",
+    QUICKFILL_DONE = "%d Feld(er) gefüllt.",
+    QUICKFILL_NONE = "Nichts zu legen: kein benutzbarer Gegenstand in den Taschen, der nicht schon auf dieser Ebene ist.",
 })
