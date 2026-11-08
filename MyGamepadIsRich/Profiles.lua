@@ -4,7 +4,7 @@
 -- branchée : toutes passent pour une manette Xbox).
 --
 --   MyGamepadIsRichDB.profile  = id du profil actif
---   MyGamepadIsRichDB.profiles = { [id] = { name, controller, buttons } }
+--   MyGamepadIsRichDB.profiles = { [id] = { name, controller, buttons, pads, pairs } }
 --   MyGamepadIsRichCharDB.profiles = { [id] = { actions } }
 --
 -- Des identifiants, pas des noms : renommer ne touche pas aux données des
@@ -44,12 +44,15 @@ local function FillButtons(buttons)
 end
 
 -- Les actions d'un profil pour ce personnage : toutes les couches présentes
+-- (celles des paires seulement si elles existent : créées à la demande)
 local function FillActions(actions)
     for _, id in ipairs(ns.LIST_IDS) do
         local a = actions[id]
-        if type(a) ~= "table" then a = {} actions[id] = a end
-        a.combos = a.combos or {}
-        a.layers = a.layers or {}
+        if type(a) ~= "table" and not ns.IsPair(id) then a = {} actions[id] = a end
+        if type(a) == "table" then
+            a.combos = a.combos or {}
+            a.layers = a.layers or {}
+        end
     end
     return actions
 end
@@ -78,6 +81,20 @@ function P.CleanPads(pads)
         for _, id in ipairs(ns.PAD_IDS) do
             if PAD_MODE_OK[pads[id]] then out[id] = pads[id] end
         end
+    end
+    return out
+end
+
+-- Les paires choisies : { [id] = true }, ids connus seulement ; absentes
+-- (profils et exports d'avant) : les paires par défaut
+function P.CleanPairs(raw)
+    local out = {}
+    if type(raw) ~= "table" then
+        for id in pairs(ns.DEFAULT_PAIRS) do out[id] = true end
+        return out
+    end
+    for _, pair in ipairs(ns.ALL_PAIRS) do
+        if raw[pair.id] == true then out[pair.id] = true end
     end
     return out
 end
@@ -114,6 +131,7 @@ function P.Init()
             prof.pads.RT = prof.pads.RT or "modifier"
         end
         prof.triggers = nil
+        prof.pairs = P.CleanPairs(prof.pairs)
         -- (1.6 : LB / RB passent une fois en ciblage allié / ennemi, s'ils
         -- étaient au jeu ; un « Jeu » choisi ensuite est gardé)
         if not db.padDefaults then
@@ -240,6 +258,7 @@ function P.New(name, controllerID)
         controller = ns.ControllerDef(controllerID).id,
         buttons = FillButtons({}),
         pads = {},
+        pairs = P.CleanPairs(nil),
     }
     ns.SuggestModes(prof)
     ns.db.profiles[id] = prof
@@ -257,6 +276,7 @@ function P.Copy(fromID, name)
         controller = from.controller,
         buttons = ns.DeepCopy(from.buttons),
         pads = P.CleanPads(from.pads),
+        pairs = P.CleanPairs(from.pairs),
     }
     local actions = ns.char.profiles[fromID] and ns.char.profiles[fromID].actions
     ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(actions or {})) }
@@ -311,6 +331,7 @@ function P.Import(data, opts)
     prof.controller = ns.ControllerDef(data.controller).id
     prof.buttons = FillButtons(ns.DeepCopy(data.buttons))
     prof.pads = P.CleanPads(data.pads)
+    prof.pairs = P.CleanPairs(data.pairs)
     if opts.actions and data.actions then
         ns.char.profiles[id] = { actions = FillActions(ns.DeepCopy(data.actions)) }
     end

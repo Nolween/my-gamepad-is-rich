@@ -399,3 +399,9 @@ ns.AddLocale("zhCN", {
     PS_SQUARE = "方",
     PS_TRIANGLE = "三角",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("zhCN", {
+    PAIRS_HINT = "勾选要使用的组合：同时按住两个修饰键可再获得 8 个组合。任意两个修饰键都能组成组合（L5 + LT、LB + RT……）。",
+    PAIRS_NONE = "至少将两个按键设为修饰键、友方目标或敌方目标，才能组成组合。",
+})

@@ -400,3 +400,9 @@ ns.AddLocale("deDE", {
     PS_SQUARE = "Quadrat",
     PS_TRIANGLE = "Dreieck",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("deDE", {
+    PAIRS_HINT = "Hake die gewünschten Paare an: Beide Modifikatoren zusammen gehalten ergeben 8 weitere Kombinationen. Zwei beliebige Modifikatoren können ein Paar bilden (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Stelle mindestens zwei Tasten auf Modifikator, Verbündete oder Feinde, um Paare zu bilden.",
+})

@@ -400,3 +400,9 @@ ns.AddLocale("frFR", {
     PS_SQUARE = "Carré",
     PS_TRIANGLE = "Triangle",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("frFR", {
+    PAIRS_HINT = "Coche les paires à utiliser : maintenir les deux modificateurs ensemble donne 8 combinaisons de plus. N'importe quels deux modificateurs peuvent former une paire (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Mets au moins deux boutons en Modificateur, Cible alliée ou Cible ennemie pour former des paires.",
+})

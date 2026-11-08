@@ -400,3 +400,9 @@ ns.AddLocale("esES", {
     PS_SQUARE = "Cuadrado",
     PS_TRIANGLE = "Triángulo",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("esES", {
+    PAIRS_HINT = "Marca las parejas que quieras usar: mantener ambos modificadores a la vez da 8 combinaciones más. Dos modificadores cualesquiera pueden formar una pareja (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Pon al menos dos botones en Modificador, Obj. aliado u Obj. enemigo para formar parejas.",
+})

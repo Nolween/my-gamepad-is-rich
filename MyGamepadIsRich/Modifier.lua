@@ -1,6 +1,7 @@
 -- Mode Modificateur : maintenir le bouton (sa touche, ex. F9) et appuyer sur
--- A/B/X/Y/croix lance l'action de la combinaison. Deux boutons d'une paire
--- (1 + 2, 3 + 4, 5 + 6) maintenus ensemble donnent une couche de plus.
+-- A/B/X/Y/croix lance l'action de la combinaison. Deux modificateurs d'une
+-- paire choisie (L5 + R5, LT + RT, L5 + LT...) maintenus ensemble donnent
+-- une couche de plus.
 --
 -- Un aiguilleur sécurisé (SecureHandlerAttributeTemplate) possède les
 -- liaisons de A/B/X/Y/croix. La touche de chaque modificateur est liée
@@ -61,10 +62,16 @@ local DISPATCH = [[
         end
     end
     if not best then return end
-    local layer = best
-    local partner = self:GetAttribute("partner-" .. best)
-    if partner and self:GetAttribute("held-" .. partner) then
-        layer = self:GetAttribute("pairlayer-" .. best) or best
+    -- (une paire : le dernier pressé, avec le plus récent des autres boutons
+    -- tenus qui forme une paire choisie avec lui)
+    local layer, po = best, nil
+    for j = 1, self:GetAttribute("count") or 0 do
+        local id = self:GetAttribute("id" .. j)
+        local o = id and id ~= best and self:GetAttribute("held-" .. id)
+        if o and (not po or o > po) then
+            local pl = self:GetAttribute("pair-" .. best .. "-" .. id)
+            if pl then layer, po = pl, o end
+        end
     end
     local swallow = noop and self:GetAttribute("swallow-" .. layer)
     for i = 1, 8 do
@@ -143,7 +150,7 @@ end
 
 -- Les modificateurs tenus, pour le HUD : le dernier pressé, ou sa paire
 local held, order = {}, 0
-local pairOf = {} -- [id] = paire active qui contient ce bouton
+local pairOf = {} -- [a][b] = paire active de ces deux boutons
 
 local function SetHeld(id, down)
     if down then
@@ -367,21 +374,21 @@ function M.SetupTargeting(owner, id, def, actions, onDown)
     Write("hcount", hcount)
 end
 
--- Les paires dont les deux boutons sont des modificateurs (les boutons
--- supplémentaires, puis les boutons de base : LT + RT, LB + RB)
+-- Les paires choisies dont les deux boutons sont des modificateurs
+-- (n'importe lesquels : L5 + R5, LT + RT, L5 + LT, LB + RT...)
 function M.Finish(onDown)
-    for _, list in ipairs({ ns.PAIRS, ns.PAD_PAIRS }) do
-        for _, pair in ipairs(list) do
-            if active[pair.a] and active[pair.b] then
-                Write("partner-" .. pair.a, pair.b)
-                Write("partner-" .. pair.b, pair.a)
-                Write("pairlayer-" .. pair.a, pair.id)
-                Write("pairlayer-" .. pair.b, pair.id)
-                WriteLayer(pair.id, ns.ButtonActions(pair.id), onDown)
-                -- (paire de boutons de base : ses cases vides ne font rien)
-                if list == ns.PAD_PAIRS then Write("swallow-" .. pair.id, true) end
-                pairOf[pair.a], pairOf[pair.b] = pair.id, pair.id
-            end
+    for _, pair in ipairs(ns.ALL_PAIRS) do
+        local a, b = pair.a, pair.b
+        if active[a] and active[b] and ns.PairEnabled(pair.id) then
+            Write("pair-" .. a .. "-" .. b, pair.id)
+            Write("pair-" .. b .. "-" .. a, pair.id)
+            WriteLayer(pair.id, ns.ButtonActions(pair.id), onDown)
+            -- (avec un bouton de base : ses cases vides ne font rien, comme
+            -- la couche du bouton de base)
+            if ns.PAD_KEY[a] or ns.PAD_KEY[b] then Write("swallow-" .. pair.id, true) end
+            pairOf[a] = pairOf[a] or {}
+            pairOf[b] = pairOf[b] or {}
+            pairOf[a][b], pairOf[b][a] = pair.id, pair.id
         end
     end
 end
@@ -493,8 +500,11 @@ function M.Held()
         if not n or o > n then best, n = id, o end
     end
     if not best then return nil end
-    local pair = pairOf[best]
-    local def = pair and ns.PairDef(pair)
-    if def and held[def.a] and held[def.b] then return pair end
-    return best
+    -- (comme l'aiguilleur : la paire avec le plus récent des autres tenus)
+    local layer, po = best, nil
+    for id, o in pairs(held) do
+        local pair = id ~= best and pairOf[best] and pairOf[best][id]
+        if pair and (not po or o > po) then layer, po = pair, o end
+    end
+    return layer
 end

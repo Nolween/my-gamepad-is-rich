@@ -823,14 +823,11 @@ local function Relayout()
     for _, name in ipairs(BARS) do
         if not ns.GameBarReplaced(name) then list[#list + 1] = { bar = name } end
     end
-    -- (à leur place : les couches des boutons de base donnés à l'addon,
-    -- LT, RT, LT + RT, LB, RB, LB + RB)
-    for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB" }) do
-        if ns.IsModLayer(id) then list[#list + 1] = { mod = id } end
-    end
-    -- (les modificateurs, puis les paires prêtes)
-    for _, id in ipairs(ns.LIST_IDS) do
-        if ns.IsModLayer(id) and not ns.TRIGGER_LAYERS[id] then list[#list + 1] = { mod = id } end
+    -- (à leur place : les couches des boutons de base donnés à l'addon et
+    -- leurs paires, puis les modificateurs et les autres paires prêtes)
+    local padLayers, extraLayers = ns.ModLayerLists()
+    for _, ids in ipairs({ padLayers, extraLayers }) do
+        for _, id in ipairs(ids) do list[#list + 1] = { mod = id } end
     end
 
     -- La bande : réparties sur 1 à 3 lignes (chacune centrée), à la taille choisie

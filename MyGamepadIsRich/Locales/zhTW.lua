@@ -399,3 +399,9 @@ ns.AddLocale("zhTW", {
     PS_SQUARE = "方",
     PS_TRIANGLE = "三角",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("zhTW", {
+    PAIRS_HINT = "勾選要使用的組合：同時按住兩個修飾鍵可再獲得 8 個組合。任意兩個修飾鍵都能組成組合（L5 + LT、LB + RT……）。",
+    PAIRS_NONE = "至少將兩個按鍵設為修飾鍵、友方目標或敵方目標，才能組成組合。",
+})

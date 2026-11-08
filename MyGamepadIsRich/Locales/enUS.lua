@@ -401,3 +401,9 @@ ns.AddLocale("enUS", {
     PS_SQUARE = "Square",
     PS_TRIANGLE = "Triangle",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("enUS", {
+    PAIRS_HINT = "Tick the pairs you want: holding both modifiers together gives 8 more combinations. Any two modifiers can form a pair (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Set at least two buttons as Modifier, Ally target or Enemy target to form pairs.",
+})

@@ -7,7 +7,7 @@ Support des boutons supplémentaires des manettes (palettes arrière, gâchettes
   - **Modificateur** — maintenu, comme LT/RT : bouton + A / B / X / Y / croix = 8 nouvelles combinaisons ;
   - **Bouton simple** — une action, une autre avec LT maintenu, une autre avec RT maintenu (une couche vide reprend l'action « Seul ») ;
   - **Désactivé**.
-- **Paires** : les boutons vont par deux (gauche + droite : emplacements 1 + 2, 3 + 4, 5 + 6). Quand les deux sont des modificateurs, les maintenir ensemble donne 8 combinaisons de plus, comme LT + RT.
+- **Paires** : deux modificateurs quelconques (boutons supplémentaires ou boutons de base : L5 + R5, LT + RT, L5 + LT, LB + RT...) maintenus ensemble donnent 8 combinaisons de plus. On coche celles qu'on veut dans l'onglet Boutons ; par défaut, les paires gauche + droite (emplacements 1 + 2, 3 + 4, 5 + 6, LT + RT, LB + RB).
 - **Boutons de base LT, RT, LB, RB** (au choix, par profil) : chacun peut devenir modificateur, cible alliée / ennemie ou bouton simple. Voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb).
 - **Modes de ciblage** : n'importe quel bouton peut cibler comme LB / RB dans Forever (appui = le plus proche, maintien + stick droit = visée), avec ses propres raccourcis. Voir [Modes de ciblage](#modes-de-ciblage).
 - Interface en glisser-déposer (sorts, objets, macros, montures, jouets, ensembles d'équipement, macro écrite à la main, commande WoW).
@@ -81,7 +81,7 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | Onglet | Rôle |
 |---|---|
 | **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. |
-| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. État des paires. |
+| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. |
 | **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, déplacer, bouton de la minimap. |
 | **Test manette** | Ce que WoW reçoit de chaque bouton. |
@@ -122,7 +122,7 @@ Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâcheme
 Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil :
 - **Jeu** (par défaut pour LT et RT) : le bouton garde son rôle dans Forever. LT / RT gardent les couches de la barre manette, à remplir depuis l'onglet Actions avec ce que la barre du jeu accepte. LB / RB gardent le ciblage de Forever.
 - **Par défaut, LB est en Cible alliée et RB en Cible ennemie** (modes de l'addon : ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Utiliser les modes conseillés ». À la mise à jour vers la 1.6, les profils existants y passent une fois ; « Jeu » reste disponible.
-- **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires. Les cases vides d'un modificateur ou d'une cible ne font rien. LT + RT et LB + RB forment une paire quand les deux sont modificateurs ou cibles.
+- **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires. Les cases vides d'un modificateur ou d'une cible ne font rien. Ils forment des paires avec n'importe quel autre modificateur (LT + RT, LB + RB, L5 + LT...), à cocher dans l'onglet Boutons.
 
 En donnant LT ou RT à l'addon (modificateur ou cible), les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Revenir sur « Jeu » retrouve la barre du jeu telle quelle.
 
@@ -188,7 +188,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 ## Limites connues
 
 - Une **commande WoW** ne peut pas être sur une couche LT/RT, ni sur la couche « Seul » d'un bouton qui a des couches LT/RT. En mode Modificateur, elle marche partout.
-- Avec deux modificateurs maintenus en même temps, c'est le dernier pressé qui l'emporte, sauf s'ils forment une paire : leur couche de paire s'active.
+- Avec deux modificateurs maintenus en même temps, c'est le dernier pressé qui l'emporte, sauf s'ils forment une paire cochée : leur couche de paire s'active (avec trois tenus ou plus : le dernier pressé et le plus récent des autres qui fait paire avec lui).
 - Quand LT / RT sont des modificateurs de l'addon, Forever ne reçoit plus l'appui sur RT en jeu. Ce qu'il fait lui-même avec RT (par exemple une action de classe sur RB + RT) peut ne plus répondre : il suffit de repasser aux couches du jeu.
 - Si Forever bascule l'interface en mode clavier/souris quand une palette envoie une touche, merci de le signaler : une option pourra forcer le style manette.
 - Improved Forever peut aussi poser des liaisons sur certaines touches. En cas de conflit, c'est la dernière liaison appliquée qui gagne.

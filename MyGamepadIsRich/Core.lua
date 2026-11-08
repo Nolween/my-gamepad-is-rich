@@ -33,25 +33,68 @@ ns.TRIGGER_LAYERS = { LT = true, RT = true, LTRT = true, LB = true, RB = true, L
 -- (la barre du jeu que la couche d'une gâchette remplace)
 ns.TRIGGER_BAR = { LT = "leftBar", RT = "rightBar", LTRT = "bottomBar" }
 
--- Tout ce qui a des actions : les boutons, les paires, les boutons de base
--- et leurs paires, puis « BASE » (les cases de la couche « Seul » que
--- l'addon prend au jeu, Bar.lua)
+-- Toutes les paires possibles : deux boutons quelconques (supplémentaires ou
+-- de base) qui peuvent être modificateurs. Id : les deux ids dans l'ordre
+-- de ns.MOD_ORDER (« L5R5 », « LTRT », « L5LT »...), sans ambiguïté. Le
+-- profil choisit celles qu'il utilise (prof.pairs) ; par défaut, celles
+-- d'avant (ns.PAIRS et ns.PAD_PAIRS).
+ns.MOD_ORDER = {}
+for _, id in ipairs(ns.BUTTON_IDS) do ns.MOD_ORDER[#ns.MOD_ORDER + 1] = id end
+for _, id in ipairs(ns.PAD_IDS) do ns.MOD_ORDER[#ns.MOD_ORDER + 1] = id end
+ns.ALL_PAIRS = {}
+local pairByID = {}
+for i = 1, #ns.MOD_ORDER do
+    for j = i + 1, #ns.MOD_ORDER do
+        local a, b = ns.MOD_ORDER[i], ns.MOD_ORDER[j]
+        local pair = { id = a .. b, a = a, b = b }
+        ns.ALL_PAIRS[#ns.ALL_PAIRS + 1] = pair
+        pairByID[pair.id] = pair
+    end
+end
+ns.DEFAULT_PAIRS = {}
+for _, list in ipairs({ ns.PAIRS, ns.PAD_PAIRS }) do
+    for _, pair in ipairs(list) do ns.DEFAULT_PAIRS[pair.id] = true end
+end
+
+-- Tout ce qui a des actions : les boutons, les boutons de base, les paires,
+-- puis « BASE » (les cases de la couche « Seul » que l'addon prend au jeu,
+-- Bar.lua)
 ns.LIST_IDS = {}
-for _, id in ipairs(ns.BUTTON_IDS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
-for _, pair in ipairs(ns.PAIRS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = pair.id end
-for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB", "BASE" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
+for _, id in ipairs(ns.MOD_ORDER) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
+for _, pair in ipairs(ns.ALL_PAIRS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = pair.id end
+ns.LIST_IDS[#ns.LIST_IDS + 1] = "BASE"
 
 function ns.PairDef(id)
-    for _, pair in ipairs(ns.PAD_PAIRS) do
-        if pair.id == id then return pair end
-    end
-    for _, pair in ipairs(ns.PAIRS) do
-        if pair.id == id then return pair end
-    end
+    return id and pairByID[id]
 end
 
 function ns.IsPair(id)
     return ns.PairDef(id) ~= nil
+end
+
+-- La paire de deux boutons (dans un ordre quelconque), ou nil
+function ns.PairOf(a, b)
+    return pairByID[a .. b] or pairByID[b .. a]
+end
+
+-- Une paire choisie dans le profil actif
+function ns.PairEnabled(id)
+    local pairs_ = ns.prof and ns.prof.pairs
+    return pairs_ ~= nil and pairs_[id] == true
+end
+
+function ns.SetPairEnabled(id, on)
+    if not (ns.prof and ns.IsPair(id)) then return end
+    ns.prof.pairs = ns.prof.pairs or {}
+    ns.prof.pairs[id] = on and true or nil
+    ns.Apply()
+end
+
+-- Une couche des boutons de base : LT, RT, LB, RB, ou une paire des deux
+function ns.IsPadLayer(id)
+    if ns.PAD_KEY[id] then return true end
+    local pair = ns.PairDef(id)
+    return pair ~= nil and ns.PAD_KEY[pair.a] ~= nil and ns.PAD_KEY[pair.b] ~= nil
 end
 
 -- Les modes qui font d'un bouton un modificateur (une couche de 8
@@ -108,16 +151,41 @@ local function ModReady(id)
     return def ~= nil and ns.MOD_MODES[def.mode] and def.key ~= nil or false
 end
 
--- Une paire est utilisable si ses deux boutons sont des modificateurs avec une touche
-function ns.PairReady(id)
+-- Une paire possible : ses deux boutons sont des modificateurs prêts
+function ns.PairPossible(id)
     local pair = ns.PairDef(id)
     return pair ~= nil and ModReady(pair.a) and ModReady(pair.b)
+end
+
+-- Une paire utilisable : possible, et choisie dans le profil
+function ns.PairReady(id)
+    return ns.PairPossible(id) and ns.PairEnabled(id)
 end
 
 -- Une couche de combinaisons utilisable : un modificateur, ou une paire prête
 function ns.IsModLayer(id)
     if ns.IsPair(id) then return ns.PairReady(id) end
     return ModReady(id)
+end
+
+-- Les couches de combinaisons utilisables, dans l'ordre de l'interface :
+-- celles des boutons de base (LT, RT, LB, RB et leurs paires), puis les
+-- autres (boutons supplémentaires, puis les paires où il y en a un)
+function ns.ModLayerLists()
+    local pad, extra = {}, {}
+    for _, id in ipairs(ns.MOD_ORDER) do
+        if ModReady(id) then
+            local list = ns.PAD_KEY[id] and pad or extra
+            list[#list + 1] = id
+        end
+    end
+    for _, pair in ipairs(ns.ALL_PAIRS) do
+        if ns.PairReady(pair.id) then
+            local list = ns.IsPadLayer(pair.id) and pad or extra
+            list[#list + 1] = pair.id
+        end
+    end
+    return pad, extra
 end
 
 -- Les boutons de la manette combinés avec un modificateur
@@ -187,8 +255,15 @@ function ns.Button(id)
     return ns.prof.buttons[id]
 end
 
+-- (les actions d'une paire sont créées à la première lecture)
 function ns.ButtonActions(id)
-    return ns.cprof.actions[id]
+    local actions = ns.cprof.actions
+    local a = actions[id]
+    if not a then
+        a = { combos = {}, layers = {} }
+        actions[id] = a
+    end
+    return a
 end
 
 function ns.ButtonLabel(id)
@@ -507,7 +582,7 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.UI.Show("test")
     elseif msg == "reset" then
         if InCombatLockdown() then ns.Print(L.APPLIED_AFTER_COMBAT) return end
-        for _, id in ipairs(ns.LIST_IDS) do
+        for id in pairs(ns.cprof.actions) do
             ns.cprof.actions[id] = { combos = {}, layers = {} }
         end
         ns.Apply()

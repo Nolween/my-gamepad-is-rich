@@ -400,3 +400,9 @@ ns.AddLocale("koKR", {
     PS_SQUARE = "네모",
     PS_TRIANGLE = "세모",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("koKR", {
+    PAIRS_HINT = "사용할 쌍을 선택하세요. 두 수정키를 함께 누르면 8개의 조합이 추가됩니다. 어떤 두 수정키든 쌍이 될 수 있습니다 (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "쌍을 만들려면 버튼 두 개 이상을 수정키, 아군 대상 또는 적 대상으로 설정하세요.",
+})

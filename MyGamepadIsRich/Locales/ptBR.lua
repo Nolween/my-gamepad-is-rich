@@ -400,3 +400,9 @@ ns.AddLocale("ptBR", {
     PS_SQUARE = "Quadrado",
     PS_TRIANGLE = "Triângulo",
 })
+
+-- Paires libres (deux modificateurs quelconques)
+ns.AddLocale("ptBR", {
+    PAIRS_HINT = "Marque os pares que quer usar: segurar os dois modificadores juntos dá 8 combinações a mais. Quaisquer dois modificadores podem formar um par (L5 + LT, LB + RT...).",
+    PAIRS_NONE = "Coloque pelo menos dois botões em Modificador, Alvo aliado ou Alvo inimigo para formar pares.",
+})

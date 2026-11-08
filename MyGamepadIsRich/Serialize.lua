@@ -269,6 +269,8 @@ local function Clean(raw)
         buttons = {},
         -- (boutons de base : modes connus seulement ; absents = au jeu)
         pads = ns.Profiles.CleanPads(raw.pads),
+        -- (paires choisies : ids connus seulement ; absentes = par défaut)
+        pairs = ns.Profiles.CleanPairs(raw.pairs),
     }
     -- (exports 1.5 : « triggers = modifier » donnait LT et RT en modificateurs)
     if raw.triggers == "modifier" then
@@ -314,7 +316,7 @@ function S.Export(profileID, opts)
     if not prof then return nil end
     opts = opts or {}
     local data = { v = FORMAT, name = prof.name, controller = prof.controller, buttons = {},
-        pads = ns.Profiles.CleanPads(prof.pads) }
+        pads = ns.Profiles.CleanPads(prof.pads), pairs = ns.Profiles.CleanPairs(prof.pairs) }
     for _, slot in ipairs(ns.BUTTON_IDS) do
         local b = prof.buttons[slot]
         data.buttons[slot] = { mode = b.mode, key = b.key, name = b.name }
@@ -403,6 +405,7 @@ function S.SelfTest()
     if data then
         Check(data.controller == ns.prof.controller, "controller")
         Check(Serialize(data.pads) == Serialize(ns.Profiles.CleanPads(ns.prof.pads)), "pads")
+        Check(Serialize(data.pairs) == Serialize(ns.Profiles.CleanPairs(ns.prof.pairs)), "pairs")
         for _, slot in ipairs(ns.BUTTON_IDS) do
             local a, b = ns.prof.buttons[slot], data.buttons[slot]
             Check(a.mode == b.mode and a.key == b.key and a.name == b.name, "button " .. slot)
@@ -431,6 +434,7 @@ function S.SelfTest()
         }, layers = { nope = { kind = "item", id = 6948 } } }, ZZ = { combos = {} } },
         hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 } },
         pads = { LB = "target_friend", RB = "evil", LT = 5, XX = "modifier" },
+        pairs = { L5LT = true, ZZ = true, LBRB = "yes", L5L5 = true },
     })
     local d = S.Import(forged)
     Check(d ~= nil, "forged import")
@@ -438,6 +442,7 @@ function S.SelfTest()
         Check(d.name == "Acffff0000B", "forged name")
         Check(d.controller == "other", "forged controller")
         Check(d.pads.LB == "target_friend" and d.pads.RB == nil and d.pads.LT == nil, "forged pads")
+        Check(Serialize(d.pairs) == Serialize({ L5LT = true }), "forged pairs")
         Check(d.buttons.L5.mode == ns.DEFAULT_BUTTONS.L5.mode and d.buttons.L5.key == nil, "forged L5")
         Check(d.buttons.R5.mode == "simple" and d.buttons.R5.key == "F10", "forged R5")
         local combos = d.actions and d.actions.L5 and d.actions.L5.combos or {}

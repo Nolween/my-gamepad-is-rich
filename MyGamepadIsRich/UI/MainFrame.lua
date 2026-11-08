@@ -86,13 +86,10 @@ local function Sections()
     for _, name in ipairs(ns.Bar.NAMES) do
         if not ns.GameBarReplaced(name) then pad.items[#pad.items + 1] = { bar = name } end
     end
-    for _, id in ipairs({ "LT", "RT", "LTRT", "LB", "RB", "LBRB" }) do
-        if ns.IsModLayer(id) then pad.items[#pad.items + 1] = { mod = id } end
-    end
+    local padLayers, extraLayers = ns.ModLayerLists()
+    for _, id in ipairs(padLayers) do pad.items[#pad.items + 1] = { mod = id } end
     local mods = { title = L.SECTION_MODS, items = {}, empty = L.SECTION_MODS_EMPTY }
-    for _, id in ipairs(ns.LIST_IDS) do
-        if ns.IsModLayer(id) and not ns.TRIGGER_LAYERS[id] then mods.items[#mods.items + 1] = { mod = id } end
-    end
+    for _, id in ipairs(extraLayers) do mods.items[#mods.items + 1] = { mod = id } end
     local simple = { title = L.SECTION_SIMPLE, items = {}, empty = L.SECTION_SIMPLE_EMPTY }
     for _, id in ipairs(ns.SimpleIDs()) do simple.items[#simple.items + 1] = { simple = id } end
     return { pad, mods, simple }
@@ -479,9 +476,36 @@ end
 -- RB : mode seulement), et l'état des paires
 ---------------------------------------------------------------------------
 local rows, padRows, pairRows = {}, {}, {}
-local buttonsWarning, controllerName, btnList, padTitle, extraTitle, pairsTitle
+local buttonsWarning, controllerName, btnList, padTitle, extraTitle, pairsTitle, pairsHint
 local ROW_STEP = 47
 local LIST_WIDTH = WIDTH - 16 - 34
+local PAIR_STEP = 28
+
+-- Une ligne de paire : case à cocher, icônes des deux boutons, leurs noms
+local function PairRow(i)
+    local row = pairRows[i]
+    if row then return row end
+    row = CreateFrame("Frame", nil, btnList)
+    row:SetSize(LIST_WIDTH - 4, PAIR_STEP - 2)
+    local bg = row:CreateTexture(nil, "BACKGROUND")
+    bg:SetAllPoints()
+    bg:SetColorTexture(1, 1, 1, 0.04)
+    row.check = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
+    row.check:SetSize(24, 24)
+    row.check:SetPoint("LEFT", 6, 0)
+    row.check:SetScript("OnClick", function(self)
+        if row.pair then ns.SetPairEnabled(row.pair.id, self:GetChecked()) end
+        RefreshAll()
+    end)
+    row.tag = Tag(row, 20)
+    row.tag:SetPoint("LEFT", 36, 0)
+    row.text = UI.Text(row, "GameFontHighlight")
+    row.text:SetPoint("LEFT", 106, 0)
+    row.text:SetPoint("RIGHT", -6, 0)
+    row.text:SetJustifyH("LEFT")
+    pairRows[i] = row
+    return row
+end
 
 -- La liste des manettes (préréglages), avec leur logiciel
 local function PickController()
@@ -615,23 +639,12 @@ local function BuildButtons(page)
         padRows[i] = row
     end
 
-    -- Les paires (celles des boutons affichés, puis LT + RT et LB + RB)
+    -- Les paires : toutes celles de deux modificateurs, à cocher (lignes
+    -- créées à la demande par RefreshButtons)
     pairsTitle = UI.Text(btnList, "GameFontNormal", L.PAIRS_TITLE)
-    local allPairs = {}
-    for _, pair in ipairs(ns.PAIRS) do allPairs[#allPairs + 1] = pair end
-    for _, pair in ipairs(ns.PAD_PAIRS) do allPairs[#allPairs + 1] = pair end
-    for i, pair in ipairs(allPairs) do
-        local row = CreateFrame("Frame", nil, btnList)
-        row:SetSize(LIST_WIDTH - 4, 24)
-        row.tag = Tag(row, 20)
-        row.tag:SetPoint("LEFT", 6, 0)
-        row.text = UI.Text(row, "GameFontHighlight")
-        row.text:SetPoint("LEFT", 76, 0)
-        row.text:SetPoint("RIGHT", -6, 0)
-        row.text:SetJustifyH("LEFT")
-        row.pair = pair
-        pairRows[i] = row
-    end
+    pairsHint = UI.Text(btnList, "GameFontDisable")
+    pairsHint:SetWidth(LIST_WIDTH - 12)
+    pairsHint:SetJustifyH("LEFT")
 
     buttonsWarning = UI.Text(page, "GameFontNormalSmall")
     buttonsWarning:SetPoint("BOTTOMLEFT", 14, 10)
@@ -678,22 +691,31 @@ local function RefreshButtons()
 
     pairsTitle:ClearAllPoints()
     pairsTitle:SetPoint("TOPLEFT", 2, y - 6)
-    y = y - 26
-    for _, row in ipairs(pairRows) do
-        local pair = row.pair
-        local shown = (visible[pair.a] and visible[pair.b]) or ns.PAD_KEY[pair.a] ~= nil
-        row:SetShown(shown)
-        if shown then
-            row:ClearAllPoints()
-            row:SetPoint("TOPLEFT", 0, y)
-            y = y - 26
-            SetTag(row.tag, { pair.a, pair.b })
-            if ns.PairReady(pair.id) then
-                row.text:SetText("|cff40ff40" .. L.PAIR_READY .. "|r")
-            else
-                row.text:SetText("|cff999999" .. L.PAIR_NEEDS:format(ns.ButtonLabel(pair.a), ns.ButtonLabel(pair.b)) .. "|r")
-            end
-        end
+    y = y - 24
+    -- (toutes les paires de deux modificateurs prêts : cochée = utilisée)
+    local possible = {}
+    for _, pair in ipairs(ns.ALL_PAIRS) do
+        if ns.PairPossible(pair.id) then possible[#possible + 1] = pair end
+    end
+    pairsHint:SetText(#possible > 0 and L.PAIRS_HINT or L.PAIRS_NONE)
+    pairsHint:ClearAllPoints()
+    pairsHint:SetPoint("TOPLEFT", 6, y)
+    y = y - pairsHint:GetStringHeight() - 8
+    for i, pair in ipairs(possible) do
+        local row = PairRow(i)
+        row.pair = pair
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", 0, y)
+        row:Show()
+        y = y - PAIR_STEP
+        row.check:SetChecked(ns.PairEnabled(pair.id))
+        SetTag(row.tag, { pair.a, pair.b })
+        local label = ns.ButtonLabel(pair.id)
+        row.text:SetText(ns.PairEnabled(pair.id) and label or ("|cff999999" .. label .. "|r"))
+    end
+    for i = #possible + 1, #pairRows do
+        pairRows[i]:Hide()
+        pairRows[i].pair = nil
     end
     btnList:SetHeight(-y + 8)
 
