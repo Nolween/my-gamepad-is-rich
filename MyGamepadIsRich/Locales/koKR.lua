@@ -391,3 +391,12 @@ ns.AddLocale("koKR", {
 ns.AddLocale("koKR", {
     SIMPLE_USUAL = "평소대로",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("koKR", {
+    TUTO_NO_EXTRA = "이 컨트롤러에는 추가 버튼이 없습니다. 여기서 설정할 것은 없습니다. 버튼 탭의 기본 버튼에서 LT, RT, LB, RB에 다른 역할을 줄 수 있습니다.",
+    PS_CROSS = "엑스",
+    PS_CIRCLE = "동그라미",
+    PS_SQUARE = "네모",
+    PS_TRIANGLE = "세모",
+})

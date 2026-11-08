@@ -32,18 +32,61 @@ local COLORS = {
     PAD3 = { 0.2, 0.45, 0.9 }, PAD4 = { 0.95, 0.75, 0.1 },
 }
 
+-- Manette PlayStation : ses symboles (croix, rond, carré, triangle) et ses
+-- gâchettes ; sinon les icônes génériques du jeu, jamais les lettres Xbox
+local PS_ATLAS = {
+    PAD1 = { "Gamepad_Shp_Cross_64" },
+    PAD2 = { "Gamepad_Shp_Circle_64" },
+    PAD3 = { "Gamepad_Shp_Square_64" },
+    PAD4 = { "Gamepad_Shp_Triangle_64" },
+    PADLSHOULDER = { "Gamepad_Shp_LShoulder_64" },
+    PADRSHOULDER = { "Gamepad_Shp_RShoulder_64" },
+    PADLTRIGGER = { "Gamepad_Shp_LTrigger_64" },
+    PADRTRIGGER = { "Gamepad_Shp_RTrigger_64" },
+    PADBACK = { "Gamepad_Shp_Back_64" },
+    PADFORWARD = { "Gamepad_Shp_Forward_64" },
+    PADSYSTEM = { "Gamepad_Shp_System_64" },
+}
+
+-- Le style des icônes : celui de la manette choisie (« ps », sinon Xbox)
+function UI.GlyphStyle()
+    local def = ns.Controller and ns.prof and ns.Controller()
+    return def and def.glyphs or "xbox"
+end
+
 local atlasCache = {}
 local function FindAtlas(key)
-    if atlasCache[key] ~= nil then return atlasCache[key] or nil end
+    local style = UI.GlyphStyle()
+    local cacheKey = style .. key
+    if atlasCache[cacheKey] ~= nil then return atlasCache[cacheKey] or nil end
+    local candidates = {}
+    if style == "ps" then
+        for _, name in ipairs(PS_ATLAS[key] or {}) do candidates[#candidates + 1] = name end
+        for _, name in ipairs(ATLAS[key] or {}) do
+            if not (name:find("xbox") or name:find("_Ltr_")) then candidates[#candidates + 1] = name end
+        end
+    else
+        candidates = ATLAS[key] or {}
+    end
     local found = false
-    for _, name in ipairs(ATLAS[key] or {}) do
+    for _, name in ipairs(candidates) do
         if C_Texture and C_Texture.GetAtlasInfo and C_Texture.GetAtlasInfo(name) then
             found = name
             break
         end
     end
-    atlasCache[key] = found
+    atlasCache[cacheKey] = found
     return found or nil
+end
+
+-- Toutes les icônes créées, pour les redessiner quand on change de manette
+-- (style Xbox / PlayStation)
+local allGlyphs = setmetatable({}, { __mode = "k" })
+
+function UI.RefreshGlyphs()
+    for g in pairs(allGlyphs) do
+        if g.key then g:SetKey(g.key) end
+    end
 end
 
 -- Libellé court d'une touche / d'un bouton supplémentaire pour la pastille
@@ -74,7 +117,7 @@ function UI.CreateGlyph(parent, size)
         self.key = key
         -- (les gâchettes de l'addon, « LT » / « RT » : l'icône du jeu)
         local pad = ns.TRIGGER_KEY and ns.TRIGGER_KEY[key] or key
-        local atlas = ATLAS[pad] and FindAtlas(pad)
+        local atlas = (ATLAS[pad] or PS_ATLAS[pad]) and FindAtlas(pad)
         if atlas then
             self.tex:SetAtlas(atlas)
             self.tex:Show()
@@ -89,8 +132,20 @@ function UI.CreateGlyph(parent, size)
         self.badge:SetColorTexture(c[1], c[2], c[3], 0.9)
         self.text:SetWidth(size + 16)
         self.text:SetWordWrap(false)
-        self.text:SetText(ShortLabel(key))
+        self.text:SetText(ShortLabel(pad))
     end
 
+    allGlyphs[f] = true
     return f
 end
+
+-- (après chaque application de la configuration : si le style a changé,
+-- autre manette ou autre profil, toutes les icônes sont redessinées)
+local lastStyle
+ns.OnApplied(function()
+    local style = UI.GlyphStyle()
+    if style ~= lastStyle then
+        lastStyle = style
+        UI.RefreshGlyphs()
+    end
+end)

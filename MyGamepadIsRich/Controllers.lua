@@ -18,7 +18,13 @@ local L = ns.L
 -- keys     : on sait que ce logiciel donne une touche clavier aux boutons
 --            (sinon le tutoriel propose Steam Input / reWASD en repli)
 -- steam    : pas de logiciel de la marque sur PC : Steam Input directement
+-- glyphs   : style des icônes et des noms (« ps » : croix, rond, carré,
+--            triangle, L1 / R1 / L2 / R2 ; sinon Xbox)
+-- Une manette standard (names vide) n'a pas de bouton supplémentaire : on
+-- configure ses boutons de base (LT, RT, LB, RB) dans l'onglet Boutons.
 ns.CONTROLLERS = {
+    { id = "xbox", name = "Xbox (Series, One, 360)", names = {} },
+    { id = "playstation", name = "PlayStation (DualSense, DualShock 4)", glyphs = "ps", names = {} },
     { id = "gamesir_g7pro", name = "GameSir G7 Pro", software = "GameSir Nexus", keys = true,
         names = { "L5", "R5", "L4", "R4" } },
     { id = "gamesir", name = "GameSir (G7 SE, Cyclone 2, Kaleid...)", software = "GameSir Nexus",
@@ -26,7 +32,7 @@ ns.CONTROLLERS = {
     -- (P3 / P1 : palettes du haut ; P4 / P2 : du bas)
     { id = "xbox_elite", name = "Xbox Elite Series 2 / Core", software = "Xbox Accessories",
         names = { "P3", "P1", "P4", "P2" } },
-    { id = "dualsense_edge", name = "PlayStation DualSense Edge", steam = true,
+    { id = "dualsense_edge", name = "PlayStation DualSense Edge", steam = true, glyphs = "ps",
         names = { "LP", "RP" } },
     { id = "steam", name = "Steam Controller / Steam Deck", software = "Steam Input", keys = true, steam = true,
         names = { "L4", "R4", "L5", "R5" } },
@@ -115,6 +121,10 @@ local function Suggested(i, count)
     return "simple"
 end
 
+-- Les modes conseillés des boutons de base : LB cible les alliés, RB les
+-- ennemis (comme dans Forever, avec la couche de raccourcis de l'addon)
+ns.DEFAULT_PADS = { LB = "target_friend", RB = "target_enemy" }
+
 -- Les modes conseillés, posés sur un profil (sans appliquer)
 function ns.SuggestModes(prof)
     local n = #ns.ControllerDef(prof.controller).names
@@ -122,6 +132,8 @@ function ns.SuggestModes(prof)
         if i > n then break end
         prof.buttons[id].mode = Suggested(i, n)
     end
+    prof.pads = prof.pads or {}
+    for id, mode in pairs(ns.DEFAULT_PADS) do prof.pads[id] = mode end
 end
 
 function ns.ApplySuggestedModes()

@@ -391,3 +391,12 @@ ns.AddLocale("esES", {
 ns.AddLocale("esES", {
     SIMPLE_USUAL = "Habitual",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("esES", {
+    TUTO_NO_EXTRA = "Este mando no tiene botones adicionales: aquí no hay nada que configurar. Puedes dar otras funciones a LT, RT, LB y RB (Botones base, en la pestaña Botones).",
+    PS_CROSS = "Equis",
+    PS_CIRCLE = "Círculo",
+    PS_SQUARE = "Cuadrado",
+    PS_TRIANGLE = "Triángulo",
+})

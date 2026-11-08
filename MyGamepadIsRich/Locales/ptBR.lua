@@ -391,3 +391,12 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     SIMPLE_USUAL = "Habitual",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("ptBR", {
+    TUTO_NO_EXTRA = "Este controle não tem botões extras: nada a configurar aqui. Você pode dar outras funções a LT, RT, LB e RB (Botões básicos, na aba Botões).",
+    PS_CROSS = "Xis",
+    PS_CIRCLE = "Círculo",
+    PS_SQUARE = "Quadrado",
+    PS_TRIANGLE = "Triângulo",
+})

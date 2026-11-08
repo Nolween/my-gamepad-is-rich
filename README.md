@@ -19,6 +19,8 @@ Le choix se fait dans le tutoriel ou dans l'onglet **Boutons** (« Changer… »
 
 | Manette | Boutons | Logiciel pour leur donner une touche clavier |
 |---|---|---|
+| Xbox (Series, One, 360) | aucun : on configure LT, RT, LB, RB | — |
+| PlayStation (DualSense, DualShock 4) | aucun : on configure L2, R2, L1, R1 (icônes et noms PlayStation) | — |
 | GameSir G7 Pro | L5, R5, L4, R4 | GameSir Nexus (vérifié) |
 | GameSir (G7 SE, Cyclone 2, Kaleid…) | L4, R4 | GameSir Nexus |
 | Xbox Elite Series 2 / Core | P3, P1, P4, P2 | Xbox Accessories |
@@ -118,7 +120,8 @@ Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâcheme
 ## Boutons de base (LT, RT, LB, RB)
 
 Dans l'onglet **Boutons**, le bloc **Boutons de base** donne à chacun de LT, RT, LB et RB un mode, enregistré dans le profil :
-- **Jeu** (par défaut) : le bouton garde son rôle dans Forever. LT / RT gardent les couches de la barre manette, à remplir depuis l'onglet Actions avec ce que la barre du jeu accepte. LB / RB gardent le ciblage de Forever.
+- **Jeu** (par défaut pour LT et RT) : le bouton garde son rôle dans Forever. LT / RT gardent les couches de la barre manette, à remplir depuis l'onglet Actions avec ce que la barre du jeu accepte. LB / RB gardent le ciblage de Forever.
+- **Par défaut, LB est en Cible alliée et RB en Cible ennemie** (modes de l'addon : ciblage comme dans Forever, plus une couche de raccourcis). C'est le cas pour un nouveau profil, au choix d'une manette et avec « Utiliser les modes conseillés ». À la mise à jour vers la 1.6, les profils existants y passent une fois ; « Jeu » reste disponible.
 - **Modificateur**, **Cible alliée**, **Cible ennemie** ou **Bouton simple**, comme les boutons supplémentaires. Les cases vides d'un modificateur ou d'une cible ne font rien. LT + RT et LB + RB forment une paire quand les deux sont modificateurs ou cibles.
 
 En donnant LT ou RT à l'addon (modificateur ou cible), les couches de l'addon encore vides reprennent ce que la barre du jeu avait sur LT, RT et LT + RT. Revenir sur « Jeu » retrouve la barre du jeu telle quelle.

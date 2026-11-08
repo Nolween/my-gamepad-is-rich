@@ -194,7 +194,8 @@ end
 function ns.ButtonLabel(id)
     local pair = ns.PairDef(id)
     if pair then return ns.ButtonLabel(pair.a) .. " + " .. ns.ButtonLabel(pair.b) end
-    if ns.TRIGGER_KEY[id] then return id end
+    -- (un bouton de base : son nom sur la manette, « LT » ou « L2 »)
+    if ns.TRIGGER_KEY[id] then return ns.KeyLabel(ns.TRIGGER_KEY[id]) end
     local b = ns.prof and ns.prof.buttons[id]
     if b and b.name and b.name ~= "" then return b.name end
     return ns.SlotName(id) or ns.SpareName(id)
@@ -215,10 +216,20 @@ local PAD_NAMES = {
     PADLSTICK = "L3", PADRSTICK = "R3",
     PADBACK = "View", PADFORWARD = "Menu", PADSOCIAL = "Share", PADSYSTEM = "Xbox",
 }
+-- (manette PlayStation : ses noms)
+local PS_NAMES = {
+    PAD1 = "PS_CROSS", PAD2 = "PS_CIRCLE", PAD3 = "PS_SQUARE", PAD4 = "PS_TRIANGLE",
+    PADLSHOULDER = "L1", PADRSHOULDER = "R1", PADLTRIGGER = "L2", PADRTRIGGER = "R2",
+    PADBACK = "Create", PADFORWARD = "Options", PADSYSTEM = "PS",
+}
 local DPAD_NAMES = { PADDUP = "DPAD_UP", PADDDOWN = "DPAD_DOWN", PADDLEFT = "DPAD_LEFT", PADDRIGHT = "DPAD_RIGHT" }
 
 function ns.KeyLabel(key)
     if not key then return L.KEY_NONE end
+    if PS_NAMES[key] and ns.prof and ns.Controller().glyphs == "ps" then
+        local name = PS_NAMES[key]
+        return name:find("^PS_") and L[name] or name
+    end
     if PAD_NAMES[key] then return PAD_NAMES[key] end
     if DPAD_NAMES[key] then return L[DPAD_NAMES[key]] end
     local paddle = key:match("^PADPADDLE(%d)$")

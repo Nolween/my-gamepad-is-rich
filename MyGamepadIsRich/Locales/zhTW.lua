@@ -390,3 +390,12 @@ ns.AddLocale("zhTW", {
 ns.AddLocale("zhTW", {
     SIMPLE_USUAL = "照常",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("zhTW", {
+    TUTO_NO_EXTRA = "這個手把沒有額外按鍵：這裡無需設定。你可以在「按鍵」分頁的基礎按鍵中，為 LT、RT、LB 和 RB 設定其他作用。",
+    PS_CROSS = "叉",
+    PS_CIRCLE = "圓",
+    PS_SQUARE = "方",
+    PS_TRIANGLE = "三角",
+})

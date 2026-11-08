@@ -391,3 +391,12 @@ ns.AddLocale("ruRU", {
 ns.AddLocale("ruRU", {
     SIMPLE_USUAL = "Обычно",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("ruRU", {
+    TUTO_NO_EXTRA = "У этого геймпада нет дополнительных кнопок: здесь нечего настраивать. Можно назначить другие роли LT, RT, LB и RB (Базовые кнопки, вкладка «Кнопки»).",
+    PS_CROSS = "Крест",
+    PS_CIRCLE = "Круг",
+    PS_SQUARE = "Квадрат",
+    PS_TRIANGLE = "Треугольник",
+})

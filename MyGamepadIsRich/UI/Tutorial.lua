@@ -71,6 +71,8 @@ end
 -- Le texte de l'étape « logiciel », selon la manette choisie
 function T.SetupText()
     local def = ns.Controller()
+    -- (manette standard : pas de bouton supplémentaire, rien à configurer)
+    if #def.names == 0 then return L.TUTO_NO_EXTRA end
     local names = {}
     for _, id in ipairs(ns.ActiveIDs()) do names[#names + 1] = ns.ButtonLabel(id) end
     local list = table.concat(names, ", ")
@@ -143,7 +145,11 @@ local function RefreshDetect(c)
             all = false
         end
     end
-    c.status:SetText(all and L.TUTO_DETECT_ALL or L.TUTO_DETECT_MISSING)
+    if #ids == 0 then
+        c.status:SetText(L.TUTO_NO_EXTRA)
+    else
+        c.status:SetText(all and L.TUTO_DETECT_ALL or L.TUTO_DETECT_MISSING)
+    end
     return #ids * ROW_H + 30
 end
 

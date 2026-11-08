@@ -114,8 +114,16 @@ function P.Init()
             prof.pads.RT = prof.pads.RT or "modifier"
         end
         prof.triggers = nil
+        -- (1.6 : LB / RB passent une fois en ciblage allié / ennemi, s'ils
+        -- étaient au jeu ; un « Jeu » choisi ensuite est gardé)
+        if not db.padDefaults then
+            for id, mode in pairs(ns.DEFAULT_PADS) do
+                if prof.pads[id] == nil then prof.pads[id] = mode end
+            end
+        end
         if type(prof.name) ~= "string" or prof.name == "" then prof.name = L.PROFILE_DEFAULT end
     end
+    db.padDefaults = 1
     if not db.profiles[db.profile] then db.profile = P.List()[1].id end
 
     char.profiles = char.profiles or {}

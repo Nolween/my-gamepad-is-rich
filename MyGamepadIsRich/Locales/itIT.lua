@@ -391,3 +391,12 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     SIMPLE_USUAL = "Solito",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("itIT", {
+    TUTO_NO_EXTRA = "Questo controller non ha pulsanti aggiuntivi: qui non c'è nulla da configurare. Puoi dare altri ruoli a LT, RT, LB e RB (Pulsanti di base, nella scheda Pulsanti).",
+    PS_CROSS = "Croce",
+    PS_CIRCLE = "Cerchio",
+    PS_SQUARE = "Quadrato",
+    PS_TRIANGLE = "Triangolo",
+})

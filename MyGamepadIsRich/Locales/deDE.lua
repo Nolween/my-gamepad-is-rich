@@ -391,3 +391,12 @@ ns.AddLocale("deDE", {
 ns.AddLocale("deDE", {
     SIMPLE_USUAL = "Wie sonst",
 })
+
+-- Manettes standard (sans bouton supplémentaire), noms PlayStation
+ns.AddLocale("deDE", {
+    TUTO_NO_EXTRA = "Dieser Controller hat keine Zusatztasten: Hier ist nichts einzurichten. Du kannst LT, RT, LB und RB andere Rollen geben (Grundtasten, im Reiter Tasten).",
+    PS_CROSS = "Kreuz",
+    PS_CIRCLE = "Kreis",
+    PS_SQUARE = "Quadrat",
+    PS_TRIANGLE = "Dreieck",
+})

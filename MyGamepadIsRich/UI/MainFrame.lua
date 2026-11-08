@@ -653,6 +653,7 @@ local function RefreshButtons()
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", 0, y)
         y = y - ROW_STEP
+        row.name:SetText(ns.ButtonLabel(row.id))
         local current = ns.PadMode(row.id)
         for mode, cb in pairs(row.modes) do cb:SetChecked(current == mode) end
     end
