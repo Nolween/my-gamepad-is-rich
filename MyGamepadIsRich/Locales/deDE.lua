@@ -73,7 +73,6 @@ ns.AddLocale("deDE", {
     IF_WARNING = "Improved Forever ist geladen: Nutzt es auch eine dieser Tasten, gewinnt die zuletzt gesetzte Belegung.",
     OPEN_CONFIG = "Konfiguration öffnen",
     LOADED = "geladen. Gib /mgir ein, um deine Zusatztasten einzurichten.",
-    SLASH_HELP = "/mgir : öffnen  |  /mgir test : Controller-Test  |  /mgir tuto : Tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : Aktionen dieses Charakters zurücksetzen",
     RESET_DONE = "Die Aktionen dieses Charakters wurden zurückgesetzt.",
 
     DPAD_UP = "Steuerkreuz oben",
@@ -256,4 +255,59 @@ ns.AddLocale("deDE", {
         .. "- |cffffd100In der Mitte|r: deine einfachen Tasten, mit der Aktion, die zum gehaltenen Trigger ausgelöst wird.\n\n"
         .. "Außerhalb des Kampfes wird es blasser, solange du nichts hältst.\n"
         .. "|cffffd100/mgir hud|r: verschieben  -  |cffffd100/mgir hud scale 1.2|r: Größe  -  |cffffd100/mgir hud off|r: zurück zur Leiste des Spiels",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("deDE", {
+    TAB_PROFILES = "Profile",
+    PROFILES_INTRO = "Ein Profil enthält einen Controller, seine Tasten und für jeden Charakter dessen Aktionen. Es wird immer ein Profil für den ganzen Account genutzt. Das HUD gilt für alle Profile.",
+    PROFILE_ACTIVE = "aktiv",
+    PROFILE_USE = "Dieses Profil nutzen",
+    PROFILE_NEW = "Neu...",
+    PROFILE_COPY = "Kopieren...",
+    PROFILE_RENAME = "Umbenennen...",
+    PROFILE_DELETE = "Löschen",
+    PROFILE_EXPORT = "Exportieren...",
+    PROFILE_IMPORT = "Importieren...",
+    PROFILE_DEFAULT = "Profil",
+    PROFILE_IMPORTED = "Importiertes Profil",
+    PROFILE_COPY_SUFFIX = "%s (Kopie)",
+    PROFILE_NAME_NEW = "Name des neuen Profils:",
+    PROFILE_NAME_COPY = "Name der Kopie:",
+    PROFILE_NAME_RENAME = "Neuer Name für „%s“:",
+    PROFILE_DELETE_CONFIRM = "Profil „%s“ löschen? Seine Tasten und die Aktionen aller deiner Charaktere für dieses Profil gehen verloren.",
+    PROFILE_SWITCHED = "Aktives Profil: %s.",
+    PROFILE_UNKNOWN = "Kein Profil heißt „%s“. Gib /mgir profiles ein, um sie zu sehen.",
+    PROFILE_COMBAT = "Profile können im Kampf nicht gewechselt werden.",
+    PROFILE_LAST = "Das ist dein einziges Profil: Es kann nicht gelöscht werden.",
+    PROFILE_CREATED = "Profil „%s“ erstellt und aktiv. Lege seine Tasten im Reiter Tasten fest.",
+
+    EXPORT_TITLE = "„%s“ exportieren",
+    EXPORT_ACTIONS = "Aktionen dieses Charakters einschließen",
+    EXPORT_HUD = "HUD-Einstellungen einschließen",
+    EXPORT_HINT = "Der Text ist markiert: Strg+C zum Kopieren, dann füge ihn ein, wo du willst (Discord, eine Textdatei...). Importiert wird er mit der Schaltfläche Importieren im Reiter Profile.",
+    CLOSE = "Schließen",
+
+    IMPORT_TITLE = "Profil importieren",
+    IMPORT_PASTE = "Füge den Exporttext hier ein (Strg+V):",
+    IMPORT_EMPTY = "Füge einen Exporttext ein, um zu sehen, was er enthält.",
+    IMPORT_BAD = "Das ist kein Exporttext von My Gamepad Is Rich.",
+    IMPORT_VERSION = "Dieser Text stammt aus einer anderen Version des Addons und kann nicht gelesen werden.",
+    IMPORT_DAMAGED = "Dieser Text ist beschädigt oder unvollständig: Kopiere ihn erneut, vollständig.",
+    IMPORT_SUMMARY = "Profil „%s“, Controller: %s\n%d Taste(n) mit Belegung, %d Aktion(en)",
+    IMPORT_SUMMARY_HUD = "Enthält HUD-Einstellungen.",
+    IMPORT_MACROS = "Achtung: %d selbst geschriebene(s) Makro(s). Lies sie, bevor du sie nutzt:",
+    IMPORT_COMMANDS = "WoW-Befehle: %s",
+    IMPORT_AS_NEW = "Neues Profil:",
+    IMPORT_REPLACE = "Ersetzen:",
+    IMPORT_PICK = "Zu ersetzendes Profil",
+    IMPORT_ACTIONS = "Aktionen importieren (für diesen Charakter)",
+    IMPORT_HUD = "HUD-Einstellungen übernehmen",
+    IMPORT_DO = "Importieren",
+    IMPORT_REPLACE_CONFIRM = "Profil „%s“ ersetzen? Controller und Tasten werden überschrieben, ebenso seine Aktionen für diesen Charakter, wenn du sie importierst.",
+    IMPORT_DONE = "Profil „%s“ importiert.",
+
+    SELFTEST_OK = "Selbsttest: Alles in Ordnung.",
+    SELFTEST_FAIL = "Selbsttest: %d Problem(e): %s",
+    SLASH_HELP = "/mgir : öffnen  |  /mgir profile <Name> : Profil wechseln  |  /mgir test : Controller-Test  |  /mgir tuto : Tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : Aktionen dieses Charakters zurücksetzen",
 })

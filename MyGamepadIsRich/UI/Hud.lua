@@ -1006,6 +1006,53 @@ function H.ResetPosition()
     H.Place()
 end
 
+-- Les réglages, pour un export de profil (copie), et leur retour d'un
+-- import : seuls les champs connus, bornés comme les réglages à la main
+local POINTS = {
+    TOPLEFT = true, TOP = true, TOPRIGHT = true, LEFT = true, CENTER = true, RIGHT = true,
+    BOTTOMLEFT = true, BOTTOM = true, BOTTOMRIGHT = true,
+}
+
+local function Clamp(n, lo, hi, default)
+    if type(n) ~= "number" or n ~= n then return default end
+    return math.max(lo, math.min(hi, n))
+end
+
+function H.ExportSettings()
+    local s = H.Settings()
+    local out = { enabled = s.enabled, scale = s.scale, strip = s.strip,
+        stripScale = s.stripScale, stripRows = s.stripRows }
+    if s.pos then out.pos = { s.pos[1], s.pos[2], s.pos[3], s.pos[4] } end
+    return out
+end
+
+-- (t vient d'une chaîne d'import : n'importe quoi peut s'y trouver)
+function H.CleanSettings(t)
+    if type(t) ~= "table" then return nil end
+    local out = {
+        enabled = t.enabled ~= false,
+        scale = Clamp(t.scale, 0.5, 2, 1),
+        strip = (t.strip == "top") and "top" or "bottom",
+        stripScale = Clamp(t.stripScale, 0.5, 1.5, 1),
+        stripRows = math.floor(Clamp(t.stripRows, 1, 3, 1)),
+    }
+    local p = t.pos
+    if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
+        out.pos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
+    end
+    return out
+end
+
+function H.ImportSettings(t)
+    local clean = H.CleanSettings(t)
+    if not clean then return end
+    local s = H.Settings()
+    for k, v in pairs(clean) do s[k] = v end
+    s.pos = clean.pos
+    H.Place()
+    dirty = true
+end
+
 function H.IsUnlocked() return unlocked end
 
 -- Déverrouiller (déplacer à la souris) / verrouiller

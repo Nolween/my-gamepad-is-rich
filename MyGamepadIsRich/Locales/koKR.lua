@@ -73,7 +73,6 @@ ns.AddLocale("koKR", {
     IF_WARNING = "Improved Forever가 로드되어 있습니다. 같은 키를 사용하면 마지막으로 적용된 지정이 우선합니다.",
     OPEN_CONFIG = "설정 열기",
     LOADED = "로드됨. /mgir를 입력해 추가 버튼을 설정하세요.",
-    SLASH_HELP = "/mgir : 열기  |  /mgir test : 컨트롤러 테스트  |  /mgir tuto : 튜토리얼  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 이 캐릭터의 동작 초기화",
     RESET_DONE = "이 캐릭터의 동작이 초기화되었습니다.",
 
     DPAD_UP = "십자키 위",
@@ -256,4 +255,59 @@ ns.AddLocale("koKR", {
         .. "- |cffffd100가운데|r: 단일 버튼, 그리고 누르고 있는 트리거에 따라 나갈 동작.\n\n"
         .. "전투 중이 아니고 아무것도 누르지 않으면 흐려집니다.\n"
         .. "|cffffd100/mgir hud|r: 이동  -  |cffffd100/mgir hud scale 1.2|r: 크기  -  |cffffd100/mgir hud off|r: 게임 바로 돌아가기",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("koKR", {
+    TAB_PROFILES = "프로필",
+    PROFILES_INTRO = "프로필에는 컨트롤러, 그 버튼, 그리고 캐릭터별 동작이 들어 있습니다. 계정 전체에서 한 번에 하나의 프로필만 사용합니다. HUD는 모든 프로필에 공통입니다.",
+    PROFILE_ACTIVE = "사용 중",
+    PROFILE_USE = "이 프로필 사용",
+    PROFILE_NEW = "새로 만들기...",
+    PROFILE_COPY = "복사...",
+    PROFILE_RENAME = "이름 변경...",
+    PROFILE_DELETE = "삭제",
+    PROFILE_EXPORT = "내보내기...",
+    PROFILE_IMPORT = "가져오기...",
+    PROFILE_DEFAULT = "프로필",
+    PROFILE_IMPORTED = "가져온 프로필",
+    PROFILE_COPY_SUFFIX = "%s (사본)",
+    PROFILE_NAME_NEW = "새 프로필 이름:",
+    PROFILE_NAME_COPY = "사본 이름:",
+    PROFILE_NAME_RENAME = "'%s'의 새 이름:",
+    PROFILE_DELETE_CONFIRM = "'%s' 프로필을 삭제할까요? 버튼 설정과 모든 캐릭터의 이 프로필 동작이 사라집니다.",
+    PROFILE_SWITCHED = "사용 중인 프로필: %s.",
+    PROFILE_UNKNOWN = "'%s'라는 프로필이 없습니다. /mgir profiles로 목록을 보세요.",
+    PROFILE_COMBAT = "전투 중에는 프로필을 바꿀 수 없습니다.",
+    PROFILE_LAST = "유일한 프로필이라 삭제할 수 없습니다.",
+    PROFILE_CREATED = "'%s' 프로필을 만들고 사용 중입니다. 버튼 탭에서 키를 설정하세요.",
+
+    EXPORT_TITLE = "'%s' 내보내기",
+    EXPORT_ACTIONS = "이 캐릭터의 동작 포함",
+    EXPORT_HUD = "HUD 설정 포함",
+    EXPORT_HINT = "텍스트가 선택되어 있습니다. Ctrl+C로 복사한 뒤 원하는 곳(Discord, 텍스트 파일...)에 붙여 넣으세요. 프로필 탭의 가져오기 버튼으로 가져옵니다.",
+    CLOSE = "닫기",
+
+    IMPORT_TITLE = "프로필 가져오기",
+    IMPORT_PASTE = "내보낸 텍스트를 여기에 붙여 넣으세요 (Ctrl+V):",
+    IMPORT_EMPTY = "내보낸 텍스트를 붙여 넣으면 내용을 볼 수 있습니다.",
+    IMPORT_BAD = "My Gamepad Is Rich에서 내보낸 텍스트가 아닙니다.",
+    IMPORT_VERSION = "다른 버전의 애드온에서 만든 텍스트라 읽을 수 없습니다.",
+    IMPORT_DAMAGED = "텍스트가 손상되었거나 불완전합니다. 전체를 다시 복사하세요.",
+    IMPORT_SUMMARY = "프로필 '%s', 컨트롤러: %s\n키가 있는 버튼 %d개, 동작 %d개",
+    IMPORT_SUMMARY_HUD = "HUD 설정이 들어 있습니다.",
+    IMPORT_MACROS = "주의: 직접 작성한 매크로 %d개. 사용하기 전에 읽어 보세요:",
+    IMPORT_COMMANDS = "WoW 명령: %s",
+    IMPORT_AS_NEW = "새 프로필:",
+    IMPORT_REPLACE = "교체:",
+    IMPORT_PICK = "교체할 프로필",
+    IMPORT_ACTIONS = "동작 가져오기 (이 캐릭터)",
+    IMPORT_HUD = "HUD 설정 적용",
+    IMPORT_DO = "가져오기",
+    IMPORT_REPLACE_CONFIRM = "'%s' 프로필을 교체할까요? 컨트롤러와 버튼 설정을 덮어쓰며, 동작을 가져오면 이 캐릭터의 동작도 덮어씁니다.",
+    IMPORT_DONE = "'%s' 프로필을 가져왔습니다.",
+
+    SELFTEST_OK = "자체 테스트: 모두 정상입니다.",
+    SELFTEST_FAIL = "자체 테스트: 문제 %d개: %s",
+    SLASH_HELP = "/mgir : 열기  |  /mgir profile <이름> : 프로필 변경  |  /mgir test : 컨트롤러 테스트  |  /mgir tuto : 튜토리얼  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 이 캐릭터의 동작 초기화",
 })

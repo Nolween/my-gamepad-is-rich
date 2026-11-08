@@ -73,7 +73,6 @@ ns.AddLocale("enUS", {
     IF_WARNING = "Improved Forever is loaded: if it also uses one of these keys, the last applied binding wins.",
     OPEN_CONFIG = "Open the configuration",
     LOADED = "loaded. Type /mgir to configure your extra buttons.",
-    SLASH_HELP = "/mgir : open  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions",
     RESET_DONE = "This character's actions were reset.",
 
     DPAD_UP = "D-pad Up",
@@ -257,4 +256,59 @@ ns.AddLocale("enUS", {
         .. "- |cffffd100In the middle|r: your simple buttons, with the action that will fire for the trigger you hold.\n\n"
         .. "It fades out of combat while you hold nothing.\n"
         .. "|cffffd100/mgir hud|r: move it  -  |cffffd100/mgir hud scale 1.2|r: size  -  |cffffd100/mgir hud off|r: back to the game's bar",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("enUS", {
+    TAB_PROFILES = "Profiles",
+    PROFILES_INTRO = "A profile holds a controller, its buttons and, for each character, its actions. One profile is used at a time, for the whole account. The HUD is shared by all profiles.",
+    PROFILE_ACTIVE = "in use",
+    PROFILE_USE = "Use this profile",
+    PROFILE_NEW = "New...",
+    PROFILE_COPY = "Copy...",
+    PROFILE_RENAME = "Rename...",
+    PROFILE_DELETE = "Delete",
+    PROFILE_EXPORT = "Export...",
+    PROFILE_IMPORT = "Import...",
+    PROFILE_DEFAULT = "Profile",
+    PROFILE_IMPORTED = "Imported profile",
+    PROFILE_COPY_SUFFIX = "%s (copy)",
+    PROFILE_NAME_NEW = "Name of the new profile:",
+    PROFILE_NAME_COPY = "Name of the copy:",
+    PROFILE_NAME_RENAME = "New name for “%s”:",
+    PROFILE_DELETE_CONFIRM = "Delete the profile “%s”? Its buttons, and the actions of all your characters for this profile, will be lost.",
+    PROFILE_SWITCHED = "Profile in use: %s.",
+    PROFILE_UNKNOWN = "No profile is named “%s”. Type /mgir profiles to see them.",
+    PROFILE_COMBAT = "Profiles can't be changed in combat.",
+    PROFILE_LAST = "This is your only profile: it can't be deleted.",
+    PROFILE_CREATED = "Profile “%s” created and in use. Set its keys in the Buttons tab.",
+
+    EXPORT_TITLE = "Export “%s”",
+    EXPORT_ACTIONS = "Include this character's actions",
+    EXPORT_HUD = "Include the HUD settings",
+    EXPORT_HINT = "The text is selected: Ctrl+C to copy it, then paste it wherever you like (Discord, a text file...). Import it with the Import button of the Profiles tab.",
+    CLOSE = "Close",
+
+    IMPORT_TITLE = "Import a profile",
+    IMPORT_PASTE = "Paste the export text here (Ctrl+V):",
+    IMPORT_EMPTY = "Paste an export text to see what it contains.",
+    IMPORT_BAD = "This is not a My Gamepad Is Rich export text.",
+    IMPORT_VERSION = "This text comes from another version of the addon and can't be read.",
+    IMPORT_DAMAGED = "This text is damaged or incomplete: copy it again, in full.",
+    IMPORT_SUMMARY = "Profile “%s”, controller: %s\n%d button(s) with a key, %d action(s)",
+    IMPORT_SUMMARY_HUD = "Includes HUD settings.",
+    IMPORT_MACROS = "Warning: %d custom macro(s). Read them before using them:",
+    IMPORT_COMMANDS = "WoW commands: %s",
+    IMPORT_AS_NEW = "New profile:",
+    IMPORT_REPLACE = "Replace:",
+    IMPORT_PICK = "Profile to replace",
+    IMPORT_ACTIONS = "Import the actions (for this character)",
+    IMPORT_HUD = "Apply the HUD settings",
+    IMPORT_DO = "Import",
+    IMPORT_REPLACE_CONFIRM = "Replace the profile “%s”? Its controller and buttons will be overwritten, and its actions for this character if you import them.",
+    IMPORT_DONE = "Profile “%s” imported.",
+
+    SELFTEST_OK = "Self-test: everything is OK.",
+    SELFTEST_FAIL = "Self-test: %d problem(s): %s",
+    SLASH_HELP = "/mgir : open  |  /mgir profile <name> : switch profile  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions",
 })

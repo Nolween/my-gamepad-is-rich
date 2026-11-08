@@ -34,7 +34,7 @@ end
 
 -- Un bouton en mode modificateur, avec une touche
 local function ModReady(id)
-    local def = ns.db and ns.db.buttons[id]
+    local def = ns.prof and ns.prof.buttons[id]
     return def ~= nil and def.mode == "modifier" and def.key ~= nil
 end
 
@@ -56,11 +56,12 @@ ns.PAD_KEYS = { "PAD1", "PAD2", "PAD3", "PAD4", "PADDUP", "PADDDOWN", "PADDLEFT"
 -- Les couches d'un bouton simple
 ns.LAYERS = { "base", "lt", "rt" }
 
-local DEFAULT_BUTTONS = {
+-- Les modes d'un profil neuf (pas de touche par défaut : en XInput le jeu
+-- ne voit pas les palettes, la touche vient du logiciel de la manette et se
+-- règle avec « Détecter »)
+ns.DEFAULT_BUTTONS = {
     L5 = { mode = "modifier" },
     R5 = { mode = "modifier" },
-    -- (pas de touche par défaut : en XInput le jeu ne voit pas les palettes,
-    -- la touche vient du logiciel de la manette et se règle avec « Détecter »)
     L4 = { mode = "simple" },
     R4 = { mode = "simple" },
     EX1 = { mode = "off" },
@@ -71,64 +72,68 @@ function ns.Print(msg)
     print("|cff33ff99My Gamepad Is Rich|r : " .. tostring(msg))
 end
 
+-- Les max premiers octets d'un texte UTF-8, sans couper un caractère
+-- (accent, idéogramme) en deux
+function ns.Utf8Cut(s, max)
+    if #s <= max then return s end
+    s = s:sub(1, max)
+    -- (le dernier caractère commencé : son octet de tête dit sa longueur)
+    for i = #s, math.max(1, #s - 3), -1 do
+        local b = s:byte(i)
+        if b < 0x80 then return s end
+        if b >= 0xC0 then
+            local need = (b >= 0xF0 and 4) or (b >= 0xE0 and 3) or 2
+            if #s - i + 1 < need then return s:sub(1, i - 1) end
+            return s
+        end
+    end
+    return s
+end
+
+-- Copie profonde (tables de données : chaînes, nombres, booléens, tables)
+function ns.DeepCopy(t)
+    if type(t) ~= "table" then return t end
+    local out = {}
+    for k, v in pairs(t) do out[k] = ns.DeepCopy(v) end
+    return out
+end
+
 ---------------------------------------------------------------------------
--- Données
+-- Données : le compte (MyGamepadIsRichDB) et le personnage
+-- (MyGamepadIsRichCharDB). La manette, les boutons et les actions vivent
+-- dans les profils (Profiles.lua) : ns.prof est le profil actif (compte),
+-- ns.cprof ses actions pour ce personnage.
 ---------------------------------------------------------------------------
 local function InitDB()
     MyGamepadIsRichDB = MyGamepadIsRichDB or {}
-    local db = MyGamepadIsRichDB
-    -- (la manette : avant les préréglages, l'addon ne gérait que la G7 Pro ;
-    -- une première installation la choisit dans le tutoriel)
-    if not db.controller then
-        db.controller = db.buttons and "gamesir_g7pro" or "other"
-    end
-    db.buttons = db.buttons or {}
-    for _, id in ipairs(ns.BUTTON_IDS) do
-        if not db.buttons[id] then
-            local d = DEFAULT_BUTTONS[id]
-            db.buttons[id] = { mode = d.mode, key = d.key }
-        end
-        -- (anciennes versions : PADPADDLE1/2 par défaut, jamais reçues par le
-        -- jeu ; elles cachaient l'avertissement « touche non définie »)
-        local b = db.buttons[id]
-        if b.key and b.key:match("^PADPADDLE%d$") and not b.learned then
-            b.key = nil
-        end
-    end
-    db.options = db.options or {}
-
     MyGamepadIsRichCharDB = MyGamepadIsRichCharDB or {}
-    local char = MyGamepadIsRichCharDB
-    char.actions = char.actions or {}
-    for _, id in ipairs(ns.LIST_IDS) do
-        char.actions[id] = char.actions[id] or {}
-        char.actions[id].combos = char.actions[id].combos or {}
-        char.actions[id].layers = char.actions[id].layers or {}
-    end
+    local db, char = MyGamepadIsRichDB, MyGamepadIsRichCharDB
+    db.options = db.options or {}
     ns.db, ns.char = db, char
+    ns.Profiles.Init()
 end
 
 function ns.Button(id)
-    return ns.db.buttons[id]
+    return ns.prof.buttons[id]
 end
 
 function ns.ButtonActions(id)
-    return ns.char.actions[id]
+    return ns.cprof.actions[id]
 end
 
 function ns.ButtonLabel(id)
     local pair = ns.PairDef(id)
     if pair then return ns.ButtonLabel(pair.a) .. " + " .. ns.ButtonLabel(pair.b) end
-    local b = ns.db and ns.db.buttons[id]
+    local b = ns.prof and ns.prof.buttons[id]
     if b and b.name and b.name ~= "" then return b.name end
     return ns.SlotName(id) or ns.SpareName(id)
 end
 
 -- Le bouton supplémentaire qui utilise une touche, ou nil
 function ns.ButtonOfKey(key)
-    if not key or not ns.db then return nil end
+    if not key or not ns.prof then return nil end
     for _, id in ipairs(ns.BUTTON_IDS) do
-        if ns.db.buttons[id].key == key then return id end
+        if ns.prof.buttons[id].key == key then return id end
     end
 end
 
@@ -188,8 +193,8 @@ function ns.Apply(quiet)
     local onDown = ns.UseKeyDown()
     ns.Modifier.Begin()
     for _, id in ipairs(ns.BUTTON_IDS) do
-        local def = ns.db.buttons[id]
-        local actions = ns.char.actions[id]
+        local def = ns.prof.buttons[id]
+        local actions = ns.cprof.actions[id]
         ns.Simple.Disable(id)
         if def.key and def.key ~= "" then
             if def.mode == "modifier" then
@@ -250,9 +255,18 @@ _G.BINDING_NAME_MYGAMEPADISRICH_TOGGLE = L.OPEN_CONFIG
 SLASH_MYGAMEPADISRICH1 = "/mgir"
 SLASH_MYGAMEPADISRICH2 = "/gps" -- (ancien nom de la commande)
 SlashCmdList.MYGAMEPADISRICH = function(msg)
-    msg = strtrim((msg or ""):lower())
+    local raw = strtrim(msg or "")
+    msg = raw:lower()
     local word, rest = msg:match("^(%S*)%s*(.-)$")
-    if word == "hud" then
+    if word == "profil" or word == "profile" then
+        -- (/mgir profil <nom> : le nom tel que tapé, casse comprise)
+        local name = raw:match("^%S+%s+(.+)$")
+        if name then ns.Profiles.SwitchByName(name) else ns.UI.Show("profiles") end
+    elseif msg == "profils" or msg == "profiles" then
+        ns.UI.Show("profiles")
+    elseif msg == "selftest" then
+        ns.Serialize.SelfTest()
+    elseif word == "hud" then
         ns.Hud.Command(rest)
     elseif msg == "minimap" then
         ns.MinimapButton.Toggle()
@@ -265,7 +279,7 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
     elseif msg == "reset" then
         if InCombatLockdown() then ns.Print(L.APPLIED_AFTER_COMBAT) return end
         for _, id in ipairs(ns.LIST_IDS) do
-            ns.char.actions[id] = { combos = {}, layers = {} }
+            ns.cprof.actions[id] = { combos = {}, layers = {} }
         end
         ns.Apply()
         ns.Print(L.RESET_DONE)

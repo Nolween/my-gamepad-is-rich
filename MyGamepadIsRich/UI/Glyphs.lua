@@ -51,7 +51,7 @@ local SHORT = { PADDUP = "^", PADDDOWN = "v", PADDLEFT = "<", PADDRIGHT = ">" }
 local function ShortLabel(key)
     local pair = ns.PairDef and ns.PairDef(key)
     if pair then return ns.ButtonLabel(pair.a) .. "+" .. ns.ButtonLabel(pair.b) end
-    if ns.db and ns.db.buttons[key] then return ns.ButtonLabel(key) end
+    if ns.prof and ns.prof.buttons[key] then return ns.ButtonLabel(key) end
     if SHORT[key] then return SHORT[key] end
     local paddle = key:match("^PADPADDLE(%d)$")
     if paddle then return "P" .. paddle end
@@ -82,7 +82,7 @@ function UI.CreateGlyph(parent, size)
         end
         self.tex:Hide()
         self.badge:Show()
-        local extra = ns.db and (ns.db.buttons[key] or (ns.IsPair and ns.IsPair(key)))
+        local extra = ns.prof and (ns.prof.buttons[key] or (ns.IsPair and ns.IsPair(key)))
         local c = COLORS[key] or (extra and { 0.75, 0.55, 0.1 }) or { 0.25, 0.25, 0.25 }
         self.badge:SetColorTexture(c[1], c[2], c[3], 0.9)
         self.text:SetWidth(size + 16)

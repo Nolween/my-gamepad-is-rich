@@ -57,9 +57,9 @@ function ns.ControllerDef(id)
     return byID[id] or OTHER
 end
 
--- La manette choisie
+-- La manette du profil actif
 function ns.Controller()
-    return ns.ControllerDef(ns.db and ns.db.controller)
+    return ns.ControllerDef(ns.prof and ns.prof.controller)
 end
 
 function ns.ControllerName(def)
@@ -104,9 +104,17 @@ local function Suggested(i, count)
     return "simple"
 end
 
+-- Les modes conseillés, posés sur un profil (sans appliquer)
+function ns.SuggestModes(prof)
+    local n = #ns.ControllerDef(prof.controller).names
+    for i, id in ipairs(ns.BUTTON_IDS) do
+        if i > n then break end
+        prof.buttons[id].mode = Suggested(i, n)
+    end
+end
+
 function ns.ApplySuggestedModes()
-    local ids = ns.ActiveIDs()
-    for i, id in ipairs(ids) do ns.db.buttons[id].mode = Suggested(i, #ids) end
+    ns.SuggestModes(ns.prof)
     ns.Apply()
 end
 
@@ -116,12 +124,12 @@ end
 -- qui devient un emplacement libre est vidé et désactivé, pour que sa
 -- touche ne reste pas liée ; les emplacements déjà libres ne changent pas.
 function ns.SetController(id)
-    if not ns.db then return end
+    if not ns.prof then return end
     local old, new = ns.Controller(), ns.ControllerDef(id)
     if old.id == new.id then return end
-    ns.db.controller = new.id
+    ns.prof.controller = new.id
     for _, slot in ipairs(ns.BUTTON_IDS) do
-        local b = ns.db.buttons[slot]
+        local b = ns.prof.buttons[slot]
         b.name = nil
         if NameOn(old, slot) and not NameOn(new, slot) then
             b.key, b.learned, b.mode = nil, nil, "off"

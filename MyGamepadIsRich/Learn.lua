@@ -27,7 +27,7 @@ local function Finish(key)
     -- Une touche, un seul bouton
     local other = ns.ButtonOfKey(key)
     if other and other ~= id then
-        ns.db.buttons[other].key = nil
+        ns.prof.buttons[other].key = nil
         ns.Print(L.LEARN_TAKEN:format(ns.KeyLabel(key), ns.ButtonLabel(other)))
     end
     if MODIFIER_KEYS[key] then ns.Print(L.LEARN_MODKEY:format(key)) end
@@ -35,8 +35,8 @@ local function Finish(key)
     if bound and bound ~= "" then
         ns.Print(L.LEARN_BOUND:format(ns.KeyLabel(key), ns.Actions.CommandLabel(bound)))
     end
-    ns.db.buttons[id].key = key
-    ns.db.buttons[id].learned = true
+    ns.prof.buttons[id].key = key
+    ns.prof.buttons[id].learned = true
     ns.Print(L.LEARN_DONE:format(label, ns.KeyLabel(key)))
     ns.Apply()
     if cb then cb(key) end

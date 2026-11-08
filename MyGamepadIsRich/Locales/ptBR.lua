@@ -73,7 +73,6 @@ ns.AddLocale("ptBR", {
     IF_WARNING = "O Improved Forever está carregado: se ele também usar uma destas teclas, vale a última atribuição aplicada.",
     OPEN_CONFIG = "Abrir a configuração",
     LOADED = "carregado. Digite /mgir para configurar seus botões extras.",
-    SLASH_HELP = "/mgir : abrir  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem",
     RESET_DONE = "As ações deste personagem foram zeradas.",
 
     DPAD_UP = "Direcional cima",
@@ -256,4 +255,59 @@ ns.AddLocale("ptBR", {
         .. "- |cffffd100No centro|r: seus botões simples, com a ação que vai sair conforme o gatilho segurado.\n\n"
         .. "Ele fica mais apagado fora de combate enquanto você não segura nada.\n"
         .. "|cffffd100/mgir hud|r: mover  -  |cffffd100/mgir hud scale 1.2|r: tamanho  -  |cffffd100/mgir hud off|r: voltar à barra do jogo",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("ptBR", {
+    TAB_PROFILES = "Perfis",
+    PROFILES_INTRO = "Um perfil guarda um controle, seus botões e, para cada personagem, suas ações. Um só perfil é usado por vez, para a conta inteira. O HUD é comum a todos os perfis.",
+    PROFILE_ACTIVE = "em uso",
+    PROFILE_USE = "Usar este perfil",
+    PROFILE_NEW = "Novo...",
+    PROFILE_COPY = "Copiar...",
+    PROFILE_RENAME = "Renomear...",
+    PROFILE_DELETE = "Excluir",
+    PROFILE_EXPORT = "Exportar...",
+    PROFILE_IMPORT = "Importar...",
+    PROFILE_DEFAULT = "Perfil",
+    PROFILE_IMPORTED = "Perfil importado",
+    PROFILE_COPY_SUFFIX = "%s (cópia)",
+    PROFILE_NAME_NEW = "Nome do novo perfil:",
+    PROFILE_NAME_COPY = "Nome da cópia:",
+    PROFILE_NAME_RENAME = "Novo nome para “%s”:",
+    PROFILE_DELETE_CONFIRM = "Excluir o perfil “%s”? Os botões dele e as ações de todos os seus personagens para este perfil serão perdidos.",
+    PROFILE_SWITCHED = "Perfil em uso: %s.",
+    PROFILE_UNKNOWN = "Nenhum perfil se chama “%s”. Digite /mgir profiles para vê-los.",
+    PROFILE_COMBAT = "Não é possível trocar de perfil em combate.",
+    PROFILE_LAST = "Este é seu único perfil: ele não pode ser excluído.",
+    PROFILE_CREATED = "Perfil “%s” criado e em uso. Configure as teclas dele na aba Botões.",
+
+    EXPORT_TITLE = "Exportar “%s”",
+    EXPORT_ACTIONS = "Incluir as ações deste personagem",
+    EXPORT_HUD = "Incluir as configurações do HUD",
+    EXPORT_HINT = "O texto está selecionado: Ctrl+C para copiá-lo e cole onde quiser (Discord, um arquivo de texto...). Ele é importado pelo botão Importar da aba Perfis.",
+    CLOSE = "Fechar",
+
+    IMPORT_TITLE = "Importar um perfil",
+    IMPORT_PASTE = "Cole aqui o texto exportado (Ctrl+V):",
+    IMPORT_EMPTY = "Cole um texto exportado para ver o que ele contém.",
+    IMPORT_BAD = "Este não é um texto exportado do My Gamepad Is Rich.",
+    IMPORT_VERSION = "Este texto vem de outra versão do addon e não pode ser lido.",
+    IMPORT_DAMAGED = "Este texto está danificado ou incompleto: copie-o de novo, inteiro.",
+    IMPORT_SUMMARY = "Perfil “%s”, controle: %s\n%d botão(ões) com tecla, %d ação(ões)",
+    IMPORT_SUMMARY_HUD = "Contém configurações do HUD.",
+    IMPORT_MACROS = "Atenção: %d macro(s) escrita(s) à mão. Leia antes de usar:",
+    IMPORT_COMMANDS = "Comandos do WoW: %s",
+    IMPORT_AS_NEW = "Novo perfil:",
+    IMPORT_REPLACE = "Substituir:",
+    IMPORT_PICK = "Perfil a substituir",
+    IMPORT_ACTIONS = "Importar as ações (para este personagem)",
+    IMPORT_HUD = "Aplicar as configurações do HUD",
+    IMPORT_DO = "Importar",
+    IMPORT_REPLACE_CONFIRM = "Substituir o perfil “%s”? O controle e os botões dele serão sobrescritos, e as ações dele para este personagem se você as importar.",
+    IMPORT_DONE = "Perfil “%s” importado.",
+
+    SELFTEST_OK = "Autoteste: tudo certo.",
+    SELFTEST_FAIL = "Autoteste: %d problema(s): %s",
+    SLASH_HELP = "/mgir : abrir  |  /mgir profile <nome> : trocar de perfil  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem",
 })

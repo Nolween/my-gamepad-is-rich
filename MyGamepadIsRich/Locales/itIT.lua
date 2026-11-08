@@ -73,7 +73,6 @@ ns.AddLocale("itIT", {
     IF_WARNING = "Improved Forever è caricato: se usa anche uno di questi tasti, vince l'ultima assegnazione applicata.",
     OPEN_CONFIG = "Apri la configurazione",
     LOADED = "caricato. Scrivi /mgir per configurare i pulsanti aggiuntivi.",
-    SLASH_HELP = "/mgir : apri  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio",
     RESET_DONE = "Le azioni di questo personaggio sono state azzerate.",
 
     DPAD_UP = "Croce su",
@@ -256,4 +255,59 @@ ns.AddLocale("itIT", {
         .. "- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che partirà in base al grilletto tenuto.\n\n"
         .. "Si attenua fuori dal combattimento quando non tieni premuto nulla.\n"
         .. "|cffffd100/mgir hud|r: spostarlo  -  |cffffd100/mgir hud scale 1.2|r: dimensione  -  |cffffd100/mgir hud off|r: tornare alla barra del gioco",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("itIT", {
+    TAB_PROFILES = "Profili",
+    PROFILES_INTRO = "Un profilo contiene un controller, i suoi pulsanti e, per ogni personaggio, le sue azioni. Si usa un solo profilo alla volta, per tutto l'account. L'HUD è comune a tutti i profili.",
+    PROFILE_ACTIVE = "in uso",
+    PROFILE_USE = "Usa questo profilo",
+    PROFILE_NEW = "Nuovo...",
+    PROFILE_COPY = "Copia...",
+    PROFILE_RENAME = "Rinomina...",
+    PROFILE_DELETE = "Elimina",
+    PROFILE_EXPORT = "Esporta...",
+    PROFILE_IMPORT = "Importa...",
+    PROFILE_DEFAULT = "Profilo",
+    PROFILE_IMPORTED = "Profilo importato",
+    PROFILE_COPY_SUFFIX = "%s (copia)",
+    PROFILE_NAME_NEW = "Nome del nuovo profilo:",
+    PROFILE_NAME_COPY = "Nome della copia:",
+    PROFILE_NAME_RENAME = "Nuovo nome per «%s»:",
+    PROFILE_DELETE_CONFIRM = "Eliminare il profilo «%s»? I suoi pulsanti e le azioni di tutti i tuoi personaggi per questo profilo andranno persi.",
+    PROFILE_SWITCHED = "Profilo in uso: %s.",
+    PROFILE_UNKNOWN = "Nessun profilo si chiama «%s». Scrivi /mgir profiles per vederli.",
+    PROFILE_COMBAT = "Non puoi cambiare profilo in combattimento.",
+    PROFILE_LAST = "È il tuo unico profilo: non può essere eliminato.",
+    PROFILE_CREATED = "Profilo «%s» creato e in uso. Imposta i suoi tasti nella scheda Pulsanti.",
+
+    EXPORT_TITLE = "Esporta «%s»",
+    EXPORT_ACTIONS = "Includi le azioni di questo personaggio",
+    EXPORT_HUD = "Includi le impostazioni dell'HUD",
+    EXPORT_HINT = "Il testo è selezionato: Ctrl+C per copiarlo, poi incollalo dove vuoi (Discord, un file di testo...). Si importa con il pulsante Importa della scheda Profili.",
+    CLOSE = "Chiudi",
+
+    IMPORT_TITLE = "Importa un profilo",
+    IMPORT_PASTE = "Incolla qui il testo esportato (Ctrl+V):",
+    IMPORT_EMPTY = "Incolla un testo esportato per vedere cosa contiene.",
+    IMPORT_BAD = "Questo non è un testo esportato da My Gamepad Is Rich.",
+    IMPORT_VERSION = "Questo testo viene da un'altra versione dell'addon e non può essere letto.",
+    IMPORT_DAMAGED = "Questo testo è danneggiato o incompleto: copialo di nuovo, per intero.",
+    IMPORT_SUMMARY = "Profilo «%s», controller: %s\n%d pulsante/i con un tasto, %d azione/i",
+    IMPORT_SUMMARY_HUD = "Contiene impostazioni dell'HUD.",
+    IMPORT_MACROS = "Attenzione: %d macro scritta/e a mano. Leggile prima di usarle:",
+    IMPORT_COMMANDS = "Comandi di WoW: %s",
+    IMPORT_AS_NEW = "Nuovo profilo:",
+    IMPORT_REPLACE = "Sostituisci:",
+    IMPORT_PICK = "Profilo da sostituire",
+    IMPORT_ACTIONS = "Importa le azioni (per questo personaggio)",
+    IMPORT_HUD = "Applica le impostazioni dell'HUD",
+    IMPORT_DO = "Importa",
+    IMPORT_REPLACE_CONFIRM = "Sostituire il profilo «%s»? Il suo controller e i suoi pulsanti saranno sovrascritti, e anche le sue azioni per questo personaggio se le importi.",
+    IMPORT_DONE = "Profilo «%s» importato.",
+
+    SELFTEST_OK = "Autotest: tutto a posto.",
+    SELFTEST_FAIL = "Autotest: %d problema/i: %s",
+    SLASH_HELP = "/mgir : apri  |  /mgir profile <nome> : cambia profilo  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio",
 })

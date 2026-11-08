@@ -3,6 +3,7 @@
 --             modificateurs et paires ; boutons simples), disposée comme la
 --             manette : la croix à gauche, A/B/X/Y à droite (comme le HUD) ;
 --   Boutons : les boutons supplémentaires (nom, touche, mode) et les paires ;
+--   Profils : UI/ProfilesTab.lua (liste, export, import) ;
 --   HUD     : affichage, miniatures, taille, position, bouton de la minimap ;
 --   Test manette, Aide.
 -- Et la page dans Options > AddOns.
@@ -686,11 +687,17 @@ end
 ---------------------------------------------------------------------------
 -- Fenêtre
 ---------------------------------------------------------------------------
-local TAB_ORDER = { "actions", "buttons", "hud", "test", "help" }
+local TAB_ORDER = { "actions", "buttons", "profiles", "hud", "test", "help" }
+local TAB_W = math.floor((WIDTH - 28 - (#TAB_ORDER - 1) * 4) / #TAB_ORDER)
+local titleText
 
 function RefreshAll()
     if not (frame and frame:IsShown()) then return end
-    if currentTab == "actions" then
+    -- (le titre : le profil utilisé)
+    if titleText and ns.prof then titleText:SetText(L.TITLE .. "  -  " .. ns.prof.name) end
+    if currentTab == "profiles" then
+        pages.profiles.Refresh()
+    elseif currentTab == "actions" then
         CheckSelected()
         RefreshList()
         RefreshDetail()
@@ -740,12 +747,13 @@ local function Build()
         title:SetPoint("TOP", 0, -6)
     end
     title:SetText(L.TITLE)
+    titleText = title
 
-    local labels = { actions = L.TAB_ACTIONS, buttons = L.TAB_BUTTONS, hud = L.TAB_HUD,
-        test = L.TAB_TEST, help = L.TAB_HELP }
+    local labels = { actions = L.TAB_ACTIONS, buttons = L.TAB_BUTTONS, profiles = L.TAB_PROFILES,
+        hud = L.TAB_HUD, test = L.TAB_TEST, help = L.TAB_HELP }
     local prev
     for _, key in ipairs(TAB_ORDER) do
-        local tab = UI.Button(f, labels[key], 150, 24)
+        local tab = UI.Button(f, labels[key], TAB_W, 24)
         if prev then tab:SetPoint("LEFT", prev, "RIGHT", 4, 0) else tab:SetPoint("TOPLEFT", 14, -30) end
         tab:SetScript("OnClick", function() SelectTab(key) end)
         tabs[key] = tab
@@ -767,6 +775,7 @@ local function Build()
     BuildDetail(pages.actions)
 
     BuildButtons(pages.buttons)
+    UI.BuildProfilesPage(pages.profiles)
     BuildHudPage(pages.hud)
     UI.BuildTestPage(pages.test)
     BuildHelp(pages.help)
@@ -789,6 +798,9 @@ function UI.Show(tab)
     frame:Show()
     SelectTab(tab or currentTab)
 end
+
+-- (pour l'onglet Profils et ses fenêtres)
+function UI.RefreshAll() RefreshAll() end
 
 function UI.Hide()
     if frame then frame:Hide() end

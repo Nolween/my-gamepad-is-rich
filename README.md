@@ -78,21 +78,50 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 |---|---|
 | **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. |
 | **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. État des paires. |
+| **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. |
 | **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, déplacer, bouton de la minimap. |
 | **Test manette** | Ce que WoW reçoit de chaque bouton. |
 | **Aide** | Les textes du tutoriel (pour la manette choisie), et un bouton pour le relancer. |
 
 Sur la barre manette du jeu, A/B/X/Y sans rien maintenir gardent les actions du jeu (sauter, interagir…) ; ses cases n'acceptent que des sorts, objets, montures et macros de la liste des macros (pas de macro écrite à la main ni de commande WoW).
 
-La manette, les touches et les modes sont enregistrés pour tout le compte. Les actions sont enregistrées **par personnage**.
+La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage**, dans ce même profil.
 
-Changer de manette remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
+Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
+
+## Profils
+
+Un **profil** contient une manette, ses boutons (touches, modes, noms) et, pour chaque personnage, ses actions. Pratique avec plusieurs manettes : un profil « G7 Pro », un profil « DualSense Edge »…
+
+- **Un seul profil utilisé à la fois, pour tout le compte.** On en change à la main, dans l'onglet **Profils** (bouton « Utiliser ce profil » ou double-clic) ou avec `/mgir profil <nom>`. WoW ne sait pas quelle manette est branchée, l'addon ne peut donc pas changer de profil tout seul. Impossible en combat.
+- **Nouveau** : choisir la manette, puis le nom. Le profil est créé avec les modes conseillés, sans touche, et devient le profil utilisé : il reste à détecter ses touches dans l'onglet Boutons.
+- **Copier** reprend la manette, les boutons et les actions **du personnage connecté**. Les autres personnages commencent ce profil sans actions.
+- **Supprimer** efface aussi les actions de tous les personnages pour ce profil. Le dernier profil ne peut pas être supprimé.
+- Le **HUD** et le bouton de la minimap sont communs à tous les profils.
+
+À la mise à jour depuis la 1.3, la configuration existante devient un premier profil, nommé d'après la manette. Chaque personnage y retrouve ses actions.
+
+### Exporter, importer
+
+**Exporter** produit une ligne de texte à copier (Ctrl+C) et à coller où on veut : à un ami sur Discord, ou dans un fichier pour un autre PC. Deux cases :
+- **Inclure les actions de ce personnage** (cochée par défaut). Les sorts ne servent qu'à la même classe ; les macros de la liste du jeu ne voyagent que par leur nom.
+- **Inclure les réglages du HUD** (décochée par défaut).
+
+**Importer** : coller la ligne (Ctrl+V). Un résumé s'affiche : manette, boutons avec touche, nombre d'actions, HUD. Les **macros écrites à la main** et les **commandes WoW** sont listées, pour les vérifier avant de s'en servir. Ensuite, au choix :
+- **Nouveau profil** (nom proposé) : il devient le profil utilisé ;
+- **Remplacer** un profil existant, après confirmation. Si on n'importe pas les actions, celles du profil remplacé restent.
+
+Les actions importées vont au personnage connecté. Les réglages du HUD ne s'appliquent que si la case est cochée.
+
+La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une copie incomplète. Elle n'est jamais exécutée : l'addon la lit et ne garde que ce qu'il connaît (manettes, emplacements, modes, touches, types d'action, commandes WoW existantes, macros de 255 caractères au plus).
 
 ## Commandes
 
 | Commande | Effet |
 |---|---|
 | `/mgir` (ou l'ancien `/gps`) | Ouvrir / fermer la fenêtre |
+| `/mgir profil <nom>` (ou `profile`) | Utiliser le profil de ce nom |
+| `/mgir profils` (ou `profiles`) | Ouvrir l'onglet Profils |
 | `/mgir test` | Ouvrir l'onglet Test manette |
 | `/mgir tuto` | Revoir le tutoriel |
 | `/mgir hud` | Déverrouiller / verrouiller le HUD pour le déplacer à la souris |
@@ -101,7 +130,8 @@ Changer de manette remet les noms et les modes conseillés de la nouvelle manett
 | `/mgir hud strip` | Miniatures des couches sous le HUD (par défaut) ou au-dessus (aussi dans le tutoriel) |
 | `/mgir minimap` | Masquer / remontrer le bouton autour de la minimap |
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
-| `/mgir reset` | Vider les actions du personnage courant |
+| `/mgir reset` | Vider les actions du personnage courant (dans le profil utilisé) |
+| `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
 
 Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccourcis › AddOns, ainsi qu'une page dans Options › AddOns.
 
@@ -130,11 +160,14 @@ MyGamepadIsRich/
                           itIT, ptBR, ruRU, koKR, zhCN, zhTW), l'anglais en repli
   Controllers.lua         préréglages des manettes (noms des boutons, logiciel, modes conseillés)
   Core.lua                données, application des liaisons, slash
+  Profiles.lua            profils : migration, changement, création, copie, suppression, import
+  Serialize.lua           export / import en texte (sérialiseur sans exécution, base64, contrôle)
   Actions.lua             actions (curseur -> macro sécurisée)
   Focus.lua               focus manette de Forever
   Modifier.lua            mode Modificateur
   Simple.lua              mode Bouton simple (couches LT/RT)
   Learn.lua               « Détecter »
   Bar.lua                 lecture / écriture de la barre manette du jeu
-  UI/                     icônes, emplacements, menus, test, tutoriel, fenêtre
+  UI/                     icônes, emplacements, menus, test, tutoriel, fenêtre,
+                          onglet Profils (ProfilesTab.lua)
 ```

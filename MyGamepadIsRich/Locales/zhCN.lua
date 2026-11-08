@@ -73,7 +73,6 @@ ns.AddLocale("zhCN", {
     IF_WARNING = "已加载 Improved Forever：如果它也使用这些键位之一，以最后应用的绑定为准。",
     OPEN_CONFIG = "打开设置",
     LOADED = "已加载。输入 /mgir 设置额外按键。",
-    SLASH_HELP = "/mgir : 打开  |  /mgir test : 手柄测试  |  /mgir tuto : 教程  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重置此角色的动作",
     RESET_DONE = "此角色的动作已重置。",
 
     DPAD_UP = "十字键上",
@@ -255,4 +254,59 @@ ns.AddLocale("zhCN", {
         .. "- |cffffd100中间|r：你的普通按键，以及按住扳机时将触发的动作。\n\n"
         .. "非战斗状态且没有按住任何键时，它会变淡。\n"
         .. "|cffffd100/mgir hud|r：移动  -  |cffffd100/mgir hud scale 1.2|r：大小  -  |cffffd100/mgir hud off|r：恢复游戏动作条",
+})
+
+-- Profils : liste, export, import
+ns.AddLocale("zhCN", {
+    TAB_PROFILES = "配置",
+    PROFILES_INTRO = "一个配置包含一个手柄、它的按键，以及每个角色的动作。整个账号同一时间只使用一个配置。HUD 由所有配置共用。",
+    PROFILE_ACTIVE = "使用中",
+    PROFILE_USE = "使用此配置",
+    PROFILE_NEW = "新建…",
+    PROFILE_COPY = "复制…",
+    PROFILE_RENAME = "重命名…",
+    PROFILE_DELETE = "删除",
+    PROFILE_EXPORT = "导出…",
+    PROFILE_IMPORT = "导入…",
+    PROFILE_DEFAULT = "配置",
+    PROFILE_IMPORTED = "导入的配置",
+    PROFILE_COPY_SUFFIX = "%s（副本）",
+    PROFILE_NAME_NEW = "新配置的名称：",
+    PROFILE_NAME_COPY = "副本的名称：",
+    PROFILE_NAME_RENAME = "“%s”的新名称：",
+    PROFILE_DELETE_CONFIRM = "删除配置“%s”？它的按键设置以及你所有角色在此配置中的动作都将丢失。",
+    PROFILE_SWITCHED = "当前配置：%s。",
+    PROFILE_UNKNOWN = "没有名为“%s”的配置。输入 /mgir profiles 查看列表。",
+    PROFILE_COMBAT = "战斗中无法切换配置。",
+    PROFILE_LAST = "这是你唯一的配置，无法删除。",
+    PROFILE_CREATED = "已创建并启用配置“%s”。请在“按键”标签页设置它的按键。",
+
+    EXPORT_TITLE = "导出“%s”",
+    EXPORT_ACTIONS = "包含此角色的动作",
+    EXPORT_HUD = "包含 HUD 设置",
+    EXPORT_HINT = "文本已选中：按 Ctrl+C 复制，然后粘贴到任何地方（Discord、文本文件…）。在“配置”标签页用“导入”按钮导入。",
+    CLOSE = "关闭",
+
+    IMPORT_TITLE = "导入配置",
+    IMPORT_PASTE = "在此粘贴导出的文本（Ctrl+V）：",
+    IMPORT_EMPTY = "粘贴导出的文本即可查看其内容。",
+    IMPORT_BAD = "这不是 My Gamepad Is Rich 导出的文本。",
+    IMPORT_VERSION = "此文本来自插件的其他版本，无法读取。",
+    IMPORT_DAMAGED = "此文本已损坏或不完整：请重新完整复制。",
+    IMPORT_SUMMARY = "配置“%s”，手柄：%s\n已设置按键的按钮 %d 个，动作 %d 个",
+    IMPORT_SUMMARY_HUD = "包含 HUD 设置。",
+    IMPORT_MACROS = "注意：%d 个手写宏。使用前请先阅读：",
+    IMPORT_COMMANDS = "WoW 指令：%s",
+    IMPORT_AS_NEW = "新配置：",
+    IMPORT_REPLACE = "替换：",
+    IMPORT_PICK = "要替换的配置",
+    IMPORT_ACTIONS = "导入动作（用于此角色）",
+    IMPORT_HUD = "应用 HUD 设置",
+    IMPORT_DO = "导入",
+    IMPORT_REPLACE_CONFIRM = "替换配置“%s”？它的手柄和按键设置将被覆盖；如果导入动作，此角色的动作也会被覆盖。",
+    IMPORT_DONE = "已导入配置“%s”。",
+
+    SELFTEST_OK = "自检：一切正常。",
+    SELFTEST_FAIL = "自检：%d 个问题：%s",
+    SLASH_HELP = "/mgir : 打开  |  /mgir profile <名称> : 切换配置  |  /mgir test : 手柄测试  |  /mgir tuto : 教程  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重置此角色的动作",
 })
