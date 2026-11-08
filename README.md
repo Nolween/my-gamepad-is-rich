@@ -83,9 +83,11 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. |
 | **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. |
-| **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, déplacer, bouton de la minimap. |
+| **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, ordre des miniatures, déplacer, bouton de la minimap. |
 | **Test manette** | Ce que WoW reçoit de chaque bouton. |
 | **Aide** | Les textes du tutoriel (pour la manette choisie), et un bouton pour le relancer. |
+
+**Ordre des miniatures du HUD** : dans l'onglet HUD, les flèches montent ou descendent une couche ; sur le HUD, on peut aussi glisser une miniature sur une autre (hors combat). « Ordre d'origine » remet l'ordre de l'interface. Une couche ajoutée plus tard (nouveau modificateur, paire cochée) se place après sa voisine habituelle ; une couche retirée garde sa place pour son retour. L'ordre fait partie des réglages du HUD (export / import compris).
 
 **La couche « Seul »** (rien de maintenu) accepte tout :
 - Un sort, un objet, une monture ou une macro de la liste va dans la barre du jeu, comme avec son éditeur.
@@ -170,6 +172,7 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
 | `/mgir reset` | Vider les actions du personnage courant (dans le profil utilisé) |
 | `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (à faire avant de désactiver l'addon) |
+| `/mgir etat` (ou `state`) | Afficher dans le chat l'état des couches (boutons tenus, barre active de Forever, liaisons de A et LT), à taper quand une couche semble bloquée |
 | `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
 
 Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccourcis › AddOns, ainsi qu'une page dans Options › AddOns.
@@ -181,6 +184,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 - **Bouton simple** : un `SecureActionButtonTemplate` lit LT/RT avec `GetGamePadState()` au moment du clic et choisit la couche.
 - Les actions passent par des macros sécurisées (`/cast`, `/use`, `/equipset`, ou une macro du jeu). Une **commande WoW** est liée directement à la touche.
 - Les changements de configuration faits en combat sont appliqués à la fin du combat (règle de WoW).
+- **Couches bloquées** : les boutons de base donnés à l'addon ne changent pas de propriétaire (addon / fenêtre de Forever) tant qu'ils sont enfoncés, et un bouton noté tenu alors qu'il est relâché sur la manette est libéré. Si Forever reste sur sa barre LT / RT sans rien de tenu, l'addon lui rend ces boutons le temps d'un appui (un message le dit) pour qu'il revienne sur « Seul ».
 
 ## Limites connues
 
