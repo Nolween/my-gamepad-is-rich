@@ -1,6 +1,6 @@
 -- Onglet « Test manette » : affiche en direct ce que WoW reçoit (boutons de
--- la manette et touches clavier, dont celles envoyées par L5/R5/L4/R4 une
--- fois mappées dans GameSir Nexus).
+-- la manette et touches clavier, dont celles que le logiciel de la manette
+-- fait envoyer aux boutons supplémentaires).
 local _, ns = ...
 local L = ns.L
 local UI = ns.UI

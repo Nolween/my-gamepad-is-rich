@@ -10,7 +10,7 @@
 --
 -- Le HUD reflète sa barre active (qu'elle change elle-même avec LT / RT, en
 -- véhicule...) et y ajoute nos boutons : les combinaisons d'un modificateur
--- (L5 / R5) tant qu'on le maintient, et les boutons simples (L4 / R4) au
+-- tant qu'on le maintient, et les boutons simples au
 -- centre, avec l'action qui partira selon la gâchette tenue.
 -- Hybride : la couche active en grand, toutes les couches en miniature.
 --
@@ -709,7 +709,7 @@ local function Relayout()
     local bottom = s.strip == "bottom"
     local list = {}
     for _, name in ipairs(BARS) do list[#list + 1] = { bar = name } end
-    -- (les modificateurs, puis les paires prêtes : L5 + R5, L4 + R4)
+    -- (les modificateurs, puis les paires prêtes)
     for _, id in ipairs(ns.LIST_IDS) do
         if ns.IsModLayer(id) then list[#list + 1] = { mod = id } end
     end

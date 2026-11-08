@@ -7,7 +7,6 @@ ns.AddLocale("frFR", {
     TAB_TEST = "Test manette",
     TAB_HELP = "Aide",
 
-    EXTRA = "Bouton",
     NAME = "Nom :",
     KEY = "Touche :",
     KEY_NONE = "non définie",
@@ -63,10 +62,8 @@ ns.AddLocale("frFR", {
     LEARN_COMBAT = "Impossible de détecter un bouton en combat.",
     LEARN_DONE = "%s est maintenant sur la touche %s.",
     LEARN_TAKEN = "La touche %s était utilisée par %s : retirée.",
-    LEARN_MODKEY = "Attention : %s est une touche Maj / Ctrl / Alt ; dans GameSir Nexus, préfère une touche comme F9-F12.",
     LEARN_BOUND = "Note : %s était liée à « %s » dans WoW ; tant que l'addon l'utilise, c'est l'addon qui gagne.",
 
-    TEST_INTRO = "Appuie sur n'importe quel bouton : ce que WoW reçoit s'allume. Si L5 / R5 / L4 / R4 n'affichent rien, assigne-leur des touches clavier dans GameSir Nexus (voir Aide).",
     TEST_STANDARD = "Boutons standard",
     TEST_EXTRA = "Boutons supplémentaires",
     TEST_LOG = "Dernières entrées",
@@ -75,7 +72,6 @@ ns.AddLocale("frFR", {
 
     IF_WARNING = "Improved Forever est chargé : s'il utilise aussi une de ces touches, le dernier binding appliqué gagne.",
     OPEN_CONFIG = "Ouvrir la configuration",
-    SETTINGS_DESC = "Configure les boutons supplémentaires de ta GameSir G7 Pro (L5/R5, L4/R4). Commande : /mgir",
     LOADED = "chargé. Tape /mgir pour configurer tes boutons supplémentaires.",
     SLASH_HELP = "/mgir : ouvrir  |  /mgir test : test manette  |  /mgir tuto : tutoriel  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : remettre à zéro les actions de ce personnage",
     RESET_DONE = "Les actions de ce personnage ont été remises à zéro.",
@@ -96,37 +92,12 @@ ns.AddLocale("frFR", {
     HELP_REPLAY = "Revoir le tutoriel",
 
     TUTO_WELCOME_TITLE = "Bienvenue dans My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "Cet addon donne accès dans WoW aux boutons supplémentaires de ta GameSir G7 Pro :\n\n"
-        .. "|cffffd100L5 / R5|r : les 3es gâchettes\n"
-        .. "|cffffd100L4 / R4|r : les palettes arrière\n\n"
-        .. "Chacun peut devenir un modificateur à maintenir (8 nouvelles combinaisons avec A, B, X, Y et la croix), "
-        .. "ou un bouton simple avec ses propres couches LT et RT.\n\n"
-        .. "Ce tutoriel prend environ deux minutes. Tu peux le quitter à tout moment et le rouvrir avec |cffffd100/mgir tuto|r.",
 
-    TUTO_NEXUS_TITLE = "Étape 1 : GameSir Nexus",
-    TUTO_NEXUS_TEXT = "Windows voit la G7 Pro comme une manette Xbox 360. Ce mode ne transmet que les boutons standard : "
-        .. "WoW ne reçoit donc jamais L5, R5, L4 et R4. La solution : leur faire envoyer une touche clavier.\n\n"
-        .. "1. Branche la manette et ouvre |cffffd100GameSir Nexus|r (Microsoft Store).\n"
-        .. "2. Ouvre la page de configuration des boutons.\n"
-        .. "3. Donne à L5, R5, L4 et R4 une touche clavier que tu n'utilises pas dans WoW. Bons choix : |cffffd100F9, F10, F11, F12|r, "
-        .. "ou le pavé numérique (avec Verr. Num activé).\n"
-        .. "4. Évite Maj, Ctrl et Alt : elles changeraient tes autres raccourcis.\n"
-        .. "5. Enregistre le profil sur la manette.\n\n"
-        .. "C'est fait ? Passe à l'étape suivante.",
 
-    TUTO_DETECT_TITLE = "Étape 2 : Détecter tes boutons",
     TUTO_DETECT_TEXT = "Pour chaque bouton, clique sur |cffffd100Détecter|r, puis appuie sur ce bouton de ta manette. "
         .. "La touche qu'il envoie s'affiche à côté.",
-    TUTO_DETECT_ALL = "|cff40ff40Les quatre boutons sont détectés.|r",
-    TUTO_DETECT_MISSING = "Rien ne se passe quand tu appuies ? Vérifie la touche du bouton dans GameSir Nexus, puis réessaie.",
 
-    TUTO_MODES_TITLE = "Étape 3 : Choisir un mode",
-    TUTO_MODES_TEXT = "|cffffd100Modificateur|r : maintiens le bouton, puis appuie sur A, B, X, Y ou la croix. 8 actions par bouton, comme LT et RT.\n"
-        .. "|cffffd100Bouton simple|r : une action, plus une avec LT maintenu et une avec RT maintenu.\n"
-        .. "|cffffd100Désactivé|r : la touche reste libre.\n\n"
-        .. "Conseil : des modificateurs sur L5 et R5 (faciles à maintenir), des boutons simples sur L4 et R4.",
 
-    TUTO_ACTIONS_TITLE = "Étape 4 : Poser tes actions",
     TUTO_ACTIONS_TEXT = "Dans la fenêtre de configuration, chaque bouton montre ses emplacements.\n\n"
         .. "- Glisse un sort depuis ton grimoire, un objet depuis tes sacs, une macro, une monture ou un jouet sur un emplacement.\n"
         .. "- Ou fais un clic droit sur un emplacement : choisir un sort ou un objet du sac, écrire une macro, choisir une commande WoW (comme Course automatique), ou le vider.\n\n"
@@ -149,12 +120,6 @@ ns.AddLocale("frFR", {
     HUD_OFF = "HUD masqué : la barre manette du jeu revient. Tape /mgir hud on pour le réafficher.",
     HUD_SCALE = "Taille du HUD : %s",
     TUTO_HUD_TITLE = "Ton HUD manette",
-    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD, en bas de l'écran :\n\n"
-        .. "- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens LT, RT, L5 ou R5 et elle change.\n"
-        .. "- |cffffd100Dans la bande|r (en bas, ou en haut avec /mgir hud strip) : toutes les couches en miniature (Seul, LT, RT, LT+RT, L5, R5) ; celle que tu maintiens s'allume.\n"
-        .. "- |cffffd100Au centre|r : L4 et R4, avec l'action qui partira selon la gâchette tenue.\n\n"
-        .. "Il s'estompe hors combat quand tu ne maintiens rien.\n"
-        .. "|cffffd100/mgir hud|r : le déplacer  -  |cffffd100/mgir hud scale 1.2|r : sa taille  -  |cffffd100/mgir hud off|r : revenir à la barre du jeu",
 })
 
 -- HUD : attribution rapide
@@ -190,13 +155,12 @@ ns.AddLocale("frFR", {
     MINIMAP_SHOWN = "Bouton de la minimap affiché.",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("frFR", {
     PAIR_READY = "Paire · maintenir les deux",
     PAIR_NOT_READY = "Paire · indisponible",
     PAIR_DESC = "Maintiens %s et %s ensemble, puis appuie sur A, B, X, Y ou la croix : 8 combinaisons de plus.",
     PAIR_NEEDS = "Pour utiliser cette paire, %s et %s doivent tous les deux être en mode Modificateur, avec une touche.",
-    TUTO_PAIRS_TEXT = "|cffffd100Paires|r : quand L5 et R5 sont tous les deux des modificateurs, les maintenir ensemble donne 8 combinaisons de plus. Pareil pour L4 + R4.",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -210,7 +174,6 @@ ns.AddLocale("frFR", {
     SECTION_SIMPLE_EMPTY = "Aucun pour l'instant : passe un bouton en Bouton simple dans l'onglet Boutons.",
     LAYER_DESC_BASE = "A, B, X, Y et la croix sans rien maintenir. A, B, X et Y gardent les actions du jeu (sauter, interagir...).",
     LAYER_DESC_HOLD = "Maintiens %s, puis appuie sur A, B, X, Y ou la croix.",
-    BUTTONS_INTRO = "Tes boutons supplémentaires : la touche que GameSir Nexus envoie, et ce que fait chacun. Survole un mode pour voir ce qu'il fait.",
     PAIRS_TITLE = "Paires (deux modificateurs maintenus ensemble)",
     HUD_INTRO = "Le HUD remplace la barre manette du jeu : la couche utilisée en grand, toutes les couches en miniature.",
     HUD_SHOW = "Afficher le HUD (à la place de la barre manette du jeu)",
@@ -229,4 +192,68 @@ ns.AddLocale("frFR", {
 ns.AddLocale("frFR", {
     HUD_STRIP_SIZE = "Taille des miniatures :",
     HUD_STRIP_ROWS = "Lignes de miniatures :",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("frFR", {
+    CONTROLLER_LABEL = "Manette :",
+    CONTROLLER_CHANGE = "Changer...",
+    CONTROLLER_PICK = "Choisis ta manette",
+    CONTROLLER_OTHER = "Autre manette",
+    EXTRA = "Bouton",
+    SOFTWARE_GENERIC = "le logiciel de ta manette",
+    SETTINGS_DESC = "Configure les boutons supplémentaires de ta manette (palettes arrière, gâchettes en plus). Commande : /mgir",
+    BUTTONS_INTRO = "Ta manette et ses boutons supplémentaires : la touche que chacun envoie, et ce qu'il fait. Survole un mode pour voir ce qu'il fait.",
+    TEST_INTRO = "Appuie sur n'importe quel bouton : ce que WoW reçoit s'allume. Si tes boutons supplémentaires n'affichent rien, assigne-leur des touches clavier dans le logiciel de ta manette (voir Aide).",
+    LEARN_MODKEY = "Attention : %s est une touche Maj / Ctrl / Alt ; dans le logiciel de ta manette, préfère une touche comme F9-F12.",
+
+    TUTO_WELCOME_TEXT = "Cet addon donne accès dans WoW aux boutons supplémentaires de ta manette : palettes arrière, gâchettes ou boutons en plus "
+        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
+        .. "Chacun peut devenir un modificateur à maintenir (8 nouvelles combinaisons avec A, B, X, Y et la croix), "
+        .. "ou un bouton simple avec ses propres couches LT et RT.\n\n"
+        .. "Ce tutoriel prend environ deux minutes. Tu peux le quitter à tout moment et le rouvrir avec |cffffd100/mgir tuto|r.",
+
+    TUTO_CONTROLLER_TITLE = "Étape 1 : Ta manette",
+    TUTO_CONTROLLER_TEXT = "Choisis ta manette : l'addon reprend alors les noms de ses boutons et t'indique le logiciel qui les configure. "
+        .. "Elle n'est pas dans la liste ? Choisis |cffffd100Autre manette|r (jusqu'à 6 boutons, que tu peux renommer).",
+
+    TUTO_SOFTWARE_TITLE = "Étape 2 : Faire envoyer une touche aux boutons",
+    TUTO_SOFTWARE_WHY = "Windows voit la plupart des manettes comme une manette Xbox (XInput). Ce mode ne transmet que les boutons standard : "
+        .. "WoW ne reçoit donc jamais les boutons supplémentaires. La solution : faire envoyer une touche clavier à chacun.",
+    TUTO_SOFTWARE_VENDOR = "1. Branche la manette et ouvre |cffffd100%s|r.\n"
+        .. "2. Ouvre la page de configuration des boutons.\n"
+        .. "3. Donne à chaque bouton supplémentaire (%s) une touche clavier que tu n'utilises pas dans WoW. Bons choix : |cffffd100F9, F10, F11, F12|r, "
+        .. "ou le pavé numérique (avec Verr. Num activé).\n"
+        .. "4. Évite Maj, Ctrl et Alt : elles changeraient tes autres raccourcis.\n"
+        .. "5. Enregistre le profil (sur la manette, si le logiciel le propose).",
+    TUTO_SOFTWARE_ALT = "Si %s ne sait pas donner une touche clavier à ces boutons, passe par |cffffd100Steam Input|r : ajoute WoW (ou le lanceur Battle.net) "
+        .. "à Steam comme jeu non-Steam, lance-le depuis Steam et donne une touche à chaque bouton dans sa configuration de manette. "
+        .. "|cffffd100reWASD|r (payant) marche aussi, sans Steam.",
+    TUTO_SOFTWARE_STEAM = "1. Dans |cffffd100Steam|r, ajoute WoW (ou le lanceur Battle.net) comme jeu non-Steam "
+        .. "(Jeux > Ajouter un jeu non-Steam à ma bibliothèque), puis lance-le depuis Steam.\n"
+        .. "2. Ouvre sa configuration de manette (overlay Steam, ou les paramètres de manette du jeu dans Steam).\n"
+        .. "3. Donne à chaque bouton supplémentaire (%s) une touche clavier que tu n'utilises pas dans WoW. Bons choix : |cffffd100F9, F10, F11, F12|r.\n"
+        .. "4. Évite Maj, Ctrl et Alt : elles changeraient tes autres raccourcis.\n\n"
+        .. "|cffffd100reWASD|r (payant) fait la même chose sans Steam.",
+
+    TUTO_DETECT_TITLE = "Étape 3 : Détecter tes boutons",
+    TUTO_DETECT_ALL = "|cff40ff40Tous tes boutons sont détectés.|r",
+    TUTO_DETECT_MISSING = "Rien ne se passe quand tu appuies ? Vérifie la touche du bouton dans le logiciel de ta manette (étape 2), puis réessaie.",
+
+    TUTO_MODES_TITLE = "Étape 4 : Choisir un mode",
+    TUTO_MODES_TEXT = "|cffffd100Modificateur|r : maintiens le bouton, puis appuie sur A, B, X, Y ou la croix. 8 actions par bouton, comme LT et RT.\n"
+        .. "|cffffd100Bouton simple|r : une action, plus une avec LT maintenu et une avec RT maintenu.\n"
+        .. "|cffffd100Désactivé|r : la touche reste libre.\n\n"
+        .. "Conseil : des modificateurs sur les boutons les plus faciles à maintenir, des boutons simples sur les autres.",
+    TUTO_PAIRS_TEXT = "|cffffd100Paires|r : les boutons vont par paires gauche + droite. Quand les deux boutons d'une paire sont des modificateurs, "
+        .. "les maintenir ensemble donne 8 combinaisons de plus.",
+
+    TUTO_ACTIONS_TITLE = "Étape 5 : Poser tes actions",
+
+    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD, en bas de l'écran :\n\n"
+        .. "- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens LT, RT ou un modificateur et elle change.\n"
+        .. "- |cffffd100Dans la bande|r (en bas, ou en haut avec /mgir hud strip) : toutes les couches en miniature (Seul, LT, RT, LT+RT, tes modificateurs et paires) ; celle que tu maintiens s'allume.\n"
+        .. "- |cffffd100Au centre|r : tes boutons simples, avec l'action qui partira selon la gâchette tenue.\n\n"
+        .. "Il s'estompe hors combat quand tu ne maintiens rien.\n"
+        .. "|cffffd100/mgir hud|r : le déplacer  -  |cffffd100/mgir hud scale 1.2|r : sa taille  -  |cffffd100/mgir hud off|r : revenir à la barre du jeu",
 })

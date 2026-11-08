@@ -7,7 +7,6 @@ ns.AddLocale("zhCN", {
     TAB_TEST = "手柄测试",
     TAB_HELP = "帮助",
 
-    EXTRA = "按键",
     NAME = "名称：",
     KEY = "键位：",
     KEY_NONE = "未设置",
@@ -63,10 +62,8 @@ ns.AddLocale("zhCN", {
     LEARN_COMBAT = "战斗中无法检测按键。",
     LEARN_DONE = "%s 现在对应键位 %s。",
     LEARN_TAKEN = "键位 %s 原先由 %s 使用：已从中移除。",
-    LEARN_MODKEY = "注意：%s 是 Shift / Ctrl / Alt 键；在 GameSir Nexus 中最好使用 F9-F12 之类的键。",
     LEARN_BOUND = "提示：%s 在 WoW 中绑定为“%s”；本插件使用它时，以插件为准。",
 
-    TEST_INTRO = "按任意按键：WoW 收到的输入会亮起。如果 L5 / R5 / L4 / R4 没有反应，请在 GameSir Nexus 中为它们设置键盘按键（见帮助）。",
     TEST_STANDARD = "标准按键",
     TEST_EXTRA = "额外按键",
     TEST_LOG = "最近输入",
@@ -75,7 +72,6 @@ ns.AddLocale("zhCN", {
 
     IF_WARNING = "已加载 Improved Forever：如果它也使用这些键位之一，以最后应用的绑定为准。",
     OPEN_CONFIG = "打开设置",
-    SETTINGS_DESC = "设置 GameSir G7 Pro 的额外按键（L5/R5、L4/R4）。命令：/mgir",
     LOADED = "已加载。输入 /mgir 设置额外按键。",
     SLASH_HELP = "/mgir : 打开  |  /mgir test : 手柄测试  |  /mgir tuto : 教程  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重置此角色的动作",
     RESET_DONE = "此角色的动作已重置。",
@@ -96,37 +92,12 @@ ns.AddLocale("zhCN", {
     HELP_REPLAY = "重新查看教程",
 
     TUTO_WELCOME_TITLE = "欢迎使用 My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "本插件让你在 WoW 中使用 GameSir G7 Pro 的额外按键：\n\n"
-        .. "|cffffd100L5 / R5|r：第三扳机\n"
-        .. "|cffffd100L4 / R4|r：背部拨片\n\n"
-        .. "每个键都可以作为按住的修饰键（与 A、B、X、Y 和十字键组成 8 个新组合），"
-        .. "也可以作为拥有独立 LT 和 RT 层的普通按键。\n\n"
-        .. "本教程大约需要两分钟。你可以随时退出，并用 |cffffd100/mgir tuto|r 再次打开。",
 
-    TUTO_NEXUS_TITLE = "第 1 步：GameSir Nexus",
-    TUTO_NEXUS_TEXT = "Windows 会把 G7 Pro 识别为 Xbox 360 手柄。此模式只传输标准按键，"
-        .. "因此 WoW 永远收不到 L5、R5、L4 和 R4。解决办法：让它们发送键盘按键。\n\n"
-        .. "1. 连接手柄并打开 |cffffd100GameSir Nexus|r（Microsoft Store）。\n"
-        .. "2. 打开按键映射页面。\n"
-        .. "3. 为 L5、R5、L4 和 R4 设置你在 WoW 中不用的键盘按键。推荐：|cffffd100F9、F10、F11、F12|r，"
-        .. "或小键盘（打开 Num Lock）。\n"
-        .. "4. 避免使用 Shift、Ctrl 和 Alt：它们会改变你的其他快捷键。\n"
-        .. "5. 将配置保存到手柄。\n\n"
-        .. "完成了吗？进入下一步。",
 
-    TUTO_DETECT_TITLE = "第 2 步：检测按键",
     TUTO_DETECT_TEXT = "对每个按键，点击 |cffffd100检测|r，然后按下手柄上的这个键。"
         .. "它发送的键位会显示在旁边。",
-    TUTO_DETECT_ALL = "|cff40ff40四个按键都已检测到。|r",
-    TUTO_DETECT_MISSING = "按下后没有反应？请在 GameSir Nexus 中检查该键的设置，然后重试。",
 
-    TUTO_MODES_TITLE = "第 3 步：选择模式",
-    TUTO_MODES_TEXT = "|cffffd100修饰键|r：按住该键，再按 A、B、X、Y 或十字键。每个键 8 个动作，与 LT、RT 相同。\n"
-        .. "|cffffd100普通按键|r：一个动作，外加按住 LT 时一个、按住 RT 时一个。\n"
-        .. "|cffffd100禁用|r：键位保持空闲。\n\n"
-        .. "推荐：L5 和 R5 设为修饰键（容易按住），L4 和 R4 设为普通按键。",
 
-    TUTO_ACTIONS_TITLE = "第 4 步：放置动作",
     TUTO_ACTIONS_TEXT = "在设置窗口中，每个按键都会显示它的格子。\n\n"
         .. "- 将法术书中的法术、背包里的物品、宏、坐骑或玩具拖到格子上。\n"
         .. "- 或右键点击格子：选择法术或背包物品、编写宏、选择 WoW 命令（如自动奔跑），或清空。\n\n"
@@ -149,12 +120,6 @@ ns.AddLocale("zhCN", {
     HUD_OFF = "HUD 已隐藏：游戏的手柄动作条已恢复。输入 /mgir hud on 重新显示。",
     HUD_SCALE = "HUD 大小：%s",
     TUTO_HUD_TITLE = "你的手柄 HUD",
-    TUTO_HUD_TEXT = "本插件用自己的 HUD 取代游戏的手柄动作条，位于屏幕下方：\n\n"
-        .. "- |cffffd100大图|r：你正在使用的层，左边是十字键，右边是 A/B/X/Y。按住 LT、RT、L5 或 R5 即可切换。\n"
-        .. "- |cffffd100缩略图栏|r（在下方，或用 /mgir hud strip 移到上方）：所有层的缩略图（单独、LT、RT、LT+RT、L5、R5）；按住的那一层会亮起。\n"
-        .. "- |cffffd100中间|r：L4 和 R4，以及按住扳机时将触发的动作。\n\n"
-        .. "非战斗状态且没有按住任何键时，它会变淡。\n"
-        .. "|cffffd100/mgir hud|r：移动  -  |cffffd100/mgir hud scale 1.2|r：大小  -  |cffffd100/mgir hud off|r：恢复游戏动作条",
 })
 
 -- HUD : attribution rapide
@@ -190,13 +155,12 @@ ns.AddLocale("zhCN", {
     MINIMAP_SHOWN = "小地图按钮已显示。",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("zhCN", {
     PAIR_READY = "组合 · 同时按住",
     PAIR_NOT_READY = "组合 · 不可用",
     PAIR_DESC = "同时按住 %s 和 %s，再按 A、B、X、Y 或十字键：再多 8 个组合。",
     PAIR_NEEDS = "要使用此组合，%s 和 %s 都必须是已设置键位的修饰键模式。",
-    TUTO_PAIRS_TEXT = "|cffffd100组合|r：当 L5 和 R5 都是修饰键时，同时按住它们可再获得 8 个组合。L4 + R4 同理。",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -210,7 +174,6 @@ ns.AddLocale("zhCN", {
     SECTION_SIMPLE_EMPTY = "暂无：请在“按键”标签页中把一个按键设为普通按键。",
     LAYER_DESC_BASE = "不按住任何键时的 A、B、X、Y 和十字键。A、B、X、Y 保留游戏自带的动作（跳跃、互动……）。",
     LAYER_DESC_HOLD = "按住 %s，再按 A、B、X、Y 或十字键。",
-    BUTTONS_INTRO = "你的额外按键：GameSir Nexus 发送的键位，以及每个键的作用。将鼠标移到模式上可查看说明。",
     PAIRS_TITLE = "组合（同时按住两个修饰键）",
     HUD_INTRO = "HUD 取代游戏的手柄动作条：正在使用的层放大显示，所有层以缩略图显示。",
     HUD_SHOW = "显示 HUD（代替游戏的手柄动作条）",
@@ -229,4 +192,67 @@ ns.AddLocale("zhCN", {
 ns.AddLocale("zhCN", {
     HUD_STRIP_SIZE = "缩略图大小：",
     HUD_STRIP_ROWS = "缩略图行数：",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("zhCN", {
+    CONTROLLER_LABEL = "手柄：",
+    CONTROLLER_CHANGE = "更换…",
+    CONTROLLER_PICK = "选择你的手柄",
+    CONTROLLER_OTHER = "其他手柄",
+    EXTRA = "按键",
+    SOFTWARE_GENERIC = "手柄的配套软件",
+    SETTINGS_DESC = "设置手柄的额外按键（背键、额外扳机）。命令：/mgir",
+    BUTTONS_INTRO = "你的手柄及其额外按键：每个键发送的键位，以及它的作用。将鼠标移到模式上可查看说明。",
+    TEST_INTRO = "按任意按键：WoW 收到的输入会亮起。如果额外按键没有反应，请在手柄的配套软件中为它们设置键盘按键（见帮助）。",
+    LEARN_MODKEY = "注意：%s 是 Shift / Ctrl / Alt 键；在手柄的配套软件中最好使用 F9-F12 之类的键。",
+
+    TUTO_WELCOME_TEXT = "本插件让你在 WoW 中使用手柄的额外按键：背键、额外扳机或肩键"
+        .. "（GameSir、Xbox Elite、DualSense Edge、SCUF、8BitDo、飞智…）。\n\n"
+        .. "每个键都可以作为按住的修饰键（与 A、B、X、Y 和十字键组成 8 个新组合），"
+        .. "也可以作为拥有独立 LT 和 RT 层的普通按键。\n\n"
+        .. "本教程大约需要两分钟。你可以随时退出，并用 |cffffd100/mgir tuto|r 再次打开。",
+
+    TUTO_CONTROLLER_TITLE = "第 1 步：你的手柄",
+    TUTO_CONTROLLER_TEXT = "选择你的手柄：插件会使用它的按键名称，并告诉你用哪个软件设置这些按键。"
+        .. "列表里没有？请选择 |cffffd100其他手柄|r（最多 6 个按键，可重命名）。",
+
+    TUTO_SOFTWARE_TITLE = "第 2 步：让按键发送键盘按键",
+    TUTO_SOFTWARE_WHY = "Windows 会把大多数手柄识别为 Xbox 手柄（XInput）。此模式只传输标准按键，"
+        .. "因此 WoW 永远收不到额外按键。解决办法：让每个额外按键发送一个键盘按键。",
+    TUTO_SOFTWARE_VENDOR = "1. 连接手柄并打开 |cffffd100%s|r。\n"
+        .. "2. 打开按键映射页面。\n"
+        .. "3. 为每个额外按键（%s）设置你在 WoW 中不用的键盘按键。推荐：|cffffd100F9、F10、F11、F12|r，"
+        .. "或小键盘（打开 Num Lock）。\n"
+        .. "4. 避免使用 Shift、Ctrl 和 Alt：它们会改变你的其他快捷键。\n"
+        .. "5. 保存配置（如果软件支持，保存到手柄）。",
+    TUTO_SOFTWARE_ALT = "如果 %s 无法为这些按键设置键盘按键，请使用 |cffffd100Steam Input|r：将 WoW（或 Battle.net 启动器）"
+        .. "作为非 Steam 游戏添加到 Steam，从 Steam 启动，然后在其控制器布局中为每个按键设置一个键。"
+        .. "|cffffd100reWASD|r（付费）也可以，无需 Steam。",
+    TUTO_SOFTWARE_STEAM = "1. 在 |cffffd100Steam|r 中将 WoW（或 Battle.net 启动器）添加为非 Steam 游戏"
+        .. "（游戏 > 添加非 Steam 游戏到我的库），然后从 Steam 启动。\n"
+        .. "2. 打开它的控制器布局（Steam 界面覆盖，或 Steam 中该游戏的控制器设置）。\n"
+        .. "3. 为每个额外按键（%s）设置你在 WoW 中不用的键盘按键。推荐：|cffffd100F9、F10、F11、F12|r。\n"
+        .. "4. 避免使用 Shift、Ctrl 和 Alt：它们会改变你的其他快捷键。\n\n"
+        .. "|cffffd100reWASD|r（付费）无需 Steam 也能做到。",
+
+    TUTO_DETECT_TITLE = "第 3 步：检测按键",
+    TUTO_DETECT_ALL = "|cff40ff40所有按键都已检测到。|r",
+    TUTO_DETECT_MISSING = "按下后没有反应？请在手柄的配套软件（第 2 步）中检查该键的设置，然后重试。",
+
+    TUTO_MODES_TITLE = "第 4 步：选择模式",
+    TUTO_MODES_TEXT = "|cffffd100修饰键|r：按住该键，再按 A、B、X、Y 或十字键。每个键 8 个动作，与 LT、RT 相同。\n"
+        .. "|cffffd100普通按键|r：一个动作，外加按住 LT 时一个、按住 RT 时一个。\n"
+        .. "|cffffd100禁用|r：键位保持空闲。\n\n"
+        .. "推荐：最容易按住的键设为修饰键，其余设为普通按键。",
+    TUTO_PAIRS_TEXT = "|cffffd100组合|r：按键按左 + 右成对。当一对中的两个键都是修饰键时，同时按住它们可再获得 8 个组合。",
+
+    TUTO_ACTIONS_TITLE = "第 5 步：放置动作",
+
+    TUTO_HUD_TEXT = "本插件用自己的 HUD 取代游戏的手柄动作条，位于屏幕下方：\n\n"
+        .. "- |cffffd100大图|r：你正在使用的层，左边是十字键，右边是 A/B/X/Y。按住 LT、RT 或修饰键即可切换。\n"
+        .. "- |cffffd100缩略图栏|r（在下方，或用 /mgir hud strip 移到上方）：所有层的缩略图（单独、LT、RT、LT+RT、你的修饰键和组合）；按住的那一层会亮起。\n"
+        .. "- |cffffd100中间|r：你的普通按键，以及按住扳机时将触发的动作。\n\n"
+        .. "非战斗状态且没有按住任何键时，它会变淡。\n"
+        .. "|cffffd100/mgir hud|r：移动  -  |cffffd100/mgir hud scale 1.2|r：大小  -  |cffffd100/mgir hud off|r：恢复游戏动作条",
 })

@@ -387,10 +387,24 @@ local function RefreshDetail()
 end
 
 ---------------------------------------------------------------------------
--- Onglet Boutons : nom, touche, mode ; les paires
+-- Onglet Boutons : la manette ; nom, touche, mode de chaque emplacement
+-- (les boutons de la manette, puis les emplacements libres) ; les paires
 ---------------------------------------------------------------------------
 local rows, pairRows = {}, {}
-local buttonsWarning
+local buttonsWarning, controllerName
+local ROWS_TOP, ROW_STEP = -68, 56
+
+-- La liste des manettes (préréglages), avec leur logiciel
+local function PickController()
+    local entries = {}
+    for _, def in ipairs(ns.CONTROLLERS) do
+        entries[#entries + 1] = { label = ns.ControllerName(def), sub = def.software, action = def.id }
+    end
+    UI.PickFromList(L.CONTROLLER_PICK, entries, function(id)
+        ns.SetController(id)
+        RefreshAll()
+    end)
+end
 
 local function BuildButtons(page)
     local intro = UI.Text(page, "GameFontHighlight", L.BUTTONS_INTRO)
@@ -398,10 +412,19 @@ local function BuildButtons(page)
     intro:SetPoint("RIGHT", -12, 0)
     intro:SetJustifyH("LEFT")
 
+    -- La manette
+    local label = UI.Text(page, "GameFontNormal", L.CONTROLLER_LABEL)
+    label:SetPoint("TOPLEFT", 14, -42)
+    controllerName = UI.Text(page, "GameFontHighlight")
+    controllerName:SetPoint("LEFT", label, "RIGHT", 8, 0)
+    local change = UI.Button(page, L.CONTROLLER_CHANGE, 140, 22)
+    change:SetPoint("LEFT", controllerName, "RIGHT", 12, 0)
+    change:SetScript("OnClick", PickController)
+
     for i, id in ipairs(ns.BUTTON_IDS) do
         local row = CreateFrame("Frame", nil, page)
-        row:SetSize(WIDTH - 40, 60)
-        row:SetPoint("TOPLEFT", 12, -36 - (i - 1) * 64)
+        row:SetSize(WIDTH - 40, ROW_STEP - 4)
+        row:SetPoint("TOPLEFT", 12, ROWS_TOP - (i - 1) * ROW_STEP)
         local bg = row:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints()
         bg:SetColorTexture(1, 1, 1, 0.04)
@@ -411,7 +434,7 @@ local function BuildButtons(page)
 
         local name = CreateFrame("EditBox", nil, row, "InputBoxTemplate")
         name:SetSize(120, 20)
-        name:SetPoint("TOPLEFT", 60, -8)
+        name:SetPoint("TOPLEFT", 60, -5)
         name:SetAutoFocus(false)
         name:SetMaxLetters(24)
         local function SaveName(self)
@@ -426,7 +449,7 @@ local function BuildButtons(page)
         row.name = name
 
         local keyLabel = UI.Text(row, "GameFontNormal", L.KEY)
-        keyLabel:SetPoint("TOPLEFT", 200, -11)
+        keyLabel:SetPoint("TOPLEFT", 200, -8)
         row.key = UI.Text(row, "GameFontHighlight")
         row.key:SetPoint("LEFT", keyLabel, "RIGHT", 8, 0)
         row.key:SetWidth(170)
@@ -434,7 +457,7 @@ local function BuildButtons(page)
         row.key:SetWordWrap(false)
 
         local detect = UI.Button(row, L.DETECT, 110, 22)
-        detect:SetPoint("TOPRIGHT", -104, -6)
+        detect:SetPoint("TOPRIGHT", -104, -4)
         detect:SetScript("OnClick", function() ns.Learn.Start(id, function() RefreshAll() end) end)
         local clear = UI.Button(row, L.CLEAR, 90, 22)
         clear:SetPoint("LEFT", detect, "RIGHT", 4, 0)
@@ -446,7 +469,7 @@ local function BuildButtons(page)
 
         -- (le mode : une case à cocher par mode, son explication au survol)
         local modeLabel = UI.Text(row, "GameFontNormal", L.MODE)
-        modeLabel:SetPoint("TOPLEFT", 60, -38)
+        modeLabel:SetPoint("TOPLEFT", 60, -33)
         row.modes = {}
         local x = modeLabel:GetStringWidth() + 10
         local DESC = { modifier = L.MODE_MODIFIER_DESC, simple = L.MODE_SIMPLE_DESC, off = L.MODE_OFF_DESC }
@@ -476,7 +499,7 @@ local function BuildButtons(page)
     end
 
     -- Les paires
-    local y = -36 - #ns.BUTTON_IDS * 64 - 8
+    local y = ROWS_TOP - #ns.BUTTON_IDS * ROW_STEP - 6
     local title = UI.Text(page, "GameFontNormal", L.PAIRS_TITLE)
     title:SetPoint("TOPLEFT", 14, y)
     for i, pair in ipairs(ns.PAIRS) do
@@ -500,6 +523,7 @@ local function BuildButtons(page)
 end
 
 local function RefreshButtons()
+    controllerName:SetText(ns.ControllerName(ns.Controller()))
     for _, row in ipairs(rows) do
         local id, def = row.id, ns.Button(row.id)
         row.glyph:SetKey(id)
@@ -652,7 +676,11 @@ local function BuildHelp(page)
     text:SetJustifyH("LEFT")
     text:SetSpacing(3)
     child:SetHeight(text:GetStringHeight() + 20)
-    page:SetScript("OnShow", function() child:SetHeight(text:GetStringHeight() + 20) end)
+    -- (le texte dépend de la manette choisie)
+    page:SetScript("OnShow", function()
+        text:SetText(ns.Tutorial.HelpText())
+        child:SetHeight(text:GetStringHeight() + 20)
+    end)
 end
 
 ---------------------------------------------------------------------------

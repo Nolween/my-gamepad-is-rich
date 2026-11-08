@@ -58,7 +58,7 @@ local function ShortLabel(key)
     return ns.KeyLabel(key)
 end
 
--- Une icône de bouton : frame:SetKey("PAD1") ou frame:SetKey("L5") (bouton
+-- Une icône de bouton : frame:SetKey("PAD1") ou frame:SetKey("L5") (emplacement
 -- supplémentaire, pastille dorée)
 function UI.CreateGlyph(parent, size)
     local f = CreateFrame("Frame", nil, parent)

@@ -7,7 +7,6 @@ ns.AddLocale("ptBR", {
     TAB_TEST = "Teste do controle",
     TAB_HELP = "Ajuda",
 
-    EXTRA = "Botão",
     NAME = "Nome:",
     KEY = "Tecla:",
     KEY_NONE = "não definida",
@@ -63,10 +62,8 @@ ns.AddLocale("ptBR", {
     LEARN_COMBAT = "Não é possível detectar um botão em combate.",
     LEARN_DONE = "%s agora está na tecla %s.",
     LEARN_TAKEN = "A tecla %s era usada por %s: removida.",
-    LEARN_MODKEY = "Atenção: %s é uma tecla Shift / Ctrl / Alt; no GameSir Nexus, prefira uma tecla como F9-F12.",
     LEARN_BOUND = "Observação: %s estava atribuída a \"%s\" no WoW; enquanto este addon a usar, o addon tem prioridade.",
 
-    TEST_INTRO = "Aperte qualquer botão: o que o WoW recebe se acende. Se L5 / R5 / L4 / R4 não mostrarem nada, atribua teclas a eles no GameSir Nexus (veja Ajuda).",
     TEST_STANDARD = "Botões padrão",
     TEST_EXTRA = "Botões extras",
     TEST_LOG = "Últimas entradas",
@@ -75,7 +72,6 @@ ns.AddLocale("ptBR", {
 
     IF_WARNING = "O Improved Forever está carregado: se ele também usar uma destas teclas, vale a última atribuição aplicada.",
     OPEN_CONFIG = "Abrir a configuração",
-    SETTINGS_DESC = "Configure os botões extras do seu GameSir G7 Pro (L5/R5, L4/R4). Comando: /mgir",
     LOADED = "carregado. Digite /mgir para configurar seus botões extras.",
     SLASH_HELP = "/mgir : abrir  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem",
     RESET_DONE = "As ações deste personagem foram zeradas.",
@@ -96,37 +92,12 @@ ns.AddLocale("ptBR", {
     HELP_REPLAY = "Ver o tutorial de novo",
 
     TUTO_WELCOME_TITLE = "Bem-vindo ao My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "Este addon traz para o WoW os botões extras do seu GameSir G7 Pro:\n\n"
-        .. "|cffffd100L5 / R5|r: os terceiros gatilhos\n"
-        .. "|cffffd100L4 / R4|r: os paddles traseiros\n\n"
-        .. "Cada um pode ser um modificador segurado (8 novas combinações com A, B, X, Y e o direcional) "
-        .. "ou um botão simples com suas próprias camadas LT e RT.\n\n"
-        .. "Este tutorial leva uns dois minutos. Você pode sair a qualquer momento e abri-lo de novo com |cffffd100/mgir tuto|r.",
 
-    TUTO_NEXUS_TITLE = "Passo 1: GameSir Nexus",
-    TUTO_NEXUS_TEXT = "O Windows vê o G7 Pro como um controle de Xbox 360. Esse modo só transmite os botões padrão, "
-        .. "então o WoW nunca recebe L5, R5, L4 e R4. A solução: fazer com que enviem uma tecla do teclado.\n\n"
-        .. "1. Conecte o controle e abra o |cffffd100GameSir Nexus|r (Microsoft Store).\n"
-        .. "2. Abra a página de mapeamento dos botões.\n"
-        .. "3. Dê a L5, R5, L4 e R4 uma tecla que você não usa no WoW. Boas opções: |cffffd100F9, F10, F11, F12|r "
-        .. "ou o teclado numérico (com Num Lock ligado).\n"
-        .. "4. Evite Shift, Ctrl e Alt: eles mudariam suas outras teclas de atalho.\n"
-        .. "5. Salve o perfil no controle.\n\n"
-        .. "Pronto? Vá para o próximo passo.",
 
-    TUTO_DETECT_TITLE = "Passo 2: Detectar seus botões",
     TUTO_DETECT_TEXT = "Para cada botão, clique em |cffffd100Detectar|r e aperte esse botão no controle. "
         .. "A tecla enviada aparece ao lado.",
-    TUTO_DETECT_ALL = "|cff40ff40Os quatro botões foram detectados.|r",
-    TUTO_DETECT_MISSING = "Nada acontece ao apertar? Verifique a tecla do botão no GameSir Nexus e tente de novo.",
 
-    TUTO_MODES_TITLE = "Passo 3: Escolher um modo",
-    TUTO_MODES_TEXT = "|cffffd100Modificador|r: segure o botão e aperte A, B, X, Y ou o direcional. 8 ações por botão, como LT e RT.\n"
-        .. "|cffffd100Botão simples|r: uma ação, mais uma com LT segurado e outra com RT segurado.\n"
-        .. "|cffffd100Desativado|r: a tecla fica livre.\n\n"
-        .. "Sugestão: modificadores em L5 e R5 (fáceis de segurar), botões simples em L4 e R4.",
 
-    TUTO_ACTIONS_TITLE = "Passo 4: Colocar suas ações",
     TUTO_ACTIONS_TEXT = "Na janela de configuração, cada botão mostra seus espaços.\n\n"
         .. "- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n"
         .. "- Ou clique com o botão direito em um espaço: escolha um feitiço ou item da bolsa, escreva uma macro, escolha um comando do WoW (como Correr automaticamente) ou esvazie-o.\n\n"
@@ -149,12 +120,6 @@ ns.AddLocale("ptBR", {
     HUD_OFF = "HUD oculto: a barra de controle do jogo voltou. Digite /mgir hud on para mostrá-lo de novo.",
     HUD_SCALE = "Tamanho do HUD: %s",
     TUTO_HUD_TITLE = "Seu HUD de controle",
-    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo próprio HUD, na parte de baixo da tela:\n\n"
-        .. "- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure LT, RT, L5 ou R5 e ela muda.\n"
-        .. "- |cffffd100Na faixa|r (embaixo, ou em cima com /mgir hud strip): todas as camadas em miniatura (Sozinho, LT, RT, LT+RT, L5, R5); a que você segura se acende.\n"
-        .. "- |cffffd100No centro|r: L4 e R4, com a ação que vai sair conforme o gatilho segurado.\n\n"
-        .. "Ele fica mais apagado fora de combate enquanto você não segura nada.\n"
-        .. "|cffffd100/mgir hud|r: mover  -  |cffffd100/mgir hud scale 1.2|r: tamanho  -  |cffffd100/mgir hud off|r: voltar à barra do jogo",
 })
 
 -- HUD : attribution rapide
@@ -190,13 +155,12 @@ ns.AddLocale("ptBR", {
     MINIMAP_SHOWN = "Botão do minimapa visível.",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("ptBR", {
     PAIR_READY = "Par · segurar os dois",
     PAIR_NOT_READY = "Par · indisponível",
     PAIR_DESC = "Segure %s e %s juntos e aperte A, B, X, Y ou o direcional: mais 8 combinações.",
     PAIR_NEEDS = "Para usar este par, %s e %s precisam estar no modo Modificador, com uma tecla.",
-    TUTO_PAIRS_TEXT = "|cffffd100Pares|r: quando L5 e R5 são modificadores, segurá-los juntos dá mais 8 combinações. O mesmo para L4 + R4.",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -210,7 +174,6 @@ ns.AddLocale("ptBR", {
     SECTION_SIMPLE_EMPTY = "Nenhum ainda: coloque um botão em Botão simples na aba Botões.",
     LAYER_DESC_BASE = "A, B, X, Y e o direcional sem segurar nada. A, B, X e Y mantêm as ações do jogo (pular, interagir...).",
     LAYER_DESC_HOLD = "Segure %s e aperte A, B, X, Y ou o direcional.",
-    BUTTONS_INTRO = "Seus botões extras: a tecla que o GameSir Nexus envia e o que cada um faz. Passe o mouse sobre um modo para ver o que ele faz.",
     PAIRS_TITLE = "Pares (dois modificadores segurados juntos)",
     HUD_INTRO = "O HUD substitui a barra de controle do jogo: a camada em uso em destaque, todas as camadas em miniatura.",
     HUD_SHOW = "Mostrar o HUD (no lugar da barra de controle do jogo)",
@@ -229,4 +192,68 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     HUD_STRIP_SIZE = "Tamanho das miniaturas:",
     HUD_STRIP_ROWS = "Linhas de miniaturas:",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("ptBR", {
+    CONTROLLER_LABEL = "Controle:",
+    CONTROLLER_CHANGE = "Trocar...",
+    CONTROLLER_PICK = "Escolha seu controle",
+    CONTROLLER_OTHER = "Outro controle",
+    EXTRA = "Botão",
+    SOFTWARE_GENERIC = "o software do seu controle",
+    SETTINGS_DESC = "Configure os botões extras do seu controle (paddles traseiros, gatilhos extras). Comando: /mgir",
+    BUTTONS_INTRO = "Seu controle e seus botões extras: a tecla que cada um envia e o que ele faz. Passe o mouse sobre um modo para ver o que ele faz.",
+    TEST_INTRO = "Aperte qualquer botão: o que o WoW recebe se acende. Se seus botões extras não mostrarem nada, atribua teclas a eles no software do seu controle (veja Ajuda).",
+    LEARN_MODKEY = "Atenção: %s é uma tecla Shift / Ctrl / Alt; no software do seu controle, prefira uma tecla como F9-F12.",
+
+    TUTO_WELCOME_TEXT = "Este addon traz para o WoW os botões extras do seu controle: paddles traseiros, gatilhos ou botões extras "
+        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
+        .. "Cada um pode ser um modificador segurado (8 novas combinações com A, B, X, Y e o direcional) "
+        .. "ou um botão simples com suas próprias camadas LT e RT.\n\n"
+        .. "Este tutorial leva uns dois minutos. Você pode sair a qualquer momento e abri-lo de novo com |cffffd100/mgir tuto|r.",
+
+    TUTO_CONTROLLER_TITLE = "Passo 1: Seu controle",
+    TUTO_CONTROLLER_TEXT = "Escolha seu controle: o addon passa a usar os nomes dos botões dele e diz qual software os configura. "
+        .. "Não está na lista? Escolha |cffffd100Outro controle|r (até 6 botões, que você pode renomear).",
+
+    TUTO_SOFTWARE_TITLE = "Passo 2: Fazer os botões enviarem uma tecla",
+    TUTO_SOFTWARE_WHY = "O Windows vê a maioria dos controles como um controle de Xbox (XInput). Esse modo só transmite os botões padrão, "
+        .. "então o WoW nunca recebe os extras. A solução: fazer cada um enviar uma tecla do teclado.",
+    TUTO_SOFTWARE_VENDOR = "1. Conecte o controle e abra |cffffd100%s|r.\n"
+        .. "2. Abra a página de mapeamento dos botões.\n"
+        .. "3. Dê a cada botão extra (%s) uma tecla que você não usa no WoW. Boas opções: |cffffd100F9, F10, F11, F12|r "
+        .. "ou o teclado numérico (com Num Lock ligado).\n"
+        .. "4. Evite Shift, Ctrl e Alt: eles mudariam suas outras teclas de atalho.\n"
+        .. "5. Salve o perfil (no controle, se o software permitir).",
+    TUTO_SOFTWARE_ALT = "Se %s não conseguir dar uma tecla a esses botões, use o |cffffd100Steam Input|r: adicione o WoW (ou o launcher da Battle.net) "
+        .. "à Steam como jogo não Steam, abra-o pela Steam e dê uma tecla a cada botão na configuração de controle dele. "
+        .. "O |cffffd100reWASD|r (pago) também funciona, sem a Steam.",
+    TUTO_SOFTWARE_STEAM = "1. Na |cffffd100Steam|r, adicione o WoW (ou o launcher da Battle.net) como jogo não Steam "
+        .. "(Jogos > Adicionar jogo não Steam à biblioteca) e abra-o pela Steam.\n"
+        .. "2. Abra a configuração de controle dele (overlay da Steam ou as configurações de controle do jogo na Steam).\n"
+        .. "3. Dê a cada botão extra (%s) uma tecla que você não usa no WoW. Boas opções: |cffffd100F9, F10, F11, F12|r.\n"
+        .. "4. Evite Shift, Ctrl e Alt: eles mudariam suas outras teclas de atalho.\n\n"
+        .. "O |cffffd100reWASD|r (pago) faz o mesmo sem a Steam.",
+
+    TUTO_DETECT_TITLE = "Passo 3: Detectar seus botões",
+    TUTO_DETECT_ALL = "|cff40ff40Todos os seus botões foram detectados.|r",
+    TUTO_DETECT_MISSING = "Nada acontece ao apertar? Verifique a tecla do botão no software do seu controle (passo 2) e tente de novo.",
+
+    TUTO_MODES_TITLE = "Passo 4: Escolher um modo",
+    TUTO_MODES_TEXT = "|cffffd100Modificador|r: segure o botão e aperte A, B, X, Y ou o direcional. 8 ações por botão, como LT e RT.\n"
+        .. "|cffffd100Botão simples|r: uma ação, mais uma com LT segurado e outra com RT segurado.\n"
+        .. "|cffffd100Desativado|r: a tecla fica livre.\n\n"
+        .. "Sugestão: modificadores nos botões mais fáceis de segurar, botões simples nos outros.",
+    TUTO_PAIRS_TEXT = "|cffffd100Pares|r: os botões formam pares esquerda + direita. Quando os dois botões de um par são modificadores, "
+        .. "segurá-los juntos dá mais 8 combinações.",
+
+    TUTO_ACTIONS_TITLE = "Passo 5: Colocar suas ações",
+
+    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo próprio HUD, na parte de baixo da tela:\n\n"
+        .. "- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure LT, RT ou um modificador e ela muda.\n"
+        .. "- |cffffd100Na faixa|r (embaixo, ou em cima com /mgir hud strip): todas as camadas em miniatura (Sozinho, LT, RT, LT+RT, seus modificadores e pares); a que você segura se acende.\n"
+        .. "- |cffffd100No centro|r: seus botões simples, com a ação que vai sair conforme o gatilho segurado.\n\n"
+        .. "Ele fica mais apagado fora de combate enquanto você não segura nada.\n"
+        .. "|cffffd100/mgir hud|r: mover  -  |cffffd100/mgir hud scale 1.2|r: tamanho  -  |cffffd100/mgir hud off|r: voltar à barra do jogo",
 })

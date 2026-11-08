@@ -1,8 +1,9 @@
 -- Tutoriel : une fenêtre pas à pas, montrée au premier lancement (une fois
 -- par compte et par version du tutoriel), revue avec /mgir tuto ou depuis
 -- l'onglet Aide, qui reprend les mêmes textes (T.HelpText).
--- Étapes : bienvenue, GameSir Nexus, détection des boutons (en direct),
--- choix des modes (en direct), pose des actions, fin.
+-- Étapes : bienvenue, choix de la manette, logiciel de la manette (texte
+-- selon la manette), détection des boutons (en direct), choix des modes
+-- (en direct), pose des actions, HUD, fin.
 -- À la manette : A = Suivant, B = Précédent (cadre qui prend la manette
 -- tant que la fenêtre est ouverte, comme le conseille Improved Forever).
 local _, ns = ...
@@ -15,9 +16,8 @@ ns.Tutorial = T
 -- (à augmenter quand le tutoriel change assez pour être remontré à tous)
 T.VERSION = 1
 
-local MAIN = { "L5", "R5", "L4", "R4" }
 local MODES = { "modifier", "simple", "off" }
-local SUGGESTED = { L5 = "modifier", R5 = "modifier", L4 = "simple", R4 = "simple" }
+local ROW_H = 38 -- (une ligne de bouton, détection et modes)
 local WIDTH, MIN_HEIGHT = 640, 360
 local TEXT_WIDTH = WIDTH - 56
 local READY = "|TInterface\\RaidFrame\\ReadyCheck-Ready:14:14|t "
@@ -37,29 +37,73 @@ end
 
 ---------------------------------------------------------------------------
 -- Contenus des étapes interactives (build : crée, renvoie la hauteur ;
--- refresh : met à jour)
+-- refresh : met à jour, et renvoie la hauteur si elle dépend de la manette)
 ---------------------------------------------------------------------------
 local Refresh -- (défini plus bas)
 
-local function BuildWelcome(c)
-    for i, id in ipairs(MAIN) do
-        local g = UI.CreateGlyph(c, 40)
-        g:SetPoint("TOPLEFT", (i - 1) * 56, 0)
-        g:SetKey(id)
+-- Le choix de la manette : une case par préréglage, sur deux colonnes
+local function BuildController(c)
+    c.checks = {}
+    local colW, rowH = TEXT_WIDTH / 2, 24
+    local perCol = math.ceil(#ns.CONTROLLERS / 2)
+    for i, def in ipairs(ns.CONTROLLERS) do
+        local col, row = math.floor((i - 1) / perCol), (i - 1) % perCol
+        local cb = CreateFrame("CheckButton", nil, c, "UICheckButtonTemplate")
+        cb:SetSize(24, 24)
+        cb:SetPoint("TOPLEFT", col * colW, -row * rowH)
+        local text = UI.Text(cb, "GameFontHighlight", ns.ControllerName(def))
+        text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
+        text:SetWidth(colW - 34)
+        text:SetJustifyH("LEFT")
+        text:SetWordWrap(false)
+        cb:SetScript("OnClick", function()
+            ns.SetController(def.id)
+            Refresh()
+        end)
+        c.checks[def.id] = cb
     end
-    return 44
+    return perCol * rowH
+end
+
+local function RefreshController(c)
+    local current = ns.Controller().id
+    for id, cb in pairs(c.checks) do cb:SetChecked(id == current) end
+end
+
+-- Le texte de l'étape « logiciel », selon la manette choisie
+function T.SetupText()
+    local def = ns.Controller()
+    local names = {}
+    for _, id in ipairs(ns.ActiveIDs()) do names[#names + 1] = ns.ButtonLabel(id) end
+    local list = table.concat(names, ", ")
+    local text = L.TUTO_SOFTWARE_WHY .. "\n\n"
+    if def.steam then return text .. L.TUTO_SOFTWARE_STEAM:format(list) end
+    local software = def.software or L.SOFTWARE_GENERIC
+    text = text .. L.TUTO_SOFTWARE_VENDOR:format(software, list)
+    if not def.keys then text = text .. "\n\n" .. L.TUTO_SOFTWARE_ALT:format(software) end
+    return text
 end
 
 local function StartLearn(id)
     ns.Learn.Start(id, function() Refresh() end)
 end
 
+-- (les lignes des 6 emplacements existent ; on montre celles de la manette)
+local function ShowRows(c)
+    local ids = ns.ActiveIDs()
+    for i, row in ipairs(c.rows) do
+        row.id = ids[i]
+        row:SetShown(row.id ~= nil)
+    end
+    return ids
+end
+
 local function BuildDetect(c)
     c.rows = {}
-    for i, id in ipairs(MAIN) do
+    for i in ipairs(ns.BUTTON_IDS) do
         local row = CreateFrame("Frame", nil, c)
         row:SetSize(TEXT_WIDTH, 34)
-        row:SetPoint("TOPLEFT", 0, -(i - 1) * 38)
+        row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
         local bg = row:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints()
         bg:SetColorTexture(1, 1, 1, 0.05)
@@ -76,19 +120,21 @@ local function BuildDetect(c)
         row.key:SetWordWrap(false)
         row.btn = UI.Button(row, L.DETECT, 136, 24)
         row.btn:SetPoint("RIGHT", -6, 0)
-        row.btn:SetScript("OnClick", function() StartLearn(id) end)
+        row.btn:SetScript("OnClick", function() if row.id then StartLearn(row.id) end end)
         c.rows[i] = row
     end
     c.status = UI.Text(c, "GameFontHighlightSmall")
-    c.status:SetPoint("TOPLEFT", 0, -#MAIN * 38 - 6)
     c.status:SetWidth(TEXT_WIDTH)
     c.status:SetJustifyH("LEFT")
-    return #MAIN * 38 + 30
+    return #ns.BUTTON_IDS * ROW_H + 30
 end
 
 local function RefreshDetect(c)
     local all = true
-    for i, id in ipairs(MAIN) do
+    local ids = ShowRows(c)
+    c.status:ClearAllPoints()
+    c.status:SetPoint("TOPLEFT", 0, -#ids * ROW_H - 6)
+    for i, id in ipairs(ids) do
         local row, def = c.rows[i], ns.Button(id)
         row.glyph:SetKey(id)
         row.name:SetText(ns.ButtonLabel(id))
@@ -100,6 +146,7 @@ local function RefreshDetect(c)
         end
     end
     c.status:SetText(all and L.TUTO_DETECT_ALL or L.TUTO_DETECT_MISSING)
+    return #ids * ROW_H + 30
 end
 
 local function SetMode(id, mode)
@@ -118,10 +165,10 @@ local function BuildModes(c)
         col[i] = 28 + measure:GetStringWidth() + 14
     end
     measure:Hide()
-    for i, id in ipairs(MAIN) do
+    for i in ipairs(ns.BUTTON_IDS) do
         local row = CreateFrame("Frame", nil, c)
         row:SetSize(TEXT_WIDTH, 34)
-        row:SetPoint("TOPLEFT", 0, -(i - 1) * 38)
+        row:SetPoint("TOPLEFT", 0, -(i - 1) * ROW_H)
         local bg = row:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints()
         bg:SetColorTexture(1, 1, 1, 0.05)
@@ -139,29 +186,31 @@ local function BuildModes(c)
             cb:SetPoint("LEFT", x, 0)
             local text = UI.Text(cb, "GameFontHighlight", ModeLabel(mode))
             text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-            cb:SetScript("OnClick", function() SetMode(id, mode) end)
+            cb:SetScript("OnClick", function() if row.id then SetMode(row.id, mode) end end)
             row.checks[mode] = cb
             x = x + col[m]
         end
         c.rows[i] = row
     end
-    local suggest = UI.Button(c, L.TUTO_SUGGESTED, 240, 24)
-    suggest:SetPoint("TOPLEFT", 0, -#MAIN * 38 - 6)
-    suggest:SetScript("OnClick", function()
-        for id, mode in pairs(SUGGESTED) do ns.Button(id).mode = mode end
-        ns.Apply()
+    c.suggest = UI.Button(c, L.TUTO_SUGGESTED, 240, 24)
+    c.suggest:SetScript("OnClick", function()
+        ns.ApplySuggestedModes()
         Refresh()
     end)
-    return #MAIN * 38 + 34
+    return #ns.BUTTON_IDS * ROW_H + 34
 end
 
 local function RefreshModes(c)
-    for i, id in ipairs(MAIN) do
+    local ids = ShowRows(c)
+    c.suggest:ClearAllPoints()
+    c.suggest:SetPoint("TOPLEFT", 0, -#ids * ROW_H - 6)
+    for i, id in ipairs(ids) do
         local row, def = c.rows[i], ns.Button(id)
         row.glyph:SetKey(id)
         row.name:SetText(ns.ButtonLabel(id))
         for mode, cb in pairs(row.checks) do cb:SetChecked(def.mode == mode) end
     end
+    return #ids * ROW_H + 34
 end
 
 -- Le HUD : où va la bande des miniatures (en bas par défaut), appliqué tout de suite
@@ -198,8 +247,10 @@ end
 -- Les étapes
 ---------------------------------------------------------------------------
 local STEPS = {
-    { title = "TUTO_WELCOME_TITLE", text = "TUTO_WELCOME_TEXT", build = BuildWelcome },
-    { title = "TUTO_NEXUS_TITLE", text = "TUTO_NEXUS_TEXT" },
+    { title = "TUTO_WELCOME_TITLE", text = "TUTO_WELCOME_TEXT" },
+    { title = "TUTO_CONTROLLER_TITLE", text = "TUTO_CONTROLLER_TEXT", build = BuildController,
+        refresh = RefreshController },
+    { title = "TUTO_SOFTWARE_TITLE", textFn = T.SetupText },
     { title = "TUTO_DETECT_TITLE", text = "TUTO_DETECT_TEXT", build = BuildDetect, refresh = RefreshDetect,
         help = "TUTO_DETECT_MISSING" },
     { title = "TUTO_MODES_TITLE", text = "TUTO_MODES_TEXT", extra = "TUTO_PAIRS_TEXT",
@@ -211,7 +262,8 @@ local STEPS = {
 
 -- Le texte d'une étape (et son paragraphe en plus)
 local function StepText(s)
-    return L[s.text] .. (s.extra and ("\n\n" .. L[s.extra]) or "")
+    local text = s.textFn and s.textFn() or L[s.text]
+    return text .. (s.extra and ("\n\n" .. L[s.extra]) or "")
 end
 
 -- Le texte de l'onglet Aide : les étapes (sauf la bienvenue), à la suite
@@ -252,13 +304,14 @@ local function Show(i)
             step.content = CreateFrame("Frame", nil, frame)
             step.content:SetSize(TEXT_WIDTH, 10)
             step.height = step.build(step.content)
-            step.content:SetHeight(step.height)
         end
         step.content:ClearAllPoints()
         step.content:SetPoint("TOPLEFT", frame.body, "BOTTOMLEFT", 0, -16)
         step.content:Show()
-        if step.refresh then step.refresh(step.content) end
-        contentHeight = step.height + 16
+        -- (hauteur selon la manette choisie, sinon celle de la construction)
+        local height = step.refresh and step.refresh(step.content) or step.height
+        step.content:SetHeight(height)
+        contentHeight = height + 16
     end
 
     frame.progress:SetText(("%d / %d"):format(current, #STEPS))

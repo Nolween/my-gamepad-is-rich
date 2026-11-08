@@ -5,13 +5,16 @@ local L = ns.L
 
 MyGamepadIsRich = ns -- (accès global : raccourci clavier, débogage)
 
--- Les boutons supplémentaires gérés, dans l'ordre de l'interface
+-- Les emplacements des boutons supplémentaires, dans l'ordre de l'interface.
+-- Identifiants internes, fixes (données sauvegardées) : leurs noms affichés
+-- viennent de la manette choisie (Controllers.lua), qui en utilise 2 à 6.
 ns.BUTTON_IDS = { "L5", "R5", "L4", "R4", "EX1", "EX2" }
 
 -- Les paires : deux modificateurs tenus ensemble = une couche de plus
 ns.PAIRS = {
     { id = "L5R5", a = "L5", b = "R5" },
     { id = "L4R4", a = "L4", b = "R4" },
+    { id = "EX1EX2", a = "EX1", b = "EX2" },
 }
 
 -- Tout ce qui a des actions : les boutons, puis les paires
@@ -29,19 +32,22 @@ function ns.IsPair(id)
     return ns.PairDef(id) ~= nil
 end
 
+-- Un bouton en mode modificateur, avec une touche
+local function ModReady(id)
+    local def = ns.db and ns.db.buttons[id]
+    return def ~= nil and def.mode == "modifier" and def.key ~= nil
+end
+
 -- Une paire est utilisable si ses deux boutons sont des modificateurs avec une touche
 function ns.PairReady(id)
     local pair = ns.PairDef(id)
-    if not (pair and ns.db) then return false end
-    local a, b = ns.db.buttons[pair.a], ns.db.buttons[pair.b]
-    return a.mode == "modifier" and a.key ~= nil and b.mode == "modifier" and b.key ~= nil
+    return pair ~= nil and ModReady(pair.a) and ModReady(pair.b)
 end
 
 -- Une couche de combinaisons utilisable : un modificateur, ou une paire prête
 function ns.IsModLayer(id)
     if ns.IsPair(id) then return ns.PairReady(id) end
-    local def = ns.db and ns.db.buttons[id]
-    return def ~= nil and def.mode == "modifier" and def.key ~= nil
+    return ModReady(id)
 end
 
 -- Les boutons de la manette combinés avec un modificateur
@@ -54,14 +60,12 @@ local DEFAULT_BUTTONS = {
     L5 = { mode = "modifier" },
     R5 = { mode = "modifier" },
     -- (pas de touche par défaut : en XInput le jeu ne voit pas les palettes,
-    -- la touche vient de GameSir Nexus et se règle avec « Détecter »)
+    -- la touche vient du logiciel de la manette et se règle avec « Détecter »)
     L4 = { mode = "simple" },
     R4 = { mode = "simple" },
     EX1 = { mode = "off" },
     EX2 = { mode = "off" },
 }
-
-local DEFAULT_NAMES = { L5 = "L5", R5 = "R5", L4 = "L4", R4 = "R4" }
 
 function ns.Print(msg)
     print("|cff33ff99My Gamepad Is Rich|r : " .. tostring(msg))
@@ -73,6 +77,11 @@ end
 local function InitDB()
     MyGamepadIsRichDB = MyGamepadIsRichDB or {}
     local db = MyGamepadIsRichDB
+    -- (la manette : avant les préréglages, l'addon ne gérait que la G7 Pro ;
+    -- une première installation la choisit dans le tutoriel)
+    if not db.controller then
+        db.controller = db.buttons and "gamesir_g7pro" or "other"
+    end
     db.buttons = db.buttons or {}
     for _, id in ipairs(ns.BUTTON_IDS) do
         if not db.buttons[id] then
@@ -112,9 +121,7 @@ function ns.ButtonLabel(id)
     if pair then return ns.ButtonLabel(pair.a) .. " + " .. ns.ButtonLabel(pair.b) end
     local b = ns.db and ns.db.buttons[id]
     if b and b.name and b.name ~= "" then return b.name end
-    if DEFAULT_NAMES[id] then return DEFAULT_NAMES[id] end
-    local n = id:match("^EX(%d)$")
-    return L.EXTRA .. " " .. ((tonumber(n) or 0) + 4)
+    return ns.SlotName(id) or ns.SpareName(id)
 end
 
 -- Le bouton supplémentaire qui utilise une touche, ou nil

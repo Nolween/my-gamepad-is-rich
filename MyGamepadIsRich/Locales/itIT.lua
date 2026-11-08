@@ -7,7 +7,6 @@ ns.AddLocale("itIT", {
     TAB_TEST = "Test controller",
     TAB_HELP = "Aiuto",
 
-    EXTRA = "Pulsante",
     NAME = "Nome:",
     KEY = "Tasto:",
     KEY_NONE = "non impostato",
@@ -63,10 +62,8 @@ ns.AddLocale("itIT", {
     LEARN_COMBAT = "Impossibile rilevare un pulsante in combattimento.",
     LEARN_DONE = "%s ora è sul tasto %s.",
     LEARN_TAKEN = "Il tasto %s era usato da %s: rimosso.",
-    LEARN_MODKEY = "Attenzione: %s è un tasto Maiusc / Ctrl / Alt; in GameSir Nexus meglio un tasto come F9-F12.",
     LEARN_BOUND = "Nota: %s era assegnato a \"%s\" in WoW; finché questo addon lo usa, ha la precedenza l'addon.",
 
-    TEST_INTRO = "Premi un pulsante qualsiasi: ciò che WoW riceve si illumina. Se L5 / R5 / L4 / R4 non mostrano nulla, assegna loro dei tasti in GameSir Nexus (vedi Aiuto).",
     TEST_STANDARD = "Pulsanti standard",
     TEST_EXTRA = "Pulsanti aggiuntivi",
     TEST_LOG = "Ultimi input",
@@ -75,7 +72,6 @@ ns.AddLocale("itIT", {
 
     IF_WARNING = "Improved Forever è caricato: se usa anche uno di questi tasti, vince l'ultima assegnazione applicata.",
     OPEN_CONFIG = "Apri la configurazione",
-    SETTINGS_DESC = "Configura i pulsanti aggiuntivi del tuo GameSir G7 Pro (L5/R5, L4/R4). Comando: /mgir",
     LOADED = "caricato. Scrivi /mgir per configurare i pulsanti aggiuntivi.",
     SLASH_HELP = "/mgir : apri  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio",
     RESET_DONE = "Le azioni di questo personaggio sono state azzerate.",
@@ -96,37 +92,12 @@ ns.AddLocale("itIT", {
     HELP_REPLAY = "Rivedi il tutorial",
 
     TUTO_WELCOME_TITLE = "Benvenuto in My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "Questo addon porta in WoW i pulsanti aggiuntivi del tuo GameSir G7 Pro:\n\n"
-        .. "|cffffd100L5 / R5|r: i terzi grilletti\n"
-        .. "|cffffd100L4 / R4|r: le palette posteriori\n\n"
-        .. "Ognuno può essere un modificatore da tenere premuto (8 nuove combinazioni con A, B, X, Y e la croce direzionale) "
-        .. "o un pulsante semplice con i propri strati LT e RT.\n\n"
-        .. "Questo tutorial dura circa due minuti. Puoi uscire in qualsiasi momento e riaprirlo con |cffffd100/mgir tuto|r.",
 
-    TUTO_NEXUS_TITLE = "Passo 1: GameSir Nexus",
-    TUTO_NEXUS_TEXT = "Windows vede il G7 Pro come un controller Xbox 360. Questa modalità trasmette solo i pulsanti standard, "
-        .. "quindi WoW non riceve mai L5, R5, L4 e R4. La soluzione: far loro inviare un tasto della tastiera.\n\n"
-        .. "1. Collega il controller e apri |cffffd100GameSir Nexus|r (Microsoft Store).\n"
-        .. "2. Apri la pagina di mappatura dei pulsanti.\n"
-        .. "3. Assegna a L5, R5, L4 e R4 un tasto che non usi in WoW. Buone scelte: |cffffd100F9, F10, F11, F12|r "
-        .. "o il tastierino numerico (con Bloc Num attivo).\n"
-        .. "4. Evita Maiusc, Ctrl e Alt: cambierebbero le tue altre assegnazioni.\n"
-        .. "5. Salva il profilo sul controller.\n\n"
-        .. "Fatto? Passa al passo successivo.",
 
-    TUTO_DETECT_TITLE = "Passo 2: Rileva i tuoi pulsanti",
     TUTO_DETECT_TEXT = "Per ogni pulsante, clicca su |cffffd100Rileva|r, poi premi quel pulsante sul controller. "
         .. "Il tasto inviato appare accanto.",
-    TUTO_DETECT_ALL = "|cff40ff40Tutti e quattro i pulsanti sono rilevati.|r",
-    TUTO_DETECT_MISSING = "Non succede nulla quando premi? Controlla il tasto del pulsante in GameSir Nexus e riprova.",
 
-    TUTO_MODES_TITLE = "Passo 3: Scegli una modalità",
-    TUTO_MODES_TEXT = "|cffffd100Modificatore|r: tieni premuto il pulsante, poi premi A, B, X, Y o la croce. 8 azioni per pulsante, come LT e RT.\n"
-        .. "|cffffd100Pulsante semplice|r: un'azione, più una con LT tenuto premuto e una con RT tenuto premuto.\n"
-        .. "|cffffd100Disattivato|r: il tasto resta libero.\n\n"
-        .. "Consiglio: modificatori su L5 e R5 (facili da tenere premuti), pulsanti semplici su L4 e R4.",
 
-    TUTO_ACTIONS_TITLE = "Passo 4: Posiziona le tue azioni",
     TUTO_ACTIONS_TEXT = "Nella finestra di configurazione, ogni pulsante mostra i suoi spazi.\n\n"
         .. "- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su uno spazio.\n"
         .. "- Oppure clic destro su uno spazio: scegli un incantesimo o un oggetto della borsa, scrivi una macro, scegli un comando di WoW (come Corsa automatica) o svuotalo.\n\n"
@@ -149,12 +120,6 @@ ns.AddLocale("itIT", {
     HUD_OFF = "HUD nascosto: torna la barra del controller del gioco. Scrivi /mgir hud on per mostrarlo di nuovo.",
     HUD_SCALE = "Dimensione dell'HUD: %s",
     TUTO_HUD_TITLE = "Il tuo HUD del controller",
-    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD, in basso sullo schermo:\n\n"
-        .. "- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto LT, RT, L5 o R5 e cambia.\n"
-        .. "- |cffffd100Nella striscia|r (in basso, o in alto con /mgir hud strip): tutti gli strati in miniatura (Da solo, LT, RT, LT+RT, L5, R5); quello tenuto si illumina.\n"
-        .. "- |cffffd100Al centro|r: L4 e R4, con l'azione che partirà in base al grilletto tenuto.\n\n"
-        .. "Si attenua fuori dal combattimento quando non tieni premuto nulla.\n"
-        .. "|cffffd100/mgir hud|r: spostarlo  -  |cffffd100/mgir hud scale 1.2|r: dimensione  -  |cffffd100/mgir hud off|r: tornare alla barra del gioco",
 })
 
 -- HUD : attribution rapide
@@ -190,13 +155,12 @@ ns.AddLocale("itIT", {
     MINIMAP_SHOWN = "Pulsante della minimappa visibile.",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("itIT", {
     PAIR_READY = "Coppia · tieni entrambi",
     PAIR_NOT_READY = "Coppia · non disponibile",
     PAIR_DESC = "Tieni premuti %s e %s insieme, poi premi A, B, X, Y o la croce: 8 combinazioni in più.",
     PAIR_NEEDS = "Per usare questa coppia, %s e %s devono essere entrambi in modalità Modificatore, con un tasto.",
-    TUTO_PAIRS_TEXT = "|cffffd100Coppie|r: se L5 e R5 sono entrambi modificatori, tenerli premuti insieme dà 8 combinazioni in più. Lo stesso per L4 + R4.",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -210,7 +174,6 @@ ns.AddLocale("itIT", {
     SECTION_SIMPLE_EMPTY = "Ancora nessuno: imposta un pulsante su Pulsante semplice nella scheda Pulsanti.",
     LAYER_DESC_BASE = "A, B, X, Y e la croce senza tenere premuto nulla. A, B, X e Y mantengono le azioni del gioco (saltare, interagire...).",
     LAYER_DESC_HOLD = "Tieni premuto %s, poi premi A, B, X, Y o la croce.",
-    BUTTONS_INTRO = "I tuoi pulsanti aggiuntivi: il tasto che GameSir Nexus invia e cosa fa ognuno. Passa sopra una modalità per vedere cosa fa.",
     PAIRS_TITLE = "Coppie (due modificatori tenuti insieme)",
     HUD_INTRO = "L'HUD sostituisce la barra del controller del gioco: lo strato in uso in grande, tutti gli strati in miniatura.",
     HUD_SHOW = "Mostra l'HUD (al posto della barra del controller del gioco)",
@@ -229,4 +192,68 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     HUD_STRIP_SIZE = "Dimensione delle miniature:",
     HUD_STRIP_ROWS = "Righe di miniature:",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("itIT", {
+    CONTROLLER_LABEL = "Controller:",
+    CONTROLLER_CHANGE = "Cambia...",
+    CONTROLLER_PICK = "Scegli il tuo controller",
+    CONTROLLER_OTHER = "Altro controller",
+    EXTRA = "Pulsante",
+    SOFTWARE_GENERIC = "il software del tuo controller",
+    SETTINGS_DESC = "Configura i pulsanti aggiuntivi del tuo controller (palette posteriori, grilletti extra). Comando: /mgir",
+    BUTTONS_INTRO = "Il tuo controller e i suoi pulsanti aggiuntivi: il tasto che ognuno invia e cosa fa. Passa sopra una modalità per vedere cosa fa.",
+    TEST_INTRO = "Premi un pulsante qualsiasi: ciò che WoW riceve si illumina. Se i tuoi pulsanti aggiuntivi non mostrano nulla, assegna loro dei tasti nel software del tuo controller (vedi Aiuto).",
+    LEARN_MODKEY = "Attenzione: %s è un tasto Maiusc / Ctrl / Alt; nel software del tuo controller meglio un tasto come F9-F12.",
+
+    TUTO_WELCOME_TEXT = "Questo addon porta in WoW i pulsanti aggiuntivi del tuo controller: palette posteriori, grilletti o pulsanti extra "
+        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
+        .. "Ognuno può essere un modificatore da tenere premuto (8 nuove combinazioni con A, B, X, Y e la croce direzionale) "
+        .. "o un pulsante semplice con i propri strati LT e RT.\n\n"
+        .. "Questo tutorial dura circa due minuti. Puoi uscire in qualsiasi momento e riaprirlo con |cffffd100/mgir tuto|r.",
+
+    TUTO_CONTROLLER_TITLE = "Passo 1: Il tuo controller",
+    TUTO_CONTROLLER_TEXT = "Scegli il tuo controller: l'addon userà i nomi dei suoi pulsanti e ti dirà quale software li configura. "
+        .. "Non è nell'elenco? Scegli |cffffd100Altro controller|r (fino a 6 pulsanti, che puoi rinominare).",
+
+    TUTO_SOFTWARE_TITLE = "Passo 2: Far inviare un tasto ai pulsanti",
+    TUTO_SOFTWARE_WHY = "Windows vede la maggior parte dei controller come un controller Xbox (XInput). Questa modalità trasmette solo i pulsanti standard, "
+        .. "quindi WoW non riceve mai quelli aggiuntivi. La soluzione: far inviare a ognuno un tasto della tastiera.",
+    TUTO_SOFTWARE_VENDOR = "1. Collega il controller e apri |cffffd100%s|r.\n"
+        .. "2. Apri la pagina di mappatura dei pulsanti.\n"
+        .. "3. Assegna a ogni pulsante aggiuntivo (%s) un tasto che non usi in WoW. Buone scelte: |cffffd100F9, F10, F11, F12|r "
+        .. "o il tastierino numerico (con Bloc Num attivo).\n"
+        .. "4. Evita Maiusc, Ctrl e Alt: cambierebbero le tue altre assegnazioni.\n"
+        .. "5. Salva il profilo (sul controller, se il software lo consente).",
+    TUTO_SOFTWARE_ALT = "Se %s non riesce ad assegnare un tasto a questi pulsanti, usa |cffffd100Steam Input|r: aggiungi WoW (o il launcher Battle.net) "
+        .. "a Steam come gioco non Steam, avvialo da Steam e assegna un tasto a ogni pulsante nella sua configurazione del controller. "
+        .. "Funziona anche |cffffd100reWASD|r (a pagamento), senza Steam.",
+    TUTO_SOFTWARE_STEAM = "1. In |cffffd100Steam|r, aggiungi WoW (o il launcher Battle.net) come gioco non Steam "
+        .. "(Giochi > Aggiungi alla libreria un gioco non di Steam) e avvialo da Steam.\n"
+        .. "2. Apri la sua configurazione del controller (overlay di Steam o impostazioni del controller del gioco in Steam).\n"
+        .. "3. Assegna a ogni pulsante aggiuntivo (%s) un tasto che non usi in WoW. Buone scelte: |cffffd100F9, F10, F11, F12|r.\n"
+        .. "4. Evita Maiusc, Ctrl e Alt: cambierebbero le tue altre assegnazioni.\n\n"
+        .. "|cffffd100reWASD|r (a pagamento) fa lo stesso senza Steam.",
+
+    TUTO_DETECT_TITLE = "Passo 3: Rileva i tuoi pulsanti",
+    TUTO_DETECT_ALL = "|cff40ff40Tutti i tuoi pulsanti sono rilevati.|r",
+    TUTO_DETECT_MISSING = "Non succede nulla quando premi? Controlla il tasto del pulsante nel software del tuo controller (passo 2) e riprova.",
+
+    TUTO_MODES_TITLE = "Passo 4: Scegli una modalità",
+    TUTO_MODES_TEXT = "|cffffd100Modificatore|r: tieni premuto il pulsante, poi premi A, B, X, Y o la croce. 8 azioni per pulsante, come LT e RT.\n"
+        .. "|cffffd100Pulsante semplice|r: un'azione, più una con LT tenuto premuto e una con RT tenuto premuto.\n"
+        .. "|cffffd100Disattivato|r: il tasto resta libero.\n\n"
+        .. "Consiglio: modificatori sui pulsanti più facili da tenere premuti, pulsanti semplici sugli altri.",
+    TUTO_PAIRS_TEXT = "|cffffd100Coppie|r: i pulsanti vanno in coppie sinistra + destra. Se entrambi i pulsanti di una coppia sono modificatori, "
+        .. "tenerli premuti insieme dà 8 combinazioni in più.",
+
+    TUTO_ACTIONS_TITLE = "Passo 5: Posiziona le tue azioni",
+
+    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD, in basso sullo schermo:\n\n"
+        .. "- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto LT, RT o un modificatore e cambia.\n"
+        .. "- |cffffd100Nella striscia|r (in basso, o in alto con /mgir hud strip): tutti gli strati in miniatura (Da solo, LT, RT, LT+RT, i tuoi modificatori e coppie); quello tenuto si illumina.\n"
+        .. "- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che partirà in base al grilletto tenuto.\n\n"
+        .. "Si attenua fuori dal combattimento quando non tieni premuto nulla.\n"
+        .. "|cffffd100/mgir hud|r: spostarlo  -  |cffffd100/mgir hud scale 1.2|r: dimensione  -  |cffffd100/mgir hud off|r: tornare alla barra del gioco",
 })

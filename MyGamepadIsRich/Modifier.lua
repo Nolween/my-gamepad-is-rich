@@ -1,6 +1,6 @@
 -- Mode Modificateur : maintenir le bouton (sa touche, ex. F9) et appuyer sur
 -- A/B/X/Y/croix lance l'action de la combinaison. Deux boutons d'une paire
--- (L5 + R5, L4 + R4) maintenus ensemble donnent une couche de plus.
+-- (1 + 2, 3 + 4, 5 + 6) maintenus ensemble donnent une couche de plus.
 --
 -- Un aiguilleur sécurisé (SecureHandlerAttributeTemplate) possède les
 -- liaisons de A/B/X/Y/croix. La touche de chaque modificateur est liée

@@ -7,7 +7,6 @@ ns.AddLocale("enUS", {
     TAB_TEST = "Controller test",
     TAB_HELP = "Help",
 
-    EXTRA = "Button",
     NAME = "Name:",
     KEY = "Key:",
     KEY_NONE = "not set",
@@ -63,10 +62,8 @@ ns.AddLocale("enUS", {
     LEARN_COMBAT = "Can't detect a button in combat.",
     LEARN_DONE = "%s is now on the key %s.",
     LEARN_TAKEN = "The key %s was used by %s: removed from it.",
-    LEARN_MODKEY = "Warning: %s is a Shift / Ctrl / Alt key; in GameSir Nexus, prefer a key like F9-F12.",
     LEARN_BOUND = "Note: %s was bound to \"%s\" in WoW; while this addon uses it, the addon wins.",
 
-    TEST_INTRO = "Press any button: what WoW receives lights up. If L5 / R5 / L4 / R4 show nothing, map them to keyboard keys in GameSir Nexus (see Help).",
     TEST_STANDARD = "Standard buttons",
     TEST_EXTRA = "Extra buttons",
     TEST_LOG = "Last inputs",
@@ -75,7 +72,6 @@ ns.AddLocale("enUS", {
 
     IF_WARNING = "Improved Forever is loaded: if it also uses one of these keys, the last applied binding wins.",
     OPEN_CONFIG = "Open the configuration",
-    SETTINGS_DESC = "Configure the extra buttons of your GameSir G7 Pro (L5/R5, L4/R4). Command: /mgir",
     LOADED = "loaded. Type /mgir to configure your extra buttons.",
     SLASH_HELP = "/mgir : open  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions",
     RESET_DONE = "This character's actions were reset.",
@@ -97,37 +93,12 @@ ns.AddLocale("enUS", {
     HELP_REPLAY = "Replay the tutorial",
 
     TUTO_WELCOME_TITLE = "Welcome to My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "This addon brings the extra buttons of your GameSir G7 Pro into WoW:\n\n"
-        .. "|cffffd100L5 / R5|r: the third triggers\n"
-        .. "|cffffd100L4 / R4|r: the back paddles\n\n"
-        .. "Each one can be a held modifier (8 new combos with A, B, X, Y and the D-pad), "
-        .. "or a simple button with its own LT and RT layers.\n\n"
-        .. "This tutorial takes about two minutes. You can leave it at any time and open it again with |cffffd100/mgir tuto|r.",
 
-    TUTO_NEXUS_TITLE = "Step 1: GameSir Nexus",
-    TUTO_NEXUS_TEXT = "Windows sees the G7 Pro as an Xbox 360 controller. That mode only carries the standard buttons, "
-        .. "so WoW never receives L5, R5, L4 and R4. The fix is to make them send a keyboard key.\n\n"
-        .. "1. Plug in the controller and open |cffffd100GameSir Nexus|r (Microsoft Store).\n"
-        .. "2. Open the button mapping page.\n"
-        .. "3. Give L5, R5, L4 and R4 a keyboard key you don't use in WoW. Good choices: |cffffd100F9, F10, F11, F12|r, "
-        .. "or the numeric keypad (with Num Lock on).\n"
-        .. "4. Avoid Shift, Ctrl and Alt: they would change your other bindings.\n"
-        .. "5. Save the profile to the controller.\n\n"
-        .. "Done? Go to the next step.",
 
-    TUTO_DETECT_TITLE = "Step 2: Detect your buttons",
     TUTO_DETECT_TEXT = "For each button, click |cffffd100Detect|r, then press that button on your controller. "
         .. "The key it sends appears next to it.",
-    TUTO_DETECT_ALL = "|cff40ff40All four buttons are detected.|r",
-    TUTO_DETECT_MISSING = "Nothing happens when you press a button? Check its key in GameSir Nexus, then try again.",
 
-    TUTO_MODES_TITLE = "Step 3: Choose a mode",
-    TUTO_MODES_TEXT = "|cffffd100Modifier|r: hold the button, then press A, B, X, Y or the D-pad. 8 actions per button, like LT and RT.\n"
-        .. "|cffffd100Simple button|r: one action, plus one with LT held and one with RT held.\n"
-        .. "|cffffd100Disabled|r: the key is left free.\n\n"
-        .. "Suggested: modifiers on L5 and R5 (easy to hold), simple buttons on L4 and R4.",
 
-    TUTO_ACTIONS_TITLE = "Step 4: Place your actions",
     TUTO_ACTIONS_TEXT = "In the configuration window, each button shows its slots.\n\n"
         .. "- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n"
         .. "- Or right-click a slot: pick a spell or a bag item, write a macro, choose a WoW command (such as Auto Run), or clear it.\n\n"
@@ -150,12 +121,6 @@ ns.AddLocale("enUS", {
     HUD_OFF = "HUD hidden: the game's controller bar is back. Type /mgir hud on to show it again.",
     HUD_SCALE = "HUD scale: %s",
     TUTO_HUD_TITLE = "Your controller HUD",
-    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD at the bottom of the screen:\n\n"
-        .. "- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold LT, RT, L5 or R5 and it switches.\n"
-        .. "- |cffffd100In the strip|r (below, or above with /mgir hud strip): every layer in miniature (Alone, LT, RT, LT+RT, L5, R5); the one you hold lights up.\n"
-        .. "- |cffffd100In the middle|r: L4 and R4, with the action that will fire for the trigger you hold.\n\n"
-        .. "It fades out of combat while you hold nothing.\n"
-        .. "|cffffd100/mgir hud|r: move it  -  |cffffd100/mgir hud scale 1.2|r: size  -  |cffffd100/mgir hud off|r: back to the game's bar",
 })
 
 -- HUD : attribution rapide
@@ -191,13 +156,12 @@ ns.AddLocale("enUS", {
     MINIMAP_SHOWN = "Minimap button shown.",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("enUS", {
     PAIR_READY = "Pair · hold both",
     PAIR_NOT_READY = "Pair · not available",
     PAIR_DESC = "Hold %s and %s together, then press A, B, X, Y or the D-pad: 8 more combos.",
     PAIR_NEEDS = "To use this pair, %s and %s must both be in Modifier mode, with a key.",
-    TUTO_PAIRS_TEXT = "|cffffd100Pairs|r: when L5 and R5 are both modifiers, holding them together gives 8 more combos. Same for L4 + R4.",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -211,7 +175,6 @@ ns.AddLocale("enUS", {
     SECTION_SIMPLE_EMPTY = "None yet: set a button to Simple button in the Buttons tab.",
     LAYER_DESC_BASE = "A, B, X, Y and the D-pad with nothing held. A, B, X and Y keep the game's actions (jump, interact...).",
     LAYER_DESC_HOLD = "Hold %s, then press A, B, X, Y or the D-pad.",
-    BUTTONS_INTRO = "Your extra buttons: the key GameSir Nexus sends, and what each one does. Hover a mode to see what it does.",
     PAIRS_TITLE = "Pairs (two modifiers held together)",
     HUD_INTRO = "The HUD replaces the game's controller bar: the layer in use in large, every layer in miniature.",
     HUD_SHOW = "Show the HUD (instead of the game's controller bar)",
@@ -230,4 +193,68 @@ ns.AddLocale("enUS", {
 ns.AddLocale("enUS", {
     HUD_STRIP_SIZE = "Miniature size:",
     HUD_STRIP_ROWS = "Miniature rows:",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("enUS", {
+    CONTROLLER_LABEL = "Controller:",
+    CONTROLLER_CHANGE = "Change...",
+    CONTROLLER_PICK = "Choose your controller",
+    CONTROLLER_OTHER = "Other controller",
+    EXTRA = "Button",
+    SOFTWARE_GENERIC = "your controller's software",
+    SETTINGS_DESC = "Configure your controller's extra buttons (back paddles, extra triggers). Command: /mgir",
+    BUTTONS_INTRO = "Your controller and its extra buttons: the key each one sends, and what it does. Hover a mode to see what it does.",
+    TEST_INTRO = "Press any button: what WoW receives lights up. If your extra buttons show nothing, give them keyboard keys in your controller's software (see Help).",
+    LEARN_MODKEY = "Warning: %s is a Shift / Ctrl / Alt key; in your controller's software, prefer a key like F9-F12.",
+
+    TUTO_WELCOME_TEXT = "This addon brings your controller's extra buttons into WoW: back paddles, extra triggers or bumpers "
+        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
+        .. "Each one can be a held modifier (8 new combos with A, B, X, Y and the D-pad), "
+        .. "or a simple button with its own LT and RT layers.\n\n"
+        .. "This tutorial takes about two minutes. You can leave it at any time and open it again with |cffffd100/mgir tuto|r.",
+
+    TUTO_CONTROLLER_TITLE = "Step 1: Your controller",
+    TUTO_CONTROLLER_TEXT = "Pick your controller: the addon then uses the names of its buttons and tells you which software sets them up. "
+        .. "Not in the list? Choose |cffffd100Other controller|r (up to 6 buttons, which you can rename).",
+
+    TUTO_SOFTWARE_TITLE = "Step 2: Make the buttons send a key",
+    TUTO_SOFTWARE_WHY = "Windows sees most controllers as an Xbox controller (XInput). That mode only carries the standard buttons, "
+        .. "so WoW never receives the extra ones. The fix is to make each of them send a keyboard key.",
+    TUTO_SOFTWARE_VENDOR = "1. Plug in the controller and open |cffffd100%s|r.\n"
+        .. "2. Open the button mapping page.\n"
+        .. "3. Give each extra button (%s) a keyboard key you don't use in WoW. Good choices: |cffffd100F9, F10, F11, F12|r, "
+        .. "or the numeric keypad (with Num Lock on).\n"
+        .. "4. Avoid Shift, Ctrl and Alt: they would change your other bindings.\n"
+        .. "5. Save the profile (to the controller, if the software offers it).",
+    TUTO_SOFTWARE_ALT = "If %s can't give a keyboard key to these buttons, use |cffffd100Steam Input|r: add WoW (or the Battle.net launcher) "
+        .. "to Steam as a non-Steam game, launch it from Steam and give each button a key in its controller layout. "
+        .. "|cffffd100reWASD|r (paid) works too, without Steam.",
+    TUTO_SOFTWARE_STEAM = "1. In |cffffd100Steam|r, add WoW (or the Battle.net launcher) as a non-Steam game "
+        .. "(Games > Add a Non-Steam Game to My Library), then launch it from Steam.\n"
+        .. "2. Open its controller layout (Steam overlay, or the game's controller settings in Steam).\n"
+        .. "3. Give each extra button (%s) a keyboard key you don't use in WoW. Good choices: |cffffd100F9, F10, F11, F12|r.\n"
+        .. "4. Avoid Shift, Ctrl and Alt: they would change your other bindings.\n\n"
+        .. "|cffffd100reWASD|r (paid) can do the same without Steam.",
+
+    TUTO_DETECT_TITLE = "Step 3: Detect your buttons",
+    TUTO_DETECT_ALL = "|cff40ff40All your buttons are detected.|r",
+    TUTO_DETECT_MISSING = "Nothing happens when you press a button? Check its key in your controller's software (step 2), then try again.",
+
+    TUTO_MODES_TITLE = "Step 4: Choose a mode",
+    TUTO_MODES_TEXT = "|cffffd100Modifier|r: hold the button, then press A, B, X, Y or the D-pad. 8 actions per button, like LT and RT.\n"
+        .. "|cffffd100Simple button|r: one action, plus one with LT held and one with RT held.\n"
+        .. "|cffffd100Disabled|r: the key is left free.\n\n"
+        .. "Suggested: modifiers on the buttons that are easiest to hold, simple buttons on the others.",
+    TUTO_PAIRS_TEXT = "|cffffd100Pairs|r: the buttons go in left + right pairs. When both buttons of a pair are modifiers, "
+        .. "holding them together gives 8 more combos.",
+
+    TUTO_ACTIONS_TITLE = "Step 5: Place your actions",
+
+    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD at the bottom of the screen:\n\n"
+        .. "- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold LT, RT or a modifier and it switches.\n"
+        .. "- |cffffd100In the strip|r (below, or above with /mgir hud strip): every layer in miniature (Alone, LT, RT, LT+RT, your modifiers and pairs); the one you hold lights up.\n"
+        .. "- |cffffd100In the middle|r: your simple buttons, with the action that will fire for the trigger you hold.\n\n"
+        .. "It fades out of combat while you hold nothing.\n"
+        .. "|cffffd100/mgir hud|r: move it  -  |cffffd100/mgir hud scale 1.2|r: size  -  |cffffd100/mgir hud off|r: back to the game's bar",
 })

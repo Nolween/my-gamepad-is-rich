@@ -7,7 +7,6 @@ ns.AddLocale("esES", {
     TAB_TEST = "Prueba del mando",
     TAB_HELP = "Ayuda",
 
-    EXTRA = "Botón",
     NAME = "Nombre:",
     KEY = "Tecla:",
     KEY_NONE = "sin asignar",
@@ -63,10 +62,8 @@ ns.AddLocale("esES", {
     LEARN_COMBAT = "No se puede detectar un botón en combate.",
     LEARN_DONE = "%s está ahora en la tecla %s.",
     LEARN_TAKEN = "La tecla %s la usaba %s: se le ha quitado.",
-    LEARN_MODKEY = "Atención: %s es una tecla Mayús / Ctrl / Alt; en GameSir Nexus, mejor usa una tecla como F9-F12.",
     LEARN_BOUND = "Nota: %s estaba asignada a «%s» en WoW; mientras este addon la use, el addon tiene prioridad.",
 
-    TEST_INTRO = "Pulsa cualquier botón: lo que recibe WoW se ilumina. Si L5 / R5 / L4 / R4 no muestran nada, asígnales teclas en GameSir Nexus (ver Ayuda).",
     TEST_STANDARD = "Botones estándar",
     TEST_EXTRA = "Botones adicionales",
     TEST_LOG = "Últimas entradas",
@@ -75,7 +72,6 @@ ns.AddLocale("esES", {
 
     IF_WARNING = "Improved Forever está cargado: si también usa una de estas teclas, gana la última asignación aplicada.",
     OPEN_CONFIG = "Abrir la configuración",
-    SETTINGS_DESC = "Configura los botones adicionales de tu GameSir G7 Pro (L5/R5, L4/R4). Comando: /mgir",
     LOADED = "cargado. Escribe /mgir para configurar tus botones adicionales.",
     SLASH_HELP = "/mgir : abrir  |  /mgir test : prueba del mando  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reiniciar las acciones de este personaje",
     RESET_DONE = "Se han reiniciado las acciones de este personaje.",
@@ -96,37 +92,12 @@ ns.AddLocale("esES", {
     HELP_REPLAY = "Ver el tutorial de nuevo",
 
     TUTO_WELCOME_TITLE = "Bienvenido a My Gamepad Is Rich",
-    TUTO_WELCOME_TEXT = "Este addon lleva a WoW los botones adicionales de tu GameSir G7 Pro:\n\n"
-        .. "|cffffd100L5 / R5|r: los terceros gatillos\n"
-        .. "|cffffd100L4 / R4|r: las paletas traseras\n\n"
-        .. "Cada uno puede ser un modificador que se mantiene (8 combinaciones nuevas con A, B, X, Y y la cruceta) "
-        .. "o un botón simple con sus propias capas LT y RT.\n\n"
-        .. "Este tutorial dura unos dos minutos. Puedes salir cuando quieras y volver a abrirlo con |cffffd100/mgir tuto|r.",
 
-    TUTO_NEXUS_TITLE = "Paso 1: GameSir Nexus",
-    TUTO_NEXUS_TEXT = "Windows ve el G7 Pro como un mando de Xbox 360. Ese modo solo transmite los botones estándar, "
-        .. "así que WoW nunca recibe L5, R5, L4 ni R4. La solución: hacer que envíen una tecla del teclado.\n\n"
-        .. "1. Conecta el mando y abre |cffffd100GameSir Nexus|r (Microsoft Store).\n"
-        .. "2. Abre la página de asignación de botones.\n"
-        .. "3. Asigna a L5, R5, L4 y R4 una tecla que no uses en WoW. Buenas opciones: |cffffd100F9, F10, F11, F12|r "
-        .. "o el teclado numérico (con Bloq Num activado).\n"
-        .. "4. Evita Mayús, Ctrl y Alt: cambiarían tus otras asignaciones.\n"
-        .. "5. Guarda el perfil en el mando.\n\n"
-        .. "¿Listo? Pasa al siguiente paso.",
 
-    TUTO_DETECT_TITLE = "Paso 2: Detectar tus botones",
     TUTO_DETECT_TEXT = "Para cada botón, haz clic en |cffffd100Detectar|r y pulsa ese botón en tu mando. "
         .. "La tecla que envía aparece al lado.",
-    TUTO_DETECT_ALL = "|cff40ff40Los cuatro botones están detectados.|r",
-    TUTO_DETECT_MISSING = "¿No pasa nada al pulsar? Revisa la tecla del botón en GameSir Nexus y vuelve a intentarlo.",
 
-    TUTO_MODES_TITLE = "Paso 3: Elegir un modo",
-    TUTO_MODES_TEXT = "|cffffd100Modificador|r: mantén el botón y pulsa A, B, X, Y o la cruceta. 8 acciones por botón, como LT y RT.\n"
-        .. "|cffffd100Botón simple|r: una acción, más otra con LT mantenido y otra con RT mantenido.\n"
-        .. "|cffffd100Desactivado|r: la tecla queda libre.\n\n"
-        .. "Recomendado: modificadores en L5 y R5 (fáciles de mantener), botones simples en L4 y R4.",
 
-    TUTO_ACTIONS_TITLE = "Paso 4: Colocar tus acciones",
     TUTO_ACTIONS_TEXT = "En la ventana de configuración, cada botón muestra sus casillas.\n\n"
         .. "- Arrastra un hechizo del libro de hechizos, un objeto de tus bolsas, una macro, una montura o un juguete a una casilla.\n"
         .. "- O haz clic derecho en una casilla: elige un hechizo u objeto de la bolsa, escribe una macro, elige un comando de WoW (como Correr automáticamente) o vacíala.\n\n"
@@ -149,12 +120,6 @@ ns.AddLocale("esES", {
     HUD_OFF = "HUD oculto: vuelve la barra de mando del juego. Escribe /mgir hud on para mostrarlo de nuevo.",
     HUD_SCALE = "Tamaño del HUD: %s",
     TUTO_HUD_TITLE = "Tu HUD de mando",
-    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD, en la parte inferior de la pantalla:\n\n"
-        .. "- |cffffd100En grande|r: la capa que usas, la cruceta a la izquierda y A/B/X/Y a la derecha. Mantén LT, RT, L5 o R5 y cambia.\n"
-        .. "- |cffffd100En la franja|r (abajo, o arriba con /mgir hud strip): todas las capas en miniatura (Solo, LT, RT, LT+RT, L5, R5); la que mantienes se ilumina.\n"
-        .. "- |cffffd100En el centro|r: L4 y R4, con la acción que saldrá según el gatillo que mantengas.\n\n"
-        .. "Se atenúa fuera de combate mientras no mantienes nada.\n"
-        .. "|cffffd100/mgir hud|r: moverlo  -  |cffffd100/mgir hud scale 1.2|r: tamaño  -  |cffffd100/mgir hud off|r: volver a la barra del juego",
 })
 
 -- HUD : attribution rapide
@@ -190,13 +155,12 @@ ns.AddLocale("esES", {
     MINIMAP_SHOWN = "Botón del minimapa visible.",
 })
 
--- Paires de modificateurs (L5 + R5, L4 + R4)
+-- Paires de modificateurs
 ns.AddLocale("esES", {
     PAIR_READY = "Pareja · mantener ambos",
     PAIR_NOT_READY = "Pareja · no disponible",
     PAIR_DESC = "Mantén %s y %s a la vez y pulsa A, B, X, Y o la cruceta: 8 combinaciones más.",
     PAIR_NEEDS = "Para usar esta pareja, %s y %s deben estar ambos en modo Modificador, con una tecla.",
-    TUTO_PAIRS_TEXT = "|cffffd100Parejas|r: si L5 y R5 son ambos modificadores, mantenerlos a la vez da 8 combinaciones más. Lo mismo para L4 + R4.",
 })
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
@@ -210,7 +174,6 @@ ns.AddLocale("esES", {
     SECTION_SIMPLE_EMPTY = "Ninguno aún: pon un botón en Botón simple en la pestaña Botones.",
     LAYER_DESC_BASE = "A, B, X, Y y la cruceta sin mantener nada. A, B, X e Y conservan las acciones del juego (saltar, interactuar...).",
     LAYER_DESC_HOLD = "Mantén %s y pulsa A, B, X, Y o la cruceta.",
-    BUTTONS_INTRO = "Tus botones adicionales: la tecla que envía GameSir Nexus y lo que hace cada uno. Pasa el ratón por un modo para ver qué hace.",
     PAIRS_TITLE = "Parejas (dos modificadores mantenidos a la vez)",
     HUD_INTRO = "El HUD sustituye la barra de mando del juego: la capa en uso en grande y todas las capas en miniatura.",
     HUD_SHOW = "Mostrar el HUD (en lugar de la barra de mando del juego)",
@@ -229,4 +192,68 @@ ns.AddLocale("esES", {
 ns.AddLocale("esES", {
     HUD_STRIP_SIZE = "Tamaño de las miniaturas:",
     HUD_STRIP_ROWS = "Filas de miniaturas:",
+})
+
+-- Manettes (préréglages), et les textes qui en dépendent
+ns.AddLocale("esES", {
+    CONTROLLER_LABEL = "Mando:",
+    CONTROLLER_CHANGE = "Cambiar...",
+    CONTROLLER_PICK = "Elige tu mando",
+    CONTROLLER_OTHER = "Otro mando",
+    EXTRA = "Botón",
+    SOFTWARE_GENERIC = "el software de tu mando",
+    SETTINGS_DESC = "Configura los botones adicionales de tu mando (paletas traseras, gatillos extra). Comando: /mgir",
+    BUTTONS_INTRO = "Tu mando y sus botones adicionales: la tecla que envía cada uno y lo que hace. Pasa el ratón por un modo para ver qué hace.",
+    TEST_INTRO = "Pulsa cualquier botón: lo que recibe WoW se ilumina. Si tus botones adicionales no muestran nada, asígnales teclas en el software de tu mando (ver Ayuda).",
+    LEARN_MODKEY = "Atención: %s es una tecla Mayús / Ctrl / Alt; en el software de tu mando, mejor usa una tecla como F9-F12.",
+
+    TUTO_WELCOME_TEXT = "Este addon lleva a WoW los botones adicionales de tu mando: paletas traseras, gatillos o botones extra "
+        .. "(GameSir, Xbox Elite, DualSense Edge, SCUF, 8BitDo, Flydigi...).\n\n"
+        .. "Cada uno puede ser un modificador que se mantiene (8 combinaciones nuevas con A, B, X, Y y la cruceta) "
+        .. "o un botón simple con sus propias capas LT y RT.\n\n"
+        .. "Este tutorial dura unos dos minutos. Puedes salir cuando quieras y volver a abrirlo con |cffffd100/mgir tuto|r.",
+
+    TUTO_CONTROLLER_TITLE = "Paso 1: Tu mando",
+    TUTO_CONTROLLER_TEXT = "Elige tu mando: el addon usará los nombres de sus botones y te dirá qué software los configura. "
+        .. "¿No está en la lista? Elige |cffffd100Otro mando|r (hasta 6 botones, que puedes renombrar).",
+
+    TUTO_SOFTWARE_TITLE = "Paso 2: Hacer que los botones envíen una tecla",
+    TUTO_SOFTWARE_WHY = "Windows ve la mayoría de los mandos como un mando de Xbox (XInput). Ese modo solo transmite los botones estándar, "
+        .. "así que WoW nunca recibe los adicionales. La solución: hacer que cada uno envíe una tecla del teclado.",
+    TUTO_SOFTWARE_VENDOR = "1. Conecta el mando y abre |cffffd100%s|r.\n"
+        .. "2. Abre la página de asignación de botones.\n"
+        .. "3. Asigna a cada botón adicional (%s) una tecla que no uses en WoW. Buenas opciones: |cffffd100F9, F10, F11, F12|r "
+        .. "o el teclado numérico (con Bloq Num activado).\n"
+        .. "4. Evita Mayús, Ctrl y Alt: cambiarían tus otras asignaciones.\n"
+        .. "5. Guarda el perfil (en el mando, si el software lo permite).",
+    TUTO_SOFTWARE_ALT = "Si %s no puede asignar una tecla a estos botones, usa |cffffd100Steam Input|r: añade WoW (o el launcher de Battle.net) "
+        .. "a Steam como juego ajeno a Steam, lánzalo desde Steam y asigna una tecla a cada botón en su configuración del mando. "
+        .. "|cffffd100reWASD|r (de pago) también sirve, sin Steam.",
+    TUTO_SOFTWARE_STEAM = "1. En |cffffd100Steam|r, añade WoW (o el launcher de Battle.net) como juego ajeno a Steam "
+        .. "(Juegos > Añadir un juego ajeno a Steam a mi biblioteca) y lánzalo desde Steam.\n"
+        .. "2. Abre su configuración del mando (overlay de Steam o los ajustes del mando del juego en Steam).\n"
+        .. "3. Asigna a cada botón adicional (%s) una tecla que no uses en WoW. Buenas opciones: |cffffd100F9, F10, F11, F12|r.\n"
+        .. "4. Evita Mayús, Ctrl y Alt: cambiarían tus otras asignaciones.\n\n"
+        .. "|cffffd100reWASD|r (de pago) hace lo mismo sin Steam.",
+
+    TUTO_DETECT_TITLE = "Paso 3: Detectar tus botones",
+    TUTO_DETECT_ALL = "|cff40ff40Todos tus botones están detectados.|r",
+    TUTO_DETECT_MISSING = "¿No pasa nada al pulsar? Revisa la tecla del botón en el software de tu mando (paso 2) y vuelve a intentarlo.",
+
+    TUTO_MODES_TITLE = "Paso 4: Elegir un modo",
+    TUTO_MODES_TEXT = "|cffffd100Modificador|r: mantén el botón y pulsa A, B, X, Y o la cruceta. 8 acciones por botón, como LT y RT.\n"
+        .. "|cffffd100Botón simple|r: una acción, más otra con LT mantenido y otra con RT mantenido.\n"
+        .. "|cffffd100Desactivado|r: la tecla queda libre.\n\n"
+        .. "Recomendado: modificadores en los botones más fáciles de mantener, botones simples en los demás.",
+    TUTO_PAIRS_TEXT = "|cffffd100Parejas|r: los botones van por parejas izquierda + derecha. Si los dos botones de una pareja son modificadores, "
+        .. "mantenerlos a la vez da 8 combinaciones más.",
+
+    TUTO_ACTIONS_TITLE = "Paso 5: Colocar tus acciones",
+
+    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD, en la parte inferior de la pantalla:\n\n"
+        .. "- |cffffd100En grande|r: la capa que usas, la cruceta a la izquierda y A/B/X/Y a la derecha. Mantén LT, RT o un modificador y cambia.\n"
+        .. "- |cffffd100En la franja|r (abajo, o arriba con /mgir hud strip): todas las capas en miniatura (Solo, LT, RT, LT+RT, tus modificadores y parejas); la que mantienes se ilumina.\n"
+        .. "- |cffffd100En el centro|r: tus botones simples, con la acción que saldrá según el gatillo que mantengas.\n\n"
+        .. "Se atenúa fuera de combate mientras no mantienes nada.\n"
+        .. "|cffffd100/mgir hud|r: moverlo  -  |cffffd100/mgir hud scale 1.2|r: tamaño  -  |cffffd100/mgir hud off|r: volver a la barra del juego",
 })
