@@ -208,7 +208,7 @@ local function CleanAction(a)
     local k = a.kind
     if k == "spell" then
         local id = CleanID(a.id)
-        if id then return { kind = k, id = id, name = CleanString(a.name, 64) } end
+        if id then return { kind = k, id = id, name = CleanString(a.name, 64), rank = CleanString(a.rank, 32) } end
     elseif k == "mount" then
         local id = CleanID(a.id)
         if id then return { kind = k, id = id, mountID = CleanID(a.mountID), name = CleanString(a.name, 64) } end

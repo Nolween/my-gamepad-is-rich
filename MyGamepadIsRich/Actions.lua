@@ -36,6 +36,14 @@ function A.SpellInfo(spell)
     end
 end
 
+-- Le sous-texte d'un sort (« Rang 3 » sur Classic), ou nil
+function A.SpellRank(spellID)
+    if not spellID then return nil end
+    local get = (C_Spell and C_Spell.GetSpellSubtext) or GetSpellSubtext
+    local ok, text = pcall(get or error, spellID)
+    if ok and type(text) == "string" and text ~= "" then return text end
+end
+
 local function ItemName(id)
     local get = (C_Item and C_Item.GetItemNameByID) or GetItemInfo
     return get and get(id)
@@ -74,7 +82,14 @@ function A.FromCursor()
             if ok and type(info) == "table" then spellID = info.spellID or info.actionID end
         end
         local name = A.SpellInfo(spellID)
-        if spellID and name then return { kind = "spell", id = spellID, name = name } end
+        if spellID and name then
+            -- (un rang inférieur glissé depuis le grimoire : le garder)
+            local rank
+            for _, e in ipairs(A.SpellbookEntries()) do
+                if e.action and e.action.id == spellID then rank = e.action.rank; break end
+            end
+            return { kind = "spell", id = spellID, name = name, rank = rank }
+        end
     elseif kind == "item" then
         if type(a) == "number" then return { kind = "item", id = a } end
     elseif kind == "toy" then
@@ -142,7 +157,9 @@ function A.Label(action)
     if not action then return nil end
     local k = action.kind
     if k == "spell" or k == "mount" then
-        return A.SpellInfo(action.id) or action.name or ("spell:" .. tostring(action.id))
+        local name = A.SpellInfo(action.id) or action.name or ("spell:" .. tostring(action.id))
+        if action.rank then name = name .. " (" .. action.rank .. ")" end
+        return name
     elseif k == "item" or k == "toy" then
         return ItemName(action.id) or ("item:" .. tostring(action.id))
     elseif k == "macro" or k == "equipset" then
@@ -206,6 +223,8 @@ function A.Secure(action)
     local k = action.kind
     if k == "spell" or k == "mount" then
         local name = A.SpellInfo(action.id) or action.name
+        -- (un rang inférieur choisi exprès : sinon /cast prend le plus haut)
+        if name and action.rank then name = name .. "(" .. action.rank .. ")" end
         return nil, name and ("/cast " .. name)
     elseif k == "item" or k == "toy" then
         return nil, "/use item:" .. tostring(action.id)
@@ -259,19 +278,28 @@ end
 ---------------------------------------------------------------------------
 -- Tous les sorts actifs du grimoire, une fois chacun, dans l'ordre du livre
 -- (API récente ou ancienne : méthode d'Improved Forever, éprouvée sur Forever)
+-- Un sort à plusieurs rangs (Classic) a une entrée par rang : le rang est
+-- ajouté au libellé. Un rang inférieur au plus haut connu est retenu dans
+-- l'action (/cast Nom(Rang 1)) ; le plus haut ne l'est pas, pour suivre les
+-- rangs appris ensuite.
 function A.SpellbookEntries()
-    local entries, seen, lastTab = {}, {}, nil
-    local function add(name, icon, tab, spellID)
+    local entries, seen, lastTab, byName = {}, {}, nil, {}
+    local function add(name, icon, tab, spellID, rank)
         if not (name and spellID) or seen[spellID] then return end
         seen[spellID] = true
         if tab ~= lastTab then
             entries[#entries + 1] = { header = tab or L.KIND_spell }
             lastTab = tab
         end
-        entries[#entries + 1] = {
+        local e = {
             label = name, sub = tab, icon = icon,
             action = { kind = "spell", id = spellID, name = name },
+            rank = (type(rank) == "string" and rank ~= "") and rank or nil,
         }
+        entries[#entries + 1] = e
+        local same = byName[name]
+        if not same then same = {}; byName[name] = same end
+        same[#same + 1] = e
     end
     if C_SpellBook and C_SpellBook.GetNumSpellBookSkillLines and Enum and Enum.SpellBookSpellBank then
         local bank = Enum.SpellBookSpellBank.Player
@@ -282,7 +310,7 @@ function A.SpellbookEntries()
                 for index = info.itemIndexOffset + 1, info.itemIndexOffset + info.numSpellBookItems do
                     local item = C_SpellBook.GetSpellBookItemInfo(index, bank)
                     if item and item.itemType == SPELL and not item.isPassive then
-                        add(item.name, item.iconID, info.name, item.spellID or item.actionID)
+                        add(item.name, item.iconID, info.name, item.spellID or item.actionID, item.subName)
                     end
                 end
             end
@@ -293,11 +321,24 @@ function A.SpellbookEntries()
             for index = (offset or 0) + 1, (offset or 0) + (numSlots or 0) do
                 local itemType, spellID = GetSpellBookItemInfo(index, "spell")
                 if itemType == "SPELL" and not (IsPassiveSpell and IsPassiveSpell(index, "spell")) then
-                    add(GetSpellBookItemName(index, "spell"), GetSpellBookItemTexture(index, "spell"), tabName, spellID)
+                    local name, rank = GetSpellBookItemName(index, "spell")
+                    add(name, GetSpellBookItemTexture(index, "spell"), tabName, spellID, rank)
                 end
             end
         end
     end
+    -- (le grimoire range les rangs du plus bas au plus haut : le dernier est
+    -- le plus haut connu)
+    for _, same in pairs(byName) do
+        if #same > 1 then
+            for i, e in ipairs(same) do
+                local rank = e.rank or A.SpellRank(e.action.id)
+                e.label = e.label .. " (" .. (rank or ("#" .. i)) .. ")"
+                if rank and i < #same then e.action.rank = rank end
+            end
+        end
+    end
+    for _, e in ipairs(entries) do e.rank = nil end
     return entries
 end
 
