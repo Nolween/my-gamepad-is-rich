@@ -83,10 +83,20 @@ function ns.PairEnabled(id)
     return pairs_ ~= nil and pairs_[id] == true
 end
 
+-- Les paires que Forever utilise déjà : LB + LT et RB + RT déclenchent son
+-- action de classe (souvent une roue de sorts, qui prend A/B/X/Y). Il la
+-- détecte lui-même, l'addon ne peut pas l'empêcher : on prévient.
+ns.CLASS_ACTION_PAIRS = { LTLB = true, RTRB = true }
+
+function ns.IsClassActionPair(id)
+    return ns.CLASS_ACTION_PAIRS[id] == true
+end
+
 function ns.SetPairEnabled(id, on)
     if not (ns.prof and ns.IsPair(id)) then return end
     ns.prof.pairs = ns.prof.pairs or {}
     ns.prof.pairs[id] = on and true or nil
+    if on and ns.IsClassActionPair(id) then ns.Print(L.PAIR_CLASS_WARN_LONG:format(ns.ButtonLabel(id))) end
     ns.Apply()
 end
 
@@ -608,8 +618,9 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
     elseif msg == "minimap" then
         ns.MinimapButton.Toggle()
     elseif word == "probe" then
-        -- (/mgir probe 5 : relevé dans 5 secondes)
-        ns.Probe.Run(tonumber(rest))
+        -- (/mgir probe 5 : relevé dans 5 secondes ; /mgir probe watch : ce
+        -- qui se passe pendant 25 s quand on appuie)
+        if rest == "watch" then ns.Probe.Watch() else ns.Probe.Run(tonumber(rest)) end
     elseif msg == "tuto" or msg == "tutorial" or msg == "tutoriel" then
         ns.Tutorial.Open(1)
     elseif msg == "test" then

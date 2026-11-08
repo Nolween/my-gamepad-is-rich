@@ -418,3 +418,10 @@ ns.AddLocale("zhCN", {
 ns.AddLocale("zhCN", {
     TUTO_PAIRS_PRESS = "按下手柄上的一个按键：它所在的组合会以绿色高亮。同时按下两个按键：它们的组合会高亮。",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("zhCN", {
+    PAIR_CLASS_WARN = "也会触发 Forever 的职业动作",
+    PAIR_CLASS_WARN_LONG = "注意：%s 也会触发 Forever 的职业动作（通常是一个法术轮盘，打开时会占用 A、B、X 和 Y；按 B 关闭）。插件无法阻止：最好选择其他组合。",
+    PAIR_CLASS_NOTE = "%s 和 %s 也会触发 Forever 的职业动作（通常是会占用 A、B、X 和 Y 的法术轮盘）。插件无法阻止：最好选择其他组合。",
+})

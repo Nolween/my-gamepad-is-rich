@@ -418,3 +418,10 @@ ns.AddLocale("koKR", {
 ns.AddLocale("koKR", {
     TUTO_PAIRS_PRESS = "컨트롤러의 버튼을 누르면 그 버튼의 쌍이 초록색으로 표시됩니다. 두 버튼을 함께 누르면 그 쌍이 표시됩니다.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("koKR", {
+    PAIR_CLASS_WARN = "Forever의 직업 동작도 실행됩니다",
+    PAIR_CLASS_WARN_LONG = "주의: %s는 Forever의 직업 동작도 실행합니다(대개 주문 휠이며, 열려 있는 동안 A, B, X, Y를 차지합니다. B로 닫습니다). 애드온이 막을 수 없으니 다른 쌍을 선택하세요.",
+    PAIR_CLASS_NOTE = "%s와 %s는 Forever의 직업 동작도 실행합니다(대개 A, B, X, Y를 차지하는 주문 휠). 애드온이 막을 수 없으니 다른 쌍을 고르는 것이 좋습니다.",
+})

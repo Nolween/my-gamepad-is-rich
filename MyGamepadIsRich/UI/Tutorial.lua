@@ -371,6 +371,12 @@ local function BuildPairs(c)
     c.none:SetPoint("TOPLEFT", 0, -4)
     c.none:SetWidth(TEXT_WIDTH)
     c.none:SetJustifyH("LEFT")
+    -- (sous la liste : LB + LT et RB + RT déclenchent aussi l'action de
+    -- classe de Forever)
+    c.classNote = UI.Text(c, "GameFontHighlight")
+    c.classNote:SetTextColor(1, 0.5, 0.13)
+    c.classNote:SetWidth(TEXT_WIDTH)
+    c.classNote:SetJustifyH("LEFT")
     return 30
 end
 
@@ -389,6 +395,14 @@ local function PairCheck(c, i)
         if self.pair then ns.SetPairEnabled(self.pair.id, self:GetChecked()) end
         Refresh()
     end)
+    cb:SetScript("OnEnter", function(self)
+        if not (self.pair and ns.IsClassActionPair(self.pair.id)) then return end
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetText(ns.ButtonLabel(self.pair.id), 1, 0.82, 0)
+        GameTooltip:AddLine(L.PAIR_CLASS_WARN_LONG:format(ns.ButtonLabel(self.pair.id)), 1, 0.5, 0.13, true)
+        GameTooltip:Show()
+    end)
+    cb:SetScript("OnLeave", function() GameTooltip:Hide() end)
     c.rows[i] = cb
     return cb
 end
@@ -410,6 +424,7 @@ local function RefreshPairs(c)
     c.press:SetShown(#list > 0)
     local top = #list > 0 and (c.press:GetStringHeight() + 10) or 0
     local perCol = math.ceil(#list / 2)
+    local classListed = false
     for i, pair in ipairs(list) do
         local cb = PairCheck(c, i)
         local col, row = math.floor((i - 1) / perCol), (i - 1) % perCol
@@ -417,7 +432,9 @@ local function RefreshPairs(c)
         cb:SetPoint("TOPLEFT", col * (TEXT_WIDTH / 2), -top - row * PAIR_ROW)
         cb.pair = pair
         cb:SetChecked(ns.PairEnabled(pair.id))
-        cb.label:SetText(ns.ButtonLabel(pair.id))
+        local warn = ns.IsClassActionPair(pair.id)
+        if warn then classListed = true end
+        cb.label:SetText(ns.ButtonLabel(pair.id) .. (warn and " |cffff8020(!)|r" or ""))
         local lit = Focused(pair)
         cb.hl:SetShown(lit)
         if lit then
@@ -431,7 +448,15 @@ local function RefreshPairs(c)
         c.rows[i]:Hide()
         c.rows[i].pair = nil
     end
-    return #list == 0 and 30 or top + perCol * PAIR_ROW + 4
+    local height = #list == 0 and 30 or top + perCol * PAIR_ROW + 4
+    c.classNote:SetShown(classListed)
+    if classListed then
+        c.classNote:SetText("(!) " .. L.PAIR_CLASS_NOTE:format(ns.ButtonLabel("LTLB"), ns.ButtonLabel("RTRB")))
+        c.classNote:ClearAllPoints()
+        c.classNote:SetPoint("TOPLEFT", 0, -height - 4)
+        height = height + 8 + c.classNote:GetStringHeight()
+    end
+    return height
 end
 
 -- Un bouton de la manette pressé / relâché pendant l'étape des paires :
@@ -452,6 +477,11 @@ local function PairPress(id, down)
     else
         pressed[id] = nil
     end
+end
+
+-- (LB + LT et RB + RT : l'avertissement, pour l'Aide et les options)
+function T.ClassPairNote()
+    return "|cffff8020(!) " .. L.PAIR_CLASS_NOTE:format(ns.ButtonLabel("LTLB"), ns.ButtonLabel("RTRB")) .. "|r"
 end
 
 -- Le HUD : où va la bande des miniatures (en bas par défaut), appliqué tout de suite
@@ -501,7 +531,8 @@ local STEPS = {
         refresh = RefreshDetect, help = "TUTO_DETECT_MISSING", skip = NoExtra },
     { key = "modes", title = "TUTO_MODES_TITLE", text = "TUTO_MODES_TEXT", build = BuildModes, refresh = RefreshModes,
         skip = NoExtra },
-    { key = "pairs", title = "TUTO_PAIRS_TITLE", text = "TUTO_PAIRS_TEXT", build = BuildPairs, refresh = RefreshPairs },
+    { key = "pairs", title = "TUTO_PAIRS_TITLE", text = "TUTO_PAIRS_TEXT", build = BuildPairs, refresh = RefreshPairs,
+        helpExtra = function() return T.ClassPairNote() end },
     { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT" },
     { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", build = BuildHud, refresh = RefreshHud },
     { key = "done", title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },

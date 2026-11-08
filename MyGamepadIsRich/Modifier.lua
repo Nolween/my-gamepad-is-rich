@@ -152,11 +152,22 @@ end
 local held, order = {}, 0
 local pairOf = {} -- [a][b] = paire active de ces deux boutons
 
+-- Le bouton de ciblage qui a allumé le ciblage du moteur (voir plus bas)
+local engineOwner
+local EngineTargeting -- (défini plus bas)
+
 local function SetHeld(id, down)
     if down then
         if not held[id] then
             order = order + 1
             held[id] = order
+        end
+        -- (un autre bouton pressé pendant le ciblage : c'est une paire, le
+        -- ciblage du moteur s'éteint — avec LT ou RT tenu, Forever ouvrirait
+        -- son action de classe, LB + LT / RB + RT)
+        if engineOwner and engineOwner ~= id then
+            engineOwner = nil
+            EngineTargeting(nil)
         end
     else
         held[id] = nil
@@ -252,6 +263,10 @@ function M.Begin()
     wipe(written)
     for id in pairs(handlers) do disp:SetAttribute("held-" .. id, nil) end
     wipe(held)
+    if engineOwner then
+        engineOwner = nil
+        EngineTargeting(nil)
+    end
     wipe(pairOf)
     wipe(active)
     count, chordCount, hcount, hcmdCount = 0, 0, 0, 0
@@ -325,7 +340,7 @@ local function TargetFilter(mode)
 end
 
 -- (hors code sécurisé : allume / éteint le ciblage du moteur)
-local function EngineTargeting(mode)
+function EngineTargeting(mode)
     local api = C_GamepadTargeting
     if type(api) ~= "table" then return end
     if mode then
@@ -350,9 +365,28 @@ local function Targeter(id)
     b:SetAttribute("gps-id", id)
     SecureHandlerSetFrameRef(b, "disp", Dispatcher())
     SecureHandlerWrapScript(b, "OnClick", b, TARGET_CLICK)
+    -- (le ciblage du moteur — viser au stick droit — seulement quand ce
+    -- bouton est le seul tenu : avec un autre, c'est une paire. Forever
+    -- ouvre son action de classe si le ciblage s'allume pendant que LT ou
+    -- RT est tenu)
     b:HookScript("OnClick", function(self, _, down)
-        SetHeld(id, down)
-        EngineTargeting(down and self.targetMode or nil)
+        if down then
+            local alone = true
+            for other in pairs(held) do
+                if other ~= id then alone = false end
+            end
+            SetHeld(id, true)
+            if alone then
+                engineOwner = id
+                EngineTargeting(self.targetMode)
+            end
+        else
+            SetHeld(id, false)
+            if engineOwner == id then
+                engineOwner = nil
+                EngineTargeting(nil)
+            end
+        end
     end)
     targeters[id] = b
     return b

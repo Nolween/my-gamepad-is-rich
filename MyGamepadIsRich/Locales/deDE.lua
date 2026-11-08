@@ -418,3 +418,10 @@ ns.AddLocale("deDE", {
 ns.AddLocale("deDE", {
     TUTO_PAIRS_PRESS = "Drücke eine Taste an deinem Controller: Ihre Paare leuchten grün auf. Drücke zwei Tasten zusammen: Ihr Paar leuchtet auf.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("deDE", {
+    PAIR_CLASS_WARN = "löst auch die Klassenaktion von Forever aus",
+    PAIR_CLASS_WARN_LONG = "Achtung: %s löst auch die Klassenaktion von Forever aus (oft ein Zauberrad, das A, B, X und Y übernimmt, solange es offen ist; B schließt es). Das Addon kann das nicht verhindern: Wähle lieber ein anderes Paar.",
+    PAIR_CLASS_NOTE = "%s und %s lösen auch die Klassenaktion von Forever aus (oft ein Zauberrad, das A, B, X und Y übernimmt). Das Addon kann das nicht verhindern: Wähle lieber andere Paare.",
+})

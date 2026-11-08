@@ -418,3 +418,10 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     TUTO_PAIRS_PRESS = "Premi un pulsante del controller: le sue coppie si illuminano di verde. Premi due pulsanti insieme: si illumina la loro coppia.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("itIT", {
+    PAIR_CLASS_WARN = "attiva anche l'azione di classe di Forever",
+    PAIR_CLASS_WARN_LONG = "Attenzione: %s attiva anche l'azione di classe di Forever (spesso una ruota di incantesimi che prende il controllo di A, B, X e Y finché è aperta; B la chiude). L'addon non può impedirlo: meglio scegliere un'altra coppia.",
+    PAIR_CLASS_NOTE = "%s e %s attivano anche l'azione di classe di Forever (spesso una ruota di incantesimi che prende il controllo di A, B, X e Y). L'addon non può impedirlo: meglio scegliere altre coppie.",
+})

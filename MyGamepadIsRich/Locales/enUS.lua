@@ -419,3 +419,10 @@ ns.AddLocale("enUS", {
 ns.AddLocale("enUS", {
     TUTO_PAIRS_PRESS = "Press a button on your controller: its pairs light up in green. Press two buttons together: their pair lights up.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("enUS", {
+    PAIR_CLASS_WARN = "also triggers Forever's class action",
+    PAIR_CLASS_WARN_LONG = "Warning: %s also triggers Forever's class action (often a spell wheel, which takes over A, B, X and Y while it is open; B closes it). The addon cannot prevent it: better pick another pair.",
+    PAIR_CLASS_NOTE = "%s and %s also trigger Forever's class action (often a spell wheel that takes over A, B, X and Y). The addon cannot prevent it: better pick other pairs.",
+})

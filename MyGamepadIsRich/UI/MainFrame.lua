@@ -465,6 +465,8 @@ local function RefreshDetail()
         warn = L.BAR_UNAVAILABLE
     elseif ns.IsPending() then
         warn = L.APPLIED_AFTER_COMBAT
+    elseif selected.mod and ns.IsClassActionPair(selected.mod) then
+        warn = L.PAIR_CLASS_WARN_LONG:format(ns.ButtonLabel(selected.mod))
     end
     detail.warning:SetText(warn or "")
 end
@@ -503,6 +505,16 @@ local function PairRow(i)
     row.text:SetPoint("LEFT", 106, 0)
     row.text:SetPoint("RIGHT", -6, 0)
     row.text:SetJustifyH("LEFT")
+    -- (LB + LT, RB + RT : l'avertissement en entier au survol)
+    row:EnableMouse(true)
+    row:SetScript("OnEnter", function(self)
+        if not (self.pair and ns.IsClassActionPair(self.pair.id)) then return end
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetText(ns.ButtonLabel(self.pair.id), 1, 0.82, 0)
+        GameTooltip:AddLine(L.PAIR_CLASS_WARN_LONG:format(ns.ButtonLabel(self.pair.id)), 1, 0.5, 0.13, true)
+        GameTooltip:Show()
+    end)
+    row:SetScript("OnLeave", function() GameTooltip:Hide() end)
     pairRows[i] = row
     return row
 end
@@ -737,6 +749,8 @@ local function RefreshButtons()
         elseif not ns.PairEnabled(pair.id) then
             label = "|cff999999" .. label .. "|r"
         end
+        -- (LB + LT, RB + RT : Forever y met déjà son action de classe)
+        if ns.IsClassActionPair(pair.id) then label = label .. "  |cffff8020(!) " .. L.PAIR_CLASS_WARN .. "|r" end
         row.text:SetText(label)
         row.text:SetWordWrap(false)
     end
@@ -1078,7 +1092,10 @@ function UI.RegisterSettings()
     pairsText:SetPoint("TOPLEFT", pairsTitle_, "BOTTOMLEFT", 0, -10)
     pairsText:SetPoint("RIGHT", -16, 0)
     pairsText:SetJustifyH("LEFT")
-    panel:SetScript("OnShow", function() types:SetText(ns.Tutorial.TypesText()) end)
+    panel:SetScript("OnShow", function()
+        types:SetText(ns.Tutorial.TypesText())
+        pairsText:SetText(L.TUTO_PAIRS_TEXT .. "\n\n" .. ns.Tutorial.ClassPairNote())
+    end)
     if Settings and Settings.RegisterCanvasLayoutCategory and Settings.RegisterAddOnCategory then
         local category = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
         Settings.RegisterAddOnCategory(category)

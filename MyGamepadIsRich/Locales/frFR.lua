@@ -418,3 +418,10 @@ ns.AddLocale("frFR", {
 ns.AddLocale("frFR", {
     TUTO_PAIRS_PRESS = "Appuie sur un bouton de ta manette : ses paires s'allument en vert. Appuie sur deux boutons ensemble : leur paire s'allume.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("frFR", {
+    PAIR_CLASS_WARN = "déclenche aussi l'action de classe de Forever",
+    PAIR_CLASS_WARN_LONG = "Attention : %s déclenche aussi l'action de classe de Forever (souvent une roue de sorts, qui prend la main sur A, B, X et Y tant qu'elle est ouverte ; B pour la fermer). L'addon ne peut pas l'empêcher : choisis plutôt une autre paire.",
+    PAIR_CLASS_NOTE = "%s et %s déclenchent aussi l'action de classe de Forever (souvent une roue de sorts qui prend la main sur A, B, X et Y). L'addon ne peut pas l'empêcher : mieux vaut choisir d'autres paires.",
+})

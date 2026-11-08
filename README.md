@@ -188,7 +188,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 
 - Une **commande WoW** ne peut pas être sur une couche LT/RT, ni sur la couche « Seul » d'un bouton qui a des couches LT/RT. En mode Modificateur, elle marche partout.
 - Avec deux modificateurs maintenus en même temps, c'est le dernier pressé qui l'emporte, sauf s'ils forment une paire cochée : leur couche de paire s'active (avec trois tenus ou plus : le dernier pressé et le plus récent des autres qui fait paire avec lui).
-- Quand LT / RT sont des modificateurs de l'addon, Forever ne reçoit plus l'appui sur RT en jeu. Ce qu'il fait lui-même avec RT (par exemple une action de classe sur RB + RT) peut ne plus répondre : il suffit de repasser aux couches du jeu.
+- **LB + LT et RB + RT déclenchent toujours l'action de classe de Forever** (souvent une roue de sorts, par exemple chez le paladin), même quand ces boutons appartiennent à l'addon : Forever détecte lui-même ces deux boutons tenus ensemble, par un chemin interne que l'addon ne peut pas intercepter. La roue prend la main sur A, B, X et Y tant qu'elle est ouverte (B pour la fermer). Ces deux paires restent cochables, mais l'addon prévient partout (onglet Boutons, onglet Actions, chat, tutoriel, options) : mieux vaut choisir d'autres paires. Pendant une paire, l'addon n'allume plus le ciblage du moteur (la visée au stick d'un bouton de ciblage), pour ne pas s'en mêler.
 - Si Forever bascule l'interface en mode clavier/souris quand une palette envoie une touche, merci de le signaler : une option pourra forcer le style manette.
 - Improved Forever peut aussi poser des liaisons sur certaines touches. En cas de conflit, c'est la dernière liaison appliquée qui gagne.
 

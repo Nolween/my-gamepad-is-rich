@@ -418,3 +418,10 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     TUTO_PAIRS_PRESS = "Aperte um botão do controle: os pares dele acendem em verde. Aperte dois botões juntos: o par deles acende.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("ptBR", {
+    PAIR_CLASS_WARN = "também aciona a ação de classe do Forever",
+    PAIR_CLASS_WARN_LONG = "Atenção: %s também aciona a ação de classe do Forever (muitas vezes uma roda de feitiços, que assume A, B, X e Y enquanto está aberta; B fecha). O addon não pode impedir: escolha outro par.",
+    PAIR_CLASS_NOTE = "%s e %s também acionam a ação de classe do Forever (muitas vezes uma roda de feitiços que assume A, B, X e Y). O addon não pode impedir: é melhor escolher outros pares.",
+})

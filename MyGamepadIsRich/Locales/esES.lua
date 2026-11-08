@@ -418,3 +418,10 @@ ns.AddLocale("esES", {
 ns.AddLocale("esES", {
     TUTO_PAIRS_PRESS = "Pulsa un botón de tu mando: sus parejas se iluminan en verde. Pulsa dos botones a la vez: se ilumina su pareja.",
 })
+
+-- LB + LT et RB + RT : l'action de classe de Forever
+ns.AddLocale("esES", {
+    PAIR_CLASS_WARN = "también activa la acción de clase de Forever",
+    PAIR_CLASS_WARN_LONG = "Atención: %s también activa la acción de clase de Forever (a menudo una rueda de hechizos que toma el control de A, B, X e Y mientras está abierta; B la cierra). El addon no puede impedirlo: mejor elige otra pareja.",
+    PAIR_CLASS_NOTE = "%s y %s también activan la acción de clase de Forever (a menudo una rueda de hechizos que toma el control de A, B, X e Y). El addon no puede impedirlo: mejor elige otras parejas.",
+})

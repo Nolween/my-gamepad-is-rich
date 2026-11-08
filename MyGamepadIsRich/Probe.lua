@@ -329,3 +329,215 @@ function P.Run(delay)
     ns.db.probe = log
     ns.Print(("Relevé fait (%d lignes). Tape /reload pour l'enregistrer."):format(#log))
 end
+
+---------------------------------------------------------------------------
+-- /mgir probe watch : pendant 25 s, note ce qui se passe quand on appuie
+-- (boutons internes de Forever, actions de classe LB + LT / RB + RT, focus
+-- manette, sorts lancés). Post-hooks seulement (hooksecurefunc, HookScript),
+-- sans toucher aux cadres du jeu. Écrit dans MyGamepadIsRichDB.probeWatch.
+---------------------------------------------------------------------------
+local watching, watchLog, watchStart = false, nil, 0
+local hooked = false
+local rawHooked = setmetatable({}, { __mode = "k" }) -- (cadres déjà écoutés)
+local MAX_LINES = 400
+
+local function WL(fmt, ...)
+    if not watching or #watchLog >= MAX_LINES then return end
+    local ok, line = pcall(string.format, fmt, ...)
+    watchLog[#watchLog + 1] = ("%.2f "):format(GetTime() - watchStart) .. (ok and line or fmt)
+end
+
+local CLASS_BUTTONS = { "GamepadMainActionBarFramePageUnitLeftClassAction", "GamepadMainActionBarFramePageUnitRightClassAction" }
+local INPUT_BUTTONS = { "PADLSHOULDER", "PADRSHOULDER", "PADLTRIGGER", "PADRTRIGGER", "PAD1", "PAD2", "PAD3", "PAD4" }
+local ATTRS = { "type", "action", "spell", "macro", "macrotext", "clickbutton", "unit", "useOnKeyDown", "pressAndHoldAction" }
+-- (méthodes trop fréquentes pour être notées)
+local NOISY = { "Update", "Refresh", "^Get", "^Is", "^Has", "^Should", "^Can", "OnEvent", "Tick", "Evaluate" }
+
+local function Quiet(name)
+    for _, p in ipairs(NOISY) do
+        if name:find(p) then return true end
+    end
+    return false
+end
+
+-- Toutes les méthodes (non fréquentes) d'un objet : notées à l'appel
+local function HookMethods(obj, label)
+    if type(obj) ~= "table" then return 0 end
+    local names, n = {}, 0
+    local seen = {}
+    local function collect(t)
+        for k, v in pairs(t) do
+            if type(k) == "string" and type(v) == "function" and not seen[k] and not Quiet(k) then
+                seen[k] = true
+                names[#names + 1] = k
+            end
+        end
+    end
+    collect(obj)
+    local mt = getmetatable(obj)
+    if type(mt) == "table" and type(mt.__index) == "table" then collect(mt.__index) end
+    for _, k in ipairs(names) do
+        if type(obj[k]) == "function" and pcall(hooksecurefunc, obj, k, function(_, a, b)
+            WL("%s:%s(%s, %s)", label, k, S(a), S(b))
+        end) then n = n + 1 end
+    end
+    return n
+end
+
+local function Attrs(b)
+    local parts = {}
+    for _, a in ipairs(ATTRS) do
+        local ok, v = pcall(b.GetAttribute, b, a)
+        if ok and v ~= nil then parts[#parts + 1] = a .. "=" .. S(v) end
+    end
+    return table.concat(parts, " ")
+end
+
+local function HookAll()
+    if hooked then return end
+    hooked = true
+    for _, name in ipairs(CLASS_BUTTONS) do
+        local b = _G[name]
+        if b and b.HookScript then
+            local short = name:match("PageUnit(.*)$")
+            b:HookScript("OnClick", function(self, button, down)
+                WL("CLICK %s %s down=%s [%s]", short, S(button), S(down), Attrs(self))
+            end)
+            pcall(b.HookScript, b, "PreClick", function(_, button, down)
+                WL("preclick %s %s down=%s", short, S(button), S(down))
+            end)
+            local n = HookMethods(b, short)
+            WL("hooked %s : %d methods", short, n)
+        end
+    end
+    for _, key in ipairs(INPUT_BUTTONS) do
+        local b = _G["InputFunctionBindingButton_" .. key]
+        if b and b.HookScript then
+            b:HookScript("OnClick", function(_, button, down) WL("input %s %s down=%s", key, S(button), S(down)) end)
+        end
+    end
+    local pu = ns.Bar and ns.Bar.PageUnit()
+    WL("hooked PageUnit : %d methods", HookMethods(pu, "PageUnit"))
+    local manager = GamepadSharedUtility and GamepadSharedUtility.InputBindingManager
+    WL("hooked InputBindingManager : %d methods", HookMethods(manager, "IBM"))
+    local logic = _G.GamepadTargetLogic
+    WL("hooked GamepadTargetLogic : %d methods", HookMethods(logic, "GTL"))
+
+    local ev = CreateFrame("Frame")
+    ev:RegisterEvent("MODIFIER_STATE_CHANGED")
+    ev:RegisterUnitEvent("UNIT_SPELLCAST_SENT", "player")
+    ev:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+    ev:SetScript("OnEvent", function(_, event, a, b, c, d)
+        if event == "MODIFIER_STATE_CHANGED" then
+            WL("modifier %s %s", S(a), S(b))
+        else
+            local id = event == "UNIT_SPELLCAST_SENT" and d or c
+            WL("%s spell %s (%s)", event, S(id), S(ns.Actions.SpellInfo(id)))
+        end
+    end)
+end
+
+-- (les changements de focus manette, de couche tenue et de liaison effective)
+local watcher = CreateFrame("Frame")
+local lastState
+watcher:SetScript("OnUpdate", function()
+    if not watching then return end
+    if GetTime() - watchStart > 25 then
+        watching = false
+        watcher:Hide()
+        ns.db.probeWatch = watchLog
+        ns.Print(("Relevé terminé (%d lignes). Tape /reload pour l'enregistrer."):format(#watchLog))
+        return
+    end
+    local held = ns.Modifier.Held and ns.Modifier.Held()
+    local state = ("ingame=%s held=%s LT=%s LB=%s"):format(S(ns.Focus.InGame()), S(held),
+        S(GetBindingAction("PADLTRIGGER", true)), S(GetBindingAction("PADLSHOULDER", true)))
+    if state ~= lastState then
+        lastState = state
+        WL("state %s", state)
+    end
+end)
+watcher:Hide()
+
+function P.Watch()
+    watchLog, watchStart, lastState = {}, GetTime(), nil
+    watching = true
+    for _, name in ipairs(CLASS_BUTTONS) do
+        local b = _G[name]
+        if b then
+            WL("%s shown=%s protected=%s [%s]", name, S(b:IsShown()), S(b.IsProtected and b:IsProtected()), Attrs(b))
+            WL("keys %s", TableKeys(b))
+        end
+    end
+    WL("mixin %s", TableKeys(_G.GamepadClassActionButtonMixin))
+    -- Ce qui reçoit la manette avant les raccourcis : les cadres qui
+    -- écoutent ses boutons (notés à chaque appui), et l'état de ciblage
+    local logic = _G.GamepadTargetLogic
+    WL("GTL type=%s keys %s", S(type(logic) == "table" and logic.GetObjectType and logic:GetObjectType()), TableKeys(logic))
+    WL("GamepadTargetingState %s", TableKeys(_G.GamepadTargetingState))
+    if type(logic) == "table" and type(logic.hudModifierBindings) == "table" then
+        for k, v in pairs(logic.hudModifierBindings) do
+            WL("GTL hudModifierBindings %s = %s %s", S(k), S(v), type(v) == "table" and TableKeys(v) or "")
+        end
+    end
+    local f = EnumerateFrames and EnumerateFrames()
+    local n = 0
+    while f and n < 20000 do
+        n = n + 1
+        local ok, on = pcall(function() return f.IsGamePadButtonEnabled and f:IsGamePadButtonEnabled() end)
+        -- (valeur cachée par le jeu : cadre ignoré)
+        if ok and not Secret(on) and on == true then
+            local okp, prop = pcall(f.GetPropagateKeyboardInput, f)
+            local okr, prot = pcall(f.IsProtected, f)
+            local okn, rawName = pcall(function() return f.GetDebugName and f:GetDebugName() or f:GetName() end)
+            local name = S(okn and rawName or "?")
+            WL("gamepad frame %s shown=%s propagate=%s protected=%s", name, S((select(2, pcall(f.IsShown, f)))), S(okp and prop),
+                S(okr and prot))
+            -- (écouté seulement s'il a déjà un script : en poser un
+            -- ferait garder les appuis par ce cadre, sans liaisons)
+            local okh, has = pcall(f.GetScript, f, "OnGamePadButtonDown")
+            if not rawHooked[f] and okh and has then
+                rawHooked[f] = true
+                pcall(f.HookScript, f, "OnGamePadButtonDown", function(_, b) WL("raw down %s -> %s", S(b), name) end)
+                pcall(f.HookScript, f, "OnGamePadButtonUp", function(_, b) WL("raw up %s -> %s", S(b), name) end)
+            end
+        end
+        f = EnumerateFrames(f)
+    end
+    WL("frames scanned %d", n)
+    -- Les réglages (CVars) de la manette, avec leur valeur
+    if C_Console and C_Console.GetAllCommands then
+        local okc, all = pcall(C_Console.GetAllCommands)
+        if okc and type(all) == "table" then
+            for _, c in ipairs(all) do
+                local cname = type(c) == "table" and c.command
+                if type(cname) == "string" and (cname:lower():find("gamepad") or cname:lower():find("modifier")
+                    or cname:lower():find("classaction") or cname:lower():find("flyout")) then
+                    WL("cvar %s = %s", cname, S(ns.CVar(cname)))
+                end
+            end
+        end
+    end
+    HookAll()
+    -- Tous les événements du jeu pendant le relevé (sauf les très fréquents)
+    if not P.eventFrame then
+        local NOISY_EVENTS = { "^COMBAT_LOG", "^UNIT_", "^CHAT_MSG", "^ACTIONBAR_UPDATE", "^SPELL_UPDATE", "^BAG_",
+            "^UPDATE_", "^CURSOR", "^NAME_PLATE", "^PLAYER_STARTED", "^PLAYER_STOPPED", "^COMPANION_UPDATE",
+            "^SPELL_ACTIVATION", "^MODIFIER_STATE", "^WORLD_CURSOR", "^PLAYER_SOFT", "^ACTION_RANGE", "^ACTION_USABLE",
+            "^GLOBAL_MOUSE", "^QUEST_LOG", "^LOSS_OF_CONTROL", "^CVAR_UPDATE" }
+        local ef = CreateFrame("Frame")
+        ef:SetScript("OnEvent", function(_, event, ...)
+            for _, p in ipairs(NOISY_EVENTS) do
+                if event:find(p) then return end
+            end
+            local args = {}
+            for i = 1, math.min(select("#", ...), 4) do args[i] = S((select(i, ...))) end
+            WL("event %s %s", event, table.concat(args, " "))
+        end)
+        P.eventFrame = ef
+    end
+    P.eventFrame:RegisterAllEvents()
+    C_Timer.After(26, function() P.eventFrame:UnregisterAllEvents() end)
+    watcher:Show()
+    ns.Print("Relevé pendant 25 s : ferme le chat, puis LB + LT, LB seul, LT seul, RB + RT (tranquillement).")
+end
