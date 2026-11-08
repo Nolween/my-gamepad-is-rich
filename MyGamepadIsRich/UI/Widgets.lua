@@ -167,6 +167,84 @@ function UI.EditMacro(initial, onOK)
 end
 
 ---------------------------------------------------------------------------
+-- Petites boîtes : un texte à saisir (nom de profil), une confirmation.
+-- Maison plutôt que StaticPopup, dont l'API change selon la version du jeu.
+---------------------------------------------------------------------------
+local askDialog, confirmDialog
+
+local function SmallDialog(name, height)
+    local d = UI.Panel(UIParent, name, "DIALOG")
+    d:SetSize(380, height)
+    d:SetPoint("CENTER", 0, 120)
+    d:EnableMouse(true)
+    d:SetToplevel(true)
+    d:SetFrameLevel(100)
+    tinsert(UISpecialFrames, name)
+    d.text = UI.Text(d, "GameFontHighlight")
+    d.text:SetPoint("TOP", 0, -16)
+    d.text:SetWidth(340)
+    d.text:SetJustifyH("CENTER")
+    d.ok = UI.Button(d, L.OK, 120)
+    d.ok:SetPoint("BOTTOMRIGHT", d, "BOTTOM", -6, 12)
+    d.cancel = UI.Button(d, L.CANCEL, 120)
+    d.cancel:SetPoint("BOTTOMLEFT", d, "BOTTOM", 6, 12)
+    d.cancel:SetScript("OnClick", function() d:Hide() end)
+    d:Hide()
+    return d
+end
+
+local function BuildAsk()
+    local d = SmallDialog("MyGamepadIsRichAskDialog", 120)
+    local edit = CreateFrame("EditBox", nil, d, "InputBoxTemplate")
+    edit:SetSize(300, 20)
+    edit:SetPoint("BOTTOM", 0, 46)
+    edit:SetAutoFocus(false)
+    local function Accept()
+        local text = strtrim(edit:GetText() or "")
+        if text == "" then return end
+        d:Hide()
+        if d.onOK then d.onOK(text) end
+    end
+    edit:SetScript("OnEnterPressed", Accept)
+    edit:SetScript("OnEscapePressed", function() d:Hide() end)
+    d.ok:SetScript("OnClick", Accept)
+    d.edit = edit
+    askDialog = d
+end
+
+-- Demande un texte : onOK(texte) quand il est validé (jamais vide)
+function UI.AskText(prompt, initial, maxLetters, onOK)
+    if not askDialog then BuildAsk() end
+    local d = askDialog
+    d.onOK = onOK
+    d.text:SetText(prompt)
+    d.edit:SetMaxLetters(maxLetters or 0)
+    d.edit:SetText(initial or "")
+    d:Show()
+    d:Raise()
+    d.edit:SetFocus()
+    d.edit:HighlightText()
+end
+
+-- Demande une confirmation : onOK() si on valide
+function UI.Confirm(text, onOK)
+    if not confirmDialog then
+        confirmDialog = SmallDialog("MyGamepadIsRichConfirmDialog", 130)
+        confirmDialog.ok:SetScript("OnClick", function()
+            confirmDialog:Hide()
+            if confirmDialog.onOK then confirmDialog.onOK() end
+        end)
+    end
+    local d = confirmDialog
+    d.onOK = onOK
+    d.text:SetText(text)
+    -- (hauteur selon le texte, qui change avec la langue)
+    d:SetHeight(math.max(110, d.text:GetStringHeight() + 70))
+    d:Show()
+    d:Raise()
+end
+
+---------------------------------------------------------------------------
 -- Liste à choisir (sorts, objets, commandes WoW) : icônes, sections,
 -- recherche, molette pour défiler
 ---------------------------------------------------------------------------

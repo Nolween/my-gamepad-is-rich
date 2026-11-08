@@ -310,3 +310,8 @@ ns.AddLocale("zhCN", {
     SELFTEST_FAIL = "自检：%d 个问题：%s",
     SLASH_HELP = "/mgir : 打开  |  /mgir profile <名称> : 切换配置  |  /mgir test : 手柄测试  |  /mgir tuto : 教程  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重置此角色的动作",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("zhCN", {
+    HUD_ERROR = "HUD 出错：在 /reload 前已停止（恢复游戏动作条）。请报告此消息：%s",
+})

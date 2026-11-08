@@ -1,7 +1,7 @@
 -- Onglet « Profils » : la liste des profils (le profil actif marqué),
 -- Utiliser / Nouveau / Copier / Renommer / Supprimer, et les fenêtres
 -- d'export (texte à copier) et d'import (texte collé, aperçu, destination).
--- Noms et confirmations : les boîtes standard du jeu (StaticPopup).
+-- Noms et confirmations : UI.AskText / UI.Confirm (Widgets.lua).
 local _, ns = ...
 local L = ns.L
 local UI = ns.UI
@@ -19,61 +19,11 @@ local function RefreshUI()
     if ns.UI.RefreshAll then ns.UI.RefreshAll() end
 end
 
----------------------------------------------------------------------------
--- Boîtes standard : un nom à saisir, une confirmation
----------------------------------------------------------------------------
-local function PopupEdit(self)
-    return self.editBox or self.EditBox
-end
-
-StaticPopupDialogs["MYGAMEPADISRICH_NAME"] = {
-    text = "%s",
-    button1 = OKAY or "OK",
-    button2 = CANCEL or "Cancel",
-    hasEditBox = true,
-    maxLetters = P.NAME_MAX,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
-    OnShow = function(self, data)
-        local edit = PopupEdit(self)
-        edit:SetText(data and data.initial or "")
-        edit:HighlightText()
-        edit:SetFocus()
-    end,
-    OnAccept = function(self, data)
-        if data and data.onOK then data.onOK(PopupEdit(self):GetText()) end
-    end,
-    EditBoxOnEnterPressed = function(self, data)
-        local parent = self:GetParent()
-        if data and data.onOK then data.onOK(self:GetText()) end
-        parent:Hide()
-    end,
-    EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
-}
-
-StaticPopupDialogs["MYGAMEPADISRICH_CONFIRM"] = {
-    text = "%s",
-    button1 = OKAY or "OK",
-    button2 = CANCEL or "Cancel",
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    showAlert = true,
-    preferredIndex = 3,
-    OnAccept = function(_, data)
-        if data and data.onOK then data.onOK() end
-    end,
-}
-
 local function AskName(prompt, initial, onOK)
-    StaticPopup_Show("MYGAMEPADISRICH_NAME", prompt, nil, { initial = initial, onOK = onOK })
+    UI.AskText(prompt, initial, P.NAME_MAX, onOK)
 end
 
-local function Confirm(text, onOK)
-    StaticPopup_Show("MYGAMEPADISRICH_CONFIRM", text, nil, { onOK = onOK })
-end
+local Confirm = UI.Confirm
 
 -- Une fenêtre à nous, au-dessus de la fenêtre de configuration
 local function Dialog(name, w, h, title)
@@ -93,12 +43,13 @@ local function Dialog(name, w, h, title)
     return d
 end
 
--- Une zone de texte multi-ligne qui défile, sur toute la largeur de parent
-local function TextArea(parent, height)
+-- Une zone de texte multi-ligne qui défile, sur toute la largeur de parent,
+-- à y pixels sous son haut
+local function TextArea(parent, y, height)
     local box = UI.Panel(parent)
     box:SetHeight(height)
-    box:SetPoint("LEFT", 14, 0)
-    box:SetPoint("RIGHT", -14, 0)
+    box:SetPoint("TOPLEFT", 14, y)
+    box:SetPoint("TOPRIGHT", -14, y)
     local scroll = CreateFrame("ScrollFrame", nil, box, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", 8, -8)
     scroll:SetPoint("BOTTOMRIGHT", -28, 8)
@@ -153,8 +104,7 @@ local function BuildExport()
     d.hud:SetPoint("TOPLEFT", 16, -68)
     d.hud:SetScript("OnClick", RefreshExport)
 
-    d.area = TextArea(d, 160)
-    d.area:SetPoint("TOP", 0, -98)
+    d.area = TextArea(d, -98, 160)
     -- (lecture seule : on garde le texte, et sa sélection pour Ctrl+C)
     d.area.edit:SetScript("OnTextChanged", function(self, userInput)
         if userInput then
@@ -288,8 +238,7 @@ local function BuildImport()
     local d = Dialog("MyGamepadIsRichImport", 580, 470, L.IMPORT_TITLE)
     local paste = UI.Text(d, "GameFontNormal", L.IMPORT_PASTE)
     paste:SetPoint("TOPLEFT", 16, -42)
-    d.area = TextArea(d, 100)
-    d.area:SetPoint("TOP", 0, -60)
+    d.area = TextArea(d, -60, 100)
     d.area.edit:SetScript("OnTextChanged", function()
         ParseImport()
         RefreshImport()

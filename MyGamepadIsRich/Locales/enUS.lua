@@ -312,3 +312,8 @@ ns.AddLocale("enUS", {
     SELFTEST_FAIL = "Self-test: %d problem(s): %s",
     SLASH_HELP = "/mgir : open  |  /mgir profile <name> : switch profile  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("enUS", {
+    HUD_ERROR = "HUD error, the HUD is stopped until /reload (the game's bar is back). Please report this message: %s",
+})

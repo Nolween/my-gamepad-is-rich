@@ -311,3 +311,8 @@ ns.AddLocale("ptBR", {
     SELFTEST_FAIL = "Autoteste: %d problema(s): %s",
     SLASH_HELP = "/mgir : abrir  |  /mgir profile <nome> : trocar de perfil  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("ptBR", {
+    HUD_ERROR = "Erro do HUD: ele fica parado até o /reload (a barra do jogo volta). Por favor, informe esta mensagem: %s",
+})

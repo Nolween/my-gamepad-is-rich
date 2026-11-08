@@ -311,3 +311,8 @@ ns.AddLocale("ruRU", {
     SELFTEST_FAIL = "Самопроверка: проблем: %d: %s",
     SLASH_HELP = "/mgir : открыть  |  /mgir profile <название> : сменить профиль  |  /mgir test : проверка геймпада  |  /mgir tuto : обучение  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : сбросить действия этого персонажа",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("ruRU", {
+    HUD_ERROR = "Ошибка HUD: он остановлен до /reload (панель игры возвращена). Пожалуйста, сообщите это сообщение: %s",
+})

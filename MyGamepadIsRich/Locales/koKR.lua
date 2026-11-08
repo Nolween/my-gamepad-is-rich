@@ -311,3 +311,8 @@ ns.AddLocale("koKR", {
     SELFTEST_FAIL = "자체 테스트: 문제 %d개: %s",
     SLASH_HELP = "/mgir : 열기  |  /mgir profile <이름> : 프로필 변경  |  /mgir test : 컨트롤러 테스트  |  /mgir tuto : 튜토리얼  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 이 캐릭터의 동작 초기화",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("koKR", {
+    HUD_ERROR = "HUD 오류: /reload 전까지 HUD가 멈춥니다(게임 바가 돌아옵니다). 이 메시지를 알려 주세요: %s",
+})

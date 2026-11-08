@@ -953,13 +953,33 @@ local function Watch()
     if on then Update(pu) end
 end
 
+-- Une erreur dans la mise à jour (20 fois par seconde) se répéterait sans
+-- fin : le HUD s'arrête, rend sa barre au jeu, et le dit une seule fois
+local broken = false
+
+local function Restore()
+    local pu = PageUnit()
+    if pu then
+        for _, part in ipairs(NativeParts(pu)) do pcall(Fade, part, false) end
+        for _, bar in ipairs(NativeBars(pu)) do pcall(Cover, bar, false) end
+    end
+    if holder then holder:Hide() end
+    shown = false
+end
+
 local wait = 0
 local watcher = CreateFrame("Frame")
 watcher:SetScript("OnUpdate", function(_, elapsed)
+    if broken then return end
     wait = wait - elapsed
     if wait > 0 then return end
     wait = 0.05
-    Watch()
+    local ok, err = pcall(Watch)
+    if not ok then
+        broken = true
+        pcall(Restore)
+        ns.Print(L.HUD_ERROR:format(tostring(err)))
+    end
 end)
 ns.OnApplied(function() dirty = true end)
 

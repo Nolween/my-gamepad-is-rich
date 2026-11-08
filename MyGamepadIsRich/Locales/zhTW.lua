@@ -310,3 +310,8 @@ ns.AddLocale("zhTW", {
     SELFTEST_FAIL = "自我檢測：%d 個問題：%s",
     SLASH_HELP = "/mgir : 開啟  |  /mgir profile <名稱> : 切換設定檔  |  /mgir test : 手把測試  |  /mgir tuto : 教學  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重設此角色的動作",
 })
+
+-- HUD : arrêt après une erreur
+ns.AddLocale("zhTW", {
+    HUD_ERROR = "HUD 發生錯誤：在 /reload 前已停止（恢復遊戲快捷列）。請回報此訊息：%s",
+})
