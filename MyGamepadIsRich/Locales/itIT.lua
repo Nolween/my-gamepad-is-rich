@@ -452,3 +452,8 @@ ns.AddLocale("itIT", {
     QUICKFILL_DONE = "Spazi riempiti: %d.",
     QUICKFILL_NONE = "Niente da mettere: nessun oggetto utilizzabile nelle borse che non sia già su questo strato.",
 })
+
+-- 1.3.0
+ns.AddLocale("itIT", {
+    WHATSNEW_1_3_0 = "• Forever non resta più bloccato sulla sua barra RT (o LT) dopo un incantesimo lanciato con RT + A, come un sigillo del paladino: non serve più premere A per tornare a «Da solo».\n• Se Forever si blocca comunque, RT restituito per una pressione viene ripreso all'inizio di un combattimento: il tuo strato RT dell'addon resta disponibile in combattimento.\n• /mgir etat mostra anche le assegnazioni di LT, RT, LB e RB.",
+})

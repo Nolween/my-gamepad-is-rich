@@ -452,3 +452,8 @@ ns.AddLocale("koKR", {
     QUICKFILL_DONE = "%d칸을 채웠습니다.",
     QUICKFILL_NONE = "놓을 것이 없습니다: 이 층에 아직 없는 사용 가능한 아이템이 가방에 없습니다.",
 })
+
+-- 1.3.0
+ns.AddLocale("koKR", {
+    WHATSNEW_1_3_0 = "• RT + A로 시전한 주문(예: 성기사의 문장) 뒤에 Forever가 RT(또는 LT) 바에 더 이상 멈춰 있지 않습니다. \"단독\"으로 돌아가려고 A를 누를 필요가 없습니다.\n• 그래도 Forever가 멈추면, 한 번 누르는 동안 돌려준 RT를 전투가 시작될 때 다시 가져옵니다. 애드온의 RT 층을 전투 중에도 쓸 수 있습니다.\n• /mgir etat에 LT, RT, LB, RB의 할당도 표시됩니다.",
+})

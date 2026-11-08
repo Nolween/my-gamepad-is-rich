@@ -452,3 +452,8 @@ ns.AddLocale("esES", {
     QUICKFILL_DONE = "%d casilla(s) rellenada(s).",
     QUICKFILL_NONE = "Nada que colocar: ningún objeto usable en las bolsas que no esté ya en esta capa.",
 })
+
+-- 1.3.0
+ns.AddLocale("esES", {
+    WHATSNEW_1_3_0 = "• Forever ya no se queda bloqueado en su barra RT (o LT) tras un hechizo lanzado con RT + A, como un sello de paladín: ya no hace falta pulsar A para volver a «Solo».\n• Si Forever se bloquea de todos modos, RT devuelto para una pulsación se recupera al empezar un combate: tu capa RT del addon sigue disponible en combate.\n• /mgir etat también muestra las asignaciones de LT, RT, LB y RB.",
+})

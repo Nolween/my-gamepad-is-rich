@@ -452,3 +452,8 @@ ns.AddLocale("frFR", {
     QUICKFILL_DONE = "%d case(s) remplie(s).",
     QUICKFILL_NONE = "Rien à poser : aucun objet utilisable trouvé dans les sacs qui ne soit pas déjà sur cette couche.",
 })
+
+-- 1.3.0
+ns.AddLocale("frFR", {
+    WHATSNEW_1_3_0 = "• Forever ne reste plus bloqué sur sa barre RT (ou LT) après un sort lancé avec RT + A, comme un sceau de paladin : plus besoin d'appuyer sur A pour revenir sur « Seul ».\n• Si Forever se bloque malgré tout, RT rendu le temps d'un appui est repris au début d'un combat : ta couche RT de l'addon reste disponible en combat.\n• /mgir etat montre aussi les liaisons de LT, RT, LB et RB.",
+})

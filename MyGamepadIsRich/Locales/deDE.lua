@@ -452,3 +452,8 @@ ns.AddLocale("deDE", {
     QUICKFILL_DONE = "%d Feld(er) gefüllt.",
     QUICKFILL_NONE = "Nichts zu legen: kein benutzbarer Gegenstand in den Taschen, der nicht schon auf dieser Ebene ist.",
 })
+
+-- 1.3.0
+ns.AddLocale("deDE", {
+    WHATSNEW_1_3_0 = "• Forever bleibt nach einem mit RT + A gewirkten Zauber, etwa einem Siegel des Paladins, nicht mehr auf seiner RT- (oder LT-)Leiste hängen: Du musst nicht mehr A drücken, um zu „Allein“ zurückzukehren.\n• Bleibt Forever trotzdem hängen, wird RT, das für einen Druck zurückgegeben wurde, bei Kampfbeginn wieder übernommen: Deine RT-Ebene des Addons bleibt im Kampf verfügbar.\n• /mgir etat zeigt auch die Belegungen von LT, RT, LB und RB.",
+})

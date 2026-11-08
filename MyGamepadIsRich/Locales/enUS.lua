@@ -453,3 +453,8 @@ ns.AddLocale("enUS", {
     QUICKFILL_DONE = "%d slot(s) filled.",
     QUICKFILL_NONE = "Nothing to place: no usable item found in your bags that isn't already on this layer.",
 })
+
+-- 1.3.0
+ns.AddLocale("enUS", {
+    WHATSNEW_1_3_0 = "• Forever no longer stays stuck on its RT (or LT) bar after a spell cast with RT + A, such as a paladin seal: no need to press A to get back to \"Alone\".\n• If Forever still gets stuck, RT handed back for one press is taken back when combat starts: your addon RT layer stays available in combat.\n• /mgir etat also shows the LT, RT, LB and RB bindings.",
+})

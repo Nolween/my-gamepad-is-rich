@@ -452,3 +452,8 @@ ns.AddLocale("ptBR", {
     QUICKFILL_DONE = "%d espaço(s) preenchido(s).",
     QUICKFILL_NONE = "Nada a colocar: nenhum item usável nas bolsas que já não esteja nesta camada.",
 })
+
+-- 1.3.0
+ns.AddLocale("ptBR", {
+    WHATSNEW_1_3_0 = "• O Forever não fica mais preso na barra RT (ou LT) depois de um feitiço lançado com RT + A, como um selo de paladino: não precisa mais apertar A para voltar a \"Sozinho\".\n• Se o Forever travar mesmo assim, o RT devolvido por um aperto é retomado no início de um combate: sua camada RT do addon continua disponível em combate.\n• /mgir etat também mostra as atribuições de LT, RT, LB e RB.",
+})

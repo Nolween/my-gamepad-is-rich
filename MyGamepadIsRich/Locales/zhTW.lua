@@ -452,3 +452,8 @@ ns.AddLocale("zhTW", {
     QUICKFILL_DONE = "已填入 %d 格。",
     QUICKFILL_NONE = "沒有可放的：背包裡沒有此層尚未有的可使用物品。",
 })
+
+-- 1.3.0
+ns.AddLocale("zhTW", {
+    WHATSNEW_1_3_0 = "• 用 RT + A 施放法術（例如聖騎士的聖印）後，Forever 不會再卡在 RT（或 LT）快捷列上：不必再按 A 回到「單獨」。\n• 如果 Forever 仍然卡住，為一次按鍵交還的 RT 會在戰鬥開始時收回：插件的 RT 層在戰鬥中仍然可用。\n• /mgir etat 也會顯示 LT、RT、LB 和 RB 的綁定。",
+})
