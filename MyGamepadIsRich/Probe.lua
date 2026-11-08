@@ -53,7 +53,14 @@ local function TableKeys(t)
     return table.concat(list, " ")
 end
 
-function P.Run()
+-- delay : secondes d'attente avant le relevé (le temps de fermer le chat,
+-- dont la saisie change l'état des liaisons de Forever)
+function P.Run(delay)
+    if delay and delay > 0 and C_Timer then
+        ns.Print(("Relevé dans %d s : ferme le chat et place-toi."):format(delay))
+        C_Timer.After(delay, function() P.Run() end)
+        return
+    end
     local log = {}
     local function W(fmt, ...)
         local ok, line = pcall(string.format, fmt, ...)
@@ -135,6 +142,71 @@ function P.Run()
         local ok, v = pcall(manager.IsOnlyCoreBindingSetActive, manager)
         W("IsOnlyCoreBindingSetActive %s %s", S(ok), S(v))
     end
+    -- Le gestionnaire de liaisons de Forever : le jeu en haut de la pile,
+    -- la pile, le jeu de base (sauter, annuler...) et les liaisons actives
+    local function Dump(label, t, depth)
+        if type(t) ~= "table" then W("%s = %s", label, S(t)) return end
+        local n = 0
+        for k, v in pairs(t) do
+            n = n + 1
+            if n > 40 then W("%s ...", label) break end
+            if type(v) == "table" and depth > 0 then
+                Dump(label .. "." .. S(k), v, depth - 1)
+            else
+                W("%s.%s = %s", label, S(k), type(v) == "table" and ("{" .. TableKeys(v) .. "}") or S(v))
+            end
+        end
+    end
+    if manager then
+        if manager.PeekName then
+            local ok, name = pcall(manager.PeekName, manager)
+            W("PeekName %s %s", S(ok), S(name))
+        end
+        -- (le nom de chaque jeu de la pile, et ce que chaque touche fait)
+        if type(manager.bindingSetStack) == "table" then
+            for idx, set in ipairs(manager.bindingSetStack) do
+                local keys = {}
+                if type(set.bindings) == "table" then
+                    for key in pairs(set.bindings) do keys[#keys + 1] = S(key) end
+                end
+                table.sort(keys)
+                W("pile %d %s : %s", idx, S(set.name), table.concat(keys, " "))
+            end
+        end
+        if type(manager.activeBindings) == "table" then
+            local lines = {}
+            for key, b in pairs(manager.activeBindings) do
+                if type(b) == "table" then
+                    lines[#lines + 1] = ("%s -> %s [%s] click=%s set=%s"):format(S(key), S(b.name), S(b.type),
+                        S(b.buttonToClick), S(type(b.set) == "table" and b.set.name))
+                end
+            end
+            table.sort(lines)
+            for _, line in ipairs(lines) do W("liaison %s", line) end
+        end
+        Dump("stack", manager.bindingSetStack, 2)
+        Dump("coreSet", manager.coreSet, 2)
+        Dump("activeBindings", manager.activeBindings, 1)
+    end
+
+    -- Les boutons A/B/X/Y (côté droit) de la barre « Seul » de Forever
+    local top = type(pageUnit) == "table" and pageUnit.actionBars and pageUnit.actionBars.topBar
+    for j = 1, 4 do
+        local b = top and top.Right and top.Right["ActionButton" .. j]
+        if b then
+            local parts = {}
+            for _, attr in ipairs({ "type", "action", "macro", "macrotext", "spell", "item", "clickbutton", "binding" }) do
+                local okA, v = pcall(b.GetAttribute, b, attr)
+                if okA and v ~= nil then parts[#parts + 1] = attr .. "=" .. S(type(v) == "table" and (v.GetName and v:GetName()) or v) end
+            end
+            local icon = b.icon or b.Icon
+            local tex = icon and icon.GetTexture and icon:GetTexture()
+            local atlas = icon and icon.GetAtlas and icon:GetAtlas()
+            W("seul droite %d %s : %s ; icone %s atlas %s ; champs %s", j, S(b.GetName and b:GetName()),
+                table.concat(parts, " "), S(tex), S(atlas), TableKeys(b):sub(1, 400))
+        end
+    end
+
     for i = 1, 8 do
         local own = ns.Bar and ns.Bar.Override(i)
         local storage = ns.Bar and ns.Bar.Storage("topBar", i)
@@ -143,6 +215,36 @@ function P.Run()
         W("seul %d %s : addon %s, jeu %s:%s (storage %s, gameSlot %s)", i, S(ns.Bar and ns.Bar.PAD_KEYS[i]),
             own and (S(own.kind) .. ":" .. S(own.id or own.name or own.command)) or "-",
             S(kind), S(id), S(storage), S(ns.Bar and ns.Bar.IsGameSlot("topBar", i)))
+    end
+
+    -- Recharges : valeurs brutes, secrètes ou non, et API d'objet de durée
+    W("== cooldowns")
+    local function Sec(v) return type(issecretvalue) == "function" and issecretvalue(v) and "SECRET" or S(v) end
+    W("api C_Spell.GetSpellCooldownDuration %s, C_ActionBar.GetActionCooldownDuration %s, SetCooldownFromDurationObject %s",
+        S(C_Spell and C_Spell.GetSpellCooldownDuration ~= nil), S(C_ActionBar and C_ActionBar.GetActionCooldownDuration ~= nil),
+        S(CreateFrame("Cooldown").SetCooldownFromDurationObject ~= nil))
+    for i = 1, 8 do
+        local storage = ns.Bar and ns.Bar.Storage("topBar", i)
+        if storage then
+            local start, duration
+            if C_ActionBar and C_ActionBar.GetActionCooldown then
+                local ok, info = pcall(C_ActionBar.GetActionCooldown, storage)
+                if ok and type(info) == "table" then start, duration = info.startTime, info.duration end
+            elseif GetActionCooldown then
+                local ok, s, d = pcall(GetActionCooldown, storage)
+                if ok then start, duration = s, d end
+            end
+            local kind, id = GetActionInfo(storage)
+            W("cd case %d (%s %s) : start %s duration %s", i, S(kind), S(id), Sec(start), Sec(duration))
+            if kind == "spell" and id then
+                local ok, info = pcall(C_Spell and C_Spell.GetSpellCooldown or GetSpellCooldown, id)
+                if ok and type(info) == "table" then
+                    W("cd sort %s : start %s duration %s enabled %s", S(id), Sec(info.startTime), Sec(info.duration), Sec(info.isEnabled))
+                else
+                    W("cd sort %s : %s", S(id), S(ok and info))
+                end
+            end
+        end
     end
 
     -- Barre croisée de Forever

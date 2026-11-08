@@ -332,3 +332,15 @@ ns.AddLocale("ruRU", {
 ns.AddLocale("ruRU", {
     MENU_GAME_BAR_HINT = "Макросы и команды WoW: переключите LT / RT в «Модификаторы аддона» (вкладка «Кнопки»)",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("ruRU", {
+    MENU_GAME = "Базовое действие...",
+    GAME_TITLE = "Базовые действия",
+    KIND_game = "Базовое действие",
+    GAME_jump = "Прыжок",
+    GAME_cancel = "Отмена (заклинание, цель)",
+    GAME_search = "Поиск (правый щелчок по цели)",
+    GAME_attack = "Автоатака",
+    GAME_interact = "Взаимодействие",
+})

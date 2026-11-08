@@ -98,6 +98,44 @@ function A.FromCursor()
 end
 
 ---------------------------------------------------------------------------
+-- Actions de base : celles de Forever sur A/B/X/Y, refaites avec le jeu,
+-- pour les poser où on veut ({ kind = "game", id = "jump" }...)
+--   command : une commande WoW (liée directement), ou
+--   text    : une macro (bouton sécurisé)
+---------------------------------------------------------------------------
+A.GAME = {
+    { id = "jump", command = "JUMP", icon = "Interface\\Icons\\Spell_Magic_FeatherFall" },
+    { id = "cancel", text = "/stopcasting\n/stopspelltarget\n/cleartarget",
+        icon = "Interface\\Buttons\\UI-GroupLoot-Pass-Up" },
+    -- (rechercher = clic droit sur la cible : interagir avec la cible)
+    { id = "search", command = "INTERACTTARGET", icon = "Interface\\Icons\\INV_Misc_Spyglass_02" },
+    { id = "attack", text = "/startattack", spell = 6603, icon = "Interface\\Icons\\INV_Sword_04" },
+    { id = "interact", command = "INTERACTTARGET", icon = "Interface\\GossipFrame\\GossipGossipIcon" },
+}
+local GAME_BY_ID = {}
+for _, def in ipairs(A.GAME) do GAME_BY_ID[def.id] = def end
+
+function A.GameDef(id)
+    return GAME_BY_ID[id]
+end
+
+-- Les icônes des commandes WoW courantes (les autres : une clé)
+local COMMAND_ICONS = {
+    JUMP = "Interface\\Icons\\Spell_Magic_FeatherFall",
+    INTERACTTARGET = "Interface\\GossipFrame\\GossipGossipIcon",
+    INTERACTMOUSEOVER = "Interface\\GossipFrame\\GossipGossipIcon",
+    TOGGLEAUTORUN = "Interface\\Icons\\Ability_Rogue_Sprint",
+    TARGETNEARESTENEMY = "Interface\\Icons\\Ability_Hunter_SniperShot",
+    TARGETSCANENEMY = "Interface\\Icons\\Ability_Hunter_SniperShot",
+    TOGGLEGAMEMENU = "Interface\\Buttons\\UI-GroupLoot-Pass-Up",
+}
+
+local function SpellIcon(id)
+    if C_Spell and C_Spell.GetSpellTexture then return C_Spell.GetSpellTexture(id) end
+    return GetSpellTexture and GetSpellTexture(id)
+end
+
+---------------------------------------------------------------------------
 -- Libellé et icône
 ---------------------------------------------------------------------------
 function A.Label(action)
@@ -114,6 +152,8 @@ function A.Label(action)
         return first ~= "" and first or L.KIND_macrotext
     elseif k == "command" then
         return A.CommandLabel(action.command)
+    elseif k == "game" then
+        return L["GAME_" .. tostring(action.id)]
     elseif k == "slot" then
         -- (ce que tient un emplacement de la barre du jeu, d'un autre type)
         local text = GetActionText and GetActionText(action.slot)
@@ -134,7 +174,11 @@ function A.Icon(action)
     elseif k == "macrotext" then
         return ICON_MACROTEXT
     elseif k == "command" then
-        return ICON_COMMAND
+        return COMMAND_ICONS[action.command] or ICON_COMMAND
+    elseif k == "game" then
+        local def = GAME_BY_ID[action.id]
+        if not def then return QUESTION end
+        return (def.spell and SpellIcon(def.spell)) or def.icon
     elseif k == "slot" then
         return (GetActionTexture and GetActionTexture(action.slot)) or QUESTION
     elseif k == "equipset" then
@@ -175,12 +219,38 @@ function A.Secure(action)
         return nil, (text and text ~= "") and text or nil
     elseif k == "equipset" then
         return nil, "/equipset " .. action.name
+    elseif k == "game" then
+        local def = GAME_BY_ID[action.id]
+        return nil, def and def.text
     end
     return nil -- ("command" : binding direct, pas de bouton)
 end
 
+-- La commande WoW d'une action (commande, ou action de base qui en est une)
+function A.CommandOf(action)
+    if not action then return nil end
+    if action.kind == "command" then return action.command end
+    if action.kind == "game" then
+        local def = GAME_BY_ID[action.id]
+        return def and def.command
+    end
+end
+
 function A.IsCommand(action)
-    return action and action.kind == "command" and action.command ~= nil
+    return A.CommandOf(action) ~= nil
+end
+
+-- La liste « Action de base... » (sans celles qui sont des commandes WoW
+-- quand la case n'en accepte pas)
+function A.GameEntries(commandOK)
+    local entries = {}
+    for _, def in ipairs(A.GAME) do
+        if commandOK or not def.command then
+            local action = { kind = "game", id = def.id }
+            entries[#entries + 1] = { label = A.Label(action), icon = A.Icon(action), action = action }
+        end
+    end
+    return entries
 end
 
 ---------------------------------------------------------------------------

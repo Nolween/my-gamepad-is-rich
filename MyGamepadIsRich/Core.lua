@@ -325,8 +325,9 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.Hud.Command(rest)
     elseif msg == "minimap" then
         ns.MinimapButton.Toggle()
-    elseif msg == "probe" then
-        ns.Probe.Run()
+    elseif word == "probe" then
+        -- (/mgir probe 5 : relevé dans 5 secondes)
+        ns.Probe.Run(tonumber(rest))
     elseif msg == "tuto" or msg == "tutorial" or msg == "tutoriel" then
         ns.Tutorial.Open(1)
     elseif msg == "test" then

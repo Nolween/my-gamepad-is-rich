@@ -332,3 +332,15 @@ ns.AddLocale("koKR", {
 ns.AddLocale("koKR", {
     MENU_GAME_BAR_HINT = "직접 작성한 매크로, WoW 명령: LT / RT를 '애드온 수정키'로 바꾸세요 (버튼 탭)",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("koKR", {
+    MENU_GAME = "기본 동작...",
+    GAME_TITLE = "기본 동작",
+    KIND_game = "기본 동작",
+    GAME_jump = "점프",
+    GAME_cancel = "취소 (주문, 대상)",
+    GAME_search = "찾기 (대상 오른쪽 클릭)",
+    GAME_attack = "자동 공격",
+    GAME_interact = "상호작용",
+})

@@ -225,11 +225,59 @@ local function SpellCooldown(id)
     end
 end
 
+-- La recharge en « objet de durée » (API récente) : se donne au voile de
+-- recharge même quand le jeu la rend secrète (illisible pour un addon)
+local function SpellCooldownDuration(id)
+    if C_Spell and C_Spell.GetSpellCooldownDuration then
+        local ok, d = pcall(C_Spell.GetSpellCooldownDuration, id)
+        if ok then return d end
+    end
+end
+
+local function SlotCooldownDuration(slot)
+    if C_ActionBar and C_ActionBar.GetActionCooldownDuration then
+        local ok, d = pcall(C_ActionBar.GetActionCooldownDuration, slot)
+        if ok then return d end
+    end
+end
+
 local function ItemCooldown(id)
     local get = (C_Item and C_Item.GetItemCooldown) or GetItemCooldown
     if not get then return end
     local ok, s, d = pcall(get, id)
     if ok then return s, d end
+end
+
+-- Le sort qu'une de nos actions lance (pour sa recharge) : le sort lui-même,
+-- celui d'une macro du jeu, ou le premier « /cast » d'une macro écrite
+local castCache = {}
+local function SpellFromName(name)
+    if not name or name == "" then return nil end
+    if castCache[name] == nil then
+        local _, _, id = ns.Actions.SpellInfo(name)
+        castCache[name] = id or false
+    end
+    return castCache[name] or nil
+end
+
+local function ActionSpell(action)
+    local k = action.kind
+    if k == "spell" or k == "mount" then return action.id end
+    if k == "macro" and GetMacroSpell and GetMacroIndexByName then
+        local index = GetMacroIndexByName(action.name)
+        if index and index > 0 then
+            local ok, spell = pcall(GetMacroSpell, index)
+            if ok and type(spell) == "number" then return spell end
+            if ok and type(spell) == "string" then return SpellFromName(spell) end
+        end
+    elseif k == "macrotext" and type(action.text) == "string" then
+        -- (« /cast [conditions] Nom » : le nom, sans conditions ni rang)
+        local line = action.text:match("/cast%s+([^\n]+)") or action.text:match("/use%s+([^\n]+)")
+        if line then
+            local name = strtrim((line:gsub("%b[]", ""):gsub("%(.-%)", ""):match("^[^;]*") or ""))
+            return SpellFromName(name)
+        end
+    end
 end
 
 local function ItemCount(id)
@@ -307,6 +355,10 @@ local function TileClick(t, button)
         { text = L.MENU_ITEM, func = function()
             UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), set)
         end },
+        -- (sauter, annuler, rechercher, attaque auto, interagir)
+        { text = L.MENU_GAME, disabled = not full, func = function()
+            UI.PickFromList(L.GAME_TITLE, ns.Actions.GameEntries(CommandAllowed(target)), set)
+        end },
         { text = L.MENU_MACROTEXT, disabled = not full, func = function()
             UI.EditMacro(nil, function(text)
                 set(text ~= "" and { kind = "macrotext", text = text } or nil)
@@ -348,10 +400,19 @@ local function ClearCooldown(t)
     t.cdStart, t.cdDuration = nil, nil
 end
 
--- (aucune, secrète ou recharge globale : rien)
-local function SetCooldown(t, start, duration)
-    if Secret(start) or Secret(duration) or type(start) ~= "number" or type(duration) ~= "number"
-        or start <= 0 or duration <= GCD_MAX then
+-- (aucune ou recharge globale : rien). Une recharge secrète ne se lit ni ne
+-- se compare : elle est donnée telle quelle au voile (objet de durée si le
+-- jeu en fournit un, sinon les valeurs brutes)
+local function SetCooldown(t, start, duration, durObj)
+    if Secret(start) or Secret(duration) then
+        local cd = t.cooldown
+        local ok = durObj and cd.SetCooldownFromDurationObject and pcall(cd.SetCooldownFromDurationObject, cd, durObj)
+        if not ok then ok = pcall(cd.SetCooldown, cd, start, duration) end
+        -- (marque « une recharge est posée », pour ClearCooldown)
+        t.cdStart, t.cdDuration = ok and true or nil, nil
+        return
+    end
+    if type(start) ~= "number" or type(duration) ~= "number" or start <= 0 or duration <= GCD_MAX then
         ClearCooldown(t)
         return
     end
@@ -437,7 +498,8 @@ local function MirrorNative(t, native)
     if not (icon and pcall(t.icon.SetDesaturated, t.icon, icon:IsDesaturated())) then t.icon:SetDesaturated(false) end
     local special = native.SpecialActionIcon
     if native.action and not (special and special:IsShown()) then
-        SetCooldown(t, SlotCooldown(native.action))
+        local s, d = SlotCooldown(native.action)
+        SetCooldown(t, s, d, (Secret(s) or Secret(d)) and SlotCooldownDuration(native.action) or nil)
     else
         local cd, s, d = native.cooldown, nil, nil
         if cd and cd.GetCooldownTimes and cd:IsShown() then
@@ -470,13 +532,15 @@ local function MirrorAction(t, action, dim, lit)
     SetPicture(t, ns.Actions.Icon(action))
     t.icon:SetVertexColor(dim and 0.6 or 1, dim and 0.6 or 1, dim and 0.6 or 1)
     t.icon:SetDesaturated(dim and true or false)
-    local s, d
-    if action.kind == "spell" or action.kind == "mount" then
-        s, d = SpellCooldown(action.id)
+    local s, d, durObj
+    local spell = ActionSpell(action)
+    if spell then
+        s, d = SpellCooldown(spell)
+        if Secret(s) or Secret(d) then durObj = SpellCooldownDuration(spell) end
     elseif action.kind == "item" or action.kind == "toy" then
         s, d = ItemCooldown(action.id)
     end
-    SetCooldown(t, s, d)
+    SetCooldown(t, s, d, durObj)
     local n = action.kind == "item" and ItemCount(action.id) or 0
     t.count:SetText(n > 1 and n or "")
 end

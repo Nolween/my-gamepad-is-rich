@@ -89,6 +89,16 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 - Une macro écrite à la main, une commande WoW ou un ensemble d'équipement va dans une couche de l'addon, qui ne prend que les cases remplies. Les autres restent au jeu.
 - **A, B, X et Y** gardent les actions du jeu (sauter, interagir…) tant qu'on n'y met rien. Une action posée dessus les remplace, et vider la case rend l'action du jeu.
 
+**Actions de base** (menu d'une case, « Action de base… ») : les actions de Forever sur A/B/X/Y, à poser où on veut. Une action posée par l'addon reste en place même quand Forever change le rôle d'un bouton selon le contexte (X qui devient « interagir » près d'un PNJ). Elles sont refaites avec le jeu :
+
+| Action | Ce qu'elle fait |
+|---|---|
+| Sauter | commande WoW « Sauter » |
+| Annuler (sort, cible) | `/stopcasting`, `/stopspelltarget`, `/cleartarget` (dans une fenêtre de Forever, B garde son rôle et ferme la fenêtre) |
+| Rechercher (clic droit sur la cible) | commande WoW « Interagir avec la cible » |
+| Attaque automatique | `/startattack` |
+| Interagir | commande WoW « Interagir avec la cible » |
+
 Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut passer les gâchettes en « Modificateurs de l'addon » (voir plus bas) ; le menu d'une case l'indique.
 
 La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage**, dans ce même profil.

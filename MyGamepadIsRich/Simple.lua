@@ -63,7 +63,7 @@ function S.Setup(owner, id, def, actions, onDown)
     local base = actions.layers.base
     -- Une commande seule : liaison directe
     if ns.Actions.IsCommand(base) and S.CommandAllowed(actions, "base") then
-        SetOverrideBinding(owner, true, def.key, base.command)
+        SetOverrideBinding(owner, true, def.key, ns.Actions.CommandOf(base))
         return
     end
     local b = Button(id)

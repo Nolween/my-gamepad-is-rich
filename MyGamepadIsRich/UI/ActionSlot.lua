@@ -116,6 +116,10 @@ function UI.CreateActionSlot(parent, opts)
             { text = L.MENU_ITEM, func = function()
                 UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), Set)
             end },
+            -- (sauter, annuler, rechercher, attaque auto, interagir)
+            { text = L.MENU_GAME, disabled = not macroOK, func = function()
+                UI.PickFromList(L.GAME_TITLE, ns.Actions.GameEntries(commandOK), Set)
+            end },
             { text = L.MENU_MACROTEXT, disabled = not macroOK, func = function()
                 local initial = current and current.kind == "macrotext" and current.text
                 if not initial and current then

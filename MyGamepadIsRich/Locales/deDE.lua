@@ -332,3 +332,15 @@ ns.AddLocale("deDE", {
 ns.AddLocale("deDE", {
     MENU_GAME_BAR_HINT = "Eigene Makros, WoW-Befehle: LT / RT auf „Addon-Modifikatoren“ stellen (Reiter Tasten)",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("deDE", {
+    MENU_GAME = "Grundaktion...",
+    GAME_TITLE = "Grundaktionen",
+    KIND_game = "Grundaktion",
+    GAME_jump = "Springen",
+    GAME_cancel = "Abbrechen (Zauber, Ziel)",
+    GAME_search = "Suchen (Rechtsklick auf das Ziel)",
+    GAME_attack = "Automatischer Angriff",
+    GAME_interact = "Interagieren",
+})

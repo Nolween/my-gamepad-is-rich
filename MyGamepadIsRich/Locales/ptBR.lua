@@ -332,3 +332,15 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     MENU_GAME_BAR_HINT = "Macros escritas, comandos do WoW: coloque LT / RT em “Modificadores do addon” (aba Botões)",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("ptBR", {
+    MENU_GAME = "Ação básica...",
+    GAME_TITLE = "Ações básicas",
+    KIND_game = "Ação básica",
+    GAME_jump = "Pular",
+    GAME_cancel = "Cancelar (feitiço, alvo)",
+    GAME_search = "Procurar (clique direito no alvo)",
+    GAME_attack = "Ataque automático",
+    GAME_interact = "Interagir",
+})

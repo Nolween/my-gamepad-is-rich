@@ -331,3 +331,15 @@ ns.AddLocale("zhCN", {
 ns.AddLocale("zhCN", {
     MENU_GAME_BAR_HINT = "手写宏、WoW 指令：请在“按键”标签页将 LT / RT 设为“插件修饰键”",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("zhCN", {
+    MENU_GAME = "基础动作…",
+    GAME_TITLE = "基础动作",
+    KIND_game = "基础动作",
+    GAME_jump = "跳跃",
+    GAME_cancel = "取消（法术、目标）",
+    GAME_search = "搜索（右键点击目标）",
+    GAME_attack = "自动攻击",
+    GAME_interact = "互动",
+})

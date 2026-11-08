@@ -332,3 +332,15 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     MENU_GAME_BAR_HINT = "Macro scritte, comandi di WoW: imposta LT / RT su «Modificatori dell'addon» (scheda Pulsanti)",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("itIT", {
+    MENU_GAME = "Azione di base...",
+    GAME_TITLE = "Azioni di base",
+    KIND_game = "Azione di base",
+    GAME_jump = "Saltare",
+    GAME_cancel = "Annulla (incantesimo, bersaglio)",
+    GAME_search = "Cerca (clic destro sul bersaglio)",
+    GAME_attack = "Attacco automatico",
+    GAME_interact = "Interagisci",
+})

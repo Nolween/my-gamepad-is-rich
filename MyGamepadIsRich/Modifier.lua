@@ -193,7 +193,7 @@ local function WriteLayer(layer, actions, onDown)
     for i, key in ipairs(ns.PAD_KEYS) do
         local action = actions.combos[key]
         if ns.Actions.IsCommand(action) then
-            Write("cmd-" .. layer .. "-" .. i, action.command)
+            Write("cmd-" .. layer .. "-" .. i, ns.Actions.CommandOf(action))
         elseif action then
             local macro, text = ns.Actions.Secure(action)
             if macro or text then
@@ -278,7 +278,7 @@ local function WriteChord(layer, actions, prefix, onDown, swallow)
         local action = actions.combos[key]
         local cmd, click
         if ns.Actions.IsCommand(action) then
-            cmd = action.command
+            cmd = ns.Actions.CommandOf(action)
         else
             local macro, text
             if action then macro, text = ns.Actions.Secure(action) end

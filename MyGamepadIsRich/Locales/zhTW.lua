@@ -331,3 +331,15 @@ ns.AddLocale("zhTW", {
 ns.AddLocale("zhTW", {
     MENU_GAME_BAR_HINT = "手寫巨集、WoW 指令：請在「按鍵」分頁將 LT / RT 設為「插件修飾鍵」",
 })
+
+-- Actions de base (celles de Forever sur A/B/X/Y)
+ns.AddLocale("zhTW", {
+    MENU_GAME = "基礎動作…",
+    GAME_TITLE = "基礎動作",
+    KIND_game = "基礎動作",
+    GAME_jump = "跳躍",
+    GAME_cancel = "取消（法術、目標）",
+    GAME_search = "搜尋（右鍵點擊目標）",
+    GAME_attack = "自動攻擊",
+    GAME_interact = "互動",
+})

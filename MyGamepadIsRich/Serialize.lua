@@ -224,6 +224,9 @@ local function CleanAction(a)
             local text = a.text:gsub("\r", ""):gsub("[%z\1-\9\11-\31\127]", "")
             if strtrim(text) ~= "" then return { kind = k, text = text } end
         end
+    elseif k == "game" then
+        -- (une action de base connue : sa commande ou sa macro vient de l'addon)
+        if type(a.id) == "string" and ns.Actions.GameDef(a.id) then return { kind = k, id = a.id } end
     elseif k == "command" then
         local c = a.command
         if type(c) == "string" and #c <= 64 and c:match("^[%w_]+$") and KnownCommand(c) then
