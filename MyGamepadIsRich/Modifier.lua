@@ -37,11 +37,14 @@ local DISPATCH = [[
     local noop = self:GetAttribute("noop")
     for j = 1, self:GetAttribute("hcount") or 0 do
         local key, click = self:GetAttribute("hkey-" .. j), self:GetAttribute("hclick-" .. j)
-        if key and click then self:SetBindingClick(true, key, click, "LeftButton") end
+        -- (« giveback » : rendu à Forever pour un appui, voir Focus.lua)
+        if key and click and not self:GetAttribute("giveback-" .. key) then
+            self:SetBindingClick(true, key, click, "LeftButton")
+        end
     end
     for j = 1, self:GetAttribute("hcmdcount") or 0 do
         local key, cmd = self:GetAttribute("hcmdkey-" .. j), self:GetAttribute("hcmd-" .. j)
-        if key and cmd then self:SetBinding(true, key, cmd) end
+        if key and cmd and not self:GetAttribute("giveback-" .. key) then self:SetBinding(true, key, cmd) end
     end
     for j = 1, self:GetAttribute("chord-count") or 0 do
         local key = self:GetAttribute("chord-key-" .. j)
@@ -527,6 +530,42 @@ function M.SetInGame(inGame)
     Dispatcher():SetAttribute("gps-ingame", inGame and true or false)
 end
 
+function M.InGameAttribute()
+    return disp and disp:GetAttribute("gps-ingame")
+end
+
+-- Un bouton noté tenu (par l'aiguilleur sécurisé, ou pour le HUD)
+function M.IsHeld(id)
+    return held[id] ~= nil or (disp ~= nil and disp:GetAttribute("held-" .. id) ~= nil)
+end
+
+-- Hors combat : un bouton noté tenu alors qu'il est relâché (son
+-- relâchement est parti ailleurs) redevient relâché
+function M.Release(id)
+    if InCombatLockdown() or not disp then return end
+    held[id] = nil
+    if disp:GetAttribute("held-" .. id) ~= nil then disp:SetAttribute("held-" .. id, nil) end
+    if engineOwner == id then
+        engineOwner = nil
+        EngineTargeting(nil)
+    end
+end
+
+-- Les boutons notés tenus : { [id] = "hud" / "secure" / "both" }
+function M.HeldState()
+    local out = {}
+    for id in pairs(held) do out[id] = "hud" end
+    if disp then
+        for j = 1, disp:GetAttribute("count") or 0 do
+            local id = disp:GetAttribute("id" .. j)
+            if id and disp:GetAttribute("held-" .. id) ~= nil then
+                out[id] = out[id] and "both" or "secure"
+            end
+        end
+    end
+    return out
+end
+
 -- La couche tenue, pour le HUD : un bouton, ou sa paire si l'autre est tenu
 function M.Held()
     local best, n
@@ -541,4 +580,15 @@ function M.Held()
         if pair and (not po or o > po) then layer, po = pair, o end
     end
     return layer
+end
+
+-- Hors combat : rendre (on) ou reprendre des boutons de base à Forever, le
+-- temps qu'il reçoive un appui complet (il était resté sur leur barre)
+function M.GiveBack(ids, on)
+    if InCombatLockdown() then return end
+    local d = Dispatcher()
+    for _, id in ipairs(ids) do
+        local key = ns.PAD_KEY[id]
+        if key then d:SetAttribute("giveback-" .. key, on and true or nil) end
+    end
 end

@@ -4,6 +4,12 @@
 -- pourrait corrompre son code sécurisé), comme Improved Forever. En combat,
 -- les combinaisons restent actives quoi qu'il arrive (les attributs ne
 -- peuvent plus changer).
+--
+-- Les boutons de base donnés à l'addon (LT, RT, LB, RB) ne lui sont liés que
+-- quand le jeu a le focus. Un bouton enfoncé d'un côté et relâché de l'autre
+-- laisserait une couche bloquée (chez l'addon, ou la barre de Forever) :
+-- le focus ne change donc pas tant qu'un de ces boutons est enfoncé, et un
+-- bouton noté tenu alors qu'il est relâché sur la manette est libéré.
 local _, ns = ...
 
 local F = {}
@@ -18,6 +24,56 @@ function F.InGame()
     local ok, active = pcall(manager.IsOnlyCoreBindingSetActive, manager)
     if not ok then return true end
     return active and true or false
+end
+
+-- L'état physique des boutons de base : { LT = true, ... } (enfoncés), ou
+-- nil si le jeu ne le donne pas
+local padIndex = {}
+local function PadIndex(key)
+    if padIndex[key] == nil then
+        local ok, i = pcall(C_GamePad and C_GamePad.ButtonBindingToIndex or error, key)
+        padIndex[key] = (ok and type(i) == "number") and (i + 1) or false
+    end
+    return padIndex[key] or nil
+end
+
+-- (la manette active, ou toutes réunies ; GetGamePadState n'existe pas
+-- partout)
+local function PadButtons()
+    local api = C_GamePad
+    if type(api) == "table" and api.GetDeviceMappedState then
+        for _, getID in ipairs({ api.GetActiveDeviceID, api.GetCombinedDeviceID }) do
+            local okID, id = pcall(getID or error)
+            if okID and id then
+                local ok, state = pcall(api.GetDeviceMappedState, id)
+                if ok and type(state) == "table" and type(state.buttons) == "table" then return state.buttons end
+            end
+        end
+    end
+    if GetGamePadState then
+        local ok, state = pcall(GetGamePadState)
+        if ok and type(state) == "table" and type(state.buttons) == "table" then return state.buttons end
+    end
+end
+
+function F.PadsDown()
+    local buttons = PadButtons()
+    if not buttons then return nil end
+    local out = {}
+    for id, key in pairs(ns.PAD_KEY) do
+        local i = PadIndex(key)
+        if i and buttons[i] then out[id] = true end
+    end
+    return out
+end
+
+-- Un bouton de base donné à l'addon est-il enfoncé ?
+local function TakenPadDown(down)
+    if not down then return false end
+    for id in pairs(down) do
+        if ns.PadTaken(id) then return true end
+    end
+    return false
 end
 
 -- Pousse l'état vers les modificateurs (hors combat seulement)
@@ -35,14 +91,88 @@ frame:SetScript("OnEvent", function(_, event)
     if not InCombatLockdown() then ns.Modifier.SetInGame(F.InGame()) end
 end)
 
+-- (un bouton relâché depuis un moment mais encore noté tenu : libéré)
+local GRACE = 0.3
+local releasedSince = {}
+
+local function Reconcile(down)
+    if not down then return end
+    local now = GetTime()
+    for _, id in ipairs(ns.PAD_IDS) do
+        if down[id] or not ns.Modifier.IsHeld(id) then
+            releasedSince[id] = nil
+        elseif not releasedSince[id] then
+            releasedSince[id] = now
+        elseif now - releasedSince[id] > GRACE then
+            releasedSince[id] = nil
+            ns.Modifier.Release(id)
+        end
+    end
+end
+
+-- Forever resté sur sa barre LT / RT / LT + RT (il a reçu l'appui, pas le
+-- relâchement) alors que ces boutons sont à l'addon et que rien n'est tenu :
+-- on lui rend ces boutons pour un appui, ce qui le remet sur « Seul »
+local STUCK_PADS = { leftBar = { "LT" }, rightBar = { "RT" }, bottomBar = { "LT", "RT" } }
+local stuckSince, givenBack, warned
+
+local function ForeverBar()
+    local pu = ns.Bar and ns.Bar.PageUnit()
+    if not (pu and pu.actionBars) then return nil end
+    for name in pairs(STUCK_PADS) do
+        if pu.actionBars[name] ~= nil and pu.actionBars[name] == pu.activeBar then return name end
+    end
+end
+
+local function CheckStuck(down, inGame)
+    local bar = ForeverBar()
+    local pads = bar and STUCK_PADS[bar]
+    if givenBack then
+        -- (Forever est revenu : les boutons repassent à l'addon)
+        if not pads then
+            ns.Modifier.GiveBack(givenBack, false)
+            givenBack, warned = nil, nil
+        end
+        return
+    end
+    local stuck = pads and inGame and down and not next(down) and not next(ns.Modifier.HeldState())
+    if stuck then
+        for _, id in ipairs(pads) do
+            if not ns.PadTaken(id) then stuck = false end
+        end
+    end
+    if not stuck then
+        stuckSince = nil
+        return
+    end
+    stuckSince = stuckSince or GetTime()
+    if GetTime() - stuckSince < 0.5 then return end
+    stuckSince = nil
+    givenBack = pads
+    ns.Modifier.GiveBack(pads, true)
+    if not warned then
+        warned = true
+        local names = {}
+        for _, id in ipairs(pads) do names[#names + 1] = ns.ButtonLabel(id) end
+        local label = table.concat(names, " + ")
+        ns.Print(ns.L.FOREVER_STUCK:format(label, label))
+    end
+end
+
 local last, wait = nil, 0
 frame:SetScript("OnUpdate", function(_, elapsed)
     wait = wait - elapsed
     if wait > 0 then return end
     wait = 0.1
     if not ns.db or InCombatLockdown() then return end
+    local down = F.PadsDown()
+    Reconcile(down)
+    CheckStuck(down, last ~= false and F.InGame())
     local now = F.InGame()
     if now ~= last then
+        -- (un bouton de base de l'addon enfoncé : on attend son relâchement,
+        -- pour qu'il revienne à qui a reçu l'appui)
+        if last ~= nil and TakenPadDown(down) then return end
         last = now
         ns.Modifier.SetInGame(now)
     end

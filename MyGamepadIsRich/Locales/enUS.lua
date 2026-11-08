@@ -426,3 +426,8 @@ ns.AddLocale("enUS", {
     PAIR_CLASS_WARN_LONG = "Warning: %s also triggers Forever's class action (often a spell wheel, which takes over A, B, X and Y while it is open; B closes it). The addon cannot prevent it: better pick another pair.",
     PAIR_CLASS_NOTE = "%s and %s also trigger Forever's class action (often a spell wheel that takes over A, B, X and Y). The addon cannot prevent it: better pick other pairs.",
 })
+
+-- Forever resté sur sa barre LT / RT
+ns.AddLocale("enUS", {
+    FOREVER_STUCK = "Forever stayed on its %s bar (a button release went missing). Press %s once to bring it back to \"Alone\".",
+})

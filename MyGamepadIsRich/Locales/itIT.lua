@@ -425,3 +425,8 @@ ns.AddLocale("itIT", {
     PAIR_CLASS_WARN_LONG = "Attenzione: %s attiva anche l'azione di classe di Forever (spesso una ruota di incantesimi che prende il controllo di A, B, X e Y finché è aperta; B la chiude). L'addon non può impedirlo: meglio scegliere un'altra coppia.",
     PAIR_CLASS_NOTE = "%s e %s attivano anche l'azione di classe di Forever (spesso una ruota di incantesimi che prende il controllo di A, B, X e Y). L'addon non può impedirlo: meglio scegliere altre coppie.",
 })
+
+-- Forever resté sur sa barre LT / RT
+ns.AddLocale("itIT", {
+    FOREVER_STUCK = "Forever è rimasto sulla sua barra %s (il rilascio di un pulsante è andato perso). Premi %s una volta per tornare a «Da solo».",
+})

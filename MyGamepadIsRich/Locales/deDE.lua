@@ -425,3 +425,8 @@ ns.AddLocale("deDE", {
     PAIR_CLASS_WARN_LONG = "Achtung: %s löst auch die Klassenaktion von Forever aus (oft ein Zauberrad, das A, B, X und Y übernimmt, solange es offen ist; B schließt es). Das Addon kann das nicht verhindern: Wähle lieber ein anderes Paar.",
     PAIR_CLASS_NOTE = "%s und %s lösen auch die Klassenaktion von Forever aus (oft ein Zauberrad, das A, B, X und Y übernimmt). Das Addon kann das nicht verhindern: Wähle lieber andere Paare.",
 })
+
+-- Forever resté sur sa barre LT / RT
+ns.AddLocale("deDE", {
+    FOREVER_STUCK = "Forever ist auf seiner %s-Leiste hängen geblieben (ein Loslassen der Taste ging verloren). Drücke einmal %s, um zu „Allein“ zurückzukehren.",
+})

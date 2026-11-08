@@ -541,3 +541,33 @@ function P.Watch()
     watcher:Show()
     ns.Print("Relevé pendant 25 s : ferme le chat, puis LB + LT, LB seul, LT seul, RB + RT (tranquillement).")
 end
+
+---------------------------------------------------------------------------
+-- /mgir etat : l'état des couches à cet instant, dans le chat (à taper
+-- quand une couche semble bloquée)
+---------------------------------------------------------------------------
+function P.State()
+    local function Line(label, value) ns.Print(label .. " : " .. value) end
+    Line("focus jeu (Forever)", S(ns.Focus.InGame()) .. ", addon " .. S(ns.Modifier.InGameAttribute())
+        .. ", combat " .. S(InCombatLockdown()))
+    local heldList = {}
+    for id, where in pairs(ns.Modifier.HeldState()) do heldList[#heldList + 1] = id .. "(" .. where .. ")" end
+    table.sort(heldList)
+    Line("tenus pour l'addon", #heldList > 0 and table.concat(heldList, " ") or "aucun")
+    Line("couche de l'addon", S(ns.Modifier.Held()))
+    local down = ns.Focus.PadsDown()
+    local downList = {}
+    for id in pairs(down or {}) do downList[#downList + 1] = id end
+    table.sort(downList)
+    Line("enfoncés sur la manette", down and (#downList > 0 and table.concat(downList, " ") or "aucun") or "?")
+    local pu = ns.Bar and ns.Bar.PageUnit()
+    local active = "?"
+    if pu and pu.actionBars then
+        for _, name in ipairs(ns.Bar.NAMES or {}) do
+            if pu.actionBars[name] == pu.activeBar then active = name end
+        end
+    end
+    Line("barre active de Forever", active)
+    Line("A est lié à", S(GetBindingAction("PAD1", true)))
+    Line("LT est lié à", S(GetBindingAction("PADLTRIGGER", true)))
+end

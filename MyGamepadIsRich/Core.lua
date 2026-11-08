@@ -621,6 +621,8 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         -- (/mgir probe 5 : relevé dans 5 secondes ; /mgir probe watch : ce
         -- qui se passe pendant 25 s quand on appuie)
         if rest == "watch" then ns.Probe.Watch() else ns.Probe.Run(tonumber(rest)) end
+    elseif msg == "etat" or msg == "état" or msg == "state" then
+        ns.Probe.State()
     elseif msg == "tuto" or msg == "tutorial" or msg == "tutoriel" then
         ns.Tutorial.Open(1)
     elseif msg == "test" then

@@ -425,3 +425,8 @@ ns.AddLocale("frFR", {
     PAIR_CLASS_WARN_LONG = "Attention : %s déclenche aussi l'action de classe de Forever (souvent une roue de sorts, qui prend la main sur A, B, X et Y tant qu'elle est ouverte ; B pour la fermer). L'addon ne peut pas l'empêcher : choisis plutôt une autre paire.",
     PAIR_CLASS_NOTE = "%s et %s déclenchent aussi l'action de classe de Forever (souvent une roue de sorts qui prend la main sur A, B, X et Y). L'addon ne peut pas l'empêcher : mieux vaut choisir d'autres paires.",
 })
+
+-- Forever resté sur sa barre LT / RT
+ns.AddLocale("frFR", {
+    FOREVER_STUCK = "Forever est resté sur sa barre %s (un relâchement de bouton lui a échappé). Appuie une fois sur %s pour le remettre sur « Seul ».",
+})

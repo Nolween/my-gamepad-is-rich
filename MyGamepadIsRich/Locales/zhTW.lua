@@ -425,3 +425,8 @@ ns.AddLocale("zhTW", {
     PAIR_CLASS_WARN_LONG = "注意：%s 也會觸發 Forever 的職業動作（通常是一個法術輪盤，開啟時會占用 A、B、X 和 Y；按 B 關閉）。插件無法阻止：最好選擇其他組合。",
     PAIR_CLASS_NOTE = "%s 和 %s 也會觸發 Forever 的職業動作（通常是會占用 A、B、X 和 Y 的法術輪盤）。插件無法阻止：最好選擇其他組合。",
 })
+
+-- Forever resté sur sa barre LT / RT
+ns.AddLocale("zhTW", {
+    FOREVER_STUCK = "Forever 停留在它的 %s 動作條上（漏掉了一次按鍵放開）。按一次 %s 即可回到「單獨」。",
+})
