@@ -39,9 +39,19 @@ local GLYPH = 26           -- (le bouton de la manette sur une case)
 local CENTER_W = 230
 local MAIN_W = CLUSTER * 2 + CENTER_W + 32
 local MAIN_H = CLUSTER + 18
-local MINI, MINI_STEP = 15, 16
+local MINI, MINI_STEP = 18, 20
 local CROSS = MINI_STEP * 2 + MINI
+-- (une miniature : la croix, une colonne pour les boutons simples (3 par
+-- colonne) si il y en a, A/B/X/Y ; sa largeur suit le nombre de boutons
+-- simples, recalculée par Relayout)
+local SIMPLE_PER_COL = 3
 local CARD_W, CARD_H = CROSS * 2 + 8 + 12, CROSS + 32
+local cardW = CARD_W
+
+local function CardWidth(nSimple)
+    if nSimple == 0 then return CARD_W end
+    return CROSS * 2 + 12 + math.ceil(nSimple / SIMPLE_PER_COL) * MINI_STEP + 16
+end
 local STRIP_GAP = 6
 local HEIGHT = MAIN_H + 14 + CARD_H
 local PADDLE = 44
@@ -641,21 +651,22 @@ local function Card()
     bg:SetColorTexture(0.02, 0.02, 0.02, 0.85)
     c.tag = Tag(c, 20, "GameFontNormal")
     c.tag:SetPoint("TOP", 0, -4)
-    c.minis = {}
-    for g = 0, 1 do
-        for i, spot in ipairs(SPOTS) do
-            local x = 6 + g * (CROSS + 8) + CROSS / 2 + spot[1] * MINI_STEP
-            local y = 6 + CROSS / 2 + spot[2] * MINI_STEP
-            local back = c:CreateTexture(nil, "BORDER", nil, 1)
-            back:SetSize(MINI, MINI)
-            back:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
-            back:SetColorTexture(1, 1, 1, 0.1)
-            local tex = c:CreateTexture(nil, "ARTWORK")
-            tex:SetSize(MINI, MINI)
-            tex:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
-            c.minis[g * 4 + i] = tex
-        end
+    -- (une case miniature : un fond, l'icône par-dessus)
+    local function Mini(r, g, b, a)
+        local back = c:CreateTexture(nil, "BORDER", nil, 1)
+        back:SetSize(MINI, MINI)
+        back:SetColorTexture(r, g, b, a)
+        local tex = c:CreateTexture(nil, "ARTWORK")
+        tex:SetSize(MINI, MINI)
+        tex:SetPoint("CENTER", back, "CENTER")
+        tex.back = back
+        return tex
     end
+    c.minis = {}
+    for i = 1, 8 do c.minis[i] = Mini(1, 1, 1, 0.1) end
+    -- (les boutons simples : fond doré, pour les distinguer)
+    c.simple = {}
+    for i = 1, #ns.BUTTON_IDS + #ns.PAD_IDS do c.simple[i] = Mini(0.75, 0.55, 0.1, 0.25) end
     local hl = c:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints(bg)
     hl:SetColorTexture(1, 1, 1, 0.08)
@@ -673,6 +684,36 @@ local function Card()
     end)
     mouseFrames[#mouseFrames + 1] = c
     return c
+end
+
+-- Place les cases d'une miniature : croix à gauche, A/B/X/Y à droite, les
+-- boutons simples entre les deux (nSimple : combien sont montrés)
+local function LayoutCard(c, nSimple)
+    c:SetSize(cardW, CARD_H)
+    local cols = math.ceil(nSimple / SIMPLE_PER_COL)
+    local middle = nSimple > 0 and (cols * MINI_STEP + 16) or 8
+    for g = 0, 1 do
+        for i, spot in ipairs(SPOTS) do
+            local x = 6 + g * (CROSS + middle) + CROSS / 2 + spot[1] * MINI_STEP
+            local y = 6 + CROSS / 2 + spot[2] * MINI_STEP
+            local tex = c.minis[g * 4 + i]
+            tex.back:ClearAllPoints()
+            tex.back:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
+        end
+    end
+    for k, tex in ipairs(c.simple) do
+        local shown = k <= nSimple
+        tex.back:SetShown(shown)
+        if not shown then tex:Hide() end
+        if shown then
+            local col, row = math.floor((k - 1) / SIMPLE_PER_COL), (k - 1) % SIMPLE_PER_COL
+            local inCol = math.min(SIMPLE_PER_COL, nSimple - col * SIMPLE_PER_COL)
+            local x = 6 + CROSS + 8 + col * MINI_STEP + MINI_STEP / 2
+            local y = 6 + CROSS / 2 + ((inCol - 1) / 2 - row) * MINI_STEP
+            tex.back:ClearAllPoints()
+            tex.back:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
+        end
+    end
 end
 
 local function Paddle()
@@ -793,9 +834,12 @@ local function Relayout()
     end
 
     -- La bande : réparties sur 1 à 3 lignes (chacune centrée), à la taille choisie
+    -- (chaque miniature montre aussi les boutons simples de sa couche)
+    local nSimple = math.min(#ns.SimpleIDs(), #ns.BUTTON_IDS + #ns.PAD_IDS)
+    cardW = CardWidth(nSimple)
     local rows = math.max(1, math.min(s.stripRows, #list))
     local perRow = math.ceil(#list / rows)
-    local rowW = perRow * CARD_W + (perRow - 1) * STRIP_GAP
+    local rowW = perRow * cardW + (perRow - 1) * STRIP_GAP
     local stripH = rows * CARD_H + (rows - 1) * STRIP_GAP
     strip:SetScale(s.stripScale)
     strip:SetSize(rowW, stripH)
@@ -810,7 +854,8 @@ local function Relayout()
         c.entry = entry
         local row, col = math.floor((i - 1) / perRow), (i - 1) % perRow
         local inRow = math.min(perRow, #list - row * perRow)
-        local x = (rowW - (inRow * CARD_W + (inRow - 1) * STRIP_GAP)) / 2 + col * (CARD_W + STRIP_GAP)
+        local x = (rowW - (inRow * cardW + (inRow - 1) * STRIP_GAP)) / 2 + col * (cardW + STRIP_GAP)
+        LayoutCard(c, nSimple)
         c:ClearAllPoints()
         c:SetPoint("TOPLEFT", strip, "TOPLEFT", x, -row * (CARD_H + STRIP_GAP))
         EntryTag(c.tag, entry)
@@ -892,6 +937,8 @@ local function SetMini(tex, has, t, atlas)
     end
 end
 
+local CARD_SIMPLE_LAYER = { topBar = "base", leftBar = "lt", rightBar = "rt" }
+
 local function SetCardMinis(c, pu)
     local entry = c.entry
     if entry.bar then
@@ -912,6 +959,19 @@ local function SetCardMinis(c, pu)
             local action = combos[i <= 4 and DPAD_KEYS[i] or FACE_KEYS[i - 4]]
             SetMini(tex, action ~= nil, action and ns.Actions.Icon(action))
         end
+    end
+    -- (les boutons simples : leur case de cette couche ; une barre du jeu
+    -- montre leur action seule, avec LT ou avec RT ; LT + RT n'en a pas)
+    local simple = ns.SimpleIDs()
+    for k, tex in ipairs(c.simple) do
+        local sid = simple[k]
+        local action
+        if sid and entry.mod then
+            action = ns.ButtonActions(entry.mod).combos[sid]
+        elseif sid and CARD_SIMPLE_LAYER[entry.bar] then
+            action = ns.ButtonActions(sid).layers[CARD_SIMPLE_LAYER[entry.bar]]
+        end
+        SetMini(tex, action ~= nil and tex.back:IsShown(), action and ns.Actions.Icon(action))
     end
 end
 

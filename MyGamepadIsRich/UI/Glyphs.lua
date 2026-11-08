@@ -89,6 +89,8 @@ function UI.RefreshGlyphs()
     end
 end
 
+local BASE_PAD = { PADLTRIGGER = true, PADRTRIGGER = true, PADLSHOULDER = true, PADRSHOULDER = true }
+
 -- Libellé court d'une touche / d'un bouton supplémentaire pour la pastille
 local SHORT = { PADDUP = "^", PADDDOWN = "v", PADDLEFT = "<", PADDRIGHT = ">" }
 local function ShortLabel(key)
@@ -117,7 +119,10 @@ function UI.CreateGlyph(parent, size)
         self.key = key
         -- (les gâchettes de l'addon, « LT » / « RT » : l'icône du jeu)
         local pad = ns.TRIGGER_KEY and ns.TRIGGER_KEY[key] or key
-        local atlas = (ATLAS[pad] or PS_ATLAS[pad]) and FindAtlas(pad)
+        -- (les boutons de base, LT / RT / LB / RB : une pastille comme les
+        -- boutons supplémentaires, pas l'image du jeu)
+        local basePad = BASE_PAD[pad]
+        local atlas = not basePad and (ATLAS[pad] or PS_ATLAS[pad]) and FindAtlas(pad)
         if atlas then
             self.tex:SetAtlas(atlas)
             self.tex:Show()
@@ -127,7 +132,7 @@ function UI.CreateGlyph(parent, size)
         end
         self.tex:Hide()
         self.badge:Show()
-        local extra = ns.prof and (ns.prof.buttons[key] or (ns.IsPair and ns.IsPair(key)))
+        local extra = basePad or (ns.prof and (ns.prof.buttons[key] or (ns.IsPair and ns.IsPair(key))))
         local c = COLORS[key] or (extra and { 0.75, 0.55, 0.1 }) or { 0.25, 0.25, 0.25 }
         self.badge:SetColorTexture(c[1], c[2], c[3], 0.9)
         self.text:SetWidth(size + 16)
