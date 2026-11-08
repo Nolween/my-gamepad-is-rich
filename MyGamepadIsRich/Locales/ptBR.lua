@@ -171,7 +171,7 @@ ns.AddLocale("ptBR", {
     SECTION_MODS_EMPTY = "Nenhum ainda: coloque um botão em Modificador na aba Botões.",
     SECTION_SIMPLE = "Botões simples",
     SECTION_SIMPLE_EMPTY = "Nenhum ainda: coloque um botão em Botão simples na aba Botões.",
-    LAYER_DESC_BASE = "A, B, X, Y e o direcional sem segurar nada. A, B, X e Y mantêm as ações do jogo (pular, interagir...).",
+    LAYER_DESC_BASE = "A, B, X, Y e o direcional sem segurar nada. Tudo cabe aqui: o que a barra do jogo não consegue guardar (macro escrita à mão, comando do WoW) fica com o addon. A, B, X e Y mantêm as ações do jogo (pular, interagir...) até você colocar as suas.",
     LAYER_DESC_HOLD = "Segure %s e aperte A, B, X, Y ou o direcional.",
     PAIRS_TITLE = "Pares (dois modificadores segurados juntos)",
     HUD_INTRO = "O HUD substitui a barra de controle do jogo: a camada em uso em destaque, todas as camadas em miniatura.",
@@ -326,4 +326,9 @@ ns.AddLocale("ptBR", {
     TRIGGERS_GAME_DESC = "LT e RT mantêm as camadas da barra de controle do jogo (editáveis na aba Ações).",
     TRIGGERS_COPIED = "%d ação(ões) das camadas LT / RT do jogo copiada(s) para as do addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificadores do addon.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("ptBR", {
+    MENU_GAME_BAR_HINT = "Macros escritas, comandos do WoW: coloque LT / RT em “Modificadores do addon” (aba Botões)",
 })

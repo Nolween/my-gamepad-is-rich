@@ -117,6 +117,34 @@ function P.Run()
         W("index %s = %s", b, S(ok and i))
     end
 
+    -- État au moment du relevé (ex. près d'un PNJ) : barre active, focus
+    -- manette, cases de « Seul » prises par l'addon
+    W("== state")
+    local mainFrame = _G.GamepadMainActionBarFrame
+    local pageUnit = mainFrame and mainFrame.PageUnit
+    if type(pageUnit) == "table" then
+        local activeName = "?"
+        for _, name in ipairs({ "topBar", "leftBar", "rightBar", "bottomBar" }) do
+            if pageUnit.actionBars and pageUnit.actionBars[name] == pageUnit.activeBar then activeName = name end
+        end
+        W("activeBar %s (%s)", activeName, S(pageUnit.activeBar and pageUnit.activeBar.GetName and pageUnit.activeBar:GetName()))
+    end
+    W("ingame %s", S(ns.Focus and ns.Focus.InGame()))
+    local manager = GamepadSharedUtility and GamepadSharedUtility.InputBindingManager
+    if manager and manager.IsOnlyCoreBindingSetActive then
+        local ok, v = pcall(manager.IsOnlyCoreBindingSetActive, manager)
+        W("IsOnlyCoreBindingSetActive %s %s", S(ok), S(v))
+    end
+    for i = 1, 8 do
+        local own = ns.Bar and ns.Bar.Override(i)
+        local storage = ns.Bar and ns.Bar.Storage("topBar", i)
+        local kind, id = nil, nil
+        if storage then kind, id = GetActionInfo(storage) end
+        W("seul %d %s : addon %s, jeu %s:%s (storage %s, gameSlot %s)", i, S(ns.Bar and ns.Bar.PAD_KEYS[i]),
+            own and (S(own.kind) .. ":" .. S(own.id or own.name or own.command)) or "-",
+            S(kind), S(id), S(storage), S(ns.Bar and ns.Bar.IsGameSlot("topBar", i)))
+    end
+
     -- Barre croisée de Forever
     W("== crossbar")
     local main = _G.GamepadMainActionBarFrame

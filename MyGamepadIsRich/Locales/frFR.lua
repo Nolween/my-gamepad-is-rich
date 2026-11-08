@@ -171,7 +171,7 @@ ns.AddLocale("frFR", {
     SECTION_MODS_EMPTY = "Aucun pour l'instant : passe un bouton en Modificateur dans l'onglet Boutons.",
     SECTION_SIMPLE = "Boutons simples",
     SECTION_SIMPLE_EMPTY = "Aucun pour l'instant : passe un bouton en Bouton simple dans l'onglet Boutons.",
-    LAYER_DESC_BASE = "A, B, X, Y et la croix sans rien maintenir. A, B, X et Y gardent les actions du jeu (sauter, interagir...).",
+    LAYER_DESC_BASE = "A, B, X, Y et la croix sans rien maintenir. Tout peut y aller : ce que la barre du jeu ne sait pas tenir (macro écrite à la main, commande WoW) est pris par l'addon. A, B, X et Y gardent les actions du jeu (sauter, interagir...) tant que tu n'y mets pas les tiennes.",
     LAYER_DESC_HOLD = "Maintiens %s, puis appuie sur A, B, X, Y ou la croix.",
     PAIRS_TITLE = "Paires (deux modificateurs maintenus ensemble)",
     HUD_INTRO = "Le HUD remplace la barre manette du jeu : la couche utilisée en grand, toutes les couches en miniature.",
@@ -326,4 +326,9 @@ ns.AddLocale("frFR", {
     TRIGGERS_GAME_DESC = "LT et RT gardent les couches de la barre manette du jeu (modifiables depuis l'onglet Actions).",
     TRIGGERS_COPIED = "%d action(s) des couches LT / RT du jeu reprise(s) dans celles de l'addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT : modificateurs de l'addon.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("frFR", {
+    MENU_GAME_BAR_HINT = "Macros écrites, commandes WoW : passe LT / RT en « Modificateurs de l'addon » (onglet Boutons)",
 })

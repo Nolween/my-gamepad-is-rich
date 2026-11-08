@@ -119,3 +119,77 @@ function B.Count(bar)
     end
     return n, total
 end
+
+---------------------------------------------------------------------------
+-- La couche « Seul » entièrement configurable : ce que la barre du jeu ne
+-- sait pas tenir (macro écrite à la main, commande WoW, ensemble
+-- d'équipement), et toute action sur A/B/X/Y (réservés au jeu), va dans la
+-- couche « BASE » de l'addon. Elle ne prend que les cases remplies (liées
+-- par Modifier.lua quand le jeu a le focus manette) ; les autres restent
+-- au jeu. Vider une case de l'addon rend celle du jeu.
+---------------------------------------------------------------------------
+B.BASE_BAR = "topBar"
+
+-- L'action de l'addon sur la case i de « Seul », ou nil
+function B.Override(i)
+    local actions = ns.ButtonActions and ns.cprof and ns.ButtonActions("BASE")
+    return actions and actions.combos[B.PAD_KEYS[i]]
+end
+
+local function SetOverride(i, action)
+    ns.ButtonActions("BASE").combos[B.PAD_KEYS[i]] = action
+    ns.Apply()
+end
+
+-- Ce que la barre du jeu peut tenir
+function B.Holds(action)
+    return Pickup(action) ~= nil
+end
+
+-- Ce que montre une case : l'action de l'addon, sinon celle du jeu
+function B.GetView(bar, i)
+    if bar == B.BASE_BAR then
+        local own = B.Override(i)
+        if own then return own end
+    end
+    return B.Get(bar, i)
+end
+
+-- Pose une case. « Seul » : la barre du jeu quand elle peut, sinon l'addon.
+-- Renvoie true, ou nil et un message.
+function B.SetView(bar, i, action)
+    if bar ~= B.BASE_BAR then return B.Set(bar, i, action) end
+    if InCombatLockdown() then return nil, L.HUD_COMBAT end
+    if not action then
+        -- (vider : d'abord l'action de l'addon, qui rend celle du jeu)
+        if B.Override(i) then
+            SetOverride(i, nil)
+            return true
+        end
+        if B.IsGameSlot(bar, i) then return true end
+        return B.Set(bar, i, nil)
+    end
+    if action.kind ~= "slot" and (B.IsGameSlot(bar, i) or not B.Holds(action) or not B.Storage(bar, i)) then
+        SetOverride(i, action)
+        return true
+    end
+    -- (la barre du jeu le tient : on y écrit, et l'addon rend la main)
+    local ok, err = B.Set(bar, i, action)
+    if ok and B.Override(i) then SetOverride(i, nil) end
+    return ok, err
+end
+
+-- Une case réservée au jeu sans action de l'addon (A/B/X/Y de « Seul »)
+function B.ShowsGameAction(bar, i)
+    return bar == B.BASE_BAR and B.IsGameSlot(bar, i) and not B.Override(i)
+end
+
+-- Comme Count, toutes les cases de « Seul » étant modifiables
+function B.CountView(bar)
+    if bar ~= B.BASE_BAR then return B.Count(bar) end
+    local n = 0
+    for i = 1, 8 do
+        if B.Override(i) or B.Get(bar, i) then n = n + 1 end
+    end
+    return n, 8
+end

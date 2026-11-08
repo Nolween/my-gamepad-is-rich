@@ -171,7 +171,7 @@ ns.AddLocale("deDE", {
     SECTION_MODS_EMPTY = "Noch keine: Stelle eine Taste im Reiter Tasten auf Modifikator.",
     SECTION_SIMPLE = "Einfache Tasten",
     SECTION_SIMPLE_EMPTY = "Noch keine: Stelle eine Taste im Reiter Tasten auf Einfache Taste.",
-    LAYER_DESC_BASE = "A, B, X, Y und das Steuerkreuz, ohne etwas zu halten. A, B, X und Y behalten die Aktionen des Spiels (Springen, Interagieren...).",
+    LAYER_DESC_BASE = "A, B, X, Y und das Steuerkreuz, ohne etwas zu halten. Alles ist möglich: Was die Leiste des Spiels nicht halten kann (selbst geschriebenes Makro, WoW-Befehl), übernimmt das Addon. A, B, X und Y behalten die Aktionen des Spiels (Springen, Interagieren...), bis du eigene festlegst.",
     LAYER_DESC_HOLD = "Halte %s und drücke dann A, B, X, Y oder das Steuerkreuz.",
     PAIRS_TITLE = "Paare (zwei gemeinsam gehaltene Modifikatoren)",
     HUD_INTRO = "Das HUD ersetzt die Controller-Leiste des Spiels: die genutzte Ebene groß, alle Ebenen als Miniatur.",
@@ -326,4 +326,9 @@ ns.AddLocale("deDE", {
     TRIGGERS_GAME_DESC = "LT und RT behalten die Ebenen der Controller-Leiste des Spiels (im Reiter Aktionen bearbeitbar).",
     TRIGGERS_COPIED = "%d Aktion(en) aus den LT/RT-Ebenen des Spiels in die des Addons übernommen.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: Addon-Modifikatoren.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("deDE", {
+    MENU_GAME_BAR_HINT = "Eigene Makros, WoW-Befehle: LT / RT auf „Addon-Modifikatoren“ stellen (Reiter Tasten)",
 })

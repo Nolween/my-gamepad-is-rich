@@ -11,6 +11,8 @@ local SIZE = 40
 --   allowCommand = fn() -> bool (commande WoW possible ?),
 --   allowMacroText = fn() -> bool (macro écrite à la main possible ?),
 --   locked = fn() -> bool (case réservée au jeu : ni pose, ni vidage),
+--   emptyLabel = fn() -> texte d'une case vide (sinon « Vide »),
+--   disabledHint = fn() -> texte qui dit pourquoi des choix du menu sont grisés,
 --   labelWidth = n,
 -- }
 local function Allowed(fn)
@@ -75,7 +77,7 @@ function UI.CreateActionSlot(parent, opts)
         else
             self.icon:Hide()
             self.plus:Show()
-            self.label:SetText(L.EMPTY)
+            self.label:SetText(self.opts.emptyLabel and self.opts.emptyLabel() or L.EMPTY)
             self.label:SetFontObject("GameFontDisableSmall")
         end
     end
@@ -106,7 +108,7 @@ function UI.CreateActionSlot(parent, opts)
         local current = slot.opts.get()
         local commandOK = Allowed(slot.opts.allowCommand)
         local macroOK = Allowed(slot.opts.allowMacroText)
-        UI.ShowMenu(slot, {
+        local items = {
             { text = L.MENU_PICKUP_HINT, title = true },
             { text = L.MENU_SPELL, func = function()
                 UI.PickFromList(L.SPELL_TITLE, ns.Actions.SpellbookEntries(), Set)
@@ -128,7 +130,11 @@ function UI.CreateActionSlot(parent, opts)
                 UI.PickFromList(L.COMMAND_TITLE, ns.Actions.Commands(), Set)
             end },
             { text = L.MENU_CLEAR, disabled = current == nil, func = function() Set(nil) end },
-        })
+        }
+        -- (des choix grisés : pourquoi, et comment les avoir)
+        local hint = slot.opts.disabledHint and slot.opts.disabledHint()
+        if hint and not (commandOK and macroOK) then items[#items + 1] = { text = hint, title = true } end
+        UI.ShowMenu(slot, items)
     end
 
     slot:SetScript("OnReceiveDrag", Accept)

@@ -171,7 +171,7 @@ ns.AddLocale("zhTW", {
     SECTION_MODS_EMPTY = "尚無：請在「按鍵」分頁中把一個按鍵設為修飾鍵。",
     SECTION_SIMPLE = "一般按鍵",
     SECTION_SIMPLE_EMPTY = "尚無：請在「按鍵」分頁中把一個按鍵設為一般按鍵。",
-    LAYER_DESC_BASE = "不按住任何鍵時的 A、B、X、Y 和十字鍵。A、B、X、Y 保留遊戲內建的動作（跳躍、互動……）。",
+    LAYER_DESC_BASE = "不按住任何鍵時的 A、B、X、Y 和十字鍵。這裡可以放任何東西：遊戲快捷列無法容納的（手寫巨集、WoW 指令）由插件接管。在你放入自己的動作之前，A、B、X、Y 保留遊戲的動作（跳躍、互動…）。",
     LAYER_DESC_HOLD = "按住 %s，再按 A、B、X、Y 或十字鍵。",
     PAIRS_TITLE = "組合（同時按住兩個修飾鍵）",
     HUD_INTRO = "HUD 取代遊戲的手把快捷列：正在使用的層放大顯示，所有層以縮圖顯示。",
@@ -325,4 +325,9 @@ ns.AddLocale("zhTW", {
     TRIGGERS_GAME_DESC = "LT 和 RT 保留遊戲手把快捷列的層（可在「動作」分頁編輯）。",
     TRIGGERS_COPIED = "已將遊戲 LT / RT 層中的 %d 個動作複製到插件的層。",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT：插件修飾鍵。",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("zhTW", {
+    MENU_GAME_BAR_HINT = "手寫巨集、WoW 指令：請在「按鍵」分頁將 LT / RT 設為「插件修飾鍵」",
 })

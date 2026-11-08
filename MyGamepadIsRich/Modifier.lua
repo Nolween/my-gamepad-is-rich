@@ -271,16 +271,14 @@ local function Prefix(a, b)
     return out
 end
 
--- Une couche en accord : ses 8 cases liées à prefix .. bouton (les vides
--- ne font rien)
-local function WriteChord(layer, actions, prefix, onDown)
+-- Une couche en accord : ses cases liées à prefix .. bouton. Les vides ne
+-- font rien (swallow), ou restent au jeu (pas de liaison).
+local function WriteChord(layer, actions, prefix, onDown, swallow)
     for _, key in ipairs(ns.PAD_KEYS) do
-        chordCount = chordCount + 1
-        local n = chordCount
-        Write("chord-key-" .. n, prefix .. key)
         local action = actions.combos[key]
+        local cmd, click
         if ns.Actions.IsCommand(action) then
-            Write("chord-cmd-" .. n, action.command)
+            cmd = action.command
         else
             local macro, text
             if action then macro, text = ns.Actions.Secure(action) end
@@ -290,13 +288,25 @@ local function WriteChord(layer, actions, prefix, onDown)
                 b:SetAttribute("useOnKeyDown", onDown)
                 b:SetAttribute("macro", macro)
                 b:SetAttribute("macrotext", text)
-                Write("chord-click-" .. n, b:GetName())
-            else
-                Write("chord-click-" .. n, Noop():GetName())
+                click = b:GetName()
+            elseif swallow then
+                click = Noop():GetName()
             end
+        end
+        if cmd or click then
+            chordCount = chordCount + 1
+            local n = chordCount
+            Write("chord-key-" .. n, prefix .. key)
+            if cmd then Write("chord-cmd-" .. n, cmd) else Write("chord-click-" .. n, click) end
         end
     end
     Write("chord-count", chordCount)
+end
+
+-- La couche « Seul » : les cases que l'addon prend au jeu (Bar.lua), liées
+-- sans préfixe ; les autres restent au jeu
+function M.Base(onDown)
+    WriteChord("BASE", ns.ButtonActions("BASE"), "", onDown, false)
 end
 
 -- Une gâchette qui n'imite rien : un modificateur comme L5, dont la touche
@@ -319,7 +329,7 @@ function M.Triggers(owner, onDown)
     local mods = { LT = Emulated(ns.TRIGGER_KEY.LT), RT = Emulated(ns.TRIGGER_KEY.RT) }
     for _, id in ipairs({ "LT", "RT" }) do
         if mods[id] then
-            WriteChord(id, ns.ButtonActions(id), mods[id] .. "-", onDown)
+            WriteChord(id, ns.ButtonActions(id), mods[id] .. "-", onDown, true)
         else
             SetupTrigger(id, ns.ButtonActions(id), onDown)
         end
@@ -329,7 +339,7 @@ function M.Triggers(owner, onDown)
     local pairActions = ns.ButtonActions(pairID)
     if mods.LT and mods.RT then
         -- (les deux en accord : « CTRL-SHIFT-PAD1 »...)
-        WriteChord(pairID, pairActions, Prefix(mods.LT, mods.RT), onDown)
+        WriteChord(pairID, pairActions, Prefix(mods.LT, mods.RT), onDown, true)
     elseif not mods.LT and not mods.RT then
         -- (deux gestionnaires : une paire comme L5 + R5)
         Write("partner-LT", "RT")

@@ -171,7 +171,7 @@ ns.AddLocale("itIT", {
     SECTION_MODS_EMPTY = "Ancora nessuno: imposta un pulsante su Modificatore nella scheda Pulsanti.",
     SECTION_SIMPLE = "Pulsanti semplici",
     SECTION_SIMPLE_EMPTY = "Ancora nessuno: imposta un pulsante su Pulsante semplice nella scheda Pulsanti.",
-    LAYER_DESC_BASE = "A, B, X, Y e la croce senza tenere premuto nulla. A, B, X e Y mantengono le azioni del gioco (saltare, interagire...).",
+    LAYER_DESC_BASE = "A, B, X, Y e la croce senza tenere nulla. Qui va tutto: ciò che la barra del gioco non può contenere (macro scritta a mano, comando di WoW) lo prende l'addon. A, B, X e Y mantengono le azioni del gioco (saltare, interagire...) finché non metti le tue.",
     LAYER_DESC_HOLD = "Tieni premuto %s, poi premi A, B, X, Y o la croce.",
     PAIRS_TITLE = "Coppie (due modificatori tenuti insieme)",
     HUD_INTRO = "L'HUD sostituisce la barra del controller del gioco: lo strato in uso in grande, tutti gli strati in miniatura.",
@@ -326,4 +326,9 @@ ns.AddLocale("itIT", {
     TRIGGERS_GAME_DESC = "LT e RT mantengono gli strati della barra del controller del gioco (modificabili dalla scheda Azioni).",
     TRIGGERS_COPIED = "%d azione/i degli strati LT / RT del gioco copiata/e in quelli dell'addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificatori dell'addon.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("itIT", {
+    MENU_GAME_BAR_HINT = "Macro scritte, comandi di WoW: imposta LT / RT su «Modificatori dell'addon» (scheda Pulsanti)",
 })

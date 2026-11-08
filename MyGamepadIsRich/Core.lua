@@ -27,11 +27,12 @@ ns.TRIGGER_LAYERS = { LT = true, RT = true, LTRT = true }
 -- (la barre du jeu que chaque couche remplace)
 ns.TRIGGER_BAR = { LT = "leftBar", RT = "rightBar", LTRT = "bottomBar" }
 
--- Tout ce qui a des actions : les boutons, les paires, puis les gâchettes
+-- Tout ce qui a des actions : les boutons, les paires, les gâchettes, puis
+-- « BASE » (les cases de la couche « Seul » que l'addon prend au jeu, Bar.lua)
 ns.LIST_IDS = {}
 for _, id in ipairs(ns.BUTTON_IDS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 for _, pair in ipairs(ns.PAIRS) do ns.LIST_IDS[#ns.LIST_IDS + 1] = pair.id end
-for _, id in ipairs({ "LT", "RT", "LTRT" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
+for _, id in ipairs({ "LT", "RT", "LTRT", "BASE" }) do ns.LIST_IDS[#ns.LIST_IDS + 1] = id end
 
 function ns.PairDef(id)
     if id == ns.TRIGGER_PAIR.id then return ns.TRIGGER_PAIR end
@@ -229,7 +230,9 @@ function ns.Apply(quiet)
             end
         end
     end
-    -- (les gâchettes, puis les paires : après tous les modificateurs)
+    -- (les cases de « Seul » prises au jeu, les gâchettes, puis les paires :
+    -- après tous les modificateurs)
+    ns.Modifier.Base(onDown)
     if ns.TriggersOn() then ns.Modifier.Triggers(owner, onDown) end
     ns.Modifier.Finish(onDown)
     if ns.Focus then ns.Focus.Push() end

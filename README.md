@@ -84,7 +84,12 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | **Test manette** | Ce que WoW reçoit de chaque bouton. |
 | **Aide** | Les textes du tutoriel (pour la manette choisie), et un bouton pour le relancer. |
 
-Sur la barre manette du jeu, A/B/X/Y sans rien maintenir gardent les actions du jeu (sauter, interagir…) ; ses cases n'acceptent que des sorts, objets, montures et macros de la liste des macros (pas de macro écrite à la main ni de commande WoW).
+**La couche « Seul »** (rien de maintenu) accepte tout :
+- Un sort, un objet, une monture ou une macro de la liste va dans la barre du jeu, comme avec son éditeur.
+- Une macro écrite à la main, une commande WoW ou un ensemble d'équipement va dans une couche de l'addon, qui ne prend que les cases remplies. Les autres restent au jeu.
+- **A, B, X et Y** gardent les actions du jeu (sauter, interagir…) tant qu'on n'y met rien. Une action posée dessus les remplace, et vider la case rend l'action du jeu.
+
+Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut passer les gâchettes en « Modificateurs de l'addon » (voir plus bas) ; le menu d'une case l'indique.
 
 La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage**, dans ce même profil.
 

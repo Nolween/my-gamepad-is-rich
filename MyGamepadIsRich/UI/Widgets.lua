@@ -251,14 +251,18 @@ end
 local picker
 local PICKER_ROWS = 16
 
+-- (seuls les champs texte comptent : une valeur d'un autre type, venue d'un
+-- autre addon par exemple, ne doit pas casser la recherche)
+local function Matches(text, query)
+    return type(text) == "string" and text:lower():find(query, 1, true) ~= nil
+end
+
 local function Filter(all, query)
     query = (query or ""):lower()
     if query == "" then return all end
     local out = {}
     for _, e in ipairs(all) do
-        if not e.header and (e.label:lower():find(query, 1, true)
-            or (e.sub and e.sub:lower():find(query, 1, true))
-            or (e.search and e.search:lower():find(query, 1, true))) then
+        if not e.header and (Matches(e.label, query) or Matches(e.sub, query) or Matches(e.search, query)) then
             out[#out + 1] = e
         end
     end

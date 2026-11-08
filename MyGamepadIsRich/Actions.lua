@@ -313,9 +313,17 @@ end
 ---------------------------------------------------------------------------
 -- Commandes WoW (les bindings du jeu)
 ---------------------------------------------------------------------------
+-- Un texte lu dans les globales du jeu : seulement si c'en est un (un autre
+-- addon peut avoir une table ou une fonction sous ce nom), sinon fallback
+local function GlobalText(name, fallback)
+    local v = name and _G[name]
+    if type(v) == "string" and not (issecretvalue and issecretvalue(v)) then return v end
+    return fallback
+end
+
 function A.CommandLabel(command)
     if not command then return "" end
-    return _G["BINDING_NAME_" .. command] or command
+    return GlobalText("BINDING_NAME_" .. command, command)
 end
 
 local commandCache
@@ -325,10 +333,12 @@ function A.Commands()
     local n = GetNumBindings and GetNumBindings() or 0
     for i = 1, n do
         local command, category = GetBinding(i)
-        if command and command ~= "" and not command:find("^HEADER_") then
+        if type(command) == "string" and command ~= "" and not command:find("^HEADER_") then
+            -- (la catégorie : son nom traduit, ou tel quel)
+            local sub = type(category) == "string" and GlobalText(category, category) or ""
             list[#list + 1] = {
                 label = A.CommandLabel(command),
-                sub = category and (_G[category] or category) or "",
+                sub = sub,
                 search = command,
                 action = { kind = "command", command = command },
             }

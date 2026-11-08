@@ -171,7 +171,7 @@ ns.AddLocale("koKR", {
     SECTION_MODS_EMPTY = "아직 없음: 버튼 탭에서 버튼을 수정키로 설정하세요.",
     SECTION_SIMPLE = "단일 버튼",
     SECTION_SIMPLE_EMPTY = "아직 없음: 버튼 탭에서 버튼을 단일 버튼으로 설정하세요.",
-    LAYER_DESC_BASE = "아무것도 누르지 않은 상태의 A, B, X, Y와 십자키. A, B, X, Y는 게임 동작(점프, 상호작용 등)을 유지합니다.",
+    LAYER_DESC_BASE = "아무것도 누르지 않은 상태의 A, B, X, Y와 십자키. 무엇이든 넣을 수 있습니다. 게임 바가 담지 못하는 것(직접 작성한 매크로, WoW 명령)은 애드온이 맡습니다. A, B, X, Y는 직접 지정하기 전까지 게임 동작(점프, 상호작용...)을 유지합니다.",
     LAYER_DESC_HOLD = "%s을(를) 누른 채 A, B, X, Y 또는 십자키를 누르세요.",
     PAIRS_TITLE = "쌍 (함께 누르는 두 수정키)",
     HUD_INTRO = "HUD는 게임의 컨트롤러 바를 대신합니다: 사용 중인 층은 크게, 모든 층은 미리보기로.",
@@ -326,4 +326,9 @@ ns.AddLocale("koKR", {
     TRIGGERS_GAME_DESC = "LT와 RT는 게임 컨트롤러 바의 층을 그대로 씁니다(동작 탭에서 편집).",
     TRIGGERS_COPIED = "게임의 LT / RT 층에서 동작 %d개를 애드온으로 가져왔습니다.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: 애드온 수정키.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("koKR", {
+    MENU_GAME_BAR_HINT = "직접 작성한 매크로, WoW 명령: LT / RT를 '애드온 수정키'로 바꾸세요 (버튼 탭)",
 })

@@ -133,7 +133,7 @@ end
 
 -- Remplies / modifiables
 local function LayerCount(layer)
-    if layer.bar then return ns.Bar.Count(layer.bar) end
+    if layer.bar then return ns.Bar.CountView(layer.bar) end
     local actions = ns.ButtonActions(layer.mod or layer.simple)
     local n = 0
     if layer.mod then
@@ -250,13 +250,18 @@ local function CrossKey(i)
 end
 
 local function GetCross(i)
-    if selected.bar then return ns.Bar.Get(selected.bar, i) end
+    if selected.bar then return ns.Bar.GetView(selected.bar, i) end
     if selected.mod then return ns.ButtonActions(selected.mod).combos[CrossKey(i)] end
+end
+
+-- (« Seul » prend tout : la barre du jeu, ou l'addon pour le reste)
+local function FullLayer()
+    return selected.mod ~= nil or selected.bar == ns.Bar.BASE_BAR
 end
 
 local function SetCross(i, action)
     if selected.bar then
-        local ok, err = ns.Bar.Set(selected.bar, i, action)
+        local ok, err = ns.Bar.SetView(selected.bar, i, action)
         if not ok and err then ns.Print(err) end
     elseif selected.mod then
         ns.ButtonActions(selected.mod).combos[CrossKey(i)] = action
@@ -298,9 +303,16 @@ local function BuildDetail(page)
             local slot = UI.CreateActionSlot(detail.cross, {
                 get = function() return GetCross(i) end,
                 set = function(action) SetCross(i, action) end,
-                allowCommand = function() return selected.mod ~= nil end,
-                allowMacroText = function() return selected.mod ~= nil end,
-                locked = function() return selected.bar ~= nil and ns.Bar.IsGameSlot(selected.bar, i) end,
+                allowCommand = FullLayer,
+                allowMacroText = FullLayer,
+                locked = function()
+                    return selected.bar ~= nil and selected.bar ~= ns.Bar.BASE_BAR and ns.Bar.IsGameSlot(selected.bar, i)
+                end,
+                -- (A/B/X/Y de « Seul » sans action de l'addon : celle du jeu)
+                emptyLabel = function()
+                    return selected.bar and ns.Bar.ShowsGameAction(selected.bar, i) and L.GAME_ACTION or nil
+                end,
+                disabledHint = function() return not FullLayer() and L.MENU_GAME_BAR_HINT or nil end,
                 labelWidth = 80,
             })
             slot:SetPoint("CENTER", detail.cross, "TOPLEFT", centers[side] + spot[1] * stepX,

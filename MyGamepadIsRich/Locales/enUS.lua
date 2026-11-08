@@ -172,7 +172,7 @@ ns.AddLocale("enUS", {
     SECTION_MODS_EMPTY = "None yet: set a button to Modifier in the Buttons tab.",
     SECTION_SIMPLE = "Simple buttons",
     SECTION_SIMPLE_EMPTY = "None yet: set a button to Simple button in the Buttons tab.",
-    LAYER_DESC_BASE = "A, B, X, Y and the D-pad with nothing held. A, B, X and Y keep the game's actions (jump, interact...).",
+    LAYER_DESC_BASE = "A, B, X, Y and the D-pad with nothing held. Everything can go here: what the game's bar can't hold (custom macro, WoW command) is taken by the addon. A, B, X and Y keep the game's actions (jump, interact...) until you put your own.",
     LAYER_DESC_HOLD = "Hold %s, then press A, B, X, Y or the D-pad.",
     PAIRS_TITLE = "Pairs (two modifiers held together)",
     HUD_INTRO = "The HUD replaces the game's controller bar: the layer in use in large, every layer in miniature.",
@@ -327,4 +327,9 @@ ns.AddLocale("enUS", {
     TRIGGERS_GAME_DESC = "LT and RT keep the layers of the game's controller bar (edited from the Actions tab).",
     TRIGGERS_COPIED = "%d action(s) copied from the game's LT / RT layers to the addon's.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: addon modifiers.",
+})
+
+-- Menu d'une case : pourquoi des choix sont grisés
+ns.AddLocale("enUS", {
+    MENU_GAME_BAR_HINT = "Custom macros, WoW commands: set LT / RT to \"Addon modifiers\" (Buttons tab)",
 })

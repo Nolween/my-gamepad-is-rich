@@ -250,8 +250,9 @@ local function Assign(target, action)
         return
     end
     if target.native then
-        -- (la barre de Forever : Bar.lua, comme la fenêtre de configuration)
-        local ok, err = ns.Bar.Set(target.native, target.i, action)
+        -- (la barre de Forever : Bar.lua, comme la fenêtre de configuration ;
+        -- « Seul » prend aussi ce que la barre du jeu ne tient pas)
+        local ok, err = ns.Bar.SetView(target.native, target.i, action)
         if not ok and err then ns.Print(err) end
     elseif target.combo then
         ns.ButtonActions(target.combo).combos[target.key] = action
@@ -266,8 +267,14 @@ local function Assign(target, action)
     end
 end
 
+-- (« Seul » prend tout ; les couches LT / RT du jeu, seulement ce que la
+-- barre du jeu tient)
+local function FullTarget(target)
+    return not target.native or target.native == ns.Bar.BASE_BAR
+end
+
 local function CommandAllowed(target)
-    if target.native then return false end
+    if target.native then return FullTarget(target) end
     if target.layer then return ns.Simple.CommandAllowed(ns.ButtonActions(target.id), target.layer) end
     return true
 end
@@ -291,8 +298,8 @@ local function TileClick(t, button)
         return
     end
     local set = function(action) Assign(target, action) end
-    local native = target.native ~= nil
-    UI.ShowMenu(t, {
+    local full = FullTarget(target)
+    local items = {
         { text = L.MENU_PICKUP_HINT, title = true },
         { text = L.MENU_SPELL, func = function()
             UI.PickFromList(L.SPELL_TITLE, ns.Actions.SpellbookEntries(), set)
@@ -300,7 +307,7 @@ local function TileClick(t, button)
         { text = L.MENU_ITEM, func = function()
             UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), set)
         end },
-        { text = L.MENU_MACROTEXT, disabled = native, func = function()
+        { text = L.MENU_MACROTEXT, disabled = not full, func = function()
             UI.EditMacro(nil, function(text)
                 set(text ~= "" and { kind = "macrotext", text = text } or nil)
             end)
@@ -309,7 +316,10 @@ local function TileClick(t, button)
             UI.PickFromList(L.COMMAND_TITLE, ns.Actions.Commands(), set)
         end },
         { text = L.MENU_CLEAR, func = function() set(nil) end },
-    })
+    }
+    -- (des choix grisés : pourquoi, et comment les avoir)
+    if not full then items[#items + 1] = { text = L.MENU_GAME_BAR_HINT, title = true } end
+    UI.ShowMenu(t, items)
 end
 
 ---------------------------------------------------------------------------
@@ -528,7 +538,7 @@ end
 ---------------------------------------------------------------------------
 -- Construction (positions depuis le bas-milieu du cadre)
 ---------------------------------------------------------------------------
-local holder, outline, moveHint, editHint
+local holder, outline, moveHint
 local strip -- (le cadre des miniatures : mis à l'échelle choisie)
 local dpad, face = {}, {}
 local cards, paddles, classTiles = {}, {}, {}
@@ -663,11 +673,6 @@ local function Build()
     Cluster(cx, FACE_KEYS, face)
 
     titleTag = Tag(holder, 24, "GameFontNormalLarge")
-    editHint = UI.Text(holder, "GameFontHighlightSmall", L.HUD_EDITING)
-    editHint:SetPoint("TOP", holder, "BOTTOM", 0, -4)
-    editHint:SetWidth(MAIN_W)
-    editHint:SetTextColor(0.5, 0.85, 1)
-    editHint:Hide()
 
     for i, side in ipairs({ { "PADLSHOULDER", "PADLTRIGGER" }, { "PADRSHOULDER", "PADRTRIGGER" } }) do
         local t = Tile(holder, 34)
@@ -830,9 +835,15 @@ local function SetCardMinis(c, pu)
     local entry = c.entry
     if entry.bar then
         local bar = pu.actionBars and pu.actionBars[entry.bar]
+        local base = entry.bar == ns.Bar.BASE_BAR
         for i, tex in ipairs(c.minis) do
-            local has, t, atlas = NativePicture(Native(bar, i))
-            SetMini(tex, has, t, atlas)
+            local own = base and ns.Bar.Override(i)
+            if own then
+                SetMini(tex, true, ns.Actions.Icon(own))
+            else
+                local has, t, atlas = NativePicture(Native(bar, i))
+                SetMini(tex, has, t, atlas)
+            end
         end
     else
         local combos = ns.ButtonActions(entry.mod).combos
@@ -864,11 +875,16 @@ local function ShowLayer(pu, view)
         return
     end
     local bar = view.bar and pu.actionBars and pu.actionBars[view.bar] or pu.activeBar
+    -- (« Seul » : une case prise par l'addon montre son action)
+    local base = view.bar == ns.Bar.BASE_BAR
+    local function Mirror(t, i)
+        local own = base and ns.Bar.Override(i)
+        if own then MirrorAction(t, own) else MirrorNative(t, Native(bar, i)) end
+        t.target = view.bar and { native = view.bar, i = i } or nil
+    end
     for i = 1, 4 do
-        MirrorNative(dpad[i], Native(bar, i))
-        dpad[i].target = view.bar and { native = view.bar, i = i } or nil
-        MirrorNative(face[i], Native(bar, i + 4))
-        face[i].target = view.bar and { native = view.bar, i = i + 4 } or nil
+        Mirror(dpad[i], i)
+        Mirror(face[i], i + 4)
     end
     EntryTag(titleTag, view)
 end
@@ -894,7 +910,6 @@ local function Update(pu)
     local live = mod and { mod = mod } or { bar = activeName }
     local view = editing or live
     ShowLayer(pu, view)
-    editHint:SetShown(editing ~= nil)
 
     local any = mod ~= nil or lt or rt
     for _, c in ipairs(cards) do
