@@ -34,6 +34,9 @@ local written = {}  -- (attributs de couches posés au dernier Setup, à effacer
 local DISPATCH = [[
     self:ClearBindings()
     if not self:GetAttribute("gps-ingame") then return end
+    -- (véhicule, barre de remplacement, combat de mascottes : tout reste au
+    -- jeu ; « state-suspend » vient d'un pilote d'état, combat compris)
+    if self:GetAttribute("state-suspend") == "1" then return end
     local noop = self:GetAttribute("noop")
     for j = 1, self:GetAttribute("hcount") or 0 do
         local key, click = self:GetAttribute("hkey-" .. j), self:GetAttribute("hclick-" .. j)
@@ -105,10 +108,30 @@ local DISPATCH = [[
 
 -- (appui : noter l'ordre ; relâchement : effacer. La répétition
 -- automatique d'une touche clavier maintenue ne change rien)
+-- Verrouillable (« gps-latch ») : un appui active la couche, le suivant la
+-- quitte ; le relâchement ne compte pas.
 local ONCLICK = [[
     local disp = self:GetFrameRef("disp")
     local id = self:GetAttribute("gps-id")
     if not (disp and id) then return end
+    if self:GetAttribute("gps-latch") then
+        -- (un appui compte une fois : la répétition d'une touche maintenue
+        -- ne bascule pas à nouveau)
+        if not down then
+            self:SetAttribute("gps-isdown", nil)
+            return
+        end
+        if self:GetAttribute("gps-isdown") then return end
+        self:SetAttribute("gps-isdown", true)
+        if disp:GetAttribute("held-" .. id) then
+            disp:SetAttribute("held-" .. id, nil)
+        else
+            local o = (disp:GetAttribute("order") or 0) + 1
+            disp:SetAttribute("order", o)
+            disp:SetAttribute("held-" .. id, o)
+        end
+        return
+    end
     if down then
         if not disp:GetAttribute("held-" .. id) then
             local o = (disp:GetAttribute("order") or 0) + 1
@@ -141,6 +164,27 @@ local function Noop()
     return noop
 end
 
+-- Pilote d'état : « 1 » dans un véhicule, avec une barre de remplacement ou
+-- de possession, ou en combat de mascottes. Une condition que ce jeu ne
+-- connaît pas ferait échouer tout le pilote : on garde la plus longue liste
+-- qui s'enregistre.
+local SUSPEND_CONDITIONS = {
+    "[vehicleui][overridebar][possessbar][petbattle] 1; 0",
+    "[vehicleui][overridebar][possessbar] 1; 0",
+    "[vehicleui] 1; 0",
+}
+
+local function RegisterSuspend(frame)
+    if not RegisterStateDriver then return end
+    for _, cond in ipairs(SUSPEND_CONDITIONS) do
+        local ok = pcall(RegisterStateDriver, frame, "suspend", cond)
+        if ok then
+            M.suspendCondition = cond
+            return
+        end
+    end
+end
+
 local function Dispatcher()
     if disp then return disp end
     disp = CreateFrame("Frame", "MyGamepadIsRichModDispatch", UIParent, "SecureHandlerAttributeTemplate")
@@ -148,6 +192,7 @@ local function Dispatcher()
     disp:SetAttribute("noop", Noop():GetName())
     disp:SetAttribute("gps-ingame", true)
     disp:SetAttribute("_onattributechanged", DISPATCH)
+    RegisterSuspend(disp)
     return disp
 end
 
@@ -188,8 +233,20 @@ local function Handler(id)
     h:SetAttribute("gps-id", id)
     SecureHandlerSetFrameRef(h, "disp", Dispatcher())
     h:SetAttribute("_onclick", ONCLICK)
-    -- (pour le HUD ; un post-hook, sans effet sur le code sécurisé)
-    h:HookScript("OnClick", function(_, _, down) SetHeld(id, down) end)
+    -- (pour le HUD ; un post-hook, sans effet sur le code sécurisé.
+    -- Verrouillable : comme le code sécurisé, l'appui bascule)
+    h:HookScript("OnClick", function(self, _, down)
+        if self.latch then
+            if not down then
+                self.isDown = nil
+            elseif not self.isDown then
+                self.isDown = true
+                SetHeld(id, not held[id])
+            end
+        else
+            SetHeld(id, down)
+        end
+    end)
     handlers[id] = h
     return h
 end
@@ -279,6 +336,10 @@ end
 
 function M.Setup(owner, id, def, actions, onDown)
     local h = Handler(id)
+    h.latch = def.latch == true
+    h.isDown = nil
+    h:SetAttribute("gps-latch", h.latch or nil)
+    h:SetAttribute("gps-isdown", nil)
     count = count + 1
     Write("id" .. count, id)
     disp:SetAttribute("count", count)
@@ -533,6 +594,11 @@ end
 
 function M.InGameAttribute()
     return disp and disp:GetAttribute("gps-ingame")
+end
+
+-- Véhicule, barre de remplacement, combat de mascottes : l'addon s'efface
+function M.Suspended()
+    return disp ~= nil and disp:GetAttribute("state-suspend") == "1"
 end
 
 -- Un bouton noté tenu (par l'aiguilleur sécurisé, ou pour le HUD)

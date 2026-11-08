@@ -679,12 +679,15 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
     elseif msg == "test" then
         ns.UI.Show("test")
     elseif msg == "reset" then
-        if InCombatLockdown() then ns.Print(L.APPLIED_AFTER_COMBAT) return end
-        for id in pairs(ns.cprof.actions) do
-            ns.cprof.actions[id] = { combos = {}, layers = {} }
-        end
-        ns.Apply()
-        ns.Print(L.RESET_DONE)
+        -- (après confirmation, avec une sauvegarde : /mgir undo)
+        if ns.Profiles.ActionsCombat() then return end
+        local spec = ns.Profiles.SpecName()
+        local text = spec and L.RESET_CONFIRM_SPEC:format(spec) or L.RESET_CONFIRM
+        ns.UI.Confirm(text, function()
+            if ns.Profiles.SetActions({}) then ns.Print(L.RESET_DONE .. " " .. L.UNDO_HINT) end
+        end)
+    elseif msg == "undo" or msg == "annuler" then
+        ns.Profiles.Undo()
     elseif msg == "help" or msg == "?" then
         ns.Print(L.SLASH_HELP)
     else

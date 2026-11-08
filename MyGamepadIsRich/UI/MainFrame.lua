@@ -336,6 +336,130 @@ local function QuickFill()
     ns.Apply()
 end
 
+-- Copier / échanger une couche de combinaisons (modificateur, ciblage,
+-- paire) avec une autre : ses 8 cases et celles des boutons simples. Avec
+-- une sauvegarde : /mgir undo.
+local function ComboCount(id)
+    local n = 0
+    for _ in pairs(ns.ButtonActions(id).combos) do n = n + 1 end
+    return n
+end
+
+local function LayerOps()
+    local from = selected.mod
+    if not from or ns.Profiles.ActionsCombat() then return end
+    local targets = {}
+    local pad, extra = ns.ModLayerLists()
+    for _, ids in ipairs({ pad, extra }) do
+        for _, id in ipairs(ids) do
+            if id ~= from then targets[#targets + 1] = id end
+        end
+    end
+    if #targets == 0 then
+        ns.Print(L.LAYER_COPY_NONE)
+        return
+    end
+    local entries = {}
+    for _, op in ipairs({ "copy", "swap" }) do
+        entries[#entries + 1] = { header = op == "copy" and L.LAYER_COPY_TO or L.LAYER_SWAP_WITH }
+        for _, id in ipairs(targets) do
+            local n = ComboCount(id)
+            entries[#entries + 1] = {
+                label = ns.ButtonLabel(id),
+                sub = n > 0 and L.ACTION_COUNT:format(n) or L.EMPTY,
+                search = id,
+                action = { op = op, to = id },
+            }
+        end
+    end
+    UI.PickFromList(L.LAYER_COPY_TITLE:format(ns.ButtonLabel(from)), entries, function(choice)
+        local fromName, toName = ns.ButtonLabel(from), ns.ButtonLabel(choice.to)
+        local function Do()
+            if ns.Profiles.ActionsCombat() then return end
+            ns.Profiles.Backup()
+            local a, b = ns.ButtonActions(from), ns.ButtonActions(choice.to)
+            if choice.op == "copy" then
+                b.combos = ns.DeepCopy(a.combos)
+                ns.Print(L.LAYER_COPIED:format(fromName, toName) .. " " .. L.UNDO_HINT)
+            else
+                a.combos, b.combos = b.combos, a.combos
+                ns.Print(L.LAYER_SWAPPED:format(fromName, toName) .. " " .. L.UNDO_HINT)
+            end
+            ns.Apply()
+        end
+        local n = ComboCount(choice.to)
+        if choice.op == "copy" and n > 0 then
+            UI.Confirm(L.LAYER_COPY_CONFIRM:format(toName, n, fromName), Do)
+        else
+            Do()
+        end
+    end)
+end
+
+-- Modèles de classe (au compte) et copie depuis une autre spé : tout le
+-- jeu d'actions de la spé active est remplacé, avec une sauvegarde
+local function TemplatesMenu()
+    local P = ns.Profiles
+    if P.ActionsCombat() then return end
+    local class = P.ClassName()
+    local templates, specs = P.Templates(), P.OtherSpecs()
+    local entries = {
+        { header = L.TPL_SECTION_SAVE },
+        { label = L.TPL_SAVE, sub = class, action = { op = "save" } },
+    }
+    if #templates > 0 then
+        entries[#entries + 1] = { header = L.TPL_SECTION_LOAD:format(class) }
+        for _, t in ipairs(templates) do
+            entries[#entries + 1] = { label = t.name, sub = L.ACTION_COUNT:format(t.count),
+                action = { op = "load", name = t.name } }
+        end
+    end
+    if #specs > 0 then
+        entries[#entries + 1] = { header = L.TPL_SECTION_SPEC }
+        for _, s in ipairs(specs) do
+            entries[#entries + 1] = { label = s.name, sub = L.ACTION_COUNT:format(s.count),
+                action = { op = "spec", key = s.key, name = s.name } }
+        end
+    end
+    if #templates > 0 then
+        entries[#entries + 1] = { header = L.TPL_SECTION_DELETE }
+        for _, t in ipairs(templates) do
+            entries[#entries + 1] = { label = t.name, action = { op = "delete", name = t.name } }
+        end
+    end
+    local spec = P.SpecName() or class
+    UI.PickFromList(L.TPL_TITLE, entries, function(choice)
+        if choice.op == "save" then
+            UI.AskText(L.TPL_SAVE_PROMPT:format(class), spec, P.NAME_MAX, function(text)
+                local name = P.CleanTemplateName(text)
+                if not name then return end
+                local function Save()
+                    P.SaveTemplate(name)
+                    ns.Print(L.TPL_SAVED:format(name, class))
+                end
+                if P.HasTemplate(name) then UI.Confirm(L.TPL_REPLACE_CONFIRM:format(name), Save) else Save() end
+            end)
+        elseif choice.op == "load" then
+            UI.Confirm(L.TPL_LOAD_CONFIRM:format(choice.name, spec), function()
+                if P.LoadTemplate(choice.name) then
+                    ns.Print(L.TPL_LOADED:format(choice.name) .. " " .. L.UNDO_HINT)
+                end
+            end)
+        elseif choice.op == "spec" then
+            UI.Confirm(L.SPEC_COPY_CONFIRM:format(choice.name, spec), function()
+                if P.CopyFromSpec(choice.key) then
+                    ns.Print(L.SPEC_COPIED:format(choice.name) .. " " .. L.UNDO_HINT)
+                end
+            end)
+        elseif choice.op == "delete" then
+            UI.Confirm(L.TPL_DELETE_CONFIRM:format(choice.name), function()
+                P.DeleteTemplate(choice.name)
+                ns.Print(L.TPL_DELETED:format(choice.name))
+            end)
+        end
+    end)
+end
+
 local function BuildDetail(page)
     detail = CreateFrame("Frame", nil, page)
     detail:SetPoint("TOPLEFT", LIST_W + 10, 0)
@@ -360,6 +484,16 @@ local function BuildDetail(page)
         GameTooltip:Show()
     end)
     detail.fill:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    -- (une couche de combinaisons : copiée vers une autre, ou échangée)
+    detail.ops = UI.Button(detail, L.LAYER_COPY_BUTTON, 150, 22)
+    detail.ops:SetScript("OnClick", LayerOps)
+    detail.ops:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:SetText(L.LAYER_COPY_BUTTON, 1, 0.82, 0, 1, true)
+        GameTooltip:AddLine(L.LAYER_COPY_DESC, 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    detail.ops:SetScript("OnLeave", function() GameTooltip:Hide() end)
     detail.desc = UI.Text(detail, "GameFontHighlight")
     detail.desc:SetPoint("TOPLEFT", 10, -48)
     detail.desc:SetWidth(w - 24)
@@ -483,6 +617,13 @@ local function RefreshDetail()
     local n, total = LayerCount(selected)
     detail.count:SetText(("%d/%d"):format(n, total))
     detail.fill:SetShown(EmptyCrossSlots() > 0)
+    detail.ops:SetShown(selected.mod ~= nil)
+    detail.ops:ClearAllPoints()
+    if detail.fill:IsShown() then
+        detail.ops:SetPoint("RIGHT", detail.fill, "LEFT", -6, 0)
+    else
+        detail.ops:SetPoint("RIGHT", detail.count, "LEFT", -12, 0)
+    end
 
     local isSimple = selected.simple ~= nil
     detail.cross:SetShown(not isSimple)
@@ -681,9 +822,33 @@ local function BuildButtons(page)
         keyLabel:SetPoint("TOPLEFT", 200, -8)
         row.key = UI.Text(row, "GameFontHighlight")
         row.key:SetPoint("LEFT", keyLabel, "RIGHT", 8, 0)
-        row.key:SetWidth(170)
+        row.key:SetWidth(130)
         row.key:SetJustifyH("LEFT")
         row.key:SetWordWrap(false)
+
+        -- (modificateur seulement : verrouillable, un appui active la
+        -- couche et le suivant la quitte)
+        local latch = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
+        latch:SetSize(22, 22)
+        latch:SetPoint("TOPLEFT", 378, -3)
+        latch.label = UI.Text(latch, "GameFontHighlight", L.LATCH)
+        latch.label:SetPoint("LEFT", latch, "RIGHT", 2, 0)
+        latch.label:SetWidth(130)
+        latch.label:SetJustifyH("LEFT")
+        latch.label:SetWordWrap(false)
+        latch:SetScript("OnClick", function(self)
+            ns.Button(id).latch = self:GetChecked() and true or nil
+            ns.Apply()
+            RefreshAll()
+        end)
+        latch:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_TOP")
+            GameTooltip:SetText(L.LATCH, 1, 0.82, 0, 1, true)
+            GameTooltip:AddLine(L.LATCH_DESC, 1, 1, 1, true)
+            GameTooltip:Show()
+        end)
+        latch:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        row.latch = latch
 
         local detect = UI.Button(row, L.DETECT, 110, 22)
         detect:SetPoint("TOPRIGHT", -104, -4)
@@ -767,6 +932,8 @@ local function RefreshButtons()
             if not row.name:HasFocus() then row.name:SetText(ns.ButtonLabel(id)) end
             row.key:SetText(def.key and ns.KeyLabel(def.key) or ("|cffff6060" .. L.KEY_NONE .. "|r"))
             for mode, cb in pairs(row.modes) do cb:SetChecked(def.mode == mode) end
+            row.latch:SetShown(def.mode == "modifier")
+            row.latch:SetChecked(def.latch == true)
         end
     end
 
@@ -1150,6 +1317,17 @@ local function Build()
     list:SetPoint("TOPLEFT", 0, 0)
     list:SetPoint("BOTTOMLEFT", 0, 0)
     list:SetWidth(LIST_W)
+    -- (sous la liste : modèles de classe et copie depuis une autre spé)
+    local templates = UI.Button(list, L.TPL_BUTTON, LIST_W - 16, 22)
+    templates:SetPoint("BOTTOM", 0, 6)
+    templates:SetScript("OnClick", TemplatesMenu)
+    templates:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetText(L.TPL_BUTTON, 1, 0.82, 0, 1, true)
+        GameTooltip:AddLine(L.TPL_DESC, 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    templates:SetScript("OnLeave", function() GameTooltip:Hide() end)
     Separator(pages.actions, LIST_W + 2, -4, LIST_W + 3, -(HEIGHT - 76))
     BuildDetail(pages.actions)
 

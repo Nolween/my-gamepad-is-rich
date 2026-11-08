@@ -286,6 +286,8 @@ local function Clean(raw)
             key = key,
             learned = key and true or nil,
             name = CleanString(b.name, 24),
+            -- (modificateur verrouillable : un appui active, un autre quitte)
+            latch = b.latch == true or nil,
         }
     end
     data.actions = CleanActions(raw.actions)
@@ -309,6 +311,7 @@ local function PruneActions(actions)
     end
     return any and out or nil
 end
+S.PruneActions = PruneActions -- (aussi pour les modèles de classe, Profiles.lua)
 
 -- opts.actions : celles de ce personnage ; opts.hud : les réglages du HUD
 function S.Export(profileID, opts)
@@ -319,7 +322,7 @@ function S.Export(profileID, opts)
         pads = ns.Profiles.CleanPads(prof.pads), pairs = ns.Profiles.CleanPairs(prof.pairs) }
     for _, slot in ipairs(ns.BUTTON_IDS) do
         local b = prof.buttons[slot]
-        data.buttons[slot] = { mode = b.mode, key = b.key, name = b.name }
+        data.buttons[slot] = { mode = b.mode, key = b.key, name = b.name, latch = b.latch or nil }
     end
     if opts.actions then
         local c = ns.char.profiles[profileID]
@@ -408,7 +411,8 @@ function S.SelfTest()
         Check(Serialize(data.pairs) == Serialize(ns.Profiles.CleanPairs(ns.prof.pairs)), "pairs")
         for _, slot in ipairs(ns.BUTTON_IDS) do
             local a, b = ns.prof.buttons[slot], data.buttons[slot]
-            Check(a.mode == b.mode and a.key == b.key and a.name == b.name, "button " .. slot)
+            Check(a.mode == b.mode and a.key == b.key and a.name == b.name
+                and (a.latch == true) == (b.latch == true), "button " .. slot)
         end
         local c = ns.char.profiles[id]
         Check(Serialize(PruneActions(c and c.actions) or {}) == Serialize(data.actions or {}), "actions")
@@ -425,7 +429,8 @@ function S.SelfTest()
     -- Données forgées : tout ce qui n'est pas dans la liste blanche disparaît
     local forged = Pack({
         v = FORMAT, name = "A|cffff0000B\1", controller = "nope",
-        buttons = { L5 = { mode = "weird", key = "F9 /run" }, R5 = { mode = "simple", key = "F10" } },
+        buttons = { L5 = { mode = "weird", key = "F9 /run", latch = "yes" },
+            R5 = { mode = "simple", key = "F10" }, L4 = { mode = "modifier", key = "F11", latch = true } },
         actions = { L5 = { combos = {
             PAD1 = { kind = "evil" },
             PAD2 = { kind = "macrotext", text = ("a"):rep(300) },
@@ -446,6 +451,7 @@ function S.SelfTest()
         Check(Serialize(d.pairs) == Serialize({ L5LT = true }), "forged pairs")
         Check(d.buttons.L5.mode == ns.DEFAULT_BUTTONS.L5.mode and d.buttons.L5.key == nil, "forged L5")
         Check(d.buttons.R5.mode == "simple" and d.buttons.R5.key == "F10", "forged R5")
+        Check(d.buttons.L5.latch == nil and d.buttons.L4.latch == true, "forged latch")
         local combos = d.actions and d.actions.L5 and d.actions.L5.combos or {}
         Check(combos.PAD1 == nil and combos.PAD2 == nil and combos.PAD4 == nil, "forged actions dropped")
         Check(combos.PAD3 and combos.PAD3.id == 133, "forged spell kept")

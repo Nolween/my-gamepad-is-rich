@@ -171,6 +171,166 @@ function P.SyncSpec()
     ns.Print((fresh and L.SPEC_NEW or L.SPEC_SWITCHED):format(name))
 end
 
+---------------------------------------------------------------------------
+-- Remplacer les actions de la spé active, avec une sauvegarde : /mgir undo
+-- revient en arrière (une seule étape, pour la même spé). Sert à
+-- /mgir reset, aux modèles de classe, à la copie depuis une autre spé et à
+-- la copie / l'échange de couches.
+---------------------------------------------------------------------------
+local function Combat()
+    if InCombatLockdown() then
+        ns.Print(L.PROFILE_COMBAT)
+        return true
+    end
+end
+
+-- (les actions, elles : leur message)
+local function ActionsCombat()
+    if InCombatLockdown() then
+        ns.Print(L.HUD_COMBAT)
+        return true
+    end
+end
+P.ActionsCombat = ActionsCombat
+
+function P.Backup()
+    if not ns.cprof then return end
+    ns.cprof.backup = { spec = ns.cprof.spec, actions = ns.DeepCopy(ns.cprof.actions) }
+end
+
+function P.SetActions(actions)
+    if not ns.cprof then return false end
+    if ActionsCombat() then return false end
+    P.Backup()
+    ns.cprof.actions = FillActions(actions or {})
+    ns.Apply(true)
+    return true
+end
+
+-- Revient à la sauvegarde ; refaire /mgir undo annule l'annulation
+function P.Undo()
+    local c = ns.cprof
+    if not c then return false end
+    local saved = c.backup
+    if not (saved and type(saved.actions) == "table") or saved.spec ~= c.spec then
+        ns.Print(L.UNDO_NONE)
+        return false
+    end
+    if ActionsCombat() then return false end
+    c.backup = { spec = c.spec, actions = c.actions }
+    c.actions = FillActions(saved.actions)
+    ns.Apply(true)
+    ns.Print(L.UNDO_DONE)
+    return true
+end
+
+-- Le nombre d'actions posées (toutes couches)
+function P.CountActions(actions)
+    local n = 0
+    for _, a in pairs(type(actions) == "table" and actions or {}) do
+        if type(a) == "table" then
+            for _ in pairs(a.combos or {}) do n = n + 1 end
+            for _ in pairs(a.layers or {}) do n = n + 1 end
+        end
+    end
+    return n
+end
+
+---------------------------------------------------------------------------
+-- Modèles de classe : des jeux d'actions enregistrés pour tout le compte,
+-- par classe, que les autres personnages de cette classe peuvent reprendre
+-- (sans passer par l'export / import). Ni nom de personnage ni royaume.
+--   MyGamepadIsRichDB.templates = { [CLASSE] = { [nom] = { actions, date } } }
+---------------------------------------------------------------------------
+local function ClassKey()
+    local _, class = UnitClass("player")
+    return class or "UNKNOWN"
+end
+
+function P.ClassName()
+    local name = UnitClass("player")
+    return name or "?"
+end
+
+local function ClassTemplates(create)
+    if create then
+        ns.db.templates = ns.db.templates or {}
+        ns.db.templates[ClassKey()] = ns.db.templates[ClassKey()] or {}
+    end
+    return ns.db.templates and ns.db.templates[ClassKey()]
+end
+
+-- Les modèles de cette classe, triés par nom : { { name, count, date } }
+function P.Templates()
+    local out = {}
+    for name, t in pairs(ClassTemplates(false) or {}) do
+        if type(t) == "table" then
+            out[#out + 1] = { name = name, count = P.CountActions(t.actions), date = t.date }
+        end
+    end
+    table.sort(out, function(a, b) return a.name:lower() < b.name:lower() end)
+    return out
+end
+
+-- Un nom de modèle propre (comme un nom de profil), ou nil
+function P.CleanTemplateName(name)
+    name = strtrim(tostring(name or "")):gsub("%c", ""):gsub("|", "")
+    name = ns.Utf8Cut(name, P.NAME_MAX)
+    return name ~= "" and name or nil
+end
+
+function P.HasTemplate(name)
+    local list = ClassTemplates(false)
+    return list ~= nil and list[name] ~= nil
+end
+
+-- Enregistre les actions de la spé active (remplace un modèle du même nom)
+function P.SaveTemplate(name)
+    name = P.CleanTemplateName(name)
+    if not (name and ns.cprof) then return nil end
+    ClassTemplates(true)[name] = {
+        actions = ns.Serialize.PruneActions(ns.cprof.actions) or {},
+        date = time(),
+    }
+    return name
+end
+
+function P.LoadTemplate(name)
+    local t = (ClassTemplates(false) or {})[name]
+    if type(t) ~= "table" then return false end
+    return P.SetActions(ns.DeepCopy(t.actions or {}))
+end
+
+function P.DeleteTemplate(name)
+    local list = ClassTemplates(false)
+    if list then list[name] = nil end
+end
+
+-- Les autres spés de ce personnage déjà jouées avec ce profil :
+-- { { key, name, count } }
+function P.OtherSpecs()
+    local out = {}
+    local c = ns.cprof
+    for key, actions in pairs(c and c.specActions or {}) do
+        if key ~= c.spec and type(actions) == "table" then
+            local index, group = key:match("^s(%d+)$"), key:match("^g(%d+)$")
+            local spec = index and { index = tonumber(index) } or group and { group = tonumber(group) }
+            if spec then
+                out[#out + 1] = { key = key, name = P.SpecName(spec), count = P.CountActions(actions) }
+            end
+        end
+    end
+    table.sort(out, function(a, b) return a.key < b.key end)
+    return out
+end
+
+function P.CopyFromSpec(key)
+    local c = ns.cprof
+    local actions = c and c.specActions and c.specActions[key]
+    if type(actions) ~= "table" then return false end
+    return P.SetActions(ns.DeepCopy(actions))
+end
+
 -- Les modes des boutons de base (LT, RT, LB, RB) : seulement les modes
 -- connus, « game » (au jeu) n'étant pas noté
 local PAD_MODE_OK = { modifier = true, target_friend = true, target_enemy = true, simple = true }
@@ -329,15 +489,8 @@ function P.UniqueName(name, exceptID)
 end
 
 ---------------------------------------------------------------------------
--- Changements
+-- Changements (Combat : plus haut)
 ---------------------------------------------------------------------------
-local function Combat()
-    if InCombatLockdown() then
-        ns.Print(L.PROFILE_COMBAT)
-        return true
-    end
-end
-
 function P.Switch(id, quiet)
     if not ns.db.profiles[id] then return false end
     if id == ns.db.profile then return true end

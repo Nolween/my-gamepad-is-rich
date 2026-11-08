@@ -184,7 +184,9 @@ function F.SyncForeverEvents()
     if InCombatLockdown() then return end
     local pu = ns.Bar and ns.Bar.PageUnit()
     if not (pu and pu.IsEventRegistered) then return end
-    local cut = ns.prof ~= nil and (ns.PadTaken("LT") or ns.PadTaken("RT"))
+    -- (en pause — véhicule, mascottes — LT et RT sont à Forever : il reçoit
+    -- leur relâchement, il peut garder l'événement)
+    local cut = ns.prof ~= nil and (ns.PadTaken("LT") or ns.PadTaken("RT")) and not ns.Modifier.Suspended()
     local okR, registered = pcall(pu.IsEventRegistered, pu, SLOT_EVENT)
     if not okR then return end
     if cut and registered then
@@ -210,7 +212,8 @@ frame:SetScript("OnUpdate", function(_, elapsed)
     F.SyncForeverEvents()
     local down = F.PadsDown()
     Reconcile(down)
-    CheckStuck(down, last ~= false and F.InGame())
+    -- (en pause, les gâchettes sont à Forever : rien à débloquer)
+    CheckStuck(down, last ~= false and F.InGame() and not ns.Modifier.Suspended())
     local now = F.InGame()
     if now ~= last then
         -- (un bouton de base de l'addon enfoncé : on attend son relâchement,

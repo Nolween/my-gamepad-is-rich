@@ -138,6 +138,14 @@ function UI.BuildTestPage(page)
         Add("Gamepad buttons received: %s", Keys(seenPad))
         Add("Other keys received: %s", Keys(seenOther))
         Add("Works / does not work: ")
+        -- (le journal des couches, Diag.lua : l'état des boutons et des
+        -- barres, rien de personnel ; les dernières lignes seulement)
+        local log = type(ns.db.diagLog) == "table" and ns.db.diagLog or {}
+        if #log > 0 then
+            Add("")
+            Add("Recent log:")
+            for i = math.max(1, #log - 39), #log do lines[#lines + 1] = tostring(log[i]) end
+        end
         return table.concat(lines, "\n")
     end
 

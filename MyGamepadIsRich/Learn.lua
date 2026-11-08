@@ -13,7 +13,26 @@ local MODIFIER_KEYS = {
 -- (ces boutons de la manette ne sont pas des boutons supplémentaires)
 local IGNORED_PAD = { PADFORWARD = true, PADBACK = true, PADSYSTEM = true }
 
+-- (A/B/X/Y, la croix, LT/RT/LB/RB : les boutons que l'addon combine ou
+-- configure lui-même ; un appui par erreur en ferait la touche d'un bouton
+-- supplémentaire, et A deviendrait un modificateur)
+local function CoreButton(key)
+    for _, k in ipairs(ns.PAD_KEYS) do
+        if k == key then return true end
+    end
+    for _, k in pairs(ns.PAD_KEY) do
+        if k == key then return true end
+    end
+    return false
+end
+
 local overlay, targetID, onDone, armedAt
+
+-- (refusé : le message dans la fenêtre, qui reste ouverte)
+local function Refuse(key)
+    overlay.text:SetText(L.LEARN_PROMPT:format(ns.ButtonLabel(targetID)) .. "\n\n|cffff6060"
+        .. L.LEARN_PAD_REFUSED:format(ns.KeyLabel(key)) .. "|r")
+end
 
 local function Finish(key)
     overlay:EnableKeyboard(false)
@@ -59,10 +78,12 @@ local function Build()
     overlay:SetScript("OnKeyDown", function(self, key)
         if GetTime() < armedAt then return end
         if key == "ESCAPE" then Finish(nil) return end
+        if CoreButton(key) then Refuse(key) return end
         Finish(key)
     end)
     overlay:SetScript("OnGamePadButtonDown", function(self, button)
         if GetTime() < armedAt or IGNORED_PAD[button] then return end
+        if CoreButton(button) then Refuse(button) return end
         Finish(button)
     end)
     -- (un clic annule)

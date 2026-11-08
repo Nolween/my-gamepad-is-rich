@@ -53,6 +53,7 @@ function D.State()
     local function Line(label, value) ns.Print(label .. " : " .. value) end
     Line("focus jeu (Forever)", S(ns.Focus.InGame()) .. ", addon " .. S(ns.Modifier.InGameAttribute())
         .. ", combat " .. S(InCombatLockdown()))
+    Line("en pause (véhicule, mascottes)", S(ns.Modifier.Suspended()))
     Line("tenus pour l'addon", Sorted(ns.Modifier.HeldState()))
     Line("couche de l'addon", S(ns.Modifier.Held()))
     local down = ns.Focus.PadsDown()
@@ -93,6 +94,7 @@ local function Snapshot()
         "layer=" .. S(ns.Modifier.Held()),
         "ingame=" .. S(ns.Focus.InGame()) .. "/" .. S(ns.Modifier.InGameAttribute()),
         "combat=" .. (InCombatLockdown() and "1" or "0"),
+        "suspend=" .. (ns.Modifier.Suspended() and "1" or "0"),
     }
     for _, id in ipairs(ns.PAD_IDS) do
         if ns.PadTaken(id) then parts[#parts + 1] = id .. "=" .. Binding(ns.PAD_KEY[id]) end

@@ -80,8 +80,8 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 
 | Onglet | Rôle |
 |---|---|
-| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà. |
-| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**), mode. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
+| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
+| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**, qui refuse A/B/X/Y, la croix et LT/RT/LB/RB), mode, et **Verrouillable** pour un modificateur. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. Option « Retenir le profil de chaque personnage ». |
 | **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, ordre des miniatures, déplacer, bouton de la minimap. |
 | **Test manette** | Ce que WoW reçoit de chaque bouton. **Copier un rapport** : un texte à envoyer à l'auteur (manette choisie, touche et mode de chaque bouton, ce que WoW en a reçu, version du jeu ; ni nom de personnage ni royaume), pour confirmer les préréglages des manettes non testées. |
@@ -109,6 +109,18 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut donner LT / RT à l'addon (voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb)) ; le menu d'une case l'indique.
 
 La manette, les touches et les modes sont enregistrés pour tout le compte, dans le profil utilisé. Les actions sont enregistrées **par personnage et par spécialisation**, dans ce même profil. Comme les barres du jeu, chaque spé (ou chaque groupe de talents d'une double spécialisation) a ses actions. Une spé jamais jouée commence avec une copie des actions de la précédente, et un message le dit au changement. L'export et `/mgir reset` concernent la spé active.
+
+**Modificateur verrouillable** (case de l'onglet Boutons, boutons supplémentaires en mode Modificateur) : un appui active sa couche, l'appui suivant la quitte, sans avoir à le maintenir. Un autre modificateur maintenu prend la main tant qu'il est tenu, puis rend la couche verrouillée ; une paire avec ce bouton marche aussi. Tout changement de réglage libère le verrou. Pas pour LT, RT, LB et RB : l'addon libère un bouton de base relâché sur la manette (couches bloquées).
+
+### Modèles de classe et copie de spé
+
+Le bouton **Modèles et spés…** (sous la liste des couches de l'onglet Actions) remplace d'un coup toutes les actions de la spé active, après confirmation :
+- **Enregistrer comme modèle** : les actions de la spé active, gardées pour tout le compte sous un nom, pour la classe du personnage (ni nom de personnage ni royaume). Les actions laissées sur la barre du jeu n'en font pas partie.
+- **Charger un modèle** : sur n'importe quel personnage de la même classe.
+- **Copier depuis une spé** : les actions d'une autre spé déjà jouée par ce personnage dans ce profil.
+- **Supprimer un modèle**.
+
+`/mgir undo` revient en arrière après un chargement, une copie de spé, une copie ou un échange de couches, ou un `/mgir reset` (une étape, pour la même spé ; le refaire annule l'annulation).
 
 Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
 
@@ -174,7 +186,8 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir hud strip` | Miniatures des couches sous le HUD (par défaut) ou au-dessus (aussi dans le tutoriel) |
 | `/mgir minimap` | Masquer / remontrer le bouton autour de la minimap |
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
-| `/mgir reset` | Vider les actions du personnage courant (dans le profil utilisé) |
+| `/mgir reset` | Vider les actions du personnage courant pour la spé active (dans le profil utilisé), après confirmation |
+| `/mgir undo` (ou `annuler`) | Revenir aux actions d'avant le dernier remplacement (reset, modèle, copie de spé, copie / échange de couches) |
 | `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (plus nécessaire avant de désactiver l'addon : c'est fait à chaque déconnexion) |
 | `/mgir etat` (ou `state`) | Afficher dans le chat l'état des couches (boutons tenus, barre active de Forever, liaisons de A, LT, RT, LB, RB), à taper quand une couche semble bloquée. Les derniers changements d'état sont aussi gardés dans `MyGamepadIsRichDB.diagLog` (écrit au `/reload`), pour un rapport de bug |
 | `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
@@ -189,6 +202,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 - Les actions passent par des macros sécurisées (`/cast`, `/use`, `/equipset`, ou une macro du jeu). Une **commande WoW** est liée directement à la touche.
 - Les changements de configuration faits en combat sont appliqués à la fin du combat (règle de WoW).
 - **Couches bloquées** : les boutons de base donnés à l'addon ne changent pas de propriétaire (addon / fenêtre de Forever) tant qu'ils sont enfoncés, et un bouton noté tenu alors qu'il est relâché sur la manette est libéré. Si Forever reste sur sa barre LT / RT sans rien de tenu, l'addon lui rend ces boutons le temps d'un appui (un message le dit) pour qu'il revienne sur « Seul ». Ces boutons sont repris au début d'un combat, pour que leurs couches de l'addon restent disponibles.
+- **Véhicules, barres de remplacement, combats de mascottes** : un pilote d'état sécurisé (`[vehicleui][overridebar][possessbar][petbattle]`) met l'aiguilleur en pause, combat compris. Les cases de « Seul », LT/RT/LB/RB et les combinaisons sont alors rendus au jeu ; les touches des boutons supplémentaires (F9…) restent liées. `/mgir etat` l'indique (« en pause »).
 - **Barre de Forever et `ACTIONBAR_SLOT_CHANGED`** : à chaque changement d'une case d'action (un sceau de paladin, une forme…), Forever relit l'état réel des gâchettes et passe sur sa barre LT / RT si l'une est tenue, même quand elle est à l'addon. Il ne voit pas le relâchement et reste alors sur cette barre jusqu'au prochain événement (par exemple un appui sur A). Tant que LT ou RT est à l'addon, sa barre est donc désabonnée de cet événement (hors combat, réaffirmé régulièrement), puis réabonnée quand ils reviennent au jeu.
 
 ## Limites connues
@@ -198,6 +212,10 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 - **LB + LT et RB + RT déclenchent toujours l'action de classe de Forever** (souvent une roue de sorts, par exemple chez le paladin), même quand ces boutons appartiennent à l'addon : Forever détecte lui-même ces deux boutons tenus ensemble, par un chemin interne que l'addon ne peut pas intercepter. La roue prend la main sur A, B, X et Y tant qu'elle est ouverte (B pour la fermer). Ces deux paires restent cochables, mais l'addon prévient partout (onglet Boutons, onglet Actions, chat, tutoriel, options) : mieux vaut choisir d'autres paires. Pendant une paire, l'addon n'allume plus le ciblage du moteur (la visée au stick d'un bouton de ciblage), pour ne pas s'en mêler.
 - Si Forever bascule l'interface en mode clavier/souris quand une palette envoie une touche, merci de le signaler : une option pourra forcer le style manette.
 - Improved Forever peut aussi poser des liaisons sur certaines touches. En cas de conflit, c'est la dernière liaison appliquée qui gagne.
+
+## Publier
+
+`.\build.ps1` (à la racine du dépôt) crée `dist\MyGamepadIsRich-<version>.zip`, la version étant lue dans le .toc, sans `Probe.lua`, avec des chemins en `/`.
 
 ## Fichiers
 
