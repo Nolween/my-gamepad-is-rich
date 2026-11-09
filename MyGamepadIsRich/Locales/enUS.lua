@@ -499,6 +499,7 @@ ns.AddLocale("enUS", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("enUS", {
+    WHATSNEW_1_1_5 = "• Friendly / enemy target: in combat, the button no longer stays held after you release it (the HUD stayed on its layer and the stick kept aiming). A short press still moves to the next target, and a long press keeps the target you aimed at.",
     WHATSNEW_1_1_4 = "• Friendly / enemy target: each short press moves to the next target, even when you already have one, including where the game does not give the addon the time. A long press keeps the target you aimed at with the stick.\n• /mgir etat tells how a short press is detected.",
     WHATSNEW_1_1_3 = "• Friendly / enemy target: the target you aim at with the stick stays when you release the button. Only a short press targets the nearest one.",
     WHATSNEW_1_1_2 = "• A WoW command or a hand-written macro can use the icon of your choice: click the slot, \"Change icon...\". The search finds the icons of your spells, your items and WoW commands, or an icon by its file name (as on Wowhead: inv_misc_map_01).\n• Common commands have their own icon instead of the key: world map, bags, spellbook, quest log, character, achievements, group finder, collections.",

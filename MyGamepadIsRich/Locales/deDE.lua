@@ -498,6 +498,7 @@ ns.AddLocale("deDE", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("deDE", {
+    WHATSNEW_1_1_5 = "• Freundliches / feindliches Ziel: Im Kampf bleibt die Taste nach dem Loslassen nicht mehr gedrückt (das HUD blieb auf ihrer Ebene und der Stick zielte weiter). Ein kurzer Druck wechselt weiterhin zum nächsten Ziel, ein langer Druck behält das anvisierte Ziel.",
     WHATSNEW_1_1_4 = "• Freundliches / feindliches Ziel: Jeder kurze Druck wechselt zum nächsten Ziel, auch wenn du schon eines hast, selbst wo das Spiel dem Addon die Uhrzeit nicht gibt. Ein langer Druck behält das mit dem Stick anvisierte Ziel.\n• /mgir etat zeigt, wie ein kurzer Druck erkannt wird.",
     WHATSNEW_1_1_3 = "• Freundliches / feindliches Ziel: Das mit dem Stick anvisierte Ziel bleibt, wenn du die Taste loslässt. Nur ein kurzer Druck wählt das nächste Ziel.",
     WHATSNEW_1_1_2 = "• Ein WoW-Befehl oder ein selbst geschriebenes Makro kann ein Symbol deiner Wahl nutzen: Klick auf das Feld, „Symbol ändern...“. Die Suche findet die Symbole deiner Zauber, Gegenstände und WoW-Befehle, oder ein Symbol über seinen Dateinamen (wie auf Wowhead: inv_misc_map_01).\n• Häufige Befehle haben ein eigenes Symbol statt des Schlüssels: Weltkarte, Taschen, Zauberbuch, Questlog, Charakter, Erfolge, Gruppensuche, Sammlungen.",

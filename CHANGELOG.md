@@ -1,5 +1,11 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.5
+
+### Corrections
+- **Cible alliée / ennemie en combat** (régression de la 1.1.4) : le bouton ne reste plus tenu après le relâchement. Le HUD restait sur sa couche et le ciblage au stick restait allumé jusqu'à la fin du combat, car le témoin de la 1.1.4 (un cadre ordinaire) ne peut pas être lu par le code protégé en combat.
+- L'appui maintenu est maintenant mesuré entièrement en code protégé : un petit cadre protégé montré à l'appui, que le jeu cache tout seul au bout de 0,3 s. Encore montré au relâchement : appui bref, la cible suivante est prise ; déjà caché : appui maintenu, la cible visée reste. Au chargement, l'addon vérifie que le jeu cache bien ce cadre, sinon il garde la règle de secours.
+
 ## 1.1.4
 
 ### Corrections

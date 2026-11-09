@@ -374,13 +374,22 @@ local TARGET_MACRO_SAFE = {
 -- (au-delà, l'appui est « maintenu » : visée au stick, pas de reciblage)
 local TAP_SECONDS = 0.3
 
--- (appui : tenu, et l'heure de l'appui ; relâché : plus tenu, et l'action
+-- (appui : tenu, et le début de la mesure ; relâché : plus tenu, et l'action
 -- — le ciblage du plus proche — part seulement après un appui bref sans
 -- raccourci. Le bouton n'agit qu'au relâchement : useOnKeyDown = false)
+-- Mesure de l'appui, tout en code sécurisé (rien de non protégé : en combat,
+-- le jeu interdit au code sécurisé de lire un cadre ordinaire) :
+--   « gps-tap »   : horloge (GetTime), quand le code sécurisé l'a ;
+--   « gps-timer » : sinon un minuteur, petit cadre protégé montré à l'appui
+--                   et caché par le jeu au bout de « gps-hold » secondes
+--                   (RegisterAutoHide, géré par le jeu, combat compris) :
+--                   encore montré au relâchement = appui bref.
+-- Rien ici ne doit échouer : une erreur arrêterait le relâchement entier.
 local TARGET_CLICK = [[
     local disp = self:GetFrameRef("disp")
     local id = self:GetAttribute("gps-id")
     if not (disp and id) then return false end
+    local timer = self:GetAttribute("gps-hold") and self:GetFrameRef("gps-timer")
     if down then
         if not disp:GetAttribute("held-" .. id) then
             local o = (disp:GetAttribute("order") or 0) + 1
@@ -388,32 +397,37 @@ local TARGET_CLICK = [[
             disp:SetAttribute("comboused", nil)
             disp:SetAttribute("held-" .. id, o)
             if self:GetAttribute("gps-tap") then self:SetAttribute("gps-since", GetTime()) end
+            if timer then
+                timer:Show()
+                timer:RegisterAutoHide(self:GetAttribute("gps-hold"))
+            end
         end
         -- (rien ne part à l'appui : le bouton n'agit qu'au relâchement)
         return
     end
+    -- (minuteur déjà caché par le jeu : l'appui a duré)
+    local long = timer and not timer:IsShown()
+    if timer then timer:Hide() end
     disp:SetAttribute("held-" .. id, nil)
     if disp:GetAttribute("comboused") then return false end
-    -- (maintenu : la cible a été visée au stick, elle reste. Mesuré ici,
-    -- ou par le témoin « maintenu » montré hors code sécurisé)
+    -- (maintenu : la cible a été visée au stick, elle reste)
+    if long then return false end
     local tap, since = self:GetAttribute("gps-tap"), self:GetAttribute("gps-since")
     if tap and since and GetTime() - since > tap then return false end
-    local flag = self:GetAttribute("gps-useflag") and self:GetFrameRef("gps-flag")
-    if flag and flag:IsShown() then return false end
 ]]
 
--- Sans horloge dans le code sécurisé : un témoin « maintenu », un petit cadre
--- ordinaire montré hors code sécurisé quand l'appui dure (permis en combat :
--- il n'est pas protégé), que le code sécurisé lit au relâchement
-local aimFlag
-local function AimFlag()
-    if not aimFlag then
-        aimFlag = CreateFrame("Frame", nil, UIParent)
-        aimFlag:SetSize(1, 1)
-        aimFlag:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
-        aimFlag:Hide()
-    end
-    return aimFlag
+-- Le minuteur d'un bouton de ciblage (cadre protégé, hors de l'écran)
+local tapTimers = {}
+local function TapTimer(id)
+    local t = tapTimers[id]
+    if t then return t end
+    local ok, frame = pcall(CreateFrame, "Frame", "MyGamepadIsRichTap" .. id, UIParent, "SecureFrameTemplate")
+    t = ok and frame or CreateFrame("Frame", "MyGamepadIsRichTapB" .. id, UIParent, "SecureHandlerBaseTemplate")
+    t:SetSize(1, 1)
+    t:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
+    t:Hide()
+    tapTimers[id] = t
+    return t
 end
 
 -- Le code sécurisé a-t-il une horloge (GetTime) ? Vérifié une fois, hors
@@ -430,40 +444,56 @@ local function SecureClock()
 end
 M.SecureClock = SecureClock
 
--- Le code sécurisé voit-il le témoin montré / caché ? Vérifié une fois, hors
--- combat, dans les deux états (en combat avant la vérification : nil)
-local flagWorks
-local function FlagWorks()
-    if flagWorks == nil and not InCombatLockdown() then
+-- Le code sécurisé peut-il montrer, cacher et minuter un cadre protégé ?
+-- Vérifié une fois, hors combat (en combat avant la vérification : nil) :
+-- montré puis caché tout de suite, puis montré avec une fin automatique ;
+-- s'il est encore montré une demi-seconde plus tard, le jeu ne le cache pas
+-- tout seul : pas de minuteur, les boutons de ciblage sont refaits
+local timerWorks
+local function TimerWorks()
+    if timerWorks == nil and not InCombatLockdown() then
         local probe = CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate")
-        local flag = AimFlag()
-        local function Read()
-            probe:SetAttribute("gps-shown", nil)
-            local ok = pcall(SecureHandlerExecute, probe, [[
-                local f = self:GetFrameRef("flag")
-                self:SetAttribute("gps-shown", f and (f:IsShown() and 1 or 0) or nil)
-            ]])
-            return ok and probe:GetAttribute("gps-shown")
+        local t = TapTimer("Probe")
+        local okRef = pcall(SecureHandlerSetFrameRef, probe, "t", t)
+        local ok = okRef and pcall(SecureHandlerExecute, probe, [[
+            local t = self:GetFrameRef("t")
+            local ready = t and t.Show and t.Hide and t.IsShown and t.RegisterAutoHide
+            if ready then
+                t:Show()
+                local shown = t:IsShown()
+                t:Hide()
+                ready = shown and not t:IsShown()
+            end
+            if ready then
+                t:Show()
+                t:RegisterAutoHide(0.1)
+            end
+            self:SetAttribute("gps-timer", ready and 1 or nil)
+        ]])
+        timerWorks = ok and probe:GetAttribute("gps-timer") == 1
+        if timerWorks then
+            C_Timer.After(0.6, function()
+                if not t:IsShown() then return end
+                timerWorks = false
+                if ns.Diag then ns.Diag.Log("minuteur de ciblage : pas de fin automatique") end
+                if not InCombatLockdown() then t:Hide() end
+                -- (en combat : refait après le combat)
+                ns.Apply(true)
+            end)
         end
-        local ok = pcall(SecureHandlerSetFrameRef, probe, "flag", flag)
-        flag:Show()
-        local shown = ok and Read()
-        flag:Hide()
-        local hidden = ok and Read()
-        flagWorks = shown == 1 and hidden == 0
     end
-    return flagWorks
+    return timerWorks
 end
 
 -- Comment un appui bref est reconnu : "clock" (horloge du code sécurisé),
--- "flag" (témoin), "safe" (aucun : reciblage seulement sans cible valide),
--- ou nil (pas encore vérifié, en combat)
+-- "timer" (minuteur), "safe" (aucun : reciblage seulement sans cible
+-- valide), ou nil (pas encore vérifié, en combat)
 function M.TapMode()
     local clock = SecureClock()
     if clock then return "clock" end
-    local flag = FlagWorks()
-    if flag then return "flag" end
-    if clock == nil or flag == nil then return nil end
+    local timer = TimerWorks()
+    if timer then return "timer" end
+    if clock == nil or timer == nil then return nil end
     return "safe"
 end
 
@@ -517,21 +547,7 @@ local function Targeter(id)
     -- bouton est le seul tenu : avec un autre, c'est une paire. Forever
     -- ouvre son action de classe si le ciblage s'allume pendant que LT ou
     -- RT est tenu)
-    -- (témoin « maintenu » : caché à l'appui, montré si l'appui dure plus de
-    -- TAP_SECONDS, caché au relâchement — après la lecture sécurisée)
-    local press = 0
     b:HookScript("OnClick", function(self, _, down)
-        if down and not held[id] and self.useFlag then
-            press = press + 1
-            local mine = press
-            AimFlag():Hide()
-            C_Timer.After(TAP_SECONDS, function()
-                if press == mine and held[id] then AimFlag():Show() end
-            end)
-        elseif not down and self.useFlag then
-            press = press + 1
-            AimFlag():Hide()
-        end
         if down then
             local alone = true
             for other in pairs(held) do
@@ -560,12 +576,15 @@ function M.SetupTargeting(owner, id, def, actions, onDown)
     -- (appui bref reconnu : l'allié / ennemi suivant à chaque appui ; sinon
     -- reciblage seulement sans cible valide)
     local mode = M.TapMode()
-    b.useFlag = mode == "flag"
-    if b.useFlag then SecureHandlerSetFrameRef(b, "gps-flag", AimFlag()) end
-    b:SetAttribute("gps-useflag", b.useFlag or nil)
+    if mode == "timer" then
+        local t = TapTimer(id)
+        t:Hide()
+        SecureHandlerSetFrameRef(b, "gps-timer", t)
+    end
+    b:SetAttribute("gps-hold", mode == "timer" and TAP_SECONDS or nil)
     b:SetAttribute("gps-tap", mode == "clock" and TAP_SECONDS or nil)
     b:SetAttribute("gps-since", nil)
-    b:SetAttribute("macrotext", ((mode == "clock" or mode == "flag") and TARGET_MACRO or TARGET_MACRO_SAFE)[def.mode])
+    b:SetAttribute("macrotext", ((mode == "clock" or mode == "timer") and TARGET_MACRO or TARGET_MACRO_SAFE)[def.mode])
     count = count + 1
     Write("id" .. count, id)
     disp:SetAttribute("count", count)

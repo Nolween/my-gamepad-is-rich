@@ -498,6 +498,7 @@ ns.AddLocale("itIT", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("itIT", {
+    WHATSNEW_1_1_5 = "• Bersaglio alleato / nemico: in combattimento il pulsante non resta più premuto dopo il rilascio (l'HUD restava sul suo strato e lo stick continuava a mirare). Una pressione breve passa ancora al bersaglio successivo e una lunga mantiene il bersaglio scelto.",
     WHATSNEW_1_1_4 = "• Bersaglio alleato / nemico: ogni pressione breve passa al bersaglio successivo, anche se ne hai già uno, anche dove il gioco non fornisce l'ora all'addon. Una pressione lunga mantiene il bersaglio scelto con lo stick.\n• /mgir etat indica come viene riconosciuta una pressione breve.",
     WHATSNEW_1_1_3 = "• Bersaglio alleato / nemico: il bersaglio scelto con lo stick resta quando rilasci il pulsante. Solo una pressione breve seleziona il più vicino.",
     WHATSNEW_1_1_2 = "• Un comando di WoW o una macro scritta a mano può usare l'icona che preferisci: clic sulla casella, \"Cambia icona...\". La ricerca trova le icone dei tuoi incantesimi, dei tuoi oggetti e dei comandi di WoW, oppure un'icona dal suo nome file (come su Wowhead: inv_misc_map_01).\n• I comandi più comuni hanno una propria icona al posto della chiave: mappa del mondo, borse, libro degli incantesimi, registro missioni, personaggio, imprese, ricerca gruppi, collezioni.",

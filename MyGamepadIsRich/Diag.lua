@@ -63,8 +63,8 @@ function D.State()
     -- sans cible valide quand le code sécurisé n'a pas d'horloge)
     local tap = ns.Modifier.TapMode()
     Line("ciblage, appui bref", tap == "clock" and "le plus proche puis le suivant (horloge)"
-        or tap == "flag" and "le plus proche puis le suivant (témoin)"
-        or tap == "safe" and "seulement sans cible valide (ni horloge ni témoin)"
+        or tap == "timer" and "le plus proche puis le suivant (minuteur)"
+        or tap == "safe" and "seulement sans cible valide (ni horloge ni minuteur)"
         or "? (à vérifier hors combat)")
     Line("A est lié à", S(GetBindingAction("PAD1", true)))
     for _, id in ipairs(ns.PAD_IDS) do

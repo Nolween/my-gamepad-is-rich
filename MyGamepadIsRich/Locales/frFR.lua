@@ -498,6 +498,7 @@ ns.AddLocale("frFR", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("frFR", {
+    WHATSNEW_1_1_5 = "• Cible alliée / ennemie : en combat, le bouton ne reste plus tenu après le relâchement (le HUD restait sur sa couche et le stick continuait de viser). L'appui bref passe toujours à la cible suivante, et l'appui maintenu garde la cible visée.",
     WHATSNEW_1_1_4 = "• Cible alliée / ennemie : chaque appui bref passe à la cible suivante, même quand tu en as déjà une, y compris là où le jeu ne donne pas l'heure à l'addon. Un appui maintenu garde la cible visée au stick.\n• /mgir etat dit comment l'appui bref est reconnu.",
     WHATSNEW_1_1_3 = "• Cible alliée / ennemie : la cible visée au stick reste quand tu relâches le bouton. Seul un appui bref cible le plus proche.",
     WHATSNEW_1_1_2 = "• Une commande WoW ou une macro écrite à la main peut prendre l'icône de ton choix : clic sur la case, « Changer l'icône... ». La recherche trouve les icônes de tes sorts, de tes objets et des commandes WoW, ou une icône par son nom de fichier (comme sur Wowhead : inv_misc_map_01).\n• Les commandes courantes ont leur propre icône au lieu de la clé : carte du monde, sacs, grimoire, journal de quêtes, personnage, hauts faits, recherche de groupe, collections.",

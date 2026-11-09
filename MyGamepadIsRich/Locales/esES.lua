@@ -498,6 +498,7 @@ ns.AddLocale("esES", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("esES", {
+    WHATSNEW_1_1_5 = "• Objetivo aliado / enemigo: en combate, el botón ya no queda pulsado tras soltarlo (el HUD se quedaba en su capa y el stick seguía apuntando). Una pulsación breve sigue pasando al siguiente objetivo y una larga mantiene el objetivo elegido.",
     WHATSNEW_1_1_4 = "• Objetivo aliado / enemigo: cada pulsación breve pasa al siguiente objetivo, aunque ya tengas uno, incluso donde el juego no da la hora al addon. Una pulsación larga mantiene el objetivo elegido con el stick.\n• /mgir etat indica cómo se reconoce una pulsación breve.",
     WHATSNEW_1_1_3 = "• Objetivo aliado / enemigo: el objetivo elegido con el stick se mantiene al soltar el botón. Solo una pulsación breve selecciona el más cercano.",
     WHATSNEW_1_1_2 = "• Un comando de WoW o una macro escrita a mano puede usar el icono que elijas: clic en la casilla, «Cambiar icono...». La búsqueda encuentra los iconos de tus hechizos, tus objetos y los comandos de WoW, o un icono por su nombre de archivo (como en Wowhead: inv_misc_map_01).\n• Los comandos habituales tienen su propio icono en lugar de la llave: mapa del mundo, bolsas, libro de hechizos, registro de misiones, personaje, logros, buscador de grupos, colecciones.",
