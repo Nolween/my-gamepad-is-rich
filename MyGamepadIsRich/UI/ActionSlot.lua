@@ -133,6 +133,10 @@ function UI.CreateActionSlot(parent, opts)
             { text = L.MENU_COMMAND, disabled = not commandOK, func = function()
                 UI.PickFromList(L.COMMAND_TITLE, ns.Actions.Commands(), Set)
             end },
+            -- (commande WoW, macro écrite : une icône au choix)
+            { text = L.MENU_ICON, disabled = not ns.Actions.CanSetIcon(current), func = function()
+                UI.PickIcon(current.icon, function(icon) Set(ns.Actions.WithIcon(current, icon)) end)
+            end },
             { text = L.MENU_CLEAR, disabled = current == nil, func = function() Set(nil) end },
         }
         -- (des choix grisés : pourquoi, et comment les avoir)

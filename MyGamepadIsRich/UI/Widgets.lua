@@ -94,7 +94,7 @@ end
 -- Menu contextuel
 ---------------------------------------------------------------------------
 local menu, blocker
-local MENU_ROWS = 8
+local MENU_ROWS = 10
 
 local function HideMenu()
     if menu then menu:Hide() end
@@ -441,4 +441,192 @@ function UI.PickFromList(title, entries, onPick)
     RefreshPicker()
     picker:Show()
     picker.search:SetFocus()
+end
+
+---------------------------------------------------------------------------
+-- Choix d'une icône (commande WoW, macro écrite) : les icônes de macro du
+-- jeu en grille ; la recherche donne les icônes des sorts du grimoire et des
+-- objets portés dont le nom correspond, ou un numéro d'icône
+---------------------------------------------------------------------------
+local iconPicker
+local ICON_COLS, ICON_ROWS, ICON_SIZE, ICON_GAP = 10, 7, 36, 4
+local allIcons
+
+-- Toutes les icônes de macro du jeu, une fois chacune (numéros de fichier ;
+-- un ancien client donne des noms, sous Interface\Icons)
+local function AllIcons()
+    if allIcons then return allIcons end
+    local list, seen = {}, {}
+    local function addFrom(fn)
+        if type(fn) ~= "function" then return end
+        local t = {}
+        local ok, r = pcall(fn, t)
+        if not ok then return end
+        if type(r) == "table" then t = r end
+        for _, v in ipairs(t) do
+            if type(v) == "string" and not v:find("[\\/]") then v = "Interface\\Icons\\" .. v end
+            if (type(v) == "number" or type(v) == "string") and not seen[v] then
+                seen[v] = true
+                list[#list + 1] = { icon = v }
+            end
+        end
+    end
+    addFrom(GetLooseMacroIcons)
+    addFrom(GetLooseMacroItemIcons)
+    addFrom(GetMacroIcons)
+    addFrom(GetMacroItemIcons)
+    allIcons = list
+    return list
+end
+
+local function SearchIcons(query)
+    query = strtrim(query or ""):lower()
+    if query == "" then return AllIcons() end
+    local out, seen = {}, {}
+    local function add(icon, label)
+        if icon and not seen[icon] then
+            seen[icon] = true
+            out[#out + 1] = { icon = icon, label = label }
+        end
+    end
+    local n = tonumber(query)
+    if n and n > 0 and n == math.floor(n) then add(n, tostring(n)) end
+    -- (un nom de fichier d'icône, comme sur Wowhead : inv_misc_map_01)
+    if query:find("_") and query:match("^[%w_%-]+$") then add(ns.Actions.IconFromName(query), query) end
+    -- (les commandes WoW, les sorts, les objets : lus une fois par ouverture
+    -- de la fenêtre)
+    local p = iconPicker
+    if not p.sources then
+        p.sources = { ns.Actions.CommandIconEntries(), ns.Actions.SpellbookEntries(), ns.Actions.ItemEntries() }
+    end
+    for _, list in ipairs(p.sources) do
+        for _, e in ipairs(list) do
+            if not e.header and Matches(e.label, query) then add(e.icon, e.label) end
+        end
+    end
+    return out
+end
+
+local function RefreshIcons()
+    local p = iconPicker
+    local list = p.list
+    local perPage = ICON_COLS * ICON_ROWS
+    local totalRows = math.ceil(#list / ICON_COLS)
+    p.row = math.min(math.max(p.row, 0), math.max(0, totalRows - ICON_ROWS))
+    p.empty:SetShown(#list == 0)
+    for i, cell in ipairs(p.cells) do
+        local e = list[p.row * ICON_COLS + i]
+        cell.entry = e
+        if e then
+            cell.icon:SetTexture(e.icon)
+            cell.current:SetShown(p.selected ~= nil and e.icon == p.selected)
+            cell:Show()
+        else
+            cell:Hide()
+        end
+    end
+    local first = p.row * ICON_COLS + 1
+    p.scrollText:SetText(#list > perPage
+        and ("%d-%d / %d"):format(first, math.min(first + perPage - 1, #list), #list) or "")
+end
+
+local function BuildIconPicker()
+    local width = 28 + ICON_COLS * (ICON_SIZE + ICON_GAP) - ICON_GAP
+    local p = UI.Panel(UIParent, "MyGamepadIsRichIconPicker", "DIALOG")
+    p:SetSize(width, 124 + ICON_ROWS * (ICON_SIZE + ICON_GAP) + 48)
+    p:SetPoint("CENTER")
+    p:EnableMouse(true)
+    p:SetToplevel(true)
+    tinsert(UISpecialFrames, "MyGamepadIsRichIconPicker")
+    p.title = UI.Text(p, "GameFontNormalLarge", L.ICON_TITLE)
+    p.title:SetPoint("TOP", 0, -12)
+
+    local label = UI.Text(p, "GameFontNormalSmall", L.SEARCH)
+    label:SetPoint("TOPLEFT", 16, -42)
+    local search = CreateFrame("EditBox", nil, p, "InputBoxTemplate")
+    search:SetSize(width - 120, 20)
+    search:SetPoint("LEFT", label, "RIGHT", 10, 0)
+    search:SetAutoFocus(false)
+    search:SetScript("OnTextChanged", function(self)
+        if not iconPicker then return end
+        iconPicker.list = SearchIcons(self:GetText())
+        iconPicker.row = 0
+        RefreshIcons()
+    end)
+    search:SetScript("OnEscapePressed", function() p:Hide() end)
+    p.search = search
+    local hint = UI.Text(p, "GameFontDisableSmall", L.ICON_HINT)
+    hint:SetPoint("TOPLEFT", 16, -66)
+    hint:SetPoint("RIGHT", -16, 0)
+    hint:SetJustifyH("LEFT")
+
+    p.cells = {}
+    for i = 1, ICON_COLS * ICON_ROWS do
+        local col, row = (i - 1) % ICON_COLS, math.floor((i - 1) / ICON_COLS)
+        local cell = CreateFrame("Button", nil, p)
+        cell:SetSize(ICON_SIZE, ICON_SIZE)
+        cell:SetPoint("TOPLEFT", 14 + col * (ICON_SIZE + ICON_GAP), -100 - row * (ICON_SIZE + ICON_GAP))
+        cell.icon = cell:CreateTexture(nil, "ARTWORK")
+        cell.icon:SetAllPoints()
+        cell.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        -- (l'icône déjà choisie : un cadre doré)
+        cell.current = cell:CreateTexture(nil, "OVERLAY")
+        cell.current:SetPoint("TOPLEFT", -3, 3)
+        cell.current:SetPoint("BOTTOMRIGHT", 3, -3)
+        cell.current:SetColorTexture(1, 0.82, 0, 0.45)
+        cell.current:Hide()
+        cell:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+        cell:SetScript("OnClick", function(self)
+            if not self.entry then return end
+            p:Hide()
+            if p.onPick then p.onPick(self.entry.icon) end
+        end)
+        cell:SetScript("OnEnter", function(self)
+            if not (self.entry and self.entry.label) then return end
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(self.entry.label, 1, 1, 1)
+            GameTooltip:Show()
+        end)
+        cell:SetScript("OnLeave", function() GameTooltip:Hide() end)
+        p.cells[i] = cell
+    end
+    p.empty = UI.Text(p, "GameFontDisable", L.LIST_EMPTY)
+    p.empty:SetPoint("TOP", 0, -142)
+
+    p:EnableMouseWheel(true)
+    p:SetScript("OnMouseWheel", function(_, delta)
+        iconPicker.row = iconPicker.row - delta * 2
+        RefreshIcons()
+    end)
+
+    p.scrollText = UI.Text(p, "GameFontDisableSmall")
+    p.scrollText:SetPoint("BOTTOMLEFT", 16, 18)
+    local default = UI.Button(p, L.ICON_DEFAULT, 130)
+    default:SetPoint("BOTTOMRIGHT", p, "BOTTOM", -6, 12)
+    default:SetScript("OnClick", function()
+        p:Hide()
+        if p.onPick then p.onPick(nil) end
+    end)
+    local cancel = UI.Button(p, L.CANCEL, 100)
+    cancel:SetPoint("BOTTOMLEFT", p, "BOTTOM", 6, 12)
+    cancel:SetScript("OnClick", function() p:Hide() end)
+    p:Hide()
+    iconPicker = p
+end
+
+-- onPick(icon) quand une icône est choisie (nil : l'icône par défaut) ;
+-- selected : l'icône actuelle, encadrée
+function UI.PickIcon(selected, onPick)
+    if not iconPicker then BuildIconPicker() end
+    local p = iconPicker
+    p.onPick = onPick
+    p.selected = selected
+    p.sources = nil
+    p.list = AllIcons()
+    p.row = 0
+    p.search:SetText("")
+    RefreshIcons()
+    p:Show()
+    p:Raise()
+    p.search:SetFocus()
 end

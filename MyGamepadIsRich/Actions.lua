@@ -143,7 +143,51 @@ local COMMAND_ICONS = {
     TARGETNEARESTENEMY = "Interface\\Icons\\Ability_Hunter_SniperShot",
     TARGETSCANENEMY = "Interface\\Icons\\Ability_Hunter_SniperShot",
     TOGGLEGAMEMENU = "Interface\\Buttons\\UI-GroupLoot-Pass-Up",
+    TOGGLEWORLDMAP = "Interface\\Icons\\INV_Misc_Map_01",
+    TOGGLEBATTLEFIELDMINIMAP = "Interface\\Icons\\INV_Misc_Map02",
+    OPENALLBAGS = "Interface\\Icons\\INV_Misc_Bag_08",
+    TOGGLEBACKPACK = "Interface\\Icons\\INV_Misc_Bag_08",
+    TOGGLESPELLBOOK = "Interface\\Icons\\INV_Misc_Book_09",
+    TOGGLEQUESTLOG = "Interface\\Icons\\INV_Scroll_03",
+    TOGGLECHARACTER0 = "Interface\\Icons\\INV_Chest_Cloth_17",
+    TOGGLEACHIEVEMENT = "Interface\\Icons\\Achievement_General",
+    TOGGLEGROUPFINDER = "Interface\\Icons\\INV_Misc_GroupNeedMore",
+    TOGGLELFGPARENT = "Interface\\Icons\\INV_Misc_GroupNeedMore",
+    TOGGLECOLLECTIONS = "Interface\\Icons\\Ability_Mount_RidingHorse",
+    TOGGLEMOUNTJOURNAL = "Interface\\Icons\\Ability_Mount_RidingHorse",
 }
+
+-- Une icône par son chemin (ou son nom sous Interface\Icons, comme sur
+-- Wowhead : « inv_misc_map_01 ») : son numéro de fichier si le jeu la
+-- connaît, nil sinon. Sans moyen de vérifier (ancien client) : le chemin
+local knownIcons = {}
+function A.IconFromName(name)
+    if type(name) ~= "string" or name == "" then return nil end
+    local path = name:find("[\\/]") and name or ("Interface\\Icons\\" .. name)
+    if not GetFileIDFromPath then return path end
+    if knownIcons[path] == nil then
+        local ok, id = pcall(GetFileIDFromPath, path)
+        knownIcons[path] = ok and type(id) == "number" and id > 0 and id or false
+    end
+    return knownIcons[path] or nil
+end
+
+-- L'icône par défaut d'une commande WoW, ou nil
+local function CommandIcon(command)
+    local path = COMMAND_ICONS[command]
+    return path and A.IconFromName(path)
+end
+
+-- Les icônes par défaut des commandes WoW, pour la recherche d'icône
+-- ({ label, icon })
+function A.CommandIconEntries()
+    local out = {}
+    for command in pairs(COMMAND_ICONS) do
+        local icon = CommandIcon(command)
+        if icon then out[#out + 1] = { label = A.CommandLabel(command), icon = icon } end
+    end
+    return out
+end
 
 local function SpellIcon(id)
     if C_Spell and C_Spell.GetSpellTexture then return C_Spell.GetSpellTexture(id) end
@@ -178,9 +222,26 @@ function A.Label(action)
     end
 end
 
+-- Les actions sans icône à elles (commande WoW, macro écrite à la main) :
+-- une icône au choix du joueur (action.icon : numéro de fichier ou chemin)
+local CUSTOM_ICON = { command = true, macrotext = true }
+
+function A.CanSetIcon(action)
+    return action ~= nil and CUSTOM_ICON[action.kind] == true
+end
+
+-- Une copie de l'action avec cette icône (nil : l'icône par défaut)
+function A.WithIcon(action, icon)
+    local copy = {}
+    for k, v in pairs(action) do copy[k] = v end
+    copy.icon = icon
+    return copy
+end
+
 function A.Icon(action)
     if not action then return nil end
     local k = action.kind
+    if action.icon and CUSTOM_ICON[k] then return action.icon end
     if k == "spell" or k == "mount" then
         return select(2, A.SpellInfo(action.id)) or QUESTION
     elseif k == "item" or k == "toy" then
@@ -191,7 +252,7 @@ function A.Icon(action)
     elseif k == "macrotext" then
         return ICON_MACROTEXT
     elseif k == "command" then
-        return COMMAND_ICONS[action.command] or ICON_COMMAND
+        return CommandIcon(action.command) or ICON_COMMAND
     elseif k == "game" then
         local def = GAME_BY_ID[action.id]
         if not def then return QUESTION end

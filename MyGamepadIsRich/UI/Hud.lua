@@ -568,6 +568,18 @@ local function Assign(target, action)
     end
 end
 
+-- L'action de l'addon sur une case (pas celle d'une barre du jeu, ni l'action
+-- « Seul » montrée en repli sur une couche LT / RT vide)
+local function TargetAction(target)
+    if target.native then
+        return target.native == ns.Bar.BASE_BAR and ns.Bar.Override(target.i) or nil
+    elseif target.combo then
+        return ns.ButtonActions(target.combo).combos[target.key]
+    elseif target.layer then
+        return ns.ButtonActions(target.id).layers[target.layer]
+    end
+end
+
 -- (« Seul » prend tout ; les couches LT / RT du jeu, seulement ce que la
 -- barre du jeu tient)
 local function FullTarget(target)
@@ -599,6 +611,7 @@ local function TileClick(t, button)
         return
     end
     local set = function(action) Assign(target, action) end
+    local current = TargetAction(target)
     local full = FullTarget(target)
     local items = {
         { text = L.MENU_PICKUP_HINT, title = true },
@@ -619,6 +632,13 @@ local function TileClick(t, button)
         end },
         { text = L.MENU_COMMAND, disabled = not CommandAllowed(target), func = function()
             UI.PickFromList(L.COMMAND_TITLE, ns.Actions.Commands(), set)
+        end },
+        -- (commande WoW, macro écrite : une icône au choix)
+        { text = L.MENU_ICON, disabled = not ns.Actions.CanSetIcon(current), func = function()
+            UI.PickIcon(current.icon, function(icon)
+                if InCombatLockdown() then ns.Print(L.HUD_COMBAT) return end
+                set(ns.Actions.WithIcon(current, icon))
+            end)
         end },
         { text = L.MENU_CLEAR, func = function() set(nil) end },
     }

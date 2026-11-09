@@ -1,4 +1,5 @@
-# Paquet de publication : dist\MyGamepadIsRich-<version>.zip
+# Paquet de publication : ..\Releases\MyGamepadIsRich-<version>.zip (dossier
+# Releases à côté du dépôt, avec les notes MyGamepadIsRich-<version>-notes.md)
 #   .\build.ps1
 # La version vient du .toc (## Version). Le dossier MyGamepadIsRich est mis
 # dans le zip tel quel, sans les outils de développement (Probe.lua).
@@ -19,7 +20,7 @@ $versionLine = Select-String -Path $toc -Pattern '^## Version:\s*(.+)$' | Select
 if (-not $versionLine) { throw "Pas de ligne '## Version' dans $toc" }
 $version = $versionLine.Matches[0].Groups[1].Value.Trim()
 
-$dist = Join-Path $root 'dist'
+$dist = Join-Path (Split-Path $root -Parent) 'Releases'
 New-Item -ItemType Directory -Force $dist | Out-Null
 $zipPath = Join-Path $dist "$addon-$version.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force -Confirm:$false }

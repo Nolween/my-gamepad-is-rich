@@ -1,5 +1,12 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.2
+
+### Actions
+- Une commande WoW ou une macro écrite à la main peut prendre l'icône de son choix : clic sur la case (onglet Actions ou HUD), **Changer l'icône...**. La fenêtre montre les icônes de macro du jeu ; la recherche trouve les icônes des sorts, des objets et des commandes WoW, ou une icône par son nom de fichier (comme sur Wowhead : `inv_misc_map_01`). **Icône par défaut** revient à l'icône d'origine.
+- Les commandes courantes ont leur propre icône au lieu de la clé : carte du monde, sacs, grimoire, journal de quêtes, personnage, hauts faits, recherche de groupe, collections.
+- L'icône choisie est gardée à l'export et à l'import d'un profil.
+
 ## 1.1.1
 
 ### Boutons simples

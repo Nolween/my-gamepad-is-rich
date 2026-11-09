@@ -80,7 +80,7 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 
 | Onglet | Rôle |
 |---|---|
-| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
+| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Une commande WoW ou une macro écrite à la main peut prendre l'icône de son choix (menu de la case, **Changer l'icône...** : icônes du jeu, ou celle d'un sort ou d'un objet cherché par son nom). Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
 | **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**, qui refuse A/B/X/Y, la croix et LT/RT/LB/RB), mode, et **Verrouillable** pour un modificateur. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. Option « Retenir le profil de chaque personnage ». |
 | **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, ordre des miniatures, déplacer, bouton de la minimap. |
@@ -215,7 +215,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 
 ## Publier
 
-`.\build.ps1` (à la racine du dépôt) crée `dist\MyGamepadIsRich-<version>.zip`, la version étant lue dans le .toc, sans `Probe.lua`, avec des chemins en `/` et le `CHANGELOG.md` dans le dossier de l'addon. Les nouveautés d'une version publiée : `CHANGELOG.md`, et une note `WHATSNEW_x_y_z` dans `UI/WhatsNew.lua` et les Locales.
+`.\build.ps1` (à la racine du dépôt) crée `..\Releases\MyGamepadIsRich-<version>.zip` (dossier `Releases` à côté du dépôt, où vont aussi les notes de publication en anglais `MyGamepadIsRich-<version>-notes.md`), la version étant lue dans le .toc, sans `Probe.lua`, avec des chemins en `/` et le `CHANGELOG.md` dans le dossier de l'addon. Les nouveautés d'une version publiée : `CHANGELOG.md`, et une note `WHATSNEW_x_y_z` dans `UI/WhatsNew.lua` et les Locales.
 
 ## Fichiers
 
