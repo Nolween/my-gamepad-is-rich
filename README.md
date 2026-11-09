@@ -131,7 +131,7 @@ Un bouton (L5, R5… ou un bouton de base) peut être en **Cible alliée** ou **
 - **maintenu + stick droit** : vise la cible voulue (le ciblage du moteur du jeu, `C_GamepadTargeting`) ;
 - **maintenu + A / B / X / Y / croix** : ses 8 raccourcis, comme un modificateur. Un raccourci lancé pendant l'appui empêche le reciblage au relâchement.
 
-Si tu vises avec le stick puis relâches sans lancer de raccourci, le relâchement cible à nouveau le plus proche.
+Seul un appui bref (moins de 0,3 s) cible le plus proche : si tu maintiens le bouton pour viser avec le stick, la cible choisie reste quand tu relâches.
 
 ## Boutons de base (LT, RT, LB, RB)
 

@@ -1,5 +1,11 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.3
+
+### Corrections
+- **Cible alliée / ennemie** : la cible visée au stick reste quand on relâche le bouton. Avant, le relâchement ciblait à nouveau le plus proche et remplaçait la cible choisie. Seul un appui bref (moins de 0,3 s) cible le plus proche.
+- Si le jeu ne permet pas de mesurer la durée de l'appui, le relâchement ne recible que si la cible actuelle n'est pas déjà un allié (ou un ennemi) vivant.
+
 ## 1.1.2
 
 ### Actions

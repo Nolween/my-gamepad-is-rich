@@ -357,17 +357,26 @@ end
 --               modificateur) et le ciblage du moteur s'allume
 --               (C_GamepadTargeting : le stick droit vise au lieu de la
 --               caméra) ;
---   relâché   : le ciblage du moteur s'éteint ; si aucun raccourci n'est
---               parti pendant l'appui, une macro sécurisée cible l'allié /
---               l'ennemi le plus proche (/targetfriend, /targetenemy).
+--   relâché   : le ciblage du moteur s'éteint ; après un appui bref sans
+--               raccourci, une macro sécurisée cible l'allié / l'ennemi le
+--               plus proche (/targetfriend, /targetenemy). Après un appui
+--               maintenu (visée au stick), la cible choisie reste.
 -- Forever, lui, déclenche son ciblage sur l'état Ctrl que LB imite (un addon
 -- ne peut pas l'imiter) : on appelle donc le moteur directement.
 ---------------------------------------------------------------------------
 local TARGET_MACRO = { target_friend = "/targetfriend", target_enemy = "/targetenemy" }
+-- (sans horloge dans le code sécurisé : on ne recible que si la cible
+-- actuelle n'est pas déjà un allié / ennemi vivant)
+local TARGET_MACRO_SAFE = {
+    target_friend = "/targetfriend [@target,nohelp][@target,dead]",
+    target_enemy = "/targetenemy [@target,noharm][@target,dead]",
+}
+-- (au-delà, l'appui est « maintenu » : visée au stick, pas de reciblage)
+local TAP_SECONDS = 0.3
 
--- (appui : tenu ; relâché : plus tenu, et l'action — le ciblage du plus
--- proche — part seulement si aucun raccourci n'est parti. Le bouton n'agit
--- qu'au relâchement : useOnKeyDown = false)
+-- (appui : tenu, et l'heure de l'appui ; relâché : plus tenu, et l'action
+-- — le ciblage du plus proche — part seulement après un appui bref sans
+-- raccourci. Le bouton n'agit qu'au relâchement : useOnKeyDown = false)
 local TARGET_CLICK = [[
     local disp = self:GetFrameRef("disp")
     local id = self:GetAttribute("gps-id")
@@ -378,13 +387,30 @@ local TARGET_CLICK = [[
             disp:SetAttribute("order", o)
             disp:SetAttribute("comboused", nil)
             disp:SetAttribute("held-" .. id, o)
+            if self:GetAttribute("gps-tap") then self:SetAttribute("gps-since", GetTime()) end
         end
         -- (rien ne part à l'appui : le bouton n'agit qu'au relâchement)
         return
     end
     disp:SetAttribute("held-" .. id, nil)
     if disp:GetAttribute("comboused") then return false end
+    -- (maintenu : la cible a été visée au stick, elle reste)
+    local tap, since = self:GetAttribute("gps-tap"), self:GetAttribute("gps-since")
+    if tap and since and GetTime() - since > tap then return false end
 ]]
+
+-- Le code sécurisé a-t-il une horloge (GetTime) ? Vérifié une fois, hors
+-- combat
+local secureClock
+local function SecureClock()
+    if secureClock == nil then
+        local probe = CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate")
+        local ok = pcall(SecureHandlerExecute, probe,
+            [[self:SetAttribute("gps-clock", GetTime and GetTime() and true or nil)]])
+        secureClock = ok and probe:GetAttribute("gps-clock") == true
+    end
+    return secureClock
+end
 
 -- La valeur de filtre du moteur pour un ciblage (énumération du jeu si on la
 -- trouve ; sinon 1 = allié, relevé quand LB est tenu, et 2 = ennemi)
@@ -462,7 +488,10 @@ end
 function M.SetupTargeting(owner, id, def, actions, onDown)
     local b = Targeter(id)
     b.targetMode = def.mode
-    b:SetAttribute("macrotext", TARGET_MACRO[def.mode])
+    local clock = SecureClock()
+    b:SetAttribute("gps-tap", clock and TAP_SECONDS or nil)
+    b:SetAttribute("gps-since", nil)
+    b:SetAttribute("macrotext", (clock and TARGET_MACRO or TARGET_MACRO_SAFE)[def.mode])
     count = count + 1
     Write("id" .. count, id)
     disp:SetAttribute("count", count)
