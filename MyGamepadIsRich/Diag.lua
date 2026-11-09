@@ -59,6 +59,13 @@ function D.State()
     local down = ns.Focus.PadsDown()
     Line("enfoncés sur la manette", down and Sorted(down) or "?")
     Line("barre active de Forever", ActiveBar())
+    -- (appui bref : allié / ennemi suivant à chaque appui, ou seulement
+    -- sans cible valide quand le code sécurisé n'a pas d'horloge)
+    local tap = ns.Modifier.TapMode()
+    Line("ciblage, appui bref", tap == "clock" and "le plus proche puis le suivant (horloge)"
+        or tap == "flag" and "le plus proche puis le suivant (témoin)"
+        or tap == "safe" and "seulement sans cible valide (ni horloge ni témoin)"
+        or "? (à vérifier hors combat)")
     Line("A est lié à", S(GetBindingAction("PAD1", true)))
     for _, id in ipairs(ns.PAD_IDS) do
         Line(id .. " est lié à", Binding(ns.PAD_KEY[id]))

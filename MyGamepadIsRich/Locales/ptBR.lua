@@ -498,6 +498,7 @@ ns.AddLocale("ptBR", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("ptBR", {
+    WHATSNEW_1_1_4 = "• Alvo aliado / inimigo: cada toque rápido passa para o próximo alvo, mesmo se você já tiver um, inclusive onde o jogo não fornece a hora ao addon. Um toque longo mantém o alvo escolhido com o analógico.\n• /mgir etat mostra como um toque rápido é reconhecido.",
     WHATSNEW_1_1_3 = "• Alvo aliado / inimigo: o alvo escolhido com o analógico continua selecionado quando você solta o botão. Só um toque rápido seleciona o mais próximo.",
     WHATSNEW_1_1_2 = "• Um comando do WoW ou uma macro escrita à mão pode usar o ícone que você quiser: clique no espaço, \"Mudar ícone...\". A busca encontra os ícones dos seus feitiços, itens e comandos do WoW, ou um ícone pelo nome do arquivo (como no Wowhead: inv_misc_map_01).\n• Os comandos mais comuns têm ícone próprio em vez da chave: mapa-múndi, bolsas, grimório, registro de missões, personagem, conquistas, localizador de grupos, coleções.",
     WHATSNEW_1_1_1 = "• Botão simples: uma camada vazia (LT, RT ou um modificador) agora não faz nada e fica vazia no HUD, em vez de usar a ação \"Sozinho\". Única exceção: um comando do WoW colocado em \"Sozinho\".\n• A lista de feitiços agora inclui os feitiços de profissão: Encontrar Ervas, Encontrar Minérios, Pesca, Culinária, Arqueologia…",

@@ -498,6 +498,7 @@ ns.AddLocale("deDE", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("deDE", {
+    WHATSNEW_1_1_4 = "• Freundliches / feindliches Ziel: Jeder kurze Druck wechselt zum nächsten Ziel, auch wenn du schon eines hast, selbst wo das Spiel dem Addon die Uhrzeit nicht gibt. Ein langer Druck behält das mit dem Stick anvisierte Ziel.\n• /mgir etat zeigt, wie ein kurzer Druck erkannt wird.",
     WHATSNEW_1_1_3 = "• Freundliches / feindliches Ziel: Das mit dem Stick anvisierte Ziel bleibt, wenn du die Taste loslässt. Nur ein kurzer Druck wählt das nächste Ziel.",
     WHATSNEW_1_1_2 = "• Ein WoW-Befehl oder ein selbst geschriebenes Makro kann ein Symbol deiner Wahl nutzen: Klick auf das Feld, „Symbol ändern...“. Die Suche findet die Symbole deiner Zauber, Gegenstände und WoW-Befehle, oder ein Symbol über seinen Dateinamen (wie auf Wowhead: inv_misc_map_01).\n• Häufige Befehle haben ein eigenes Symbol statt des Schlüssels: Weltkarte, Taschen, Zauberbuch, Questlog, Charakter, Erfolge, Gruppensuche, Sammlungen.",
     WHATSNEW_1_1_1 = "• Einfache Taste: Eine leere Ebene (LT, RT oder ein Modifikator) tut nichts mehr und bleibt im HUD leer, statt die Aktion „Allein“ zu nutzen. Einzige Ausnahme: ein WoW-Befehl auf „Allein“.\n• Die Zauberliste enthält jetzt auch Berufszauber: Kräutersuche, Mineraliensuche, Angeln, Kochkunst, Archäologie…",

@@ -1,5 +1,13 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.4
+
+### Corrections
+- **Cible alliée / ennemie** : chaque appui bref passe à la cible suivante, même quand on en a déjà une. Dans les versions du jeu qui ne donnent pas l'heure au code protégé de l'addon (comme Forever), l'appui maintenu est reconnu par un témoin : un petit cadre invisible montré quand l'appui dure plus de 0,3 s. Avant, l'appui bref n'y ciblait que si l'on n'avait pas déjà un allié (ou un ennemi) vivant.
+
+### Aide au diagnostic
+- `/mgir etat` dit comment l'appui bref est reconnu : horloge, témoin, ou ni l'un ni l'autre.
+
 ## 1.1.3
 
 ### Corrections
