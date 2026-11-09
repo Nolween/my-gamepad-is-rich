@@ -301,17 +301,30 @@ function A.SpellbookEntries()
         if not same then same = {}; byName[name] = same end
         same[#same + 1] = e
     end
-    if C_SpellBook and C_SpellBook.GetNumSpellBookSkillLines and Enum and Enum.SpellBookSpellBank then
-        local bank = Enum.SpellBookSpellBank.Player
-        local SPELL = Enum.SpellBookItemType and Enum.SpellBookItemType.Spell
+    local modern = C_SpellBook and C_SpellBook.GetNumSpellBookSkillLines and Enum and Enum.SpellBookSpellBank
+    local bank = modern and Enum.SpellBookSpellBank.Player
+    local SPELL = modern and Enum.SpellBookItemType and Enum.SpellBookItemType.Spell
+    -- (un emplacement du grimoire, API récente ou ancienne)
+    local function addSlot(index, tab, bookType)
+        if modern then
+            local ok, item = pcall(C_SpellBook.GetSpellBookItemInfo, index, bank)
+            if ok and item and item.itemType == SPELL and not item.isPassive then
+                add(item.name, item.iconID, tab, item.spellID or item.actionID, item.subName)
+            end
+        else
+            local ok, itemType, spellID = pcall(GetSpellBookItemInfo, index, bookType)
+            if ok and itemType == "SPELL" and not (IsPassiveSpell and IsPassiveSpell(index, bookType)) then
+                local name, rank = GetSpellBookItemName(index, bookType)
+                add(name, GetSpellBookItemTexture(index, bookType), tab, spellID, rank)
+            end
+        end
+    end
+    if modern then
         for line = 1, C_SpellBook.GetNumSpellBookSkillLines() or 0 do
             local info = C_SpellBook.GetSpellBookSkillLineInfo(line)
             if info and not info.offSpecID and not info.shouldHide then
                 for index = info.itemIndexOffset + 1, info.itemIndexOffset + info.numSpellBookItems do
-                    local item = C_SpellBook.GetSpellBookItemInfo(index, bank)
-                    if item and item.itemType == SPELL and not item.isPassive then
-                        add(item.name, item.iconID, info.name, item.spellID or item.actionID, item.subName)
-                    end
+                    addSlot(index, info.name)
                 end
             end
         end
@@ -319,11 +332,23 @@ function A.SpellbookEntries()
         for tab = 1, GetNumSpellTabs() or 0 do
             local tabName, _, offset, numSlots = GetSpellTabInfo(tab)
             for index = (offset or 0) + 1, (offset or 0) + (numSlots or 0) do
-                local itemType, spellID = GetSpellBookItemInfo(index, "spell")
-                if itemType == "SPELL" and not (IsPassiveSpell and IsPassiveSpell(index, "spell")) then
-                    local name, rank = GetSpellBookItemName(index, "spell")
-                    add(name, GetSpellBookItemTexture(index, "spell"), tabName, spellID, rank)
-                end
+                addSlot(index, tabName, "spell")
+            end
+        end
+    end
+    -- Les métiers (onglet à part du grimoire depuis Cataclysm : découverte
+    -- d'herbes, de gisements, pêche, cuisine, archéologie...). Avant, ils
+    -- sont dans l'onglet Général, déjà parcouru
+    if GetProfessions and GetProfessionInfo and (modern or GetSpellBookItemInfo) then
+        local bookType = BOOKTYPE_PROFESSION or "professions"
+        -- (métier 1, métier 2, archéologie, pêche, cuisine : nil s'il manque)
+        local profs = { GetProfessions() }
+        for k = 1, 5 do
+            local prof = profs[k]
+            local ok, name, _, _, _, numSpells, spellOffset
+            if prof then ok, name, _, _, _, numSpells, spellOffset = pcall(GetProfessionInfo, prof) end
+            if ok and name and numSpells and spellOffset then
+                for i = 1, numSpells do addSlot(spellOffset + i, name, bookType) end
             end
         end
     end

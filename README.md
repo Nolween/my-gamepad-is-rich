@@ -5,7 +5,7 @@ Support des boutons supplémentaires des manettes (palettes arrière, gâchettes
 - jusqu'à **6 boutons supplémentaires**, nommés selon la manette choisie (L5 / R5 / L4 / R4 d'une GameSir G7 Pro, P1 à P4 d'une Xbox Elite…) ; les emplacements que la manette n'utilise pas restent libres ;
 - chaque bouton peut être :
   - **Modificateur** — maintenu, comme LT/RT : bouton + A / B / X / Y / croix = 8 nouvelles combinaisons ;
-  - **Bouton simple** — une action, une autre avec LT maintenu, une autre avec RT maintenu (une couche vide reprend l'action « Seul ») ;
+  - **Bouton simple** — une action, une autre avec LT maintenu, une autre avec RT maintenu (une couche vide ne fait rien) ;
   - **Désactivé**.
 - **Paires** : deux modificateurs quelconques (boutons supplémentaires ou boutons de base : L5 + R5, LT + RT, L5 + LT, LB + RT...) maintenus ensemble donnent 8 combinaisons de plus. On coche celles qu'on veut dans l'onglet Boutons ; par défaut, les paires gauche + droite (emplacements 1 + 2, 3 + 4, 5 + 6, LT + RT, LB + RB).
 - **Boutons de base LT, RT, LB, RB** (au choix, par profil) : chacun peut devenir modificateur, cible alliée / ennemie ou bouton simple. Voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb).

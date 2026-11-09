@@ -12,6 +12,7 @@ ns.WhatsNew = W
 -- plus ancienne (clé du texte dans les Locales). Une note par version
 -- publiée : la 1.1.0 reprend tout ce qui a changé depuis la 1.0.0.
 local NOTES = {
+    { version = "1.1.1", text = "WHATSNEW_1_1_1" },
     { version = "1.1.0", text = "WHATSNEW_1_1_0" },
 }
 

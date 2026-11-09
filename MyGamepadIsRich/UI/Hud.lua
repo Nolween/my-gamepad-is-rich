@@ -783,7 +783,8 @@ local function MirrorNative(t, native)
     SetEdge(t, ((ok and pressed) or (alert and alert:IsShown())) and GOLD_EDGE or DIM_EDGE)
 end
 
--- Une case qui montre une de nos actions (dim : couche vide qui reprend « Seul »)
+-- Une case qui montre une de nos actions (dim : couche LT / RT vide d'un
+-- bouton simple dont la commande WoW « Seul » part quand même)
 local function MirrorAction(t, action, dim, lit)
     t.native, t.action = nil, action
     SetEdge(t, lit and GOLD_EDGE or DIM_EDGE)
@@ -1344,22 +1345,25 @@ local function Update(pu)
 
     -- Boutons simples : l'action de la couche que la gâchette choisit
     -- (comme Simple.lua : LT d'abord), ou celle choisie à la souris
-    -- (une couche de modificateur affichée : sa case pour ce bouton simple ;
-    -- vide, le bouton garde son action habituelle, montrée estompée)
-    local held = lt and "lt" or (rt and "rt" or nil)
+    -- (une couche de modificateur affichée : sa case pour ce bouton simple).
+    -- Une couche vide ne fait rien et reste vide, sauf une commande WoW
+    -- seule : liée directement, elle part aussi avec LT / RT (estompée)
     local modView = view.mod
     for _, p in ipairs(paddles) do
         if p:IsShown() and p.id then
-            local layers = ns.ButtonActions(p.id).layers
+            local actions = ns.ButtonActions(p.id)
+            local layers = actions.layers
+            -- (LT / RT en bouton simple ne lisent pas leur propre gâchette)
+            local held = (lt and p.id ~= "LT") and "lt" or ((rt and p.id ~= "RT") and "rt" or nil)
             local layer = held or paddleView[p.id] or "base"
-            local own = modView and ns.ButtonActions(modView).combos[p.id]
-            if own then
-                MirrorAction(p, own, false, pressed[p.id])
+            if modView then
+                MirrorAction(p, ns.ButtonActions(modView).combos[p.id], false, pressed[p.id])
                 p:SetAlpha(1)
             else
                 local action = layers[layer]
-                local fallback = (not action and layer ~= "base") or modView ~= nil
-                MirrorAction(p, action or layers.base, fallback, pressed[p.id])
+                local fallback = not action and layer ~= "base" and ns.Actions.IsCommand(layers.base)
+                    and ns.Simple.CommandAllowed(actions, "base")
+                MirrorAction(p, action or (fallback and layers.base or nil), fallback, pressed[p.id])
                 p:SetAlpha((mod and not modView) and 0.5 or 1)
             end
             p.target = modView and { combo = modView, key = p.id } or { layer = layer, id = p.id }

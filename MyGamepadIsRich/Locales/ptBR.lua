@@ -16,7 +16,7 @@ ns.AddLocale("ptBR", {
     MODE_SIMPLE = "Botão simples",
     MODE_OFF = "Desativado",
     MODE_MODIFIER_DESC = "Segure este botão e aperte A, B, X, Y ou o direcional: 8 novas combinações, como LT/RT.",
-    MODE_SIMPLE_DESC = "Uma ação, mais uma com LT segurado e outra com RT segurado. Uma camada vazia usa a ação \"Sozinho\".",
+    MODE_SIMPLE_DESC = "Uma ação, mais uma com LT segurado e outra com RT segurado. Uma camada vazia não faz nada.",
     MODE_OFF_DESC = "Este botão não faz nada: a tecla fica livre.",
     LAYER_BASE = "Sozinho",
     LAYER_LT = "LT +",
@@ -494,5 +494,6 @@ ns.AddLocale("ptBR", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("ptBR", {
+    WHATSNEW_1_1_1 = "• Botão simples: uma camada vazia (LT, RT ou um modificador) agora não faz nada e fica vazia no HUD, em vez de usar a ação \"Sozinho\". Única exceção: um comando do WoW colocado em \"Sozinho\".\n• A lista de feitiços agora inclui os feitiços de profissão: Encontrar Ervas, Encontrar Minérios, Pesca, Culinária, Arqueologia…",
     WHATSNEW_1_1_0 = "• HUD: as ações do addon aparecem como nas barras do jogo. Vermelhas fora de alcance, azuis sem recurso suficiente, cinza quando inutilizáveis, borda dourada durante um proc, cargas restantes, acesas enquanto ativas (ataque automático, forma...).\n• HUD: a ordem das miniaturas das camadas pode ser escolhida (setas da aba HUD, ou arraste uma miniatura sobre outra).\n• Cada especialização tem suas próprias ações. Uma nova especialização começa com uma cópia das ações da anterior.\n• Aba Ações: \"Preencher espaços vazios\" coloca a pedra de regresso, os berloques e os consumíveis das bolsas numa camada de modificador, e \"Copiar / trocar…\" copia uma camada de combinações para outra, ou troca duas camadas.\n• Modelos de classe: salve suas ações para a conta inteira e carregue-as em outro personagem da mesma classe (\"Modelos e especializações…\" abaixo da lista de camadas). Você também pode copiar as ações de outra especialização.\n• Modificador travável (aba Botões): um toque ativa a camada, o seguinte a desativa.\n• /mgir reset pede confirmação, e /mgir undo volta atrás depois de zerar, de um modelo ou de uma cópia de especialização ou de camada.\n• Perfis: opção \"Lembrar o perfil de cada personagem\".\n• Camadas travadas: um botão básico dado ao addon fica com quem recebeu o aperto até ser solto, e o Forever não fica mais preso na barra RT (ou LT), por exemplo depois de um feitiço lançado com RT + A como um selo de paladino.\n• Veículos, barras de substituição e batalhas de mascotes: o addon sai do caminho e os botões do jogo funcionam, também em combate.\n• Não precisa mais de /mgir restore antes de desativar o addon: a cada saída, LT e LB recuperam a imitação de Shift / Ctrl, e o addon a corta de novo ao entrar.\n• Detectar recusa A, B, X, Y, o direcional e LT, RT, LB, RB (apertados por engano, virariam a tecla de um botão extra).\n• Aba Teste do controle: \"Copiar um relatório\" (com o registro recente das camadas), para enviar e ajudar a confirmar outros controles. /mgir etat mostra o estado das camadas.\n• /mgir news: rever esta janela.",
 })

@@ -1,5 +1,15 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.1
+
+### Boutons simples
+- Une couche vide (LT, RT, un modificateur, une paire ou une cible) ne fait plus rien, au lieu de reprendre l'action « Seul ». Le HUD la montre vide, au lieu de l'icône de « Seul » en gris.
+- Seule exception : une commande WoW posée sur « Seul » (Course automatique…) part aussi avec LT ou RT tenu, car elle est liée directement à la touche ; le HUD la montre alors en gris.
+- HUD : LT ou RT réglé en bouton simple affiche bien sa couche « Seul » quand on appuie dessus.
+
+### Actions
+- La liste des sorts contient aussi les sorts de métier : Découverte d'herbes, Découverte de gisements, Pêche, Cuisine, Archéologie, et les sorts qui ouvrent la fenêtre d'un métier.
+
 ## 1.1.0
 
 Tout ce qui a changé depuis la 1.0.0. Au premier lancement après la mise à jour, la fenêtre « Nouveautés » le résume (`/mgir news` pour la revoir).

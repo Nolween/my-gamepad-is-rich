@@ -92,8 +92,8 @@ local DISPATCH = [[
             self:SetBindingClick(true, key, noop, "LeftButton")
         end
     end
-    -- (les boutons simples : leur case dans cette couche, si elle est
-    -- remplie ; sinon le bouton simple garde son action habituelle)
+    -- (les boutons simples : leur case dans cette couche ; vide, le bouton
+    -- ne fait rien tant que la couche est tenue)
     for j = 1, self:GetAttribute("skcount") or 0 do
         local sid, key = self:GetAttribute("skid-" .. j), self:GetAttribute("skkey-" .. j)
         local click = sid and self:GetAttribute("click-" .. layer .. "-" .. sid)
@@ -102,6 +102,8 @@ local DISPATCH = [[
             self:SetBindingClick(true, key, click, "LeftButton")
         elseif key and cmd then
             self:SetBinding(true, key, cmd)
+        elseif key and noop then
+            self:SetBindingClick(true, key, noop, "LeftButton")
         end
     end
 ]]

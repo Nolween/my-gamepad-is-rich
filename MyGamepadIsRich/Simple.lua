@@ -1,6 +1,7 @@
 -- Mode Bouton simple : la touche du bouton lance une action, une autre si LT
--- est maintenu, une autre si RT est maintenu. Une couche vide reprend
--- l'action « Seul ». Les gâchettes sont lues dans le code sécurisé
+-- est maintenu, une autre si RT est maintenu. Une couche vide ne fait rien
+-- (sauf une commande WoW seule, liée directement à la touche : elle part
+-- aussi avec LT / RT). Les gâchettes sont lues dans le code sécurisé
 -- (GetGamePadState, comme Improved Forever), donc ça marche en combat.
 local _, ns = ...
 
@@ -16,9 +17,9 @@ local PRECLICK = [[
     local pad = state and state.buttons
     if pad then
         local lt, rt = self:GetAttribute("gps-lt"), self:GetAttribute("gps-rt")
-        if lt and pad[lt] and self:GetAttribute("has-lt") then
+        if lt and pad[lt] then
             layer = "lt"
-        elseif rt and pad[rt] and self:GetAttribute("has-rt") then
+        elseif rt and pad[rt] then
             layer = "rt"
         end
     end
@@ -85,14 +86,6 @@ function S.Prepare(id, actions, onDown)
         b:SetAttribute(layer .. "-macrotext", text)
         b:SetAttribute("has-" .. layer, (macro or text) and true or nil)
         if macro or text then any = true end
-    end
-    -- (une couche LT/RT vide reprend « Seul »)
-    for _, layer in ipairs({ "lt", "rt" }) do
-        if not b:GetAttribute("has-" .. layer) and b:GetAttribute("has-base") then
-            b:SetAttribute(layer .. "-macro", b:GetAttribute("base-macro"))
-            b:SetAttribute(layer .. "-macrotext", b:GetAttribute("base-macrotext"))
-            b:SetAttribute("has-" .. layer, true)
-        end
     end
     if any then return b:GetName() end
 end

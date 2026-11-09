@@ -16,7 +16,7 @@ ns.AddLocale("enUS", {
     MODE_SIMPLE = "Simple button",
     MODE_OFF = "Disabled",
     MODE_MODIFIER_DESC = "Hold this button and press A, B, X, Y or the D-pad: 8 new combos, like LT/RT.",
-    MODE_SIMPLE_DESC = "One action, plus one with LT held and one with RT held. An empty layer uses the \"Alone\" action.",
+    MODE_SIMPLE_DESC = "One action, plus one with LT held and one with RT held. An empty layer does nothing.",
     MODE_OFF_DESC = "This button does nothing: its key is left free.",
     LAYER_BASE = "Alone",
     LAYER_LT = "LT +",
@@ -495,5 +495,6 @@ ns.AddLocale("enUS", {
 
 -- 1.1.0 : notes de version (tout ce qui a changé depuis la 1.0.0)
 ns.AddLocale("enUS", {
+    WHATSNEW_1_1_1 = "• Simple button: an empty layer (LT, RT or a modifier) now does nothing and stays empty on the HUD, instead of using the \"Alone\" action. Only exception: a WoW command set on \"Alone\".\n• The spell list now includes profession spells: Find Herbs, Find Minerals, Fishing, Cooking, Archaeology…",
     WHATSNEW_1_1_0 = "• HUD: the addon's actions look like the game's bars. Red out of range, blue without enough resource, grey when unusable, golden edge during a proc, remaining charges, lit while active (auto attack, form...).\n• HUD: choose the order of the layer miniatures (arrows in the HUD tab, or drag a miniature onto another one).\n• Each specialization has its own actions. A new spec starts with a copy of the previous one's actions.\n• Actions tab: \"Fill empty slots\" places your hearthstone, trinkets and bag consumables on a modifier layer, and \"Copy / swap...\" copies a combo layer to another one, or swaps two layers.\n• Class templates: save your actions for the whole account, then load them on another character of the same class (\"Templates and specs...\" under the layer list). You can also copy the actions of another specialization.\n• Latching modifier (Buttons tab): one press turns the layer on, the next press turns it off.\n• /mgir reset asks for confirmation, and /mgir undo goes back after a reset, a template, a spec copy or a layer copy.\n• Profiles: \"Remember each character's profile\" option.\n• Stuck layers: a base button given to the addon stays with whoever got the press until it is released, and Forever no longer stays stuck on its RT (or LT) bar, for example after a spell cast with RT + A such as a paladin seal.\n• Vehicles, override bars and pet battles: the addon steps aside and the game's buttons work, in combat too.\n• No more /mgir restore before disabling the addon: on every logout, LT and LB get their Shift / Ctrl imitation back, and the addon cuts it again on login.\n• Detect refuses A, B, X, Y, the D-pad and LT, RT, LB, RB (pressed by mistake, they would become an extra button's key).\n• Controller test tab: \"Copy a report\" (with the recent layer log), to send and help confirm other controllers. /mgir etat shows the state of the layers.\n• /mgir news: show this window again.",
 })
