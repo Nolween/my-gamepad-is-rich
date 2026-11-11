@@ -64,8 +64,43 @@ function D.State()
     local tap = ns.Modifier.TapMode()
     Line("ciblage, appui bref", tap == "clock" and "le plus proche puis le suivant (horloge)"
         or tap == "timer" and "le plus proche puis le suivant (minuteur)"
+        or tap == "watch" and "le plus proche puis le suivant (surveillance d'unité, et stick au relâchement)"
+        or tap == "stick" and "le plus proche puis le suivant, sauf stick incliné au relâchement"
         or tap == "safe" and "seulement sans cible valide (ni horloge ni minuteur)"
         or "? (à vérifier hors combat)")
+    -- (le code protégé peut-il lire la manette : boutons, sticks ?)
+    if not InCombatLockdown() and SecureHandlerExecute then
+        local probe = D.padProbe or CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate")
+        D.padProbe = probe
+        local ok = pcall(SecureHandlerExecute, probe, [[
+            local state = GetGamePadState and GetGamePadState()
+            self:SetAttribute("gps-pad", state and 1 or 0)
+            self:SetAttribute("gps-sticks", state and state.sticks and 1 or 0)
+        ]])
+        Line("manette lue par le code protégé", ok and (S(probe:GetAttribute("gps-pad") == 1)
+            .. ", sticks " .. S(probe:GetAttribute("gps-sticks") == 1)) or "erreur")
+    end
+    -- (les sticks : nom de configuration et position, pour la visée)
+    local api = C_GamePad
+    if type(api) == "table" and api.GetDeviceMappedState and api.GetActiveDeviceID then
+        local okID, devID = pcall(api.GetActiveDeviceID)
+        local ok, state = pcall(api.GetDeviceMappedState, okID and devID or nil)
+        if ok and type(state) == "table" and type(state.sticks) == "table" then
+            local parts = {}
+            for i, s in ipairs(state.sticks) do
+                local okName, name = pcall(api.StickIndexToConfigName or error, i - 1)
+                local x = type(s) == "table" and tonumber(s.x) or 0
+                local y = type(s) == "table" and tonumber(s.y) or 0
+                local len = type(s) == "table" and tonumber(s.len)
+                parts[#parts + 1] = ("%d:%s(%.2f,%.2f,%s)"):format(i, okName and S(name) or "?", x, y,
+                    len and ("%.2f"):format(len) or "-")
+            end
+            Line("sticks", table.concat(parts, " "))
+        else
+            Line("sticks", "?")
+        end
+    end
+    Line("stick droit lu pour la visée", S(ns.Focus.RightStick and ns.Focus.RightStick()))
     Line("A est lié à", S(GetBindingAction("PAD1", true)))
     for _, id in ipairs(ns.PAD_IDS) do
         Line(id .. " est lié à", Binding(ns.PAD_KEY[id]))
@@ -127,12 +162,22 @@ end)
 watcher:RegisterEvent("PLAYER_LOGIN")
 watcher:RegisterEvent("PLAYER_REGEN_DISABLED")
 watcher:RegisterEvent("PLAYER_REGEN_ENABLED")
+-- (la cible : pour voir si l'appui bref d'un bouton de ciblage la change)
+watcher:RegisterEvent("PLAYER_TARGET_CHANGED")
 watcher:SetScript("OnEvent", function(_, event)
     if event == "PLAYER_LOGIN" then
         Log("== connexion " .. ns.Version())
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        local okName, name = pcall(UnitName, "target")
+        local okFriend, friend = pcall(UnitIsFriend, "player", "target")
+        local okPlayer, isPlayer = pcall(UnitIsPlayer, "target")
+        Log("cible " .. (okName and S(name) or "?") .. " ami=" .. (okFriend and S(friend) or "?")
+            .. " joueur=" .. (okPlayer and S(isPlayer) or "?"))
     else
         Log("event " .. event)
     end
 end)
 
-ns.OnApplied(function(waiting) Log(waiting and "apply (après le combat)" or "apply") end)
+ns.OnApplied(function(waiting)
+    Log(waiting and "apply (après le combat)" or ("apply, appui bref : " .. S(ns.Modifier.TapMode and ns.Modifier.TapMode())))
+end)

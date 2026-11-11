@@ -520,5 +520,5 @@ ns.AddLocale("ptBR", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("ptBR", {
-    WHATSNEW_1_1_6 = "• Marcas de raide nas ações básicas: \"Marcação rápida\" coloca a próxima marca no seu alvo a cada toque (caveira, xis, quadrado, lua, triângulo, losango, círculo, estrela), cada uma das 8 marcas e \"Remover a marca\".\n• \"Selecionar a si mesmo\" nas ações básicas.\n• A dica de um feitiço mostra a classe dele.\n• Alvo aliado / inimigo: um toque rápido passa com mais segurança ao próximo alvo (a mira com o analógico agora começa após 0,3 s).",
+    WHATSNEW_1_1_6 = "• Marcas de raide nas ações básicas: \"Marcação rápida\" coloca a próxima marca no seu alvo a cada toque (caveira, xis, quadrado, lua, triângulo, losango, círculo, estrela), cada uma das 8 marcas e \"Remover a marca\".\n• \"Selecionar a si mesmo\" nas ações básicas.\n• A dica de um feitiço mostra a classe dele.\n• Alvo aliado / inimigo: cada toque rápido agora passa ao próximo alvo, também no Forever, e a mira com o analógico direito responde na hora. O alvo mirado fica se o analógico ainda estiver inclinado ao soltar o botão, ou depois de um toque segurado.",
 })

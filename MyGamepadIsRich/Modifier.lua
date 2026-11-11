@@ -398,6 +398,8 @@ local TARGET_CLICK = [[
     local id = self:GetAttribute("gps-id")
     if not (disp and id) then return false end
     local timer = self:GetAttribute("gps-hold") and self:GetFrameRef("gps-timer")
+    local passes = self:GetAttribute("gps-watch")
+    local counter = passes and self:GetFrameRef("gps-counter")
     if down then
         if not disp:GetAttribute("held-" .. id) then
             local o = (disp:GetAttribute("order") or 0) + 1
@@ -409,6 +411,15 @@ local TARGET_CLICK = [[
                 timer:Show()
                 timer:RegisterAutoHide(self:GetAttribute("gps-hold"))
             end
+            -- (compteur de passages remis à zéro, puis lancé)
+            if counter then
+                counter:SetAttribute("gps-armed", nil)
+                counter:Hide()
+                counter:SetAttribute("gps-count", 0)
+                counter:SetAttribute("gps-n", passes)
+                counter:SetAttribute("gps-armed", true)
+                counter:Show()
+            end
         end
         -- (rien ne part à l'appui : le bouton n'agit qu'au relâchement)
         return
@@ -416,6 +427,22 @@ local TARGET_CLICK = [[
     -- (minuteur déjà caché par le jeu : l'appui a duré)
     local long = timer and not timer:IsShown()
     if timer then timer:Hide() end
+    -- (surveillance d'unité : assez de passages comptés, l'appui a duré)
+    if counter then
+        if (counter:GetAttribute("gps-count") or 0) >= passes then long = true end
+        counter:SetAttribute("gps-armed", nil)
+    end
+    -- (stick droit incliné au relâchement : on visait, la cible reste)
+    local rs = self:GetAttribute("gps-rstick")
+    if rs and GetGamePadState then
+        local state = GetGamePadState()
+        local sticks = type(state) == "table" and state.sticks
+        local s = type(sticks) == "table" and sticks[rs]
+        if type(s) == "table" then
+            local x, y = type(s.x) == "number" and s.x or 0, type(s.y) == "number" and s.y or 0
+            if x * x + y * y > 0.0625 then long = true end
+        end
+    end
     disp:SetAttribute("held-" .. id, nil)
     if disp:GetAttribute("comboused") then return false end
     -- (maintenu : la cible a été visée au stick, elle reste)
@@ -493,15 +520,124 @@ local function TimerWorks()
     return timerWorks
 end
 
+-- Sans horloge ni minuteur : la surveillance d'unité du jeu (ce qui montre
+-- et cache les cadres de groupe, combat compris). À chaque passage (environ
+-- 0,1 à 0,2 s, mesuré au chargement), elle cache un cadre surveillé dont
+-- l'unité n'existe pas (« none »). Un seul cadre protégé par bouton, qui
+-- compte les passages : caché par le jeu, il ajoute 1 à « gps-count » et se
+-- remontre, jusqu'à « gps-n » passages (un cadre ne peut être caché qu'une
+-- fois par passage : le compte est juste). Au relâchement, « gps-n »
+-- passages comptés = au moins TAP_SECONDS : appui maintenu.
+local WATCH_HIDE = [[
+    if not self:GetAttribute("gps-armed") then return end
+    local c = (self:GetAttribute("gps-count") or 0) + 1
+    self:SetAttribute("gps-count", c)
+    if c < (self:GetAttribute("gps-n") or 1) then
+        self:Show()
+    else
+        self:SetAttribute("gps-armed", nil)
+    end
+]]
+local watchPeriod -- (durée d'un passage de la surveillance, mesurée)
+
+-- Le nombre de passages à compter : au moins TAP_SECONDS de maintien (le
+-- premier passage arrive entre 0 et une période après l'appui)
+local function WatchPasses()
+    local period = watchPeriod or 0.1
+    return math.max(2, math.min(12, math.ceil(TAP_SECONDS / period - 0.001) + 1))
+end
+
+local tapWatches = {}
+local function TapWatch(id)
+    local f = tapWatches[id]
+    if f then return f end
+    f = CreateFrame("Frame", "MyGamepadIsRichWatch" .. id, UIParent, "SecureHandlerBaseTemplate")
+    f:SetSize(1, 1)
+    f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -20, 20)
+    f:SetAttribute("unit", "none")
+    f:Hide()
+    SecureHandlerWrapScript(f, "OnHide", f, WATCH_HIDE)
+    RegisterUnitWatch(f)
+    tapWatches[id] = f
+    return f
+end
+
+-- La surveillance d'unité cache-t-elle le cadre à chaque passage, et à quel
+-- rythme ? Vérifié une fois, hors combat : le cadre montré, armé pour 3
+-- passages ; une seconde plus tard, il doit avoir été caché 3 fois
+local watchWorks
+local function WatchWorks()
+    if watchWorks == nil and not InCombatLockdown() and RegisterUnitWatch then
+        local ok, f = pcall(TapWatch, "Probe")
+        if not ok then
+            watchWorks = false
+            return watchWorks
+        end
+        local hides = {}
+        f:HookScript("OnHide", function() hides[#hides + 1] = GetTime() end)
+        local okRun = pcall(function()
+            f:SetAttribute("gps-armed", nil)
+            f:Hide()
+            wipe(hides)
+            f:SetAttribute("gps-count", 0)
+            f:SetAttribute("gps-n", 3)
+            f:SetAttribute("gps-armed", true)
+            f:Show()
+        end)
+        watchWorks = okRun and f:IsShown() or false
+        if watchWorks then
+            C_Timer.After(1, function()
+                local count = f:GetAttribute("gps-count") or 0
+                if count >= 3 and #hides >= 3 and hides[3] > hides[1] then
+                    local period = (hides[3] - hides[1]) / 2
+                    if period >= 0.02 and period <= 0.6 then watchPeriod = period end
+                    if ns.Diag then
+                        ns.Diag.Log(("surveillance d'unité : passage %.2f s, %d passages"):format(period, WatchPasses()))
+                    end
+                else
+                    watchWorks = false
+                    if ns.Diag then
+                        ns.Diag.Log(("surveillance d'unité : %d passage(s) compté(s) sur 3"):format(count))
+                    end
+                end
+                -- (refait les boutons de ciblage : rythme mesuré, ou autre mode)
+                ns.Apply(true)
+            end)
+        end
+    end
+    return watchWorks
+end
+
+-- Le code protégé lit-il la manette (GetGamePadState, sticks compris) ?
+-- Vérifié une fois, hors combat
+local securePad
+local function SecurePad()
+    if securePad == nil and not InCombatLockdown() then
+        local probe = CreateFrame("Frame", nil, UIParent, "SecureHandlerBaseTemplate")
+        local ok = pcall(SecureHandlerExecute, probe, [[
+            local state = GetGamePadState and GetGamePadState()
+            self:SetAttribute("gps-sticks", type(state) == "table" and type(state.sticks) == "table" and 1 or nil)
+        ]])
+        securePad = ok and probe:GetAttribute("gps-sticks") == 1
+    end
+    return securePad
+end
+
 -- Comment un appui bref est reconnu : "clock" (horloge du code sécurisé),
--- "timer" (minuteur), "safe" (aucun : reciblage seulement sans cible
--- valide), ou nil (pas encore vérifié, en combat)
+-- "timer" (minuteur), "watch" (surveillance d'unité), "stick" (seulement le
+-- stick droit au relâchement), "safe" (aucun : reciblage seulement sans
+-- cible valide), ou nil (pas encore vérifié, en combat). Avec "watch" et
+-- "stick", le stick droit incliné au relâchement garde aussi la cible.
 function M.TapMode()
     local clock = SecureClock()
     if clock then return "clock" end
     local timer = TimerWorks()
     if timer then return "timer" end
-    if clock == nil or timer == nil then return nil end
+    local watch = WatchWorks()
+    if watch then return "watch" end
+    local pad = SecurePad()
+    if pad then return "stick" end
+    if clock == nil or timer == nil or watch == nil or pad == nil then return nil end
     return "safe"
 end
 
@@ -537,6 +673,34 @@ function EngineTargeting(mode)
     end
 end
 
+-- La visée au stick d'un bouton de ciblage tenu seul : allumée dès que le
+-- stick droit est incliné (pas de délai), ou au bout de TAP_SECONDS si le
+-- jeu ne donne pas le stick. Un appui bref sans toucher au stick ne
+-- l'allume pas : la cible suivante est prise au relâchement.
+local AIM_DEADZONE = 0.25
+local aimFrame = CreateFrame("Frame")
+aimFrame:Hide()
+local aiming -- { id, press, current, mode, since }
+aimFrame:SetScript("OnUpdate", function(self)
+    local a = aiming
+    if not a or a.current() ~= a.press or engineOwner ~= a.id or not held[a.id] then
+        aiming = nil
+        self:Hide()
+        return
+    end
+    local tilt = ns.Focus and ns.Focus.RightStick and ns.Focus.RightStick()
+    if (tilt and tilt > AIM_DEADZONE) or (not tilt and GetTime() - a.since >= TAP_SECONDS) then
+        aiming = nil
+        self:Hide()
+        EngineTargeting(a.mode)
+    end
+end)
+
+local function StartAim(id, press, current, mode)
+    aiming = { id = id, press = press, current = current, mode = mode, since = GetTime() }
+    aimFrame:Show()
+end
+
 local targeters = {}
 local function Targeter(id)
     local b = targeters[id]
@@ -569,10 +733,7 @@ local function Targeter(id)
             if alone then
                 engineOwner = id
                 presses = presses + 1
-                local press, mode = presses, self.targetMode
-                C_Timer.After(TAP_SECONDS, function()
-                    if press == presses and engineOwner == id and held[id] then EngineTargeting(mode) end
-                end)
+                StartAim(id, presses, function() return presses end, self.targetMode)
             end
         else
             SetHeld(id, false)
@@ -597,10 +758,21 @@ function M.SetupTargeting(owner, id, def, actions, onDown)
         t:Hide()
         SecureHandlerSetFrameRef(b, "gps-timer", t)
     end
+    local passes
+    if mode == "watch" then
+        passes = WatchPasses()
+        SecureHandlerSetFrameRef(b, "gps-counter", TapWatch(id))
+    end
+    -- (le stick droit lu au relâchement : sa place dans l'état de la manette)
+    local rstick = (mode == "watch" or mode == "stick") and ns.Focus and ns.Focus.RightStickIndex
+        and ns.Focus.RightStickIndex()
+    b:SetAttribute("gps-rstick", rstick or nil)
     b:SetAttribute("gps-hold", mode == "timer" and TAP_SECONDS or nil)
     b:SetAttribute("gps-tap", mode == "clock" and TAP_SECONDS or nil)
+    b:SetAttribute("gps-watch", passes)
     b:SetAttribute("gps-since", nil)
-    b:SetAttribute("macrotext", ((mode == "clock" or mode == "timer") and TARGET_MACRO or TARGET_MACRO_SAFE)[def.mode])
+    local measured = mode == "clock" or mode == "timer" or mode == "watch" or mode == "stick"
+    b:SetAttribute("macrotext", (measured and TARGET_MACRO or TARGET_MACRO_SAFE)[def.mode])
     count = count + 1
     Write("id" .. count, id)
     disp:SetAttribute("count", count)

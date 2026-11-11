@@ -521,5 +521,5 @@ ns.AddLocale("enUS", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("enUS", {
-    WHATSNEW_1_1_6 = "• Raid markers in the basic actions: \"Quick marking\" puts the next marker on your target at each press (skull, cross, square, moon, triangle, diamond, circle, star), each of the 8 markers, and \"Remove the marker\".\n• \"Target yourself\" in the basic actions.\n• A spell's tooltip shows its rank.\n• Friendly / enemy target: a short press moves to the next target more reliably (aiming with the stick now starts after 0.3 s).",
+    WHATSNEW_1_1_6 = "• Raid markers in the basic actions: \"Quick marking\" puts the next marker on your target at each press (skull, cross, square, moon, triangle, diamond, circle, star), each of the 8 markers, and \"Remove the marker\".\n• \"Target yourself\" in the basic actions.\n• A spell's tooltip shows its rank.\n• Friendly / enemy target: each short press now moves to the next target in Forever too, and aiming with the right stick responds right away. The target you aimed at stays if the stick is still tilted when you release the button, or after a long press.",
 })

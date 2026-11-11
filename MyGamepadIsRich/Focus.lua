@@ -56,6 +56,63 @@ local function PadButtons()
     end
 end
 
+-- Le stick droit : son inclinaison (0 au centre, 1 au bord), ou nil si le
+-- jeu ne la donne pas. Sa place dans l'état de la manette vient du nom de
+-- configuration de chaque stick (« Right »...), sinon la 2e place
+local rightStick
+local function RightStickIndex(count)
+    if rightStick ~= nil then return rightStick or nil end
+    rightStick = false
+    local api = C_GamePad
+    if type(api) == "table" and api.StickIndexToConfigName then
+        for i = 1, count do
+            local ok, name = pcall(api.StickIndexToConfigName, i - 1)
+            if ok and type(name) == "string" then
+                local n = name:lower()
+                if n:find("right") or n:find("rstick") or n:find("camera") or n:find("look") then
+                    rightStick = i
+                    break
+                end
+            end
+        end
+    end
+    if not rightStick and count >= 2 then rightStick = 2 end
+    return rightStick or nil
+end
+
+-- La place du stick droit dans l'état de la manette (aussi celle de
+-- GetGamePadState, lu par le code protégé), ou nil
+function F.RightStickIndex()
+    local api = C_GamePad
+    if not (type(api) == "table" and api.GetDeviceMappedState and api.GetActiveDeviceID) then return nil end
+    local okID, id = pcall(api.GetActiveDeviceID)
+    local ok, state = pcall(api.GetDeviceMappedState, okID and id or nil)
+    local sticks = ok and type(state) == "table" and state.sticks
+    if type(sticks) ~= "table" then return rightStick or nil end
+    return RightStickIndex(#sticks)
+end
+
+function F.RightStick()
+    local api = C_GamePad
+    if not (type(api) == "table" and api.GetDeviceMappedState) then return nil end
+    for _, getID in ipairs({ api.GetActiveDeviceID, api.GetCombinedDeviceID }) do
+        local okID, id = pcall(getID or error)
+        if okID and id then
+            local ok, state = pcall(api.GetDeviceMappedState, id)
+            local sticks = ok and type(state) == "table" and state.sticks
+            if type(sticks) == "table" then
+                local i = RightStickIndex(#sticks)
+                local s = i and sticks[i]
+                if type(s) == "table" then
+                    local x, y = tonumber(s.x) or 0, tonumber(s.y) or 0
+                    return tonumber(s.len) or math.sqrt(x * x + y * y)
+                end
+                return nil
+            end
+        end
+    end
+end
+
 function F.PadsDown()
     local buttons = PadButtons()
     if not buttons then return nil end

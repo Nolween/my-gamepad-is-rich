@@ -520,5 +520,5 @@ ns.AddLocale("itIT", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("itIT", {
-    WHATSNEW_1_1_6 = "• Segni di incursione nelle azioni di base: «Marcatura rapida» mette il segno successivo sul bersaglio a ogni pressione (teschio, croce, quadrato, luna, triangolo, diamante, cerchio, stella), ognuno degli 8 segni e «Rimuovi il segno».\n• «Selezionare se stessi» nelle azioni di base.\n• Il tooltip di un incantesimo mostra il suo grado.\n• Bersaglio alleato / nemico: una pressione breve passa in modo più affidabile al bersaglio successivo (la mira con lo stick ora inizia dopo 0,3 s).",
+    WHATSNEW_1_1_6 = "• Segni di incursione nelle azioni di base: «Marcatura rapida» mette il segno successivo sul bersaglio a ogni pressione (teschio, croce, quadrato, luna, triangolo, diamante, cerchio, stella), ognuno degli 8 segni e «Rimuovi il segno».\n• «Selezionare se stessi» nelle azioni di base.\n• Il tooltip di un incantesimo mostra il suo grado.\n• Bersaglio alleato / nemico: ogni pressione breve ora passa al bersaglio successivo, anche in Forever, e la mira con lo stick destro risponde subito. Il bersaglio mirato resta se lo stick è ancora inclinato quando rilasci il pulsante, o dopo una pressione prolungata.",
 })

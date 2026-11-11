@@ -520,5 +520,5 @@ ns.AddLocale("esES", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("esES", {
-    WHATSNEW_1_1_6 = "• Marcas de banda en las acciones básicas: «Marcado rápido» pone la siguiente marca en tu objetivo en cada pulsación (calavera, cruz, cuadrado, luna, triángulo, diamante, círculo, estrella), cada una de las 8 marcas y «Quitar la marca».\n• «Seleccionarte a ti mismo» en las acciones básicas.\n• La descripción de un hechizo muestra su rango.\n• Objetivo aliado / enemigo: una pulsación breve pasa con más fiabilidad al siguiente objetivo (apuntar con el stick empieza ahora a los 0,3 s).",
+    WHATSNEW_1_1_6 = "• Marcas de banda en las acciones básicas: «Marcado rápido» pone la siguiente marca en tu objetivo en cada pulsación (calavera, cruz, cuadrado, luna, triángulo, diamante, círculo, estrella), cada una de las 8 marcas y «Quitar la marca».\n• «Seleccionarte a ti mismo» en las acciones básicas.\n• La descripción de un hechizo muestra su rango.\n• Objetivo aliado / enemigo: cada pulsación breve pasa ahora al siguiente objetivo, también en Forever, y apuntar con el stick derecho responde al instante. El objetivo apuntado se queda si el stick sigue inclinado al soltar el botón, o tras una pulsación mantenida.",
 })

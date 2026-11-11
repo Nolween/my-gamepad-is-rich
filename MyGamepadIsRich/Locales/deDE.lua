@@ -520,5 +520,5 @@ ns.AddLocale("deDE", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("deDE", {
-    WHATSNEW_1_1_6 = "• Schlachtzugsmarkierungen in den Grundaktionen: „Schnellmarkierung“ setzt bei jedem Druck die nächste Markierung auf dein Ziel (Totenschädel, Kreuz, Quadrat, Mond, Dreieck, Diamant, Kreis, Stern), dazu jede der 8 Markierungen einzeln und „Markierung entfernen“.\n• „Sich selbst anvisieren“ in den Grundaktionen.\n• Der Tooltip eines Zaubers zeigt seinen Rang.\n• Freundliches / feindliches Ziel: Ein kurzer Druck wechselt zuverlässiger zum nächsten Ziel (das Zielen mit dem Stick beginnt jetzt nach 0,3 s).",
+    WHATSNEW_1_1_6 = "• Schlachtzugsmarkierungen in den Grundaktionen: „Schnellmarkierung“ setzt bei jedem Druck die nächste Markierung auf dein Ziel (Totenschädel, Kreuz, Quadrat, Mond, Dreieck, Diamant, Kreis, Stern), dazu jede der 8 Markierungen einzeln und „Markierung entfernen“.\n• „Sich selbst anvisieren“ in den Grundaktionen.\n• Der Tooltip eines Zaubers zeigt seinen Rang.\n• Freundliches / feindliches Ziel: Jeder kurze Druck wechselt jetzt auch in Forever zum nächsten Ziel, und das Zielen mit dem rechten Stick reagiert sofort. Das anvisierte Ziel bleibt, wenn der Stick beim Loslassen noch geneigt ist, oder nach einem langen Druck.",
 })

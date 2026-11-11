@@ -8,7 +8,12 @@
 - L'info-bulle d'un sort montre son rang (« Rang 3 »), dans l'onglet Actions et dans le HUD : le rang choisi exprès, sinon celui du sort.
 
 ### Corrections
-- **Cible alliée / ennemie** : la visée au stick ne s'allume qu'après 0,3 s de maintien. Allumée dès l'appui, elle choisissait tout de suite la meilleure cible devant soi, et l'appui bref passait ensuite à la suivante de celle-là : souvent toujours la même.
+- **Cible alliée / ennemie dans Forever** : chaque appui bref passe à la cible suivante, même quand on en a déjà une. Forever ne donne au code protégé de l'addon ni horloge ni minuteur : la durée de l'appui est maintenant mesurée avec la surveillance d'unité du jeu (celle des cadres de groupe, combat compris), qui cache un petit cadre protégé à chaque passage ; l'addon compte les passages. Au chargement, il vérifie que ça marche et mesure leur rythme, pour qu'un appui ne compte comme maintenu qu'au-delà d'environ 0,3 s.
+- **La visée au stick droit répond tout de suite** : elle s'allume dès qu'on incline le stick pendant que le bouton est tenu, et seulement alors. Allumée dès l'appui, elle choisissait tout de suite la meilleure cible devant soi, et l'appui bref passait ensuite à la suivante de celle-là, souvent toujours la même.
+- La cible visée reste si le stick droit est encore incliné au relâchement, ou après un appui maintenu. Si la mesure de durée n'est pas possible, seul le stick décide.
+
+### Aide au diagnostic
+- `/mgir etat` dit comment l'appui bref est reconnu (avec la surveillance d'unité, ou le stick seul), si le code protégé lit la manette, et la position de chaque stick. Le journal note les changements de cible.
 
 ## 1.1.5
 

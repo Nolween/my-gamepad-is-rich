@@ -520,5 +520,5 @@ ns.AddLocale("frFR", {
 
 -- Nouveautés de la 1.1.6
 ns.AddLocale("frFR", {
-    WHATSNEW_1_1_6 = "• Marqueurs de raid dans les actions de base : « Marquage rapide » pose le marqueur suivant sur ta cible à chaque appui (crâne, croix, carré, lune, triangle, losange, cercle, étoile), les 8 marqueurs un par un, et « Retirer le marqueur ».\n• « Se cibler soi-même » dans les actions de base.\n• L'info-bulle d'un sort montre son rang.\n• Cible alliée / ennemie : l'appui bref passe plus sûrement à la cible suivante (la visée au stick commence maintenant après 0,3 s).",
+    WHATSNEW_1_1_6 = "• Marqueurs de raid dans les actions de base : « Marquage rapide » pose le marqueur suivant sur ta cible à chaque appui (crâne, croix, carré, lune, triangle, losange, cercle, étoile), les 8 marqueurs un par un, et « Retirer le marqueur ».\n• « Se cibler soi-même » dans les actions de base.\n• L'info-bulle d'un sort montre son rang.\n• Cible alliée / ennemie : chaque appui bref passe maintenant à la cible suivante, aussi dans Forever, et la visée au stick droit répond tout de suite. La cible visée reste si le stick est encore incliné quand tu relâches le bouton, ou après un appui maintenu.",
 })
