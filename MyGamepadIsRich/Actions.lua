@@ -41,7 +41,35 @@ function A.SpellRank(spellID)
     if not spellID then return nil end
     local get = (C_Spell and C_Spell.GetSpellSubtext) or GetSpellSubtext
     local ok, text = pcall(get or error, spellID)
-    if ok and type(text) == "string" and text ~= "" then return text end
+    if ok and type(text) == "string" and not (issecretvalue and issecretvalue(text)) and text ~= "" then return text end
+end
+
+-- Le rang d'un sort dans une info-bulle (« Rang 3 », en gris à droite du
+-- nom, comme le grimoire ; sinon une ligne de plus). action : un sort de
+-- l'addon ({ kind = "spell", id, rank }) ; le rang retenu, sinon celui du sort.
+function A.AddRankToTooltip(tooltip, action)
+    if not (tooltip and action and action.kind == "spell") then return end
+    local rank = action.rank or A.SpellRank(action.id)
+    if type(rank) ~= "string" or rank == "" then return end
+    local right = tooltip.GetName and _G[(tooltip:GetName() or "") .. "TextRight1"]
+    if right then
+        -- (déjà affiché par le jeu : rien à faire ; une valeur cachée par le
+        -- jeu fait échouer la lecture, on ajoute alors une ligne)
+        local ok, state = pcall(function()
+            local text = right:IsShown() and right:GetText()
+            if text == rank then return "same" end
+            if not text or text == "" then return "free" end
+            return "used"
+        end)
+        if ok and state == "same" then return end
+        if ok and state == "free" then
+            right:SetText(rank)
+            right:SetTextColor(0.5, 0.5, 0.5)
+            right:Show()
+            return
+        end
+    end
+    tooltip:AddLine(rank, 0.5, 0.5, 0.5)
 end
 
 local function ItemName(id)
@@ -126,7 +154,22 @@ A.GAME = {
     { id = "search", command = "INTERACTTARGET", icon = "Interface\\Icons\\INV_Misc_Spyglass_02" },
     { id = "attack", text = "/startattack", spell = 6603, icon = "Interface\\Icons\\INV_Sword_04" },
     { id = "interact", command = "INTERACTTARGET", icon = "Interface\\GossipFrame\\GossipGossipIcon" },
+    -- (une macro, pas la commande TARGETSELF : possible sur toutes les cases)
+    { id = "targetself", text = "/target player", icon = "Interface\\Icons\\INV_Misc_Head_Human_01" },
 }
+
+-- Marqueurs de raid sur la cible (/tm, en combat aussi). Le marquage
+-- rapide pose le suivant à chaque appui (crâne, croix, carré...) : la
+-- première ligne de sa macro (A.MARK_QUICK, ignorée par le jeu) le signale
+-- au code sécurisé, qui fait tourner le numéro (Modifier.lua, Simple.lua)
+A.MARK_QUICK = "#mgirmark"
+local MARK_ICON = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_"
+A.GAME[#A.GAME + 1] = { id = "markquick", text = A.MARK_QUICK .. "\n/tm 8", icon = MARK_ICON .. "8" }
+for n = 8, 1, -1 do
+    A.GAME[#A.GAME + 1] = { id = "mark" .. n, text = "/tm " .. n, icon = MARK_ICON .. n, raidTarget = n }
+end
+A.GAME[#A.GAME + 1] = { id = "markclear", text = "/tm 0", icon = "Interface\\Buttons\\UI-StopButton" }
+
 local GAME_BY_ID = {}
 for _, def in ipairs(A.GAME) do GAME_BY_ID[def.id] = def end
 
@@ -214,6 +257,13 @@ function A.Label(action)
     elseif k == "command" then
         return A.CommandLabel(action.command)
     elseif k == "game" then
+        -- (un marqueur : son nom dans le jeu, « Crâne »...)
+        local def = GAME_BY_ID[action.id]
+        if def and def.raidTarget then
+            local name = _G["RAID_TARGET_" .. def.raidTarget]
+            if type(name) ~= "string" or (issecretvalue and issecretvalue(name)) then name = tostring(def.raidTarget) end
+            return L.GAME_mark:format(name)
+        end
         return L["GAME_" .. tostring(action.id)]
     elseif k == "slot" then
         -- (ce que tient un emplacement de la barre du jeu, d'un autre type)

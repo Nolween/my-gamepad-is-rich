@@ -505,3 +505,20 @@ ns.AddLocale("esES", {
     WHATSNEW_1_1_1 = "• Botón simple: una capa vacía (LT, RT o un modificador) ya no hace nada y queda vacía en el HUD, en lugar de usar la acción «Solo». Única excepción: un comando de WoW puesto en «Solo».\n• La lista de hechizos incluye ahora los hechizos de profesión: Buscar hierbas, Buscar minerales, Pesca, Cocina, Arqueología…",
     WHATSNEW_1_1_0 = "• HUD: las acciones del addon se ven como en las barras del juego. Rojas fuera de alcance, azules sin recurso suficiente, grises si no se pueden usar, borde dorado durante un proc, cargas restantes, iluminadas mientras están activas (ataque automático, forma...).\n• HUD: el orden de las miniaturas de las capas se puede elegir (flechas de la pestaña HUD, o arrastrar una miniatura sobre otra).\n• Cada especialización tiene sus propias acciones. Una especialización nueva empieza con una copia de las acciones de la anterior.\n• Pestaña Acciones: «Rellenar casillas vacías» coloca la piedra de hogar, los abalorios y los consumibles de las bolsas en una capa de modificador, y «Copiar / intercambiar…» copia una capa de combinaciones a otra, o intercambia dos capas.\n• Plantillas de clase: guarda tus acciones para toda la cuenta y cárgalas en otro personaje de la misma clase («Plantillas y especializaciones…» bajo la lista de capas). También puedes copiar las acciones de otra especialización.\n• Modificador fijable (pestaña Botones): una pulsación activa la capa, la siguiente la desactiva.\n• /mgir reset pide confirmación, y /mgir undo vuelve atrás tras un reinicio, una plantilla o una copia de especialización o de capa.\n• Perfiles: opción «Recordar el perfil de cada personaje».\n• Capas bloqueadas: un botón básico dado al addon se queda con quien recibió la pulsación hasta que se suelta, y Forever ya no se queda bloqueado en su barra RT (o LT), por ejemplo tras un hechizo lanzado con RT + A como un sello de paladín.\n• Vehículos, barras de reemplazo y duelos de mascotas: el addon se aparta y los botones del juego funcionan, también en combate.\n• Ya no hace falta /mgir restore antes de desactivar el addon: en cada desconexión, LT y LB recuperan su imitación de Mayús / Ctrl, y el addon la vuelve a quitar al conectarse.\n• Detectar rechaza A, B, X, Y, la cruceta y LT, RT, LB, RB (pulsados por error, se convertirían en la tecla de un botón adicional).\n• Pestaña Prueba del mando: «Copiar un informe» (con el registro reciente de las capas), para enviarlo y ayudar a confirmar otros mandos. /mgir etat muestra el estado de las capas.\n• /mgir news: volver a ver esta ventana.",
 })
+
+-- Marqueurs de raid (actions de base)
+ns.AddLocale("esES", {
+    GAME_markquick = "Marcado rápido (siguiente marca en cada pulsación)",
+    GAME_mark = "Marcar: %s",
+    GAME_markclear = "Quitar la marca",
+})
+
+-- Se cibler (action de base)
+ns.AddLocale("esES", {
+    GAME_targetself = "Seleccionarte a ti mismo",
+})
+
+-- Nouveautés de la 1.1.6
+ns.AddLocale("esES", {
+    WHATSNEW_1_1_6 = "• Marcas de banda en las acciones básicas: «Marcado rápido» pone la siguiente marca en tu objetivo en cada pulsación (calavera, cruz, cuadrado, luna, triángulo, diamante, círculo, estrella), cada una de las 8 marcas y «Quitar la marca».\n• «Seleccionarte a ti mismo» en las acciones básicas.\n• La descripción de un hechizo muestra su rango.\n• Objetivo aliado / enemigo: una pulsación breve pasa con más fiabilidad al siguiente objetivo (apuntar con el stick empieza ahora a los 0,3 s).",
+})

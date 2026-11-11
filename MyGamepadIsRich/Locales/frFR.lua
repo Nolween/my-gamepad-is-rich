@@ -505,3 +505,20 @@ ns.AddLocale("frFR", {
     WHATSNEW_1_1_1 = "• Bouton simple : une couche vide (LT, RT ou un modificateur) ne fait plus rien et reste vide sur le HUD, au lieu de reprendre l'action « Seul ». Seule exception : une commande WoW posée sur « Seul ».\n• La liste des sorts contient aussi les sorts de métier : Découverte d'herbes, Découverte de gisements, Pêche, Cuisine, Archéologie…",
     WHATSNEW_1_1_0 = "• HUD : les actions de l'addon s'affichent comme sur les barres du jeu. Rouges hors de portée, bleues sans assez de ressource, grises si inutilisables, bord doré pendant un proc, charges restantes, case allumée pour une action en cours (attaque auto, forme...).\n• HUD : l'ordre des miniatures des couches se choisit (flèches de l'onglet HUD, ou glisser une miniature sur une autre).\n• Chaque spécialisation a ses propres actions. Une nouvelle spé commence avec une copie des actions de la précédente.\n• Onglet Actions : « Remplir les cases vides » pose la pierre de foyer, les bijoux et les consommables des sacs sur une couche de modificateur, et « Copier / échanger… » copie une couche de combinaisons vers une autre, ou échange deux couches.\n• Modèles de classe : enregistre tes actions pour tout le compte, puis reprends-les sur un autre personnage de la même classe (« Modèles et spés… » sous la liste des couches). Tu peux aussi copier les actions d'une autre spécialisation.\n• Modificateur verrouillable (onglet Boutons) : un appui active la couche, l'appui suivant la quitte.\n• /mgir reset demande confirmation, et /mgir undo revient en arrière après une remise à zéro, un modèle, une copie de spé ou de couche.\n• Profils : option « Retenir le profil de chaque personnage ».\n• Couches bloquées : un bouton de base donné à l'addon reste à qui a reçu l'appui jusqu'à son relâchement, et Forever ne reste plus bloqué sur sa barre RT (ou LT), par exemple après un sort lancé avec RT + A comme un sceau de paladin.\n• Véhicules, barres de remplacement et combats de mascottes : l'addon s'efface et les boutons du jeu fonctionnent, en combat aussi.\n• Plus besoin de /mgir restore avant de désactiver l'addon : à chaque déconnexion, LT et LB retrouvent leur imitation de Maj / Ctrl, et l'addon la recoupe à la connexion.\n• Détecter refuse A, B, X, Y, la croix et LT, RT, LB, RB (pressés par erreur, ils deviendraient la touche d'un bouton supplémentaire).\n• Onglet Test manette : « Copier un rapport » (avec le journal récent des couches), à envoyer pour aider à confirmer les autres manettes. /mgir etat montre l'état des couches.\n• /mgir news : revoir cette fenêtre.",
 })
+
+-- Marqueurs de raid (actions de base)
+ns.AddLocale("frFR", {
+    GAME_markquick = "Marquage rapide (marqueur suivant à chaque appui)",
+    GAME_mark = "Marquer : %s",
+    GAME_markclear = "Retirer le marqueur",
+})
+
+-- Se cibler (action de base)
+ns.AddLocale("frFR", {
+    GAME_targetself = "Se cibler soi-même",
+})
+
+-- Nouveautés de la 1.1.6
+ns.AddLocale("frFR", {
+    WHATSNEW_1_1_6 = "• Marqueurs de raid dans les actions de base : « Marquage rapide » pose le marqueur suivant sur ta cible à chaque appui (crâne, croix, carré, lune, triangle, losange, cercle, étoile), les 8 marqueurs un par un, et « Retirer le marqueur ».\n• « Se cibler soi-même » dans les actions de base.\n• L'info-bulle d'un sort montre son rang.\n• Cible alliée / ennemie : l'appui bref passe plus sûrement à la cible suivante (la visée au stick commence maintenant après 0,3 s).",
+})

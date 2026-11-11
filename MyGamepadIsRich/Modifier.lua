@@ -153,6 +153,14 @@ local EDGE = [[
     -- au relâchement)
     local disp = self:GetFrameRef("disp")
     if disp and not disp:GetAttribute("comboused") then disp:SetAttribute("comboused", true) end
+    -- (marquage rapide : le marqueur suivant à chaque appui, crâne, croix,
+    -- carré, lune, triangle, losange, cercle, étoile)
+    local text = self:GetAttribute("macrotext")
+    if type(text) == "string" and text:sub(1, 9) == "#mgirmark" then
+        local n = (self:GetAttribute("gps-mark") or 0) % 8 + 1
+        self:SetAttribute("gps-mark", n)
+        self:SetAttribute("macrotext", "#mgirmark\n/tm " .. (9 - n))
+    end
 ]]
 
 -- Un bouton qui ne fait rien : les cases vides des couches de gâchette
@@ -354,9 +362,9 @@ end
 -- Boutons de ciblage (modes « Ciblage allié » / « Ciblage ennemi »), comme
 -- LB / RB dans Forever (essai) :
 --   appui     : le bouton est tenu (sa couche de 8 raccourcis, comme un
---               modificateur) et le ciblage du moteur s'allume
---               (C_GamepadTargeting : le stick droit vise au lieu de la
---               caméra) ;
+--               modificateur) ; maintenu plus de TAP_SECONDS, le ciblage
+--               du moteur s'allume (C_GamepadTargeting : le stick droit
+--               vise au lieu de la caméra) ;
 --   relâché   : le ciblage du moteur s'éteint ; après un appui bref sans
 --               raccourci, une macro sécurisée cible l'allié / l'ennemi le
 --               plus proche (/targetfriend, /targetenemy). Après un appui
@@ -547,6 +555,10 @@ local function Targeter(id)
     -- bouton est le seul tenu : avec un autre, c'est une paire. Forever
     -- ouvre son action de classe si le ciblage s'allume pendant que LT ou
     -- RT est tenu)
+    -- (et seulement une fois l'appui maintenu : allumé tout de suite, il
+    -- choisirait la meilleure cible devant soi, et l'appui bref passerait
+    -- au suivant de celle-là, toujours le même)
+    local presses = 0
     b:HookScript("OnClick", function(self, _, down)
         if down then
             local alone = true
@@ -556,7 +568,11 @@ local function Targeter(id)
             SetHeld(id, true)
             if alone then
                 engineOwner = id
-                EngineTargeting(self.targetMode)
+                presses = presses + 1
+                local press, mode = presses, self.targetMode
+                C_Timer.After(TAP_SECONDS, function()
+                    if press == presses and engineOwner == id and held[id] then EngineTargeting(mode) end
+                end)
             end
         else
             SetHeld(id, false)

@@ -505,3 +505,20 @@ ns.AddLocale("deDE", {
     WHATSNEW_1_1_1 = "• Einfache Taste: Eine leere Ebene (LT, RT oder ein Modifikator) tut nichts mehr und bleibt im HUD leer, statt die Aktion „Allein“ zu nutzen. Einzige Ausnahme: ein WoW-Befehl auf „Allein“.\n• Die Zauberliste enthält jetzt auch Berufszauber: Kräutersuche, Mineraliensuche, Angeln, Kochkunst, Archäologie…",
     WHATSNEW_1_1_0 = "• HUD: Die Aktionen des Addons sehen aus wie auf den Leisten des Spiels. Rot außer Reichweite, blau ohne genug Ressource, grau wenn unbenutzbar, goldener Rand bei einem Proc, verbleibende Aufladungen, hervorgehoben solange aktiv (automatischer Angriff, Gestalt...).\n• HUD: Die Reihenfolge der Ebenen-Miniaturen ist wählbar (Pfeile im Reiter HUD, oder eine Miniatur auf eine andere ziehen).\n• Jede Spezialisierung hat ihre eigenen Aktionen. Eine neue Spezialisierung beginnt mit einer Kopie der Aktionen der vorherigen.\n• Reiter Aktionen: „Leere Felder füllen“ legt Ruhestein, Schmuckstücke und Verbrauchsgüter aus den Taschen auf eine Modifikator-Ebene, und „Kopieren / tauschen…“ kopiert eine Kombinationsebene auf eine andere oder tauscht zwei Ebenen.\n• Klassenvorlagen: Speichere deine Aktionen für den ganzen Account und lade sie auf einem anderen Charakter derselben Klasse („Vorlagen und Spezialisierungen…“ unter der Ebenenliste). Du kannst auch die Aktionen einer anderen Spezialisierung kopieren.\n• Einrastender Modifikator (Reiter Tasten): Ein Druck schaltet die Ebene ein, der nächste schaltet sie aus.\n• /mgir reset fragt nach einer Bestätigung, und /mgir undo macht ein Zurücksetzen, eine Vorlage oder eine kopierte Spezialisierung bzw. Ebene rückgängig.\n• Profile: Option „Profil jedes Charakters merken“.\n• Hängende Ebenen: Eine dem Addon gegebene Grundtaste bleibt bei dem, der den Druck erhalten hat, bis sie losgelassen wird, und Forever bleibt nicht mehr auf seiner RT- (oder LT-)Leiste hängen, etwa nach einem mit RT + A gewirkten Zauber wie einem Siegel des Paladins.\n• Fahrzeuge, Ersatzleisten und Haustierkämpfe: Das Addon tritt zurück und die Tasten des Spiels funktionieren, auch im Kampf.\n• Kein /mgir restore mehr vor dem Deaktivieren: Bei jedem Ausloggen bekommen LT und LB ihre Umschalt-/Strg-Imitation zurück, und das Addon schaltet sie beim Einloggen wieder ab.\n• Erkennen lehnt A, B, X, Y, das Steuerkreuz und LT, RT, LB, RB ab (versehentlich gedrückt, würden sie zur Taste einer Zusatztaste).\n• Reiter Controller-Test: „Bericht kopieren“ (mit dem aktuellen Ebenenprotokoll), zum Verschicken, um andere Controller zu bestätigen. /mgir etat zeigt den Zustand der Ebenen.\n• /mgir news: dieses Fenster erneut zeigen.",
 })
+
+-- Marqueurs de raid (actions de base)
+ns.AddLocale("deDE", {
+    GAME_markquick = "Schnellmarkierung (nächste Markierung bei jedem Druck)",
+    GAME_mark = "Markieren: %s",
+    GAME_markclear = "Markierung entfernen",
+})
+
+-- Se cibler (action de base)
+ns.AddLocale("deDE", {
+    GAME_targetself = "Sich selbst anvisieren",
+})
+
+-- Nouveautés de la 1.1.6
+ns.AddLocale("deDE", {
+    WHATSNEW_1_1_6 = "• Schlachtzugsmarkierungen in den Grundaktionen: „Schnellmarkierung“ setzt bei jedem Druck die nächste Markierung auf dein Ziel (Totenschädel, Kreuz, Quadrat, Mond, Dreieck, Diamant, Kreis, Stern), dazu jede der 8 Markierungen einzeln und „Markierung entfernen“.\n• „Sich selbst anvisieren“ in den Grundaktionen.\n• Der Tooltip eines Zaubers zeigt seinen Rang.\n• Freundliches / feindliches Ziel: Ein kurzer Druck wechselt zuverlässiger zum nächsten Ziel (das Zielen mit dem Stick beginnt jetzt nach 0,3 s).",
+})

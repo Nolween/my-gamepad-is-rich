@@ -105,6 +105,10 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | Rechercher (clic droit sur la cible) | commande WoW « Interagir avec la cible » |
 | Attaque automatique | `/startattack` |
 | Interagir | commande WoW « Interagir avec la cible » |
+| Se cibler soi-même | `/target player` |
+| Marquage rapide | pose le marqueur suivant sur la cible à chaque appui : crâne, croix, carré, lune, triangle, losange, cercle, étoile, puis on recommence (`/tm`) |
+| Marquer : Crâne… Étoile | un marqueur précis sur la cible (`/tm 8` … `/tm 1`) ; un nouvel appui sur la même cible le retire |
+| Retirer le marqueur | `/tm 0` |
 
 Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut donner LT / RT à l'addon (voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb)) ; le menu d'une case l'indique.
 

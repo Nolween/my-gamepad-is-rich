@@ -26,7 +26,15 @@ local PRECLICK = [[
     if not self:GetAttribute("has-" .. layer) then return false end
     self:SetAttribute("type", "macro")
     self:SetAttribute("macro", self:GetAttribute(layer .. "-macro"))
-    self:SetAttribute("macrotext", self:GetAttribute(layer .. "-macrotext"))
+    local text = self:GetAttribute(layer .. "-macrotext")
+    -- (marquage rapide : le marqueur suivant à chaque appui, crâne, croix,
+    -- carré, lune, triangle, losange, cercle, étoile)
+    if type(text) == "string" and text:sub(1, 9) == "#mgirmark" then
+        local n = (self:GetAttribute("gps-mark-" .. layer) or 0) % 8 + 1
+        self:SetAttribute("gps-mark-" .. layer, n)
+        text = "#mgirmark\n/tm " .. (9 - n)
+    end
+    self:SetAttribute("macrotext", text)
 ]]
 
 -- La place d'un bouton dans GetGamePadState().buttons

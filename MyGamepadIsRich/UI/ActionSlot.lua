@@ -178,6 +178,8 @@ function UI.CreateActionSlot(parent, opts)
             end
             if not shown then
                 GameTooltip:SetText(ns.Actions.Label(action) or "", 1, 1, 1)
+            elseif action.kind == "spell" then
+                ns.Actions.AddRankToTooltip(GameTooltip, action)
             end
             GameTooltip:AddLine(ns.Actions.KindLabel(action), 0.6, 0.8, 1)
             if action.kind == "macrotext" then GameTooltip:AddLine(action.text, 0.9, 0.9, 0.9, true) end

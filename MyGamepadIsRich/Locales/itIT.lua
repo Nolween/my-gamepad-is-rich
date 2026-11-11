@@ -505,3 +505,20 @@ ns.AddLocale("itIT", {
     WHATSNEW_1_1_1 = "• Pulsante semplice: uno strato vuoto (LT, RT o un modificatore) ora non fa nulla e resta vuoto nell'HUD, invece di usare l'azione \"Da solo\". Unica eccezione: un comando di WoW messo su \"Da solo\".\n• L'elenco degli incantesimi include ora quelli di professione: Trova erbe, Trova minerali, Pesca, Cucina, Archeologia…",
     WHATSNEW_1_1_0 = "• HUD: le azioni dell'addon appaiono come sulle barre del gioco. Rosse fuori portata, blu senza risorse sufficienti, grigie se inutilizzabili, bordo dorato durante un proc, cariche rimanenti, illuminate mentre sono attive (attacco automatico, forma...).\n• HUD: l'ordine delle miniature degli strati si può scegliere (frecce della scheda HUD, oppure trascina una miniatura su un'altra).\n• Ogni specializzazione ha le sue azioni. Una nuova specializzazione parte con una copia delle azioni della precedente.\n• Scheda Azioni: «Riempi gli spazi vuoti» mette pietra del ritorno, monili e consumabili delle borse su uno strato di modificatore, e «Copia / scambia…» copia uno strato di combinazioni in un altro, oppure scambia due strati.\n• Modelli di classe: salva le tue azioni per tutto l'account, poi caricale su un altro personaggio della stessa classe («Modelli e specializzazioni…» sotto l'elenco degli strati). Puoi anche copiare le azioni di un'altra specializzazione.\n• Modificatore bloccabile (scheda Pulsanti): una pressione attiva lo strato, la successiva lo disattiva.\n• /mgir reset chiede conferma, e /mgir undo torna indietro dopo un azzeramento, un modello o una copia di specializzazione o di strato.\n• Profili: opzione «Ricorda il profilo di ogni personaggio».\n• Strati bloccati: un pulsante di base dato all'addon resta a chi ha ricevuto la pressione finché non viene rilasciato, e Forever non resta più bloccato sulla sua barra RT (o LT), per esempio dopo un incantesimo lanciato con RT + A come un sigillo del paladino.\n• Veicoli, barre sostitutive e scontri tra mascotte: l'addon si fa da parte e i pulsanti del gioco funzionano, anche in combattimento.\n• Non serve più /mgir restore prima di disattivare l'addon: a ogni disconnessione, LT e LB ritrovano l'imitazione di Maiusc / Ctrl, e l'addon la toglie di nuovo all'accesso.\n• Rileva rifiuta A, B, X, Y, la croce e LT, RT, LB, RB (premuti per errore, diventerebbero il tasto di un pulsante aggiuntivo).\n• Scheda Test controller: «Copia un rapporto» (con il registro recente degli strati), da inviare per aiutare a confermare altri controller. /mgir etat mostra lo stato degli strati.\n• /mgir news: rivedere questa finestra.",
 })
+
+-- Marqueurs de raid (actions de base)
+ns.AddLocale("itIT", {
+    GAME_markquick = "Marcatura rapida (segno successivo a ogni pressione)",
+    GAME_mark = "Marca: %s",
+    GAME_markclear = "Rimuovi il segno",
+})
+
+-- Se cibler (action de base)
+ns.AddLocale("itIT", {
+    GAME_targetself = "Selezionare se stessi",
+})
+
+-- Nouveautés de la 1.1.6
+ns.AddLocale("itIT", {
+    WHATSNEW_1_1_6 = "• Segni di incursione nelle azioni di base: «Marcatura rapida» mette il segno successivo sul bersaglio a ogni pressione (teschio, croce, quadrato, luna, triangolo, diamante, cerchio, stella), ognuno degli 8 segni e «Rimuovi il segno».\n• «Selezionare se stessi» nelle azioni di base.\n• Il tooltip di un incantesimo mostra il suo grado.\n• Bersaglio alleato / nemico: una pressione breve passa in modo più affidabile al bersaglio successivo (la mira con lo stick ora inizia dopo 0,3 s).",
+})

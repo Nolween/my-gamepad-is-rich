@@ -506,3 +506,20 @@ ns.AddLocale("enUS", {
     WHATSNEW_1_1_1 = "• Simple button: an empty layer (LT, RT or a modifier) now does nothing and stays empty on the HUD, instead of using the \"Alone\" action. Only exception: a WoW command set on \"Alone\".\n• The spell list now includes profession spells: Find Herbs, Find Minerals, Fishing, Cooking, Archaeology…",
     WHATSNEW_1_1_0 = "• HUD: the addon's actions look like the game's bars. Red out of range, blue without enough resource, grey when unusable, golden edge during a proc, remaining charges, lit while active (auto attack, form...).\n• HUD: choose the order of the layer miniatures (arrows in the HUD tab, or drag a miniature onto another one).\n• Each specialization has its own actions. A new spec starts with a copy of the previous one's actions.\n• Actions tab: \"Fill empty slots\" places your hearthstone, trinkets and bag consumables on a modifier layer, and \"Copy / swap...\" copies a combo layer to another one, or swaps two layers.\n• Class templates: save your actions for the whole account, then load them on another character of the same class (\"Templates and specs...\" under the layer list). You can also copy the actions of another specialization.\n• Latching modifier (Buttons tab): one press turns the layer on, the next press turns it off.\n• /mgir reset asks for confirmation, and /mgir undo goes back after a reset, a template, a spec copy or a layer copy.\n• Profiles: \"Remember each character's profile\" option.\n• Stuck layers: a base button given to the addon stays with whoever got the press until it is released, and Forever no longer stays stuck on its RT (or LT) bar, for example after a spell cast with RT + A such as a paladin seal.\n• Vehicles, override bars and pet battles: the addon steps aside and the game's buttons work, in combat too.\n• No more /mgir restore before disabling the addon: on every logout, LT and LB get their Shift / Ctrl imitation back, and the addon cuts it again on login.\n• Detect refuses A, B, X, Y, the D-pad and LT, RT, LB, RB (pressed by mistake, they would become an extra button's key).\n• Controller test tab: \"Copy a report\" (with the recent layer log), to send and help confirm other controllers. /mgir etat shows the state of the layers.\n• /mgir news: show this window again.",
 })
+
+-- Marqueurs de raid (actions de base)
+ns.AddLocale("enUS", {
+    GAME_markquick = "Quick marking (next marker on each press)",
+    GAME_mark = "Mark: %s",
+    GAME_markclear = "Remove the marker",
+})
+
+-- Se cibler (action de base)
+ns.AddLocale("enUS", {
+    GAME_targetself = "Target yourself",
+})
+
+-- Nouveautés de la 1.1.6
+ns.AddLocale("enUS", {
+    WHATSNEW_1_1_6 = "• Raid markers in the basic actions: \"Quick marking\" puts the next marker on your target at each press (skull, cross, square, moon, triangle, diamond, circle, star), each of the 8 markers, and \"Remove the marker\".\n• \"Target yourself\" in the basic actions.\n• A spell's tooltip shows its rank.\n• Friendly / enemy target: a short press moves to the next target more reliably (aiming with the stick now starts after 0.3 s).",
+})

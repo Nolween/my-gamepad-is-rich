@@ -702,9 +702,15 @@ local function Tooltip(self)
     local native, a = self.native, self.action
     if native and native.action then
         ok = pcall(GameTooltip.SetAction, GameTooltip, native.action)
+        -- (un sort de la barre du jeu : son rang, s'il en a)
+        local okInfo, kind, id = pcall(GetActionInfo, native.action)
+        if ok and okInfo and not Secret(kind) and not Secret(id) and kind == "spell" and type(id) == "number" then
+            ns.Actions.AddRankToTooltip(GameTooltip, { kind = "spell", id = id })
+        end
     elseif a then
         if a.kind == "spell" or a.kind == "mount" then
             ok = pcall(GameTooltip.SetSpellByID, GameTooltip, a.id)
+            if ok and a.kind == "spell" then ns.Actions.AddRankToTooltip(GameTooltip, a) end
         elseif a.kind == "item" or a.kind == "toy" then
             ok = pcall(GameTooltip.SetItemByID, GameTooltip, a.id)
         end

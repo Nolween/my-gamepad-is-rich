@@ -1,5 +1,15 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.1.6
+
+### Actions
+- **Marqueurs de raid** dans les actions de base : **Marquage rapide** pose le marqueur suivant sur la cible à chaque appui (crâne, croix, carré, lune, triangle, losange, cercle, étoile), les 8 marqueurs un par un, et **Retirer le marqueur**. Ils marchent sur toutes les cases, en combat aussi.
+- **Se cibler soi-même** dans les actions de base, sur toutes les cases.
+- L'info-bulle d'un sort montre son rang (« Rang 3 »), dans l'onglet Actions et dans le HUD : le rang choisi exprès, sinon celui du sort.
+
+### Corrections
+- **Cible alliée / ennemie** : la visée au stick ne s'allume qu'après 0,3 s de maintien. Allumée dès l'appui, elle choisissait tout de suite la meilleure cible devant soi, et l'appui bref passait ensuite à la suivante de celle-là : souvent toujours la même.
+
 ## 1.1.5
 
 ### Corrections
