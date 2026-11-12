@@ -41,6 +41,34 @@ function UI.Text(parent, font, text)
     return fs
 end
 
+-- Une info-bulle sur un réglage : son nom (en or), puis ce qu'il fait. title
+-- et text peuvent être des fonctions (texte qui dépend de l'état).
+function UI.Tip(frame, title, text)
+    frame:HookScript("OnEnter", function(self)
+        local t = type(title) == "function" and title() or title
+        local d = type(text) == "function" and text() or text
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(t or "", 1, 0.82, 0, 1, true)
+        if d then GameTooltip:AddLine(d, 1, 1, 1, true) end
+        GameTooltip:Show()
+    end)
+    frame:HookScript("OnLeave", function() GameTooltip:Hide() end)
+end
+
+-- Un titre de section : texte doré, et un trait jusqu'au bord droit (right :
+-- décalage depuis le bord droit du parent)
+function UI.Section(parent, text, x, y, right)
+    local title = UI.Text(parent, "GameFontNormalLarge", text)
+    title:SetPoint("TOPLEFT", x, y)
+    local line = parent:CreateTexture(nil, "ARTWORK")
+    line:SetColorTexture(1, 0.82, 0, 0.25)
+    line:SetHeight(1)
+    -- (le trait au milieu de la ligne du titre, jusqu'au bord droit)
+    line:SetPoint("LEFT", title, "RIGHT", 8, 0)
+    line:SetPoint("RIGHT", parent, "TOPRIGHT", -(right or 16), y - 8)
+    return title
+end
+
 ---------------------------------------------------------------------------
 -- Fenêtres à nous (export / import, rapport de manette, nouveautés)
 ---------------------------------------------------------------------------
@@ -275,8 +303,9 @@ function UI.AskText(prompt, initial, maxLetters, onOK)
     d.edit:HighlightText()
 end
 
--- Demande une confirmation : onOK() si on valide
-function UI.Confirm(text, onOK)
+-- Demande une confirmation : onOK() si on valide (okLabel, cancelLabel :
+-- le texte des boutons, sinon OK / Annuler)
+function UI.Confirm(text, onOK, okLabel, cancelLabel)
     if not confirmDialog then
         confirmDialog = SmallDialog("MyGamepadIsRichConfirmDialog", 130)
         confirmDialog.ok:SetScript("OnClick", function()
@@ -286,6 +315,8 @@ function UI.Confirm(text, onOK)
     end
     local d = confirmDialog
     d.onOK = onOK
+    d.ok:SetText(okLabel or L.OK)
+    d.cancel:SetText(cancelLabel or L.CANCEL)
     d.text:SetText(text)
     -- (hauteur selon le texte, qui change avec la langue)
     d:SetHeight(math.max(110, d.text:GetStringHeight() + 70))

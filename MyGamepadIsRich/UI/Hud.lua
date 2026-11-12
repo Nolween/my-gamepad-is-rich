@@ -80,13 +80,21 @@ local EDIT_EDGE = { 0.3, 0.8, 1, 1 }
 function H.Settings()
     ns.db.hud = ns.db.hud or {}
     local s = ns.db.hud
-    if s.enabled == nil then s.enabled = true end
+    -- (toujours affiché : l'ancien réglage « masquer le HUD » n'existe plus)
+    s.enabled = nil
     s.scale = s.scale or 1
-    -- (la bande des miniatures : sous la couche active, ou au-dessus)
-    if s.strip ~= "top" then s.strip = "bottom" end
+    -- (la bande des miniatures attachée : toujours sous la couche active ;
+    -- l'ancien réglage « au-dessus » n'existe plus)
+    s.strip = nil
     -- (taille des miniatures, et nombre de lignes sur lesquelles les répartir)
     s.stripScale = s.stripScale or 1
     s.stripRows = s.stripRows or 1
+    -- (la bande séparée du HUD, déplacée à part (s.stripPos) ; en colonnes
+    -- (s.stripRows en est alors le nombre))
+    s.detached = s.detached == true
+    s.vertical = s.vertical == true
+    -- (les miniatures cachées : seulement la couche active)
+    s.stripHidden = s.stripHidden == true
     -- (l'ordre des miniatures : nil = celui de l'interface)
     if s.order ~= nil and type(s.order) ~= "table" then s.order = nil end
     return s
@@ -226,12 +234,14 @@ function H.MoveLayerTo(key, targetKey)
     H.Changed()
 end
 
--- La hauteur réelle de la bande (lignes et taille comprises), posée par Relayout
+-- La hauteur réelle de la bande (lignes et taille comprises), posée par
+-- Relayout ; 0 quand elle n'est pas dans le cadre du HUD (séparée, ou en
+-- colonne sur le côté)
 local stripSpace = CARD_H
 
 -- La hauteur sous la couche active : la bande, quand elle est en bas
 local function MainY()
-    return H.Settings().strip == "bottom" and (stripSpace + 14) or 0
+    return stripSpace > 0 and (stripSpace + 14) or 0
 end
 
 local function PageUnit()
@@ -332,8 +342,50 @@ end
 ---------------------------------------------------------------------------
 -- Lecture : image, recharge, compteur
 ---------------------------------------------------------------------------
+local NativePicture -- (plus bas)
+
+-- Le nom de l'action du jeu sur la case i de « Seul » (A/B/X/Y : sauter,
+-- interagir...) : Forever ne le donne que dans l'info-bulle de son bouton.
+-- Hors combat seulement, info-bulle libre ; le résultat est gardé pour
+-- chaque image (l'action change, l'image aussi). nil : inconnu.
+local gameNames = {}
+function H.GameName(i)
+    local pu = PageUnit()
+    local bar = pu and pu.actionBars and pu.actionBars.topBar
+    local native = Native(bar, i)
+    if not native or native.action then return nil end
+    local has, tex, atlas = NativePicture(native)
+    if not has or Secret(tex) or Secret(atlas) then return nil end
+    local key = tostring(atlas or tex)
+    local known = gameNames[key]
+    if known ~= nil then return known or nil end
+    if InCombatLockdown() or GameTooltip:IsShown() then return nil end
+    local onEnter = native:GetScript("OnEnter")
+    local name
+    if onEnter and pcall(onEnter, native) and GameTooltip:IsShown() and GameTooltip:IsOwned(native) then
+        local line = _G.GameTooltipTextLeft1
+        local okText, text = pcall(function() return line and line:GetText() end)
+        if okText and type(text) == "string" and not Secret(text) and text ~= "" then name = text end
+    end
+    local onLeave = native:GetScript("OnLeave")
+    if onLeave then pcall(onLeave, native) end
+    GameTooltip:Hide()
+    gameNames[key] = name or false
+    return name
+end
+
+-- L'image du bouton de Forever sur la case i de « Seul » (A/B/X/Y : sauter,
+-- interagir...), pour l'onglet Actions : texture, atlas ; nil sans image
+function H.GamePicture(i)
+    local pu = PageUnit()
+    local bar = pu and pu.actionBars and pu.actionBars.topBar
+    local has, tex, atlas = NativePicture(Native(bar, i))
+    if not has or Secret(tex) or Secret(atlas) then return nil end
+    return tex, atlas
+end
+
 -- L'image d'un bouton de Forever : has, texture, atlas, icône (sa teinte)
-local function NativePicture(native)
+function NativePicture(native)
     if not native then return false end
     local special = native.SpecialActionIcon
     if special and special.IsShown and special:IsShown() then
@@ -466,6 +518,8 @@ end
 local function ActionItem(action)
     local k = action.kind
     if k == "item" or k == "toy" then return action.id end
+    -- (un consommable intelligent : l'objet qui partira)
+    if k == "best" then return ns.Actions.BestItem(action.cat) end
     if k == "macro" and GetMacroItem and GetMacroIndexByName then
         local index = GetMacroIndexByName(action.name)
         if index and index > 0 then
@@ -621,6 +675,10 @@ local function TileClick(t, button)
         { text = L.MENU_ITEM, func = function()
             UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), set)
         end },
+        -- (le meilleur objet des sacs de ce type : une macro de l'addon)
+        { text = L.MENU_BEST, disabled = not full, func = function()
+            UI.PickFromList(L.BEST_TITLE, ns.Actions.BestEntries(), set)
+        end },
         -- (sauter, annuler, rechercher, attaque auto, interagir)
         { text = L.MENU_GAME, disabled = not full, func = function()
             UI.PickFromList(L.GAME_TITLE, ns.Actions.GameEntries(CommandAllowed(target)), set)
@@ -698,9 +756,21 @@ end
 
 local function Tooltip(self)
     local ok
-    GameTooltip:SetOwner(self, "ANCHOR_TOP")
     local native, a = self.native, self.action
-    if native and native.action then
+    -- (A/B/X/Y de « Seul » sans action de l'addon : le nom de l'action du jeu,
+    -- lu avant de prendre l'info-bulle)
+    local target = self.target
+    local gameName = native and not native.action and target and target.native == ns.Bar.BASE_BAR
+        and H.GameName(target.i)
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    if gameName then
+        GameTooltip:SetText(gameName, 1, 1, 1)
+        GameTooltip:AddLine(L.HUD_GAME_SLOT, 0.8, 0.8, 0.8, true)
+        ok = true
+    end
+    if gameName then
+        -- (déjà écrite)
+    elseif native and native.action then
         ok = pcall(GameTooltip.SetAction, GameTooltip, native.action)
         -- (un sort de la barre du jeu : son rang, s'il en a)
         local okInfo, kind, id = pcall(GetActionInfo, native.action)
@@ -711,11 +781,18 @@ local function Tooltip(self)
         if a.kind == "spell" or a.kind == "mount" then
             ok = pcall(GameTooltip.SetSpellByID, GameTooltip, a.id)
             if ok and a.kind == "spell" then ns.Actions.AddRankToTooltip(GameTooltip, a) end
+            if ok and not ns.Actions.IsKnown(a) then GameTooltip:AddLine(L.SPELL_UNKNOWN, 1, 0.35, 0.35, true) end
         elseif a.kind == "item" or a.kind == "toy" then
             ok = pcall(GameTooltip.SetItemByID, GameTooltip, a.id)
+        elseif a.kind == "best" then
+            -- (l'objet qui partira, sous le nom du consommable intelligent)
+            local item = ns.Actions.BestItem(a.cat)
+            ok = item ~= nil and pcall(GameTooltip.SetItemByID, GameTooltip, item)
+            if ok then GameTooltip:AddLine(ns.Actions.Label(a), 0.6, 0.8, 1) end
         end
         if not ok then
             GameTooltip:SetText(ns.Actions.Label(a) or "", 1, 1, 1)
+            if a.kind == "best" then GameTooltip:AddLine(L.BEST_NONE, 0.7, 0.7, 0.7) end
             ok = true
         end
     end
@@ -826,7 +903,11 @@ local function MirrorAction(t, action, dim, lit)
     -- ressource insuffisante en bleu, inutilisable en gris ; estompée quand
     -- la case reprend « Seul »)
     local st = ActionState(action)
-    if dim then
+    -- (un sort que ce personnage ne connaît pas : grisé, teinté de rouge)
+    local unknown = not ns.Actions.IsKnown(action)
+    if unknown then
+        t.icon:SetVertexColor(1, 0.35, 0.35)
+    elseif dim then
         t.icon:SetVertexColor(0.6, 0.6, 0.6)
     elseif st.outOfRange then
         t.icon:SetVertexColor(0.8, 0.1, 0.1)
@@ -837,7 +918,7 @@ local function MirrorAction(t, action, dim, lit)
     else
         t.icon:SetVertexColor(1, 1, 1)
     end
-    t.icon:SetDesaturated(dim and true or false)
+    t.icon:SetDesaturated((dim or unknown) and true or false)
     t.checked:SetShown(st.active and not dim or false)
     -- (un sort en surbrillance (proc) : bord doré, comme une case pressée)
     if st.proc and not dim then SetEdge(t, GOLD_EDGE) end
@@ -846,15 +927,18 @@ local function MirrorAction(t, action, dim, lit)
     if spell then
         s, d = SpellCooldown(spell)
         if Secret(s) or Secret(d) then durObj = SpellCooldownDuration(spell) end
-    elseif action.kind == "item" or action.kind == "toy" then
-        s, d = ItemCooldown(action.id)
+    elseif action.kind == "item" or action.kind == "toy" or action.kind == "best" then
+        local item = ActionItem(action)
+        if item then s, d = ItemCooldown(item) end
     end
     SetCooldown(t, s, d, durObj)
     if st.charges then
         t.count:SetText(st.charges)
     else
-        local n = action.kind == "item" and ItemCount(action.id) or 0
-        t.count:SetText(n > 1 and n or "")
+        local item = (action.kind == "item" or action.kind == "best") and ActionItem(action)
+        local n = item and ItemCount(item) or 0
+        -- (un consommable intelligent : son stock, même pour un seul objet)
+        t.count:SetText((n > 1 or (action.kind == "best" and n > 0)) and n or "")
     end
 end
 
@@ -917,6 +1001,13 @@ end
 ---------------------------------------------------------------------------
 local holder, outline, moveHint
 local strip -- (le cadre des miniatures : mis à l'échelle choisie)
+-- (son support, enfant du HUD : il en suit l'affichage, la transparence et
+-- la taille, mais se place où on veut quand la bande est séparée ; ses
+-- petits boutons, à côté)
+local stripHolder, stripOutline, stripTools
+local toolsUntil = 0
+local SaveStripPos -- (plus bas)
+local unlocked = false -- (déverrouillé : le HUD se déplace à la souris)
 local dpad, face = {}, {}
 local cards, paddles, classTiles = {}, {}, {}
 local titleTag
@@ -1073,10 +1164,147 @@ local function Paddle()
     return p
 end
 
+-- La bande déplacée (séparée) : sa position, par rapport à l'écran
+function SaveStripPos(self)
+    self:StopMovingOrSizing()
+    local point, _, rel, x, y = self:GetPoint()
+    if point then H.Settings().stripPos = { point, rel, x, y } end
+end
+
+-- Petits boutons à côté de la bande (visibles quand la souris passe sur le
+-- HUD) : verrouiller / déverrouiller (déverrouillé, le HUD se déplace à la
+-- souris, et la bande séparée à part), en ligne / en colonne, et l'onglet
+-- HUD de la configuration (réglages précis : bande séparée, taille...). Leur dessin : un cadenas, de petits rectangles dorés,
+-- un engrenage.
+local TOOL = 18
+local function ToolButton(tip)
+    local b = CreateFrame("Button", nil, stripTools)
+    b:SetSize(TOOL, TOOL)
+    local edge = b:CreateTexture(nil, "BACKGROUND")
+    edge:SetAllPoints()
+    edge:SetColorTexture(DIM_EDGE[1], DIM_EDGE[2], DIM_EDGE[3], DIM_EDGE[4])
+    local bg = b:CreateTexture(nil, "BORDER")
+    bg:SetPoint("TOPLEFT", 1, -1)
+    bg:SetPoint("BOTTOMRIGHT", -1, 1)
+    bg:SetColorTexture(0.04, 0.04, 0.035, 0.95)
+    local hl = b:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetAllPoints(bg)
+    hl:SetColorTexture(1, 1, 1, 0.15)
+    b.parts = {}
+    for i = 1, 4 do
+        local p = b:CreateTexture(nil, "ARTWORK")
+        p:SetColorTexture(GOLD_EDGE[1], GOLD_EDGE[2], GOLD_EDGE[3], 1)
+        b.parts[i] = p
+    end
+    b:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:SetText(tip(), 1, 0.82, 0, 1, true)
+        GameTooltip:Show()
+    end)
+    b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    return b
+end
+
+-- (le dessin : { x, y, w, h } par morceau, depuis le coin haut-gauche)
+local function DrawTool(b, rects)
+    for i, p in ipairs(b.parts) do
+        local r = rects[i]
+        p:SetShown(r ~= nil)
+        if r then
+            p:ClearAllPoints()
+            p:SetPoint("TOPLEFT", b, "TOPLEFT", r[1], -r[2])
+            p:SetSize(r[3], r[4])
+        end
+    end
+end
+
+local ICON_ROW = { { 3, 7, 3, 4 }, { 7.5, 7, 3, 4 }, { 12, 7, 3, 4 } }
+local ICON_COL = { { 7, 3, 4, 3 }, { 7, 7.5, 4, 3 }, { 7, 12, 4, 3 } }
+local LOCK_TEX = "Interface\\Buttons\\LockButton-Locked-Up"
+local UNLOCK_TEX = "Interface\\Buttons\\LockButton-Unlocked-Up"
+
+-- (le cadenas montre l'état : fermé = verrouillé)
+local function UpdateLock()
+    if stripTools then stripTools.lock.icon:SetTexture(unlocked and UNLOCK_TEX or LOCK_TEX) end
+end
+
+local function BuildTools()
+    stripTools = CreateFrame("Frame", nil, holder)
+    stripTools:SetSize(TOOL, TOOL * 3 + 4)
+    stripTools:SetFrameLevel(holder:GetFrameLevel() + 30)
+    stripTools:Hide()
+    stripTools.settings = ToolButton(function() return L.HUD_TOOL_SETTINGS end)
+    DrawTool(stripTools.settings, {})
+    stripTools.settings.icon = stripTools.settings:CreateTexture(nil, "ARTWORK")
+    stripTools.settings.icon:SetPoint("TOPLEFT", 1, -1)
+    stripTools.settings.icon:SetPoint("BOTTOMRIGHT", -1, 1)
+    stripTools.settings.icon:SetTexture("Interface\\Icons\\INV_Misc_Gear_01")
+    stripTools.settings.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    stripTools.settings:SetScript("OnClick", function()
+        GameTooltip:Hide()
+        if UI.Show then UI.Show("hud") end
+    end)
+    stripTools.vertical = ToolButton(function()
+        return H.Settings().vertical and L.HUD_TOOL_HORIZONTAL or L.HUD_TOOL_VERTICAL
+    end)
+    stripTools.vertical:SetScript("OnClick", function() H.SetVertical(not H.Settings().vertical) end)
+    stripTools.lock = ToolButton(function()
+        if not unlocked then return L.HUD_TOOL_UNLOCK end
+        return H.Settings().detached and L.HUD_TOOL_LOCK_DETACHED or L.HUD_TOOL_LOCK
+    end)
+    DrawTool(stripTools.lock, {})
+    stripTools.lock.icon = stripTools.lock:CreateTexture(nil, "ARTWORK")
+    stripTools.lock.icon:SetPoint("TOPLEFT", 1, -1)
+    stripTools.lock.icon:SetPoint("BOTTOMRIGHT", -1, 1)
+    stripTools.lock:SetScript("OnClick", function(self)
+        H.SetUnlocked(not unlocked)
+        if UI.RefreshAll then UI.RefreshAll() end
+        if GameTooltip:IsOwned(self) then self:GetScript("OnEnter")(self) end
+    end)
+    UpdateLock()
+end
+
+-- Les petits boutons : leur dessin (ce qu'un clic fera) et leur place
+local function LayoutTools(s)
+    DrawTool(stripTools.vertical, s.vertical and ICON_ROW or ICON_COL)
+    -- (bande cachée : pas de ligne / colonne ; les autres dans le coin du HUD)
+    stripTools.vertical:SetShown(not s.stripHidden)
+    local list = { stripTools.lock, stripTools.vertical, stripTools.settings }
+    if s.stripHidden then list = { stripTools.lock, stripTools.settings } end
+    stripTools:ClearAllPoints()
+    -- (en ligne : à droite de la bande, l'un sous l'autre ; en colonne :
+    -- sous la bande, côte à côte)
+    if s.stripHidden then
+        stripTools:SetSize(TOOL, TOOL * 2 + 2)
+        stripTools:SetPoint("TOPRIGHT", holder, "TOPRIGHT", 0, 0)
+    elseif s.vertical then
+        stripTools:SetSize(TOOL * 3 + 4, TOOL)
+        stripTools:SetPoint("TOPLEFT", stripHolder, "BOTTOMLEFT", 0, -2)
+    else
+        stripTools:SetSize(TOOL, TOOL * 3 + 4)
+        stripTools:SetPoint("TOPLEFT", stripHolder, "TOPRIGHT", 2, 0)
+    end
+    for i, b in ipairs(list) do
+        b:ClearAllPoints()
+        if s.vertical and not s.stripHidden then
+            b:SetPoint("TOPLEFT", (i - 1) * (TOOL + 2), 0)
+        else
+            b:SetPoint("TOPLEFT", 0, -(i - 1) * (TOOL + 2))
+        end
+    end
+end
+
 local function Build()
     holder = CreateFrame("Frame", "MyGamepadIsRichHud", UIParent)
     holder:SetSize(MAIN_W, HEIGHT)
-    strip = CreateFrame("Frame", nil, holder)
+    stripHolder = CreateFrame("Frame", nil, holder)
+    stripHolder:SetSize(CARD_W, CARD_H)
+    stripHolder:SetClampedToScreen(true)
+    stripHolder:SetMovable(true)
+    stripHolder:RegisterForDrag("LeftButton")
+    stripHolder:SetScript("OnDragStart", stripHolder.StartMoving)
+    stripHolder:SetScript("OnDragStop", SaveStripPos)
+    strip = CreateFrame("Frame", nil, stripHolder)
     strip:SetSize(CARD_W, CARD_H)
     -- (strate de la barre de Forever, au moins MEDIUM ; posée avant de créer
     -- les cases, qui prennent leur niveau du cadre)
@@ -1103,9 +1331,14 @@ local function Build()
     outline:SetAllPoints()
     outline:SetColorTexture(1, 0.78, 0.2, 0.18)
     outline:Hide()
-    moveHint = UI.Text(holder, "GameFontNormal", L.HUD_UNLOCKED)
+    moveHint = UI.Text(holder, "GameFontNormal", L.HUD_UNLOCKED_HINT)
     moveHint:SetPoint("BOTTOM", holder, "TOP", 0, 6)
     moveHint:Hide()
+    stripOutline = stripHolder:CreateTexture(nil, "BACKGROUND")
+    stripOutline:SetAllPoints()
+    stripOutline:SetColorTexture(1, 0.78, 0.2, 0.18)
+    stripOutline:Hide()
+    BuildTools()
 
     local cx = CENTER_W / 2 + CLUSTER / 2
     Cluster(-cx, DPAD_KEYS, dpad)
@@ -1151,35 +1384,69 @@ end
 local function Relayout()
     dirty = false
     local s = H.Settings()
-    local bottom = s.strip == "bottom"
     -- (dans l'ordre choisi par le joueur, ou celui de l'interface)
     local list = H.Layers()
 
-    -- La bande : réparties sur 1 à 3 lignes (chacune centrée), à la taille choisie
-    -- (chaque miniature montre aussi les boutons simples de sa couche)
+    -- La bande : réparties sur 1 à 3 lignes (chacune centrée), ou 1 à 3
+    -- colonnes, à la taille choisie (chaque miniature montre aussi les
+    -- boutons simples de sa couche)
     local nSimple = math.min(#ns.SimpleIDs(), #ns.BUTTON_IDS + #ns.PAD_IDS)
     cardW = CardWidth(nSimple)
-    local rows = math.max(1, math.min(s.stripRows, #list))
-    local perRow = math.ceil(#list / rows)
-    local rowW = perRow * cardW + (perRow - 1) * STRIP_GAP
-    local stripH = rows * CARD_H + (rows - 1) * STRIP_GAP
+    local lines = math.max(1, math.min(s.stripRows, #list))
+    local per = math.max(1, math.ceil(#list / lines))
+    local stripW, stripH
+    if s.vertical then
+        stripW = lines * cardW + (lines - 1) * STRIP_GAP
+        stripH = per * CARD_H + (per - 1) * STRIP_GAP
+    else
+        stripW = per * cardW + (per - 1) * STRIP_GAP
+        stripH = lines * CARD_H + (lines - 1) * STRIP_GAP
+    end
     strip:SetScale(s.stripScale)
-    strip:SetSize(rowW, stripH)
+    strip:SetSize(stripW, stripH)
     strip:ClearAllPoints()
-    strip:SetPoint(bottom and "BOTTOM" or "TOP", holder, bottom and "BOTTOM" or "TOP", 0, 0)
-    stripSpace = stripH * s.stripScale
-    holder:SetWidth(math.max(MAIN_W, rowW * s.stripScale))
+    strip:SetPoint("TOPLEFT", stripHolder, "TOPLEFT", 0, 0)
+    stripHolder:SetSize(stripW * s.stripScale, stripH * s.stripScale)
+    stripHolder:ClearAllPoints()
+    -- (attachée : en ligne, sous la couche active ; en colonne, à sa droite ;
+    -- séparée : à sa place)
+    local inline = not s.detached and not s.vertical and not s.stripHidden
+    stripHolder:SetShown(not s.stripHidden)
+    if s.detached then
+        local p = s.stripPos
+        if p then
+            stripHolder:SetPoint(p[1], UIParent, p[2], p[3], p[4])
+        else
+            stripHolder:SetPoint("TOP", holder, "BOTTOM", 0, -12)
+        end
+    elseif s.vertical then
+        stripHolder:SetPoint("BOTTOMLEFT", holder, "BOTTOMRIGHT", 12, 0)
+    else
+        stripHolder:SetPoint("BOTTOM", holder, "BOTTOM", 0, 0)
+    end
+    stripSpace = inline and stripH * s.stripScale or 0
+    holder:SetWidth(inline and math.max(MAIN_W, stripW * s.stripScale) or MAIN_W)
     holder:SetHeight(MAIN_H + 14 + stripSpace)
+    stripHolder:EnableMouse(H.IsUnlocked() and s.detached)
+    stripOutline:SetShown(H.IsUnlocked() and s.detached)
+    LayoutTools(s)
     for i, entry in ipairs(list) do
         local c = cards[i] or Card()
         cards[i] = c
         c.entry = entry
-        local row, col = math.floor((i - 1) / perRow), (i - 1) % perRow
-        local inRow = math.min(perRow, #list - row * perRow)
-        local x = (rowW - (inRow * cardW + (inRow - 1) * STRIP_GAP)) / 2 + col * (cardW + STRIP_GAP)
+        local x, y
+        if s.vertical then
+            local col, row = math.floor((i - 1) / per), (i - 1) % per
+            x, y = col * (cardW + STRIP_GAP), row * (CARD_H + STRIP_GAP)
+        else
+            local row, col = math.floor((i - 1) / per), (i - 1) % per
+            local inRow = math.min(per, #list - row * per)
+            x = (stripW - (inRow * cardW + (inRow - 1) * STRIP_GAP)) / 2 + col * (cardW + STRIP_GAP)
+            y = row * (CARD_H + STRIP_GAP)
+        end
         LayoutCard(c, nSimple)
         c:ClearAllPoints()
-        c:SetPoint("TOPLEFT", strip, "TOPLEFT", x, -row * (CARD_H + STRIP_GAP))
+        c:SetPoint("TOPLEFT", strip, "TOPLEFT", x, -y)
         EntryTag(c.tag, entry)
         c:Show()
     end
@@ -1244,7 +1511,7 @@ end
 ---------------------------------------------------------------------------
 -- Mise à jour (20 fois par seconde)
 ---------------------------------------------------------------------------
-local shown, unlocked = false, false
+local shown = false
 
 local function SetMini(tex, has, t, atlas)
     if has and atlas then
@@ -1416,7 +1683,11 @@ local function Update(pu)
     end
 
     -- Estompé au repos : hors combat, rien de tenu, rien en cours de modification
-    local busy = unlocked or editing ~= nil or InCombatLockdown() or any or holder:IsMouseOver()
+    -- (les petits boutons de la bande : au survol du HUD, et une seconde après)
+    local hover = holder:IsMouseOver() or stripHolder:IsMouseOver() or stripTools:IsMouseOver()
+    if hover or unlocked then toolsUntil = GetTime() + 1 end
+    stripTools:SetShown(GetTime() < toolsUntil)
+    local busy = unlocked or editing ~= nil or InCombatLockdown() or any or hover
     local want = busy and 1 or IDLE_ALPHA
     local now = holder:GetAlpha()
     if math.abs(now - want) > 0.01 then
@@ -1429,7 +1700,7 @@ local function Watch()
     if not holder then Build() end
     local pu = PageUnit()
     local main = _G.GamepadMainActionBarFrame
-    local on = H.Settings().enabled and pu ~= nil and main:IsVisible() and not EditMode()
+    local on = pu ~= nil and main:IsVisible() and not EditMode()
     if pu then
         for _, part in ipairs(NativeParts(pu)) do Fade(part, on) end
         for _, bar in ipairs(NativeBars(pu)) do Cover(bar, on) end
@@ -1532,14 +1803,54 @@ function H.Changed()
     if UI.RefreshAll then UI.RefreshAll() end
 end
 
--- La bande des miniatures : "top" (au-dessus) ou "bottom" (dessous)
-function H.SetStrip(pos)
-    H.Settings().strip = (pos == "top") and "top" or "bottom"
-    dirty = true
+-- La couche active ne bouge pas à l'écran quand la bande change de place :
+-- le HUD est replacé d'autant (sa position devient « BOTTOM » de l'écran)
+local function KeepMainInPlace(change)
+    if not holder then Build() end
+    local left, bottom, width = holder:GetLeft(), holder:GetBottom(), holder:GetWidth()
+    local mainBottom = bottom and bottom + MainY()
+    change()
+    Relayout()
+    if left and mainBottom then
+        H.Settings().pos = { "BOTTOM", "BOTTOMLEFT", left + width / 2, mainBottom - MainY() }
+        H.Place()
+    end
+    if UI.RefreshAll then UI.RefreshAll() end
 end
 
-function H.Strip()
-    return H.Settings().strip
+-- La bande séparée du HUD (déplacée à part) : elle reste d'abord où elle est
+function H.Detached() return H.Settings().detached end
+
+function H.SetDetached(on)
+    local s = H.Settings()
+    on = on and true or false
+    if on == s.detached then return end
+    KeepMainInPlace(function()
+        if on and stripHolder and stripHolder:GetLeft() then
+            s.stripPos = { "BOTTOMLEFT", "BOTTOMLEFT", stripHolder:GetLeft(), stripHolder:GetBottom() }
+        end
+        s.detached = on
+    end)
+end
+
+-- La bande en colonne(s)
+function H.Vertical() return H.Settings().vertical end
+
+-- Les miniatures cachées (seulement la couche active)
+function H.StripHidden() return H.Settings().stripHidden end
+
+function H.SetStripHidden(on)
+    local s = H.Settings()
+    on = on and true or false
+    if on == s.stripHidden then return end
+    KeepMainInPlace(function() s.stripHidden = on end)
+end
+
+function H.SetVertical(on)
+    local s = H.Settings()
+    on = on and true or false
+    if on == s.vertical then return end
+    KeepMainInPlace(function() s.vertical = on end)
 end
 
 -- Taille des miniatures (50 à 150 %)
@@ -1559,8 +1870,6 @@ function H.SetStripRows(n)
 end
 
 -- (pour l'onglet HUD de la fenêtre de configuration)
-function H.IsEnabled() return H.Settings().enabled end
-function H.SetEnabled(on) H.Settings().enabled = on and true or false end
 function H.Scale() return H.Settings().scale end
 
 function H.SetScale(n)
@@ -1571,8 +1880,9 @@ end
 
 function H.ResetPosition()
     local s = H.Settings()
-    s.pos, s.scale = nil, 1
+    s.pos, s.scale, s.stripPos = nil, 1, nil
     H.Place()
+    dirty = true
 end
 
 -- Les réglages, pour un export de profil (copie), et leur retour d'un
@@ -1589,9 +1899,11 @@ end
 
 function H.ExportSettings()
     local s = H.Settings()
-    local out = { enabled = s.enabled, scale = s.scale, strip = s.strip,
-        stripScale = s.stripScale, stripRows = s.stripRows }
+    local out = { scale = s.scale,
+        stripScale = s.stripScale, stripRows = s.stripRows, detached = s.detached, vertical = s.vertical,
+        stripHidden = s.stripHidden }
     if s.pos then out.pos = { s.pos[1], s.pos[2], s.pos[3], s.pos[4] } end
+    if s.stripPos then out.stripPos = { s.stripPos[1], s.stripPos[2], s.stripPos[3], s.stripPos[4] } end
     if s.order then
         out.order = {}
         for i, k in ipairs(s.order) do out.order[i] = k end
@@ -1617,15 +1929,20 @@ end
 function H.CleanSettings(t)
     if type(t) ~= "table" then return nil end
     local out = {
-        enabled = t.enabled ~= false,
         scale = Clamp(t.scale, 0.5, 2, 1),
-        strip = (t.strip == "top") and "top" or "bottom",
         stripScale = Clamp(t.stripScale, 0.5, 1.5, 1),
         stripRows = math.floor(Clamp(t.stripRows, 1, 3, 1)),
+        detached = t.detached == true,
+        vertical = t.vertical == true,
+        stripHidden = t.stripHidden == true,
     }
     local p = t.pos
     if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
         out.pos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
+    end
+    p = t.stripPos
+    if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
+        out.stripPos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
     end
     out.order = CleanOrder(t.order)
     return out
@@ -1637,6 +1954,7 @@ function H.ImportSettings(t)
     local s = H.Settings()
     for k, v in pairs(clean) do s[k] = v end
     s.pos = clean.pos
+    s.stripPos = clean.stripPos
     s.order = clean.order
     H.Place()
     dirty = true
@@ -1653,37 +1971,24 @@ function H.SetUnlocked(on)
     for _, f in ipairs(mouseFrames) do f:EnableMouse(not unlocked) end
     outline:SetShown(unlocked)
     moveHint:SetShown(unlocked)
+    local detached = H.Settings().detached
+    stripHolder:EnableMouse(unlocked and detached)
+    stripOutline:SetShown(unlocked and detached)
+    UpdateLock()
+    LayoutTools(H.Settings())
 end
 
 ---------------------------------------------------------------------------
--- Commandes : /mgir hud [on | off | scale <n> | strip [top|bottom] | reset]
+-- Commandes : /mgir hud [scale <n> | reset]
 ---------------------------------------------------------------------------
 function H.Command(args)
     local s = H.Settings()
     local word, rest = (args or ""):match("^(%S*)%s*(.-)$")
-    if word == "on" then
-        s.enabled = true
-        ns.Print(L.HUD_ON)
-    elseif word == "off" then
-        s.enabled = false
-        ns.Print(L.HUD_OFF)
-    elseif word == "scale" then
+    if word == "scale" then
         local n = tonumber(rest)
         if n then s.scale = math.max(0.5, math.min(2, n)) end
         H.Place()
         ns.Print(L.HUD_SCALE:format(tostring(s.scale)))
-    elseif word == "strip" then
-        -- (/mgir hud strip [top | bottom], sans argument : bascule)
-        local pos
-        if rest == "top" or rest == "haut" then
-            pos = "top"
-        elseif rest == "bottom" or rest == "bas" then
-            pos = "bottom"
-        else
-            pos = s.strip == "top" and "bottom" or "top"
-        end
-        H.SetStrip(pos)
-        ns.Print(pos == "top" and L.HUD_STRIP_TOP or L.HUD_STRIP_BOTTOM)
     elseif word == "reset" then
         H.ResetPosition()
         ns.Print(L.HUD_LOCKED)

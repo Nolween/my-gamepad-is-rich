@@ -105,10 +105,8 @@ ns.AddLocale("ptBR", {
 
 -- HUD
 ns.AddLocale("ptBR", {
-    HUD_UNLOCKED = "HUD desbloqueado: arraste-o com o mouse. Digite /mgir hud de novo para travá-lo.",
+    HUD_UNLOCKED = "HUD desbloqueado: arraste-o com o mouse (as miniaturas separadas se movem à parte). Para travá-lo: o cadeado do HUD, ou /mgir hud de novo.",
     HUD_LOCKED = "HUD travado.",
-    HUD_ON = "HUD visível: ele substitui a barra de controle do jogo.",
-    HUD_OFF = "HUD oculto: a barra de controle do jogo voltou. Digite /mgir hud on para mostrá-lo de novo.",
     HUD_SCALE = "Tamanho do HUD: %s",
     TUTO_HUD_TITLE = "Seu HUD de controle",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("ptBR", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("ptBR", {
-    HUD_STRIP_TOP = "Miniaturas das camadas agora acima do HUD. Digite /mgir hud strip para alternar.",
-    HUD_STRIP_BOTTOM = "Miniaturas das camadas agora abaixo do HUD. Digite /mgir hud strip para alternar.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("ptBR", {
-    TUTO_STRIP_LABEL = "Miniaturas das camadas:",
-    TUTO_STRIP_BOTTOM = "Embaixo (recomendado)",
-    TUTO_STRIP_TOP = "Em cima",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("ptBR", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("ptBR", {
-    TAB_ACTIONS = "Ações",
+    TAB_ACTIONS = "Camadas",
     TAB_HUD = "HUD",
     SECTION_PAD = "Barra do controle",
     SECTION_MODS = "Modificadores",
@@ -167,7 +160,6 @@ ns.AddLocale("ptBR", {
     LAYER_DESC_HOLD = "Segure %s e aperte A, B, X, Y ou o direcional.",
     PAIRS_TITLE = "Pares (dois modificadores segurados juntos)",
     HUD_INTRO = "O HUD substitui a barra de controle do jogo: a camada em uso em destaque, todas as camadas em miniatura.",
-    HUD_SHOW = "Mostrar o HUD (no lugar da barra de controle do jogo)",
     HUD_SIZE = "Tamanho:",
     HUD_MOVE = "Mover o HUD",
     HUD_MOVE_DONE = "Travar o HUD",
@@ -292,7 +284,7 @@ ns.AddLocale("ptBR", {
     TRIGGERS_ADDON = "Modificadores do addon",
     TRIGGERS_GAME = "Camadas do jogo",
     TRIGGERS_ADDON_DESC = "Segure LT ou RT (ou os dois) e aperte A, B, X, Y ou o direcional: as ações do addon, com tudo o que ele permite (macros escritas à mão, comandos do WoW). Elas substituem as camadas LT, RT e LT + RT da barra de controle do jogo; uma casa vazia não faz nada. LB e RB não mudam.",
-    TRIGGERS_GAME_DESC = "LT e RT mantêm as camadas da barra de controle do jogo (editáveis na aba Ações).",
+    TRIGGERS_GAME_DESC = "LT e RT mantêm as camadas da barra de controle do jogo (editáveis na aba Camadas).",
     TRIGGERS_COPIED = "%d ação(ões) das camadas LT / RT do jogo copiada(s) para as do addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificadores do addon.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("ptBR", {
     TUTO_PAIRS_TITLE = "Pares: dois botões segurados juntos",
     TUTO_PAIRS_TEXT = "Segure dois botões juntos (modificadores ou de alvo): mais uma camada de 8 ações. Quaisquer dois podem formar um par: L5 + R5, LT + RT, LB + LT... Marque os que quiser (você pode mudar depois na aba |cffffd100Botões|r). Padrão: os pares esquerda + direita.",
     TUTO_ACTIONS_TITLE = "Colocar suas ações",
-    TUTO_ACTIONS_TEXT = "Na aba |cffffd100Ações|r: à esquerda, todas as suas camadas (Sozinho, LT, RT, seus modificadores e pares); à direita, a camada escolhida, organizada como o controle.\n\n- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n- Ou clique em um espaço: escolher um feitiço ou item, escrever uma macro, escolher um comando do WoW (Correr automaticamente...) ou uma ação básica (Pular, Interagir...). Clique direito: limpar.\n- A linha abaixo do direcional: os espaços dos seus botões simples nessa camada.\n\nVocê também pode clicar em uma miniatura de camada no HUD para editá-la ali mesmo.\n\nAs ações são salvas por personagem; tipos e teclas no perfil, para toda a conta. Tudo funciona em combate; só as mudanças feitas em combate esperam ele acabar.",
-    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo seu próprio HUD:\n\n- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure um botão e ela muda.\n- |cffffd100Miniaturas|r: todas as suas camadas, com os espaços dos botões simples no meio; a que você segura acende. Clique em uma para editá-la.\n- |cffffd100No centro|r: seus botões simples, com a ação que vão lançar.\n\nAjustes (tamanho, posição, miniaturas): aba |cffffd100HUD|r. |cffffd100/mgir hud off|r: voltar à barra do jogo.",
-    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo",
+    TUTO_ACTIONS_TEXT = "Na aba |cffffd100Camadas|r: à esquerda, todas as suas camadas (Sozinho, LT, RT, seus modificadores e pares); à direita, a camada escolhida, organizada como o controle.\n\n- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n- Ou clique em um espaço: escolher um feitiço ou item, escrever uma macro, escolher um comando do WoW (Correr automaticamente...) ou uma ação básica (Pular, Interagir...). Clique direito: limpar.\n- A linha abaixo do direcional: os espaços dos seus botões simples nessa camada.\n\nVocê também pode clicar em uma miniatura de camada no HUD para editá-la ali mesmo.\n\nAs ações são salvas por personagem; tipos e teclas no perfil, para toda a conta. Tudo funciona em combate; só as mudanças feitas em combate esperam ele acabar.\n\n|cffffd100Prático|r:\n- O campo no topo da lista procura uma ação em todas as suas camadas.\n- |cffffd100Consumível inteligente|r (menu de uma casa): sua melhor poção, comida, bebida ou bandagem, atualizada sozinha.\n- Um feitiço cinza e vermelho: este personagem não o conhece. |cffffd100Modelos e especializações...|r pode removê-los.\n- Um novo grau aprendido com o instrutor de classe: o addon propõe colocá-lo no lugar do antigo, em todo lugar.",
+    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo seu próprio HUD:\n\n- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure um botão e ela muda.\n- |cffffd100Miniaturas|r: todas as suas camadas, com os espaços dos botões simples no meio; a que você segura acende. Clique em uma para editá-la.\n- |cffffd100No centro|r: seus botões simples, com a ação que vão lançar.\n\nAjustes (tamanho, posição, miniaturas): aba |cffffd100HUD|r.\n\nAo passar o mouse sobre as miniaturas, aparecem pequenos botões: o |cffffd100cadeado|r desbloqueia o HUD para movê-lo com o mouse (e o bloqueia de novo), outro põe as miniaturas em linha ou em coluna. Uma |cffffd100engrenagem|r abre a aba HUD para ajustes mais precisos (miniaturas separadas do HUD, tamanho...).",
+    TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo\n|cffffd100/mgir rangs|r: colocar os novos graus dos seus feitiços no lugar dos antigos",
     SETTINGS_DESC = "Escolha o que cada botão do seu controle faz: botões extras (paletas traseiras, gatilhos extras) e botões básicos (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Escolha o tipo de cada botão: passe o mouse sobre um tipo para ver o que ele faz. Em verde: o tipo padrão dos botões básicos, que funciona como o jogo.",
     BUTTONS_TYPES_HELP = "Os tipos de botão",
@@ -448,7 +440,7 @@ ns.AddLocale("ptBR", {
     PROFILE_PER_CHAR_DESC = "Ao entrar, cada personagem volta ao último perfil que usou. Sem esta opção, todos usam o último perfil usado na conta.",
     REPORT_BUTTON = "Copiar um relatório",
     REPORT_TITLE = "Relatório do controle",
-    REPORT_HINT = "Primeiro aperte cada botão na aba Teste, depois copie este texto (Ctrl+C) e envie ao autor do addon, com o que funciona e o que não funciona. Ele ajuda a confirmar as configurações de outros controles. Nenhum nome de personagem ou de reino é incluído.",
+    REPORT_HINT = "Primeiro aperte cada botão no teste do controle, depois copie este texto (Ctrl+C) e envie ao autor do addon, com o que funciona e o que não funciona. Ele ajuda a confirmar as configurações de outros controles. Nenhum nome de personagem ou de reino é incluído.",
     WHATSNEW_TITLE = "Novidades do My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Preencher espaços vazios",
     QUICKFILL_DESC = "Coloca nos espaços vazios desta camada a pedra de regresso, os berloques usáveis equipados e os consumíveis das bolsas (poções, comida, ataduras, elixires...), exceto os que já estão lá. Clique direito num espaço para esvaziá-lo.",
@@ -458,7 +450,7 @@ ns.AddLocale("ptBR", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("ptBR", {
-    SLASH_HELP = "/mgir : abrir  |  /mgir profile <nome> : trocar de perfil  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem  |  /mgir undo : desfazer a última mudança de ações",
+    SLASH_HELP = "/mgir : abrir  |  /mgir profile <nome> : trocar de perfil  |  /mgir test : teste do controle  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : zerar as ações deste personagem  |  /mgir undo : desfazer a última mudança de ações  |  /mgir rangs: substituir as classes inferiores dos feitiços",
     LEARN_PAD_REFUSED = "%s é um botão básico do controle: o addon o combina ou o configura sozinho. Aperte o botão extra (a tecla que o software dele envia).",
     RESET_CONFIRM = "Esvaziar todas as ações deste personagem no perfil atual?",
     RESET_CONFIRM_SPEC = "Esvaziar todas as ações deste personagem para a especialização \"%s\", no perfil atual?",
@@ -521,4 +513,144 @@ ns.AddLocale("ptBR", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("ptBR", {
     WHATSNEW_1_1_6 = "• Marcas de raide nas ações básicas: \"Marcação rápida\" coloca a próxima marca no seu alvo a cada toque (caveira, xis, quadrado, lua, triângulo, losango, círculo, estrela), cada uma das 8 marcas e \"Remover a marca\".\n• \"Selecionar a si mesmo\" nas ações básicas.\n• A dica de um feitiço mostra a classe dele.\n• Alvo aliado / inimigo: cada toque rápido agora passa ao próximo alvo, também no Forever, e a mira com o analógico direito responde na hora. O alvo mirado fica se o analógico ainda estiver inclinado ao soltar o botão, ou depois de um toque segurado.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("ptBR", {
+    UPRANK_ASK = "Nova classe aprendida: %s.\n\nSubstituir a classe inferior nas suas ações?\n(%d espaço(s) do addon, %d espaço(s) das barras do jogo)",
+    UPRANK_REPLACE = "Substituir",
+    UPRANK_KEEP = "Manter",
+    UPRANK_DONE = "Nova classe colocada: %d espaço(s) do addon, %d espaço(s) das barras do jogo.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("ptBR", {
+    COMFORT_TITLE = "Conforto",
+    UPRANK_AUTO = "Substituir as novas classes de feitiços sem perguntar (classes inferiores nas ações do addon e nas barras do jogo)",
+    UPRANK_NONE = "Nenhuma classe inferior para substituir.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("ptBR", {
+    GAME_targetlast = "Alvo anterior",
+    GAME_assist = "Assistir o alvo",
+    GAME_focus = "Definir como foco",
+    GAME_targetfocus = "Selecionar o foco",
+    GAME_follow = "Seguir o alvo",
+    GAME_openbags = "Abrir as bolsas",
+    GAME_dismount = "Desmontar",
+    GAME_randommount = "Montaria favorita aleatória",
+})
+
+-- Sorts inconnus
+ns.AddLocale("ptBR", {
+    SPELL_UNKNOWN = "Este personagem não conhece este feitiço (talentos, outra especialização, modelo de outro personagem): este espaço não faz nada.",
+    UNKNOWN_SECTION = "Feitiços desconhecidos",
+    UNKNOWN_REMOVE = "Remover os feitiços desconhecidos",
+    UNKNOWN_CONFIRM = "Remover das ações de %2$s os %1$d feitiço(s) que este personagem não conhece?",
+    UNKNOWN_REMOVED = "%d feitiço(s) desconhecido(s) removido(s).",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("ptBR", {
+    SEARCH_HINT = "Procurar uma ação",
+    SEARCH_DESC = "Digite parte de um nome (feitiço, item, macro...): as camadas que o têm mostram quantos espaços, e esses espaços ganham uma borda dourada.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("ptBR", {
+    MENU_BEST = "Consumível inteligente...",
+    BEST_TITLE = "Consumíveis inteligentes",
+    KIND_best = "Consumível inteligente",
+    BEST_heal = "Melhor poção de cura",
+    BEST_mana = "Melhor poção de mana",
+    BEST_food = "Melhor comida",
+    BEST_drink = "Melhor bebida",
+    BEST_bandage = "Melhor atadura",
+    BEST_NONE = "Nenhum nas suas bolsas",
+    BEST_DESC = "Usa o melhor item deste tipo nas suas bolsas; quando uma pilha acaba, o próximo (em combate também). A lista acompanha suas bolsas fora de combate.",
+})
+
+-- Vibrations
+ns.AddLocale("ptBR", {
+    VIBRATION_OPTION = "Vibração do controle (modificador travável ligado / desligado, toque longo reconhecido, nova classe colocada)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("ptBR", {
+    SIMPLE_MOD_ROW = "Com um modificador segurado (vazio: não faz nada)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("ptBR", {
+    HUD_LAYERS_LABEL = "Camadas:",
+    HUD_DETACH = "Separadas do HUD",
+    HUD_VERTICAL = "Em coluna",
+    HUD_STRIP_COLS = "Colunas de miniaturas:",
+    HUD_TOOL_VERTICAL = "Camadas em coluna",
+    HUD_TOOL_HORIZONTAL = "Camadas em linha",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("ptBR", {
+    HUD_TOOL_UNLOCK = "Desbloquear: mover o HUD com o mouse",
+    HUD_TOOL_LOCK = "Bloquear o HUD (arraste-o antes para onde quiser)",
+    HUD_TOOL_LOCK_DETACHED = "Bloquear o HUD (arraste antes o HUD e as camadas, cada um para o seu lugar)",
+    HUD_UNLOCKED_HINT = "Desbloqueado: arraste com o mouse (as camadas separadas se movem à parte). Clique no cadeado para bloquear.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("ptBR", {
+    HUD_TOOL_SETTINGS = "Ajustes do HUD (aba HUD): miniaturas separadas do HUD, tamanho...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("ptBR", {
+    HUD_HIDE_STRIP = "Ocultas",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("ptBR", {
+    TAB_OPTIONS = "Opções",
+    ACTIONS_INTRO = "O que cada botão lança. Escolha uma camada à esquerda e coloque suas ações nas casas à direita.",
+    OPTIONS_INTRO = "Os ajustes gerais do addon: o que não é nem um botão, nem uma camada, nem a exibição do HUD.",
+    OPTIONS_SECTION_UI = "Interface",
+    HUD_SECTION_STRIP = "Miniaturas das camadas",
+    HUD_SECTION_PLACE = "Tamanho e posição do HUD",
+    HUD_LAYOUT_LABEL = "Disposição:",
+    TEST_OPEN = "Testar meu controle",
+    TEST_BACK = "Voltar aos botões",
+    HELP_INTRO = "Escolha um assunto à esquerda. O tutorial passa por tudo passo a passo.",
+    HELP_PRINCIPLE = "O princípio",
+    HELP_COMMANDS = "Comandos",
+    TIP_CONTROLLER = "Escolha seu controle: o addon usa os nomes dos botões extras dele.",
+    TIP_TYPES = "Rever o que cada tipo de botão faz: modificador, alvo, botão simples, nenhum.",
+    TIP_DETECT = "Depois aperte o botão do controle: o addon guarda a tecla que ele envia.",
+    TIP_CLEAR = "Esquecer a tecla deste botão: ele não faz mais nada.",
+    TIP_TEST = "Ver ao vivo o que o WoW recebe de cada botão: útil se um botão não responde.",
+    TIP_REPORT = "Um texto para enviar ao autor em caso de problema (sem nome de personagem nem de reino).",
+    TIP_PROFILE_USE = "Este perfil passa a ser o usado: seu controle, seus botões e as ações deste personagem.",
+    TIP_PROFILE_NEW = "Um perfil vazio, por exemplo para outro controle.",
+    TIP_PROFILE_COPY = "Um novo perfil, cópia do escolhido, para testar mudanças sem risco.",
+    TIP_PROFILE_RENAME = "Mudar o nome do perfil escolhido.",
+    TIP_PROFILE_DELETE = "Excluir o perfil escolhido, com as ações de todos os seus personagens para este perfil.",
+    TIP_PROFILE_EXPORT = "Um texto para copiar, para compartilhar este perfil ou guardá-lo.",
+    TIP_PROFILE_IMPORT = "Colar o texto de um perfil exportado (o seu ou o de outro jogador).",
+    TIP_HUD_DETACH = "As miniaturas saem do HUD: você pode colocá-las onde quiser (cadeado do HUD e depois arrastar).",
+    TIP_HUD_VERTICAL = "As miniaturas se empilham em coluna em vez de em linha.",
+    TIP_HUD_HIDDEN = "Sem miniaturas: o HUD só mostra a camada atual. As camadas são editadas na aba Camadas.",
+    TIP_HUD_ROWS = "Em quantas linhas (ou colunas) as miniaturas são distribuídas.",
+    TIP_HUD_STRIP_SIZE = "O tamanho das miniaturas, sem mudar o resto do HUD.",
+    TIP_HUD_SIZE = "O tamanho de todo o HUD.",
+    TIP_HUD_MOVE = "Desbloquear o HUD para arrastá-lo com o mouse (como o cadeado do HUD). Clique de novo para bloqueá-lo.",
+    TIP_HUD_RESET = "Voltar o HUD ao lugar e tamanho originais (as miniaturas separadas voltam para baixo dele).",
+    TIP_UPRANK = "Quando você aprende um novo grau de um feitiço, ele substitui o antigo em todo lugar sem perguntar.",
+    TIP_VIBRATION = "Uma breve vibração quando um modificador travável liga ou desliga, e quando um novo grau é colocado.",
+    TIP_MINIMAP = "O botão em volta do minimapa: clique para abrir a configuração, clique direito para mover o HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("ptBR", {
+    WHATSNEW_1_2_0 = "• A janela foi reorganizada na ordem da configuração: Botões, Camadas (a antiga aba Ações), HUD, Opções, Perfis, Ajuda. Cada ajuste tem uma dica, a Ajuda tem um sumário e o teste do controle abre pela aba Botões.\n• Novos graus de feitiços: quando você aprende um, o addon propõe substituir o antigo em todo lugar (ou faz sozinho, aba Opções). /mgir rangs verifica todo o grimório.\n• Consumíveis inteligentes (menu de uma casa): sua melhor poção, comida, bebida ou bandagem, atualizada sozinha.\n• Feitiços que este personagem não conhece ficam em vermelho; \"Modelos e especializações...\" pode removê-los.\n• Um campo procura uma ação em todas as suas camadas.\n• Novas ações básicas: alvo anterior, assistir, foco, seguir, abrir as bolsas, desmontar, montaria favorita aleatória.\n• HUD: pequenos botões ao passar o mouse (cadeado para movê-lo, linha ou coluna, ajustes); as miniaturas podem ser separadas do HUD, em coluna ou ocultas. O HUD está sempre visível.\n• A, B, X e Y de \"Sozinho\" mostram a ação do jogo, e a página de um botão simples sua casa em cada modificador.\n• Vibrações do controle, se o jogo permitir.",
+    WHATSNEW_FEEDBACK = "Um bug, uma ideia, algo incômodo? Me conte: cada retorno ajuda a melhorar o addon. Copie este link (Ctrl+C) para escrever no GitHub:",
 })

@@ -106,10 +106,8 @@ ns.AddLocale("enUS", {
 
 -- HUD
 ns.AddLocale("enUS", {
-    HUD_UNLOCKED = "HUD unlocked: drag it with the mouse. Type /mgir hud again to lock it.",
+    HUD_UNLOCKED = "HUD unlocked: drag it with the mouse (separated miniatures move on their own). To lock it: the HUD padlock, or /mgir hud again.",
     HUD_LOCKED = "HUD locked.",
-    HUD_ON = "HUD shown: it replaces the game's controller bar.",
-    HUD_OFF = "HUD hidden: the game's controller bar is back. Type /mgir hud on to show it again.",
     HUD_SCALE = "HUD scale: %s",
     TUTO_HUD_TITLE = "Your controller HUD",
 })
@@ -126,15 +124,10 @@ ns.AddLocale("enUS", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("enUS", {
-    HUD_STRIP_TOP = "Layer miniatures now above the HUD. Type /mgir hud strip to switch.",
-    HUD_STRIP_BOTTOM = "Layer miniatures now below the HUD. Type /mgir hud strip to switch.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("enUS", {
-    TUTO_STRIP_LABEL = "Layer miniatures:",
-    TUTO_STRIP_BOTTOM = "Below (recommended)",
-    TUTO_STRIP_TOP = "Above",
 })
 
 -- Bouton de la minimap
@@ -157,7 +150,7 @@ ns.AddLocale("enUS", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("enUS", {
-    TAB_ACTIONS = "Actions",
+    TAB_ACTIONS = "Layers",
     TAB_HUD = "HUD",
     SECTION_PAD = "Controller bar",
     SECTION_MODS = "Modifiers",
@@ -168,7 +161,6 @@ ns.AddLocale("enUS", {
     LAYER_DESC_HOLD = "Hold %s, then press A, B, X, Y or the D-pad.",
     PAIRS_TITLE = "Pairs (two modifiers held together)",
     HUD_INTRO = "The HUD replaces the game's controller bar: the layer in use in large, every layer in miniature.",
-    HUD_SHOW = "Show the HUD (instead of the game's controller bar)",
     HUD_SIZE = "Size:",
     HUD_MOVE = "Move the HUD",
     HUD_MOVE_DONE = "Lock the HUD",
@@ -293,7 +285,7 @@ ns.AddLocale("enUS", {
     TRIGGERS_ADDON = "Addon modifiers",
     TRIGGERS_GAME = "Game layers",
     TRIGGERS_ADDON_DESC = "Hold LT or RT (or both) then press A, B, X, Y or the D-pad: the addon's actions, with everything it allows (custom macros, WoW commands). They replace the LT, RT and LT + RT layers of the game's controller bar; an empty slot does nothing. LB and RB are not touched.",
-    TRIGGERS_GAME_DESC = "LT and RT keep the layers of the game's controller bar (edited from the Actions tab).",
+    TRIGGERS_GAME_DESC = "LT and RT keep the layers of the game's controller bar (edited from the Layers tab).",
     TRIGGERS_COPIED = "%d action(s) copied from the game's LT / RT layers to the addon's.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: addon modifiers.",
 })
@@ -412,9 +404,9 @@ ns.AddLocale("enUS", {
     TUTO_PAIRS_TITLE = "Pairs: two buttons held together",
     TUTO_PAIRS_TEXT = "Hold two buttons together (modifiers or targeting): yet another layer of 8 actions. Any two can make a pair: L5 + R5, LT + RT, LB + LT... Tick the ones you want (you can change them later in the |cffffd100Buttons|r tab). By default: the left + right pairs.",
     TUTO_ACTIONS_TITLE = "Place your actions",
-    TUTO_ACTIONS_TEXT = "In the |cffffd100Actions|r tab: on the left, all your layers (Alone, LT, RT, your modifiers and pairs); on the right, the chosen layer, laid out like the controller.\n\n- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n- Or click a slot: pick a spell or an item, write a macro, pick a WoW command (Auto run...) or a basic action (Jump, Interact...). Right-click: clear.\n- The row under the D-pad holds your simple buttons' slots in that layer.\n\nYou can also click a layer thumbnail on the HUD to edit it right there.\n\nActions are saved per character; types and keys in the profile, for the whole account. Everything works in combat; only changes made in combat wait for it to end.",
-    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD:\n\n- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold a button and it changes.\n- |cffffd100Thumbnails|r: all your layers, with your simple buttons' slots in the middle; the one you hold lights up. Click one to edit it.\n- |cffffd100In the center|r: your simple buttons, with the action they will cast.\n\nSettings (size, position, thumbnails): |cffffd100HUD|r tab. |cffffd100/mgir hud off|r: back to the game's bar.",
-    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game",
+    TUTO_ACTIONS_TEXT = "In the |cffffd100Layers|r tab: on the left, all your layers (Alone, LT, RT, your modifiers and pairs); on the right, the chosen layer, laid out like the controller.\n\n- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n- Or click a slot: pick a spell or an item, write a macro, pick a WoW command (Auto run...) or a basic action (Jump, Interact...). Right-click: clear.\n- The row under the D-pad holds your simple buttons' slots in that layer.\n\nYou can also click a layer thumbnail on the HUD to edit it right there.\n\nActions are saved per character; types and keys in the profile, for the whole account. Everything works in combat; only changes made in combat wait for it to end.\n\n|cffffd100Handy|r:\n- The field at the top of the list searches an action in all your layers.\n- |cffffd100Smart consumable|r (slot menu): your best potion, food, drink or bandage, updated on its own.\n- A greyed, red spell: this character does not know it. |cffffd100Templates and specs...|r can remove them.\n- A new rank learned from your class trainer: the addon offers to put it in place of the old one, everywhere.",
+    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD:\n\n- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold a button and it changes.\n- |cffffd100Thumbnails|r: all your layers, with your simple buttons' slots in the middle; the one you hold lights up. Click one to edit it.\n- |cffffd100In the center|r: your simple buttons, with the action they will cast.\n\nSettings (size, position, thumbnails): |cffffd100HUD|r tab.\n\nWhen the mouse is over the miniatures, small buttons appear: the |cffffd100padlock|r unlocks the HUD to move it with the mouse (and locks it again), another one puts the miniatures in a row or a column. A |cffffd100gear|r opens the HUD tab for finer settings (miniatures separated from the HUD, size...).",
+    TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game\n|cffffd100/mgir rangs|r: put the new ranks of your spells in place of the old ones",
     SETTINGS_DESC = "Choose what every button of your controller does: extra buttons (back paddles, extra triggers) and base buttons (LT, RT, LB, RB). Command: /mgir",
     BUTTONS_INTRO = "Pick a type for each button: hover a type to see what it does. In green: the default type of the base buttons, which works like the game.",
     BUTTONS_TYPES_HELP = "The button types",
@@ -449,7 +441,7 @@ ns.AddLocale("enUS", {
     PROFILE_PER_CHAR_DESC = "On login, each character goes back to the last profile it used. Without this option, they all take the last profile used on the account.",
     REPORT_BUTTON = "Copy a report",
     REPORT_TITLE = "Controller report",
-    REPORT_HINT = "First press every button in the Test tab, then copy this text (Ctrl+C) and send it to the addon's author, with what works and what doesn't. It helps confirm the settings of other controllers. No character or realm name is included.",
+    REPORT_HINT = "First press every button in the controller test, then copy this text (Ctrl+C) and send it to the addon's author, with what works and what doesn't. It helps confirm the settings of other controllers. No character or realm name is included.",
     WHATSNEW_TITLE = "What's new in My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Fill empty slots",
     QUICKFILL_DESC = "Places your hearthstone, equipped usable trinkets and bag consumables (potions, food, bandages, elixirs...) in this layer's empty slots, except those already there. Right-click a slot to clear it.",
@@ -459,7 +451,7 @@ ns.AddLocale("enUS", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("enUS", {
-    SLASH_HELP = "/mgir : open  |  /mgir profile <name> : switch profile  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions  |  /mgir undo : undo the last change of actions",
+    SLASH_HELP = "/mgir : open  |  /mgir profile <name> : switch profile  |  /mgir test : controller test  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reset this character's actions  |  /mgir undo : undo the last change of actions  |  /mgir rangs: replace lower spell ranks",
     LEARN_PAD_REFUSED = "%s is a base controller button: the addon combines or configures it itself. Press the extra button (the key its software sends).",
     RESET_CONFIRM = "Clear all of this character's actions in the current profile?",
     RESET_CONFIRM_SPEC = "Clear all of this character's actions for the \"%s\" specialization, in the current profile?",
@@ -522,4 +514,144 @@ ns.AddLocale("enUS", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("enUS", {
     WHATSNEW_1_1_6 = "• Raid markers in the basic actions: \"Quick marking\" puts the next marker on your target at each press (skull, cross, square, moon, triangle, diamond, circle, star), each of the 8 markers, and \"Remove the marker\".\n• \"Target yourself\" in the basic actions.\n• A spell's tooltip shows its rank.\n• Friendly / enemy target: each short press now moves to the next target in Forever too, and aiming with the right stick responds right away. The target you aimed at stays if the stick is still tilted when you release the button, or after a long press.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("enUS", {
+    UPRANK_ASK = "New rank learned: %s.\n\nReplace the lower rank in your actions?\n(%d slot(s) of the addon, %d slot(s) of the game's bars)",
+    UPRANK_REPLACE = "Replace",
+    UPRANK_KEEP = "Keep",
+    UPRANK_DONE = "New rank placed: %d slot(s) of the addon, %d slot(s) of the game's bars.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("enUS", {
+    COMFORT_TITLE = "Comfort",
+    UPRANK_AUTO = "Replace new spell ranks without asking (lower ranks in the addon's actions and on the game's bars)",
+    UPRANK_NONE = "No lower rank to replace.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("enUS", {
+    GAME_targetlast = "Previous target",
+    GAME_assist = "Assist the target",
+    GAME_focus = "Set as focus",
+    GAME_targetfocus = "Target the focus",
+    GAME_follow = "Follow the target",
+    GAME_openbags = "Open the bags",
+    GAME_dismount = "Dismount",
+    GAME_randommount = "Random favorite mount",
+})
+
+-- Sorts inconnus
+ns.AddLocale("enUS", {
+    SPELL_UNKNOWN = "This character doesn't know this spell (talents, another specialization, a template from another character): this slot does nothing.",
+    UNKNOWN_SECTION = "Unknown spells",
+    UNKNOWN_REMOVE = "Remove the unknown spells",
+    UNKNOWN_CONFIRM = "Remove %d spell(s) this character doesn't know from the actions of %s?",
+    UNKNOWN_REMOVED = "%d unknown spell(s) removed.",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("enUS", {
+    SEARCH_HINT = "Find an action",
+    SEARCH_DESC = "Type part of a name (spell, item, macro...): the layers that hold it show how many slots, and those slots get a gold border.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("enUS", {
+    MENU_BEST = "Smart consumable...",
+    BEST_TITLE = "Smart consumables",
+    KIND_best = "Smart consumable",
+    BEST_heal = "Best healing potion",
+    BEST_mana = "Best mana potion",
+    BEST_food = "Best food",
+    BEST_drink = "Best drink",
+    BEST_bandage = "Best bandage",
+    BEST_NONE = "None in your bags",
+    BEST_DESC = "Uses the best item of this kind in your bags; when a stack runs out, the next one (in combat too). The list follows your bags out of combat.",
+})
+
+-- Vibrations
+ns.AddLocale("enUS", {
+    VIBRATION_OPTION = "Controller vibrations (lockable modifier on / off, long press recognized, new rank placed)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("enUS", {
+    SIMPLE_MOD_ROW = "With a modifier held (empty: does nothing)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("enUS", {
+    HUD_LAYERS_LABEL = "Layers:",
+    HUD_DETACH = "Separate from the HUD",
+    HUD_VERTICAL = "In columns",
+    HUD_STRIP_COLS = "Miniature columns:",
+    HUD_TOOL_VERTICAL = "Layers in columns",
+    HUD_TOOL_HORIZONTAL = "Layers in rows",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("enUS", {
+    HUD_TOOL_UNLOCK = "Unlock: move the HUD with the mouse",
+    HUD_TOOL_LOCK = "Lock the HUD (drag it where you want first)",
+    HUD_TOOL_LOCK_DETACHED = "Lock the HUD (drag the HUD and the layers first, each to its place)",
+    HUD_UNLOCKED_HINT = "Unlocked: drag with the mouse (separated layers move on their own). Click the padlock to lock.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("enUS", {
+    HUD_TOOL_SETTINGS = "HUD settings (HUD tab): miniatures separated from the HUD, size...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("enUS", {
+    HUD_HIDE_STRIP = "Hidden",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("enUS", {
+    TAB_OPTIONS = "Options",
+    ACTIONS_INTRO = "What each button casts. Pick a layer on the left, then put your actions on its slots on the right.",
+    OPTIONS_INTRO = "The addon's general settings: what is neither a button, nor a layer, nor the HUD display.",
+    OPTIONS_SECTION_UI = "Interface",
+    HUD_SECTION_STRIP = "Layer miniatures",
+    HUD_SECTION_PLACE = "HUD size and position",
+    HUD_LAYOUT_LABEL = "Layout:",
+    TEST_OPEN = "Test my controller",
+    TEST_BACK = "Back to buttons",
+    HELP_INTRO = "Pick a topic on the left. The tutorial goes through everything step by step.",
+    HELP_PRINCIPLE = "The principle",
+    HELP_COMMANDS = "Commands",
+    TIP_CONTROLLER = "Pick your controller: the addon uses the names of its extra buttons.",
+    TIP_TYPES = "See again what each button type does: modifier, target, simple button, none.",
+    TIP_DETECT = "Then press the button on your controller: the addon remembers the key it sends.",
+    TIP_CLEAR = "Forget this button's key: it no longer does anything.",
+    TIP_TEST = "See live what WoW receives from each button: useful when a button does not respond.",
+    TIP_REPORT = "A text to send to the author if something goes wrong (no character or realm name).",
+    TIP_PROFILE_USE = "This profile becomes the one in use: its controller, its buttons and this character's actions.",
+    TIP_PROFILE_NEW = "An empty profile, for example for another controller.",
+    TIP_PROFILE_COPY = "A new profile, a copy of the selected one, to try changes safely.",
+    TIP_PROFILE_RENAME = "Change the name of the selected profile.",
+    TIP_PROFILE_DELETE = "Delete the selected profile, with the actions of all your characters for this profile.",
+    TIP_PROFILE_EXPORT = "A text to copy, to share this profile or keep it aside.",
+    TIP_PROFILE_IMPORT = "Paste the text of an exported profile (yours or another player's).",
+    TIP_HUD_DETACH = "The miniatures leave the HUD: you can place them anywhere (HUD padlock, then drag).",
+    TIP_HUD_VERTICAL = "The miniatures stack in columns instead of a row.",
+    TIP_HUD_HIDDEN = "No more miniatures: the HUD only shows the current layer. Layers are edited in the Layers tab.",
+    TIP_HUD_ROWS = "How many rows (or columns) the miniatures are spread over.",
+    TIP_HUD_STRIP_SIZE = "The size of the miniatures, without changing the rest of the HUD.",
+    TIP_HUD_SIZE = "The size of the whole HUD.",
+    TIP_HUD_MOVE = "Unlock the HUD to drag it with the mouse (like the HUD padlock). Click again to lock it.",
+    TIP_HUD_RESET = "Put the HUD back to its original place and size (separated miniatures come back under it).",
+    TIP_UPRANK = "When you learn a new rank of a spell, it replaces the old one everywhere without asking.",
+    TIP_VIBRATION = "A short vibration when a lockable modifier turns on or off, and when a new rank is placed.",
+    TIP_MINIMAP = "The button around the minimap: click to open the settings, right-click to move the HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("enUS", {
+    WHATSNEW_1_2_0 = "• The window is reorganized in setup order: Buttons, Layers (the former Actions tab), HUD, Options, Profiles, Help. Every setting has a tooltip, Help has a table of contents, and the controller test opens from the Buttons tab.\n• New spell ranks: when you learn one, the addon offers to replace the old one everywhere (or does it on its own, Options tab). /mgir rangs checks the whole spellbook.\n• Smart consumables (slot menu): your best potion, food, drink or bandage, updated on its own.\n• Spells this character does not know are shown in red; \"Templates and specs...\" can remove them.\n• A field searches an action in all your layers.\n• New basic actions: previous target, assist, focus, follow, open bags, dismount, random favorite mount.\n• HUD: small buttons on mouseover (padlock to move it, row or column, settings); the miniatures can be separated from the HUD, in columns or hidden. The HUD is always shown.\n• A, B, X and Y of \"Alone\" show the game's action, and a simple button's page shows its slot in each modifier.\n• Controller vibrations, if the game allows them.",
+    WHATSNEW_FEEDBACK = "A bug, an idea, something annoying? Tell me: every piece of feedback helps improve the addon. Copy this link (Ctrl+C) to write on GitHub:",
 })

@@ -1,6 +1,6 @@
 -- Tutoriel : une fenêtre pas à pas, montrée au premier lancement (une fois
 -- par compte et par version du tutoriel), revue avec /mgir tuto ou depuis
--- l'onglet Aide, qui reprend les mêmes textes (T.HelpText).
+-- l'onglet Aide, qui reprend les mêmes textes (T.HelpSections).
 -- Étapes : bienvenue (le principe des couches), choix de la manette, les
 -- types de boutons, les boutons de base (LT, RT, LB, RB), puis — seulement
 -- si la manette a des boutons en plus — logiciel de la manette, détection
@@ -484,36 +484,6 @@ function T.ClassPairNote()
     return "|cffff8020(!) " .. L.PAIR_CLASS_NOTE:format(ns.ButtonLabel("LTLB"), ns.ButtonLabel("RTRB")) .. "|r"
 end
 
--- Le HUD : où va la bande des miniatures (en bas par défaut), appliqué tout de suite
-local STRIP = { { "bottom", "TUTO_STRIP_BOTTOM" }, { "top", "TUTO_STRIP_TOP" } }
-
-local function BuildHud(c)
-    local label = UI.Text(c, "GameFontNormal", L.TUTO_STRIP_LABEL)
-    label:SetPoint("TOPLEFT", 0, -6)
-    c.checks = {}
-    local x = label:GetStringWidth() + 14
-    for _, def in ipairs(STRIP) do
-        local pos = def[1]
-        local cb = CreateFrame("CheckButton", nil, c, "UICheckButtonTemplate")
-        cb:SetSize(24, 24)
-        cb:SetPoint("LEFT", label, "LEFT", x, 0)
-        local text = UI.Text(cb, "GameFontHighlight", L[def[2]])
-        text:SetPoint("LEFT", cb, "RIGHT", 2, 0)
-        cb:SetScript("OnClick", function()
-            if ns.Hud then ns.Hud.SetStrip(pos) end
-            Refresh()
-        end)
-        c.checks[pos] = cb
-        x = x + 30 + text:GetStringWidth() + 24
-    end
-    return 30
-end
-
-local function RefreshHud(c)
-    local pos = ns.Hud and ns.Hud.Strip() or "bottom"
-    for key, cb in pairs(c.checks) do cb:SetChecked(key == pos) end
-end
-
 ---------------------------------------------------------------------------
 -- Les étapes (skip : sautée tant que la fonction renvoie vrai)
 ---------------------------------------------------------------------------
@@ -534,7 +504,7 @@ local STEPS = {
     { key = "pairs", title = "TUTO_PAIRS_TITLE", text = "TUTO_PAIRS_TEXT", build = BuildPairs, refresh = RefreshPairs,
         helpExtra = function() return T.ClassPairNote() end },
     { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT" },
-    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", build = BuildHud, refresh = RefreshHud },
+    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT" },
     { key = "done", title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },
 }
 
@@ -546,20 +516,22 @@ local function StepText(s)
     return s.textFn and s.textFn() or L[s.text]
 end
 
--- Le texte de l'onglet Aide : les étapes (sauf la bienvenue et la fin), à la suite
-function T.HelpText()
-    local parts = { L.TUTO_WELCOME_TEXT:match("^(.-)\n\n[^\n]*$") or L.TUTO_WELCOME_TEXT }
+-- Les sections de l'onglet Aide : le principe (la bienvenue sans sa dernière
+-- phrase), chaque étape montrée, puis les commandes. { { title, text }, ... }
+function T.HelpSections()
+    local out = { { title = L.HELP_PRINCIPLE,
+        text = L.TUTO_WELCOME_TEXT:match("^(.-)\n\n[^\n]*$") or L.TUTO_WELCOME_TEXT } }
     for i = 2, #STEPS - 1 do
         local s = STEPS[i]
         if not Skipped(s) then
-            local block = "|cffffd100" .. L[s.title] .. "|r\n" .. StepText(s)
-            if s.helpExtra then block = block .. "\n\n" .. s.helpExtra() end
-            if s.help then block = block .. "\n" .. L[s.help] end
-            parts[#parts + 1] = block
+            local text = StepText(s)
+            if s.helpExtra then text = text .. "\n\n" .. s.helpExtra() end
+            if s.help then text = text .. "\n" .. L[s.help] end
+            out[#out + 1] = { title = L[s.title], text = text }
         end
     end
-    parts[#parts + 1] = "|cffffd100" .. L.TUTO_DONE_TITLE .. "|r\n" .. L.TUTO_DONE_TEXT
-    return table.concat(parts, "\n\n")
+    out[#out + 1] = { title = L.HELP_COMMANDS, text = L.TUTO_DONE_TEXT }
+    return out
 end
 
 ---------------------------------------------------------------------------

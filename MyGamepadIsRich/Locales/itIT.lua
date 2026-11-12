@@ -105,10 +105,8 @@ ns.AddLocale("itIT", {
 
 -- HUD
 ns.AddLocale("itIT", {
-    HUD_UNLOCKED = "HUD sbloccato: trascinalo con il mouse. Scrivi di nuovo /mgir hud per bloccarlo.",
+    HUD_UNLOCKED = "HUD sbloccato: trascinalo con il mouse (le miniature separate si spostano a parte). Per bloccarlo: il lucchetto dell'HUD, o di nuovo /mgir hud.",
     HUD_LOCKED = "HUD bloccato.",
-    HUD_ON = "HUD visibile: sostituisce la barra del controller del gioco.",
-    HUD_OFF = "HUD nascosto: torna la barra del controller del gioco. Scrivi /mgir hud on per mostrarlo di nuovo.",
     HUD_SCALE = "Dimensione dell'HUD: %s",
     TUTO_HUD_TITLE = "Il tuo HUD del controller",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("itIT", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("itIT", {
-    HUD_STRIP_TOP = "Miniature degli strati ora sopra l'HUD. Scrivi /mgir hud strip per cambiare.",
-    HUD_STRIP_BOTTOM = "Miniature degli strati ora sotto l'HUD. Scrivi /mgir hud strip per cambiare.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("itIT", {
-    TUTO_STRIP_LABEL = "Miniature degli strati:",
-    TUTO_STRIP_BOTTOM = "In basso (consigliato)",
-    TUTO_STRIP_TOP = "In alto",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("itIT", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("itIT", {
-    TAB_ACTIONS = "Azioni",
+    TAB_ACTIONS = "Strati",
     TAB_HUD = "HUD",
     SECTION_PAD = "Barra del controller",
     SECTION_MODS = "Modificatori",
@@ -167,7 +160,6 @@ ns.AddLocale("itIT", {
     LAYER_DESC_HOLD = "Tieni premuto %s, poi premi A, B, X, Y o la croce.",
     PAIRS_TITLE = "Coppie (due modificatori tenuti insieme)",
     HUD_INTRO = "L'HUD sostituisce la barra del controller del gioco: lo strato in uso in grande, tutti gli strati in miniatura.",
-    HUD_SHOW = "Mostra l'HUD (al posto della barra del controller del gioco)",
     HUD_SIZE = "Dimensione:",
     HUD_MOVE = "Sposta l'HUD",
     HUD_MOVE_DONE = "Blocca l'HUD",
@@ -292,7 +284,7 @@ ns.AddLocale("itIT", {
     TRIGGERS_ADDON = "Modificatori dell'addon",
     TRIGGERS_GAME = "Strati del gioco",
     TRIGGERS_ADDON_DESC = "Tieni premuto LT o RT (o entrambi) e premi A, B, X, Y o la croce: le azioni dell'addon, con tutto ciò che permette (macro scritte a mano, comandi di WoW). Sostituiscono gli strati LT, RT e LT + RT della barra del controller del gioco; una casella vuota non fa nulla. LB e RB non cambiano.",
-    TRIGGERS_GAME_DESC = "LT e RT mantengono gli strati della barra del controller del gioco (modificabili dalla scheda Azioni).",
+    TRIGGERS_GAME_DESC = "LT e RT mantengono gli strati della barra del controller del gioco (modificabili dalla scheda Strati).",
     TRIGGERS_COPIED = "%d azione/i degli strati LT / RT del gioco copiata/e in quelli dell'addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificatori dell'addon.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("itIT", {
     TUTO_PAIRS_TITLE = "Coppie: due pulsanti tenuti insieme",
     TUTO_PAIRS_TEXT = "Tieni premuti due pulsanti insieme (modificatori o di selezione bersaglio): un altro strato di 8 azioni. Due pulsanti qualsiasi possono formare una coppia: L5 + R5, LT + RT, LB + LT... Spunta quelle che vuoi (potrai cambiarle nella scheda |cffffd100Pulsanti|r). Predefinite: le coppie sinistra + destra.",
     TUTO_ACTIONS_TITLE = "Posiziona le tue azioni",
-    TUTO_ACTIONS_TEXT = "Nella scheda |cffffd100Azioni|r: a sinistra, tutti i tuoi strati (Da solo, LT, RT, i tuoi modificatori e coppie); a destra, lo strato scelto, disposto come il controller.\n\n- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su una casella.\n- Oppure clicca su una casella: scegliere un incantesimo o un oggetto, scrivere una macro, scegliere un comando di WoW (Corsa automatica...) o un'azione di base (Salta, Interagisci...). Clic destro: svuota.\n- La riga sotto la croce: le caselle dei tuoi pulsanti semplici in quello strato.\n\nPuoi anche cliccare su una miniatura di strato nell'HUD per modificarla lì.\n\nLe azioni sono salvate per personaggio; tipi e tasti nel profilo, per tutto l'account. Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano la sua fine.",
-    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD:\n\n- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto un pulsante e cambia.\n- |cffffd100Le miniature|r: tutti i tuoi strati, con al centro le caselle dei tuoi pulsanti semplici; quello tenuto si illumina. Clicca su una per modificarla.\n- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che lanceranno.\n\nImpostazioni (dimensione, posizione, miniature): scheda |cffffd100HUD|r. |cffffd100/mgir hud off|r: torna alla barra del gioco.",
-    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco",
+    TUTO_ACTIONS_TEXT = "Nella scheda |cffffd100Strati|r: a sinistra, tutti i tuoi strati (Da solo, LT, RT, i tuoi modificatori e coppie); a destra, lo strato scelto, disposto come il controller.\n\n- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su una casella.\n- Oppure clicca su una casella: scegliere un incantesimo o un oggetto, scrivere una macro, scegliere un comando di WoW (Corsa automatica...) o un'azione di base (Salta, Interagisci...). Clic destro: svuota.\n- La riga sotto la croce: le caselle dei tuoi pulsanti semplici in quello strato.\n\nPuoi anche cliccare su una miniatura di strato nell'HUD per modificarla lì.\n\nLe azioni sono salvate per personaggio; tipi e tasti nel profilo, per tutto l'account. Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano la sua fine.\n\n|cffffd100Utile|r:\n- Il campo in cima alla lista cerca un'azione in tutti i tuoi strati.\n- |cffffd100Consumabile intelligente|r (menu di una casella): la tua migliore pozione, cibo, bevanda o benda, aggiornata da sola.\n- Un incantesimo grigio e rosso: questo personaggio non lo conosce. |cffffd100Modelli e specializzazioni...|r può rimuoverli.\n- Un nuovo grado appreso dall'istruttore di classe: l'addon propone di metterlo al posto del vecchio, ovunque.",
+    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD:\n\n- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto un pulsante e cambia.\n- |cffffd100Le miniature|r: tutti i tuoi strati, con al centro le caselle dei tuoi pulsanti semplici; quello tenuto si illumina. Clicca su una per modificarla.\n- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che lanceranno.\n\nImpostazioni (dimensione, posizione, miniature): scheda |cffffd100HUD|r.\n\nPassando il mouse sulle miniature compaiono dei pulsantini: il |cffffd100lucchetto|r sblocca l'HUD per spostarlo con il mouse (e lo riblocca), un altro mette le miniature in riga o in colonna. Un |cffffd100ingranaggio|r apre la scheda HUD per le impostazioni più precise (miniature separate dall'HUD, dimensione...).",
+    TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco\n|cffffd100/mgir rangs|r: mettere i nuovi gradi dei tuoi incantesimi al posto dei vecchi",
     SETTINGS_DESC = "Scegli cosa fa ogni pulsante del tuo controller: pulsanti aggiuntivi (palette posteriori, grilletti extra) e pulsanti di base (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Scegli il tipo di ogni pulsante: passa il mouse su un tipo per vedere cosa fa. In verde: il tipo predefinito dei pulsanti di base, che funziona come nel gioco.",
     BUTTONS_TYPES_HELP = "I tipi di pulsante",
@@ -448,7 +440,7 @@ ns.AddLocale("itIT", {
     PROFILE_PER_CHAR_DESC = "All'accesso, ogni personaggio riprende l'ultimo profilo che ha usato. Senza questa opzione, tutti prendono l'ultimo profilo usato sull'account.",
     REPORT_BUTTON = "Copia un rapporto",
     REPORT_TITLE = "Rapporto del controller",
-    REPORT_HINT = "Premi prima ogni pulsante nella scheda Test, poi copia questo testo (Ctrl+C) e invialo all'autore dell'addon, con ciò che funziona e ciò che non funziona. Aiuta a confermare le impostazioni di altri controller. Non contiene nomi di personaggi né di reami.",
+    REPORT_HINT = "Premi prima ogni pulsante nella prova del controller, poi copia questo testo (Ctrl+C) e invialo all'autore dell'addon, con ciò che funziona e ciò che non funziona. Aiuta a confermare le impostazioni di altri controller. Non contiene nomi di personaggi né di reami.",
     WHATSNEW_TITLE = "Novità di My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Riempi gli spazi vuoti",
     QUICKFILL_DESC = "Mette negli spazi vuoti di questo strato la pietra del ritorno, i monili utilizzabili indossati e i consumabili delle borse (pozioni, cibo, bende, elisir...), tranne quelli già presenti. Clic destro su uno spazio per svuotarlo.",
@@ -458,7 +450,7 @@ ns.AddLocale("itIT", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("itIT", {
-    SLASH_HELP = "/mgir : apri  |  /mgir profile <nome> : cambia profilo  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio  |  /mgir undo : annulla l'ultima modifica delle azioni",
+    SLASH_HELP = "/mgir : apri  |  /mgir profile <nome> : cambia profilo  |  /mgir test : test controller  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : azzera le azioni di questo personaggio  |  /mgir undo : annulla l'ultima modifica delle azioni  |  /mgir rangs: sostituisci i gradi inferiori degli incantesimi",
     LEARN_PAD_REFUSED = "%s è un pulsante di base del controller: l'addon lo combina o lo configura da sé. Premi il pulsante aggiuntivo (il tasto inviato dal suo software).",
     RESET_CONFIRM = "Svuotare tutte le azioni di questo personaggio nel profilo attuale?",
     RESET_CONFIRM_SPEC = "Svuotare tutte le azioni di questo personaggio per la specializzazione «%s», nel profilo attuale?",
@@ -521,4 +513,144 @@ ns.AddLocale("itIT", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("itIT", {
     WHATSNEW_1_1_6 = "• Segni di incursione nelle azioni di base: «Marcatura rapida» mette il segno successivo sul bersaglio a ogni pressione (teschio, croce, quadrato, luna, triangolo, diamante, cerchio, stella), ognuno degli 8 segni e «Rimuovi il segno».\n• «Selezionare se stessi» nelle azioni di base.\n• Il tooltip di un incantesimo mostra il suo grado.\n• Bersaglio alleato / nemico: ogni pressione breve ora passa al bersaglio successivo, anche in Forever, e la mira con lo stick destro risponde subito. Il bersaglio mirato resta se lo stick è ancora inclinato quando rilasci il pulsante, o dopo una pressione prolungata.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("itIT", {
+    UPRANK_ASK = "Nuovo grado appreso: %s.\n\nSostituire il grado inferiore nelle tue azioni?\n(%d casella/e dell'addon, %d casella/e delle barre del gioco)",
+    UPRANK_REPLACE = "Sostituisci",
+    UPRANK_KEEP = "Tieni",
+    UPRANK_DONE = "Nuovo grado inserito: %d casella/e dell'addon, %d casella/e delle barre del gioco.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("itIT", {
+    COMFORT_TITLE = "Comodità",
+    UPRANK_AUTO = "Sostituisci i nuovi gradi degli incantesimi senza chiedere (gradi inferiori nelle azioni dell'addon e sulle barre del gioco)",
+    UPRANK_NONE = "Nessun grado inferiore da sostituire.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("itIT", {
+    GAME_targetlast = "Bersaglio precedente",
+    GAME_assist = "Assisti il bersaglio",
+    GAME_focus = "Imposta come focus",
+    GAME_targetfocus = "Seleziona il focus",
+    GAME_follow = "Segui il bersaglio",
+    GAME_openbags = "Apri le borse",
+    GAME_dismount = "Smonta",
+    GAME_randommount = "Cavalcatura preferita a caso",
+})
+
+-- Sorts inconnus
+ns.AddLocale("itIT", {
+    SPELL_UNKNOWN = "Questo personaggio non conosce questo incantesimo (talenti, altra specializzazione, modello di un altro personaggio): questa casella non fa nulla.",
+    UNKNOWN_SECTION = "Incantesimi sconosciuti",
+    UNKNOWN_REMOVE = "Rimuovi gli incantesimi sconosciuti",
+    UNKNOWN_CONFIRM = "Rimuovere dalle azioni di %2$s i %1$d incantesimi che questo personaggio non conosce?",
+    UNKNOWN_REMOVED = "%d incantesimo/i sconosciuto/i rimosso/i.",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("itIT", {
+    SEARCH_HINT = "Cerca un'azione",
+    SEARCH_DESC = "Scrivi parte di un nome (incantesimo, oggetto, macro...): gli strati che lo contengono mostrano quante caselle, e quelle caselle hanno un bordo dorato.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("itIT", {
+    MENU_BEST = "Consumabile intelligente...",
+    BEST_TITLE = "Consumabili intelligenti",
+    KIND_best = "Consumabile intelligente",
+    BEST_heal = "Migliore pozione di cura",
+    BEST_mana = "Migliore pozione di mana",
+    BEST_food = "Miglior cibo",
+    BEST_drink = "Migliore bevanda",
+    BEST_bandage = "Miglior benda",
+    BEST_NONE = "Nessuno nelle borse",
+    BEST_DESC = "Usa il miglior oggetto di questo tipo nelle borse; finita una pila, il successivo (anche in combattimento). La lista segue le borse fuori dal combattimento.",
+})
+
+-- Vibrations
+ns.AddLocale("itIT", {
+    VIBRATION_OPTION = "Vibrazione del controller (modificatore bloccabile acceso / spento, pressione lunga riconosciuta, nuovo grado inserito)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("itIT", {
+    SIMPLE_MOD_ROW = "Con un modificatore tenuto (vuoto: non fa nulla)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("itIT", {
+    HUD_LAYERS_LABEL = "Strati:",
+    HUD_DETACH = "Separati dall'HUD",
+    HUD_VERTICAL = "In colonna",
+    HUD_STRIP_COLS = "Colonne di miniature:",
+    HUD_TOOL_VERTICAL = "Strati in colonna",
+    HUD_TOOL_HORIZONTAL = "Strati in riga",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("itIT", {
+    HUD_TOOL_UNLOCK = "Sblocca: sposta l'HUD con il mouse",
+    HUD_TOOL_LOCK = "Blocca l'HUD (prima trascinalo dove vuoi)",
+    HUD_TOOL_LOCK_DETACHED = "Blocca l'HUD (prima trascina l'HUD e gli strati, ognuno al suo posto)",
+    HUD_UNLOCKED_HINT = "Sbloccato: trascina con il mouse (gli strati separati si spostano a parte). Clicca sul lucchetto per bloccare.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("itIT", {
+    HUD_TOOL_SETTINGS = "Impostazioni dell'HUD (scheda HUD): miniature separate dall'HUD, dimensione...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("itIT", {
+    HUD_HIDE_STRIP = "Nascosti",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("itIT", {
+    TAB_OPTIONS = "Opzioni",
+    ACTIONS_INTRO = "Cosa lancia ogni pulsante. Scegli uno strato a sinistra, poi metti le tue azioni nelle sue caselle a destra.",
+    OPTIONS_INTRO = "Le impostazioni generali dell'addon: ciò che non è né un pulsante, né uno strato, né la visualizzazione dell'HUD.",
+    OPTIONS_SECTION_UI = "Interfaccia",
+    HUD_SECTION_STRIP = "Miniature degli strati",
+    HUD_SECTION_PLACE = "Dimensione e posizione dell'HUD",
+    HUD_LAYOUT_LABEL = "Disposizione:",
+    TEST_OPEN = "Prova il mio controller",
+    TEST_BACK = "Torna ai pulsanti",
+    HELP_INTRO = "Scegli un argomento a sinistra. Il tutorial ripercorre tutto passo passo.",
+    HELP_PRINCIPLE = "Il principio",
+    HELP_COMMANDS = "Comandi",
+    TIP_CONTROLLER = "Scegli il tuo controller: l'addon usa i nomi dei suoi pulsanti aggiuntivi.",
+    TIP_TYPES = "Rivedere cosa fa ogni tipo di pulsante: modificatore, bersaglio, pulsante semplice, nessuno.",
+    TIP_DETECT = "Poi premi il pulsante del controller: l'addon ricorda il tasto che invia.",
+    TIP_CLEAR = "Dimentica il tasto di questo pulsante: non fa più nulla.",
+    TIP_TEST = "Vedere dal vivo cosa riceve WoW da ogni pulsante: utile se un pulsante non risponde.",
+    TIP_REPORT = "Un testo da inviare all'autore in caso di problemi (senza nome del personaggio né del reame).",
+    TIP_PROFILE_USE = "Questo profilo diventa quello in uso: il suo controller, i suoi pulsanti e le azioni di questo personaggio.",
+    TIP_PROFILE_NEW = "Un profilo vuoto, per esempio per un altro controller.",
+    TIP_PROFILE_COPY = "Un nuovo profilo, copia di quello scelto, per provare modifiche senza rischi.",
+    TIP_PROFILE_RENAME = "Cambia il nome del profilo scelto.",
+    TIP_PROFILE_DELETE = "Elimina il profilo scelto, con le azioni di tutti i tuoi personaggi per questo profilo.",
+    TIP_PROFILE_EXPORT = "Un testo da copiare, per condividere questo profilo o tenerlo da parte.",
+    TIP_PROFILE_IMPORT = "Incolla il testo di un profilo esportato (il tuo o quello di un altro giocatore).",
+    TIP_HUD_DETACH = "Le miniature lasciano l'HUD: puoi metterle dove vuoi (lucchetto dell'HUD, poi trascina).",
+    TIP_HUD_VERTICAL = "Le miniature si impilano in colonna invece che in riga.",
+    TIP_HUD_HIDDEN = "Niente più miniature: l'HUD mostra solo lo strato attuale. Gli strati si modificano nella scheda Strati.",
+    TIP_HUD_ROWS = "Su quante righe (o colonne) distribuire le miniature.",
+    TIP_HUD_STRIP_SIZE = "La dimensione delle miniature, senza cambiare il resto dell'HUD.",
+    TIP_HUD_SIZE = "La dimensione di tutto l'HUD.",
+    TIP_HUD_MOVE = "Sblocca l'HUD per trascinarlo con il mouse (come il lucchetto dell'HUD). Clicca di nuovo per bloccarlo.",
+    TIP_HUD_RESET = "Rimetti l'HUD al suo posto e alla sua dimensione d'origine (le miniature separate tornano sotto).",
+    TIP_UPRANK = "Quando impari un nuovo grado di un incantesimo, sostituisce il vecchio ovunque senza chiedere.",
+    TIP_VIBRATION = "Una breve vibrazione quando un modificatore bloccabile si accende o si spegne, e quando viene messo un nuovo grado.",
+    TIP_MINIMAP = "Il pulsante attorno alla minimappa: clic per aprire la configurazione, clic destro per spostare l'HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("itIT", {
+    WHATSNEW_1_2_0 = "• La finestra è riorganizzata nell'ordine della configurazione: Pulsanti, Strati (la vecchia scheda Azioni), HUD, Opzioni, Profili, Aiuto. Ogni impostazione ha un suggerimento, l'Aiuto ha un indice e la prova del controller si apre dalla scheda Pulsanti.\n• Nuovi gradi degli incantesimi: quando ne impari uno, l'addon propone di sostituire il vecchio ovunque (o lo fa da solo, scheda Opzioni). /mgir rangs controlla tutto il libro degli incantesimi.\n• Consumabili intelligenti (menu di una casella): la tua migliore pozione, cibo, bevanda o benda, aggiornata da sola.\n• Gli incantesimi che questo personaggio non conosce sono in rosso; «Modelli e specializzazioni...» può rimuoverli.\n• Un campo cerca un'azione in tutti i tuoi strati.\n• Nuove azioni di base: bersaglio precedente, assistere, focus, seguire, aprire le borse, smontare, cavalcatura preferita a caso.\n• HUD: pulsantini al passaggio del mouse (lucchetto per spostarlo, riga o colonna, impostazioni); le miniature possono essere separate dall'HUD, in colonna o nascoste. L'HUD è sempre visibile.\n• A, B, X e Y di «Da solo» mostrano l'azione del gioco, e la pagina di un pulsante semplice la sua casella in ogni modificatore.\n• Vibrazioni del controller, se il gioco lo permette.",
+    WHATSNEW_FEEDBACK = "Un bug, un'idea, qualcosa che non va? Dimmelo: ogni commento aiuta a migliorare l'addon. Copia questo link (Ctrl+C) per scrivere su GitHub:",
 })

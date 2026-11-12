@@ -105,10 +105,8 @@ ns.AddLocale("deDE", {
 
 -- HUD
 ns.AddLocale("deDE", {
-    HUD_UNLOCKED = "HUD entsperrt: Ziehe es mit der Maus. Gib erneut /mgir hud ein, um es zu sperren.",
+    HUD_UNLOCKED = "HUD entsperrt: Ziehe es mit der Maus (getrennte Miniaturen bewegen sich separat). Zum Sperren: das Schloss am HUD, oder erneut /mgir hud.",
     HUD_LOCKED = "HUD gesperrt.",
-    HUD_ON = "HUD angezeigt: Es ersetzt die Controller-Leiste des Spiels.",
-    HUD_OFF = "HUD ausgeblendet: Die Controller-Leiste des Spiels ist zurück. Gib /mgir hud on ein, um es wieder anzuzeigen.",
     HUD_SCALE = "HUD-Größe: %s",
     TUTO_HUD_TITLE = "Dein Controller-HUD",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("deDE", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("deDE", {
-    HUD_STRIP_TOP = "Ebenen-Miniaturen jetzt über dem HUD. Gib /mgir hud strip ein, um zu wechseln.",
-    HUD_STRIP_BOTTOM = "Ebenen-Miniaturen jetzt unter dem HUD. Gib /mgir hud strip ein, um zu wechseln.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("deDE", {
-    TUTO_STRIP_LABEL = "Ebenen-Miniaturen:",
-    TUTO_STRIP_BOTTOM = "Unten (empfohlen)",
-    TUTO_STRIP_TOP = "Oben",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("deDE", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("deDE", {
-    TAB_ACTIONS = "Aktionen",
+    TAB_ACTIONS = "Ebenen",
     TAB_HUD = "HUD",
     SECTION_PAD = "Controller-Leiste",
     SECTION_MODS = "Modifikatoren",
@@ -167,7 +160,6 @@ ns.AddLocale("deDE", {
     LAYER_DESC_HOLD = "Halte %s und drücke dann A, B, X, Y oder das Steuerkreuz.",
     PAIRS_TITLE = "Paare (zwei gemeinsam gehaltene Modifikatoren)",
     HUD_INTRO = "Das HUD ersetzt die Controller-Leiste des Spiels: die genutzte Ebene groß, alle Ebenen als Miniatur.",
-    HUD_SHOW = "HUD anzeigen (statt der Controller-Leiste des Spiels)",
     HUD_SIZE = "Größe:",
     HUD_MOVE = "HUD verschieben",
     HUD_MOVE_DONE = "HUD sperren",
@@ -292,7 +284,7 @@ ns.AddLocale("deDE", {
     TRIGGERS_ADDON = "Addon-Modifikatoren",
     TRIGGERS_GAME = "Ebenen des Spiels",
     TRIGGERS_ADDON_DESC = "Halte LT oder RT (oder beide) und drücke A, B, X, Y oder das Steuerkreuz: die Aktionen des Addons, mit allem, was es erlaubt (selbst geschriebene Makros, WoW-Befehle). Sie ersetzen die Ebenen LT, RT und LT + RT der Controller-Leiste des Spiels; ein leeres Feld tut nichts. LB und RB bleiben unverändert.",
-    TRIGGERS_GAME_DESC = "LT und RT behalten die Ebenen der Controller-Leiste des Spiels (im Reiter Aktionen bearbeitbar).",
+    TRIGGERS_GAME_DESC = "LT und RT behalten die Ebenen der Controller-Leiste des Spiels (im Reiter Ebenen bearbeitbar).",
     TRIGGERS_COPIED = "%d Aktion(en) aus den LT/RT-Ebenen des Spiels in die des Addons übernommen.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: Addon-Modifikatoren.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("deDE", {
     TUTO_PAIRS_TITLE = "Paare: zwei gemeinsam gehaltene Tasten",
     TUTO_PAIRS_TEXT = "Halte zwei Tasten zusammen (Modifikatoren oder Zielerfassung): noch eine Ebene mit 8 Aktionen. Zwei beliebige Tasten können ein Paar bilden: L5 + R5, LT + RT, LB + LT... Hake die gewünschten an (du kannst sie später im Reiter |cffffd100Tasten|r ändern). Standard: die Paare links + rechts.",
     TUTO_ACTIONS_TITLE = "Deine Aktionen platzieren",
-    TUTO_ACTIONS_TEXT = "Im Reiter |cffffd100Aktionen|r: links alle deine Ebenen (Allein, LT, RT, deine Modifikatoren und Paare); rechts die gewählte Ebene, angeordnet wie der Controller.\n\n- Ziehe einen Zauber aus deinem Zauberbuch, einen Gegenstand aus deinen Taschen, ein Makro, ein Reittier oder ein Spielzeug auf ein Feld.\n- Oder klicke auf ein Feld: einen Zauber oder Gegenstand wählen, ein Makro schreiben, einen WoW-Befehl (Automatisch laufen...) oder eine Grundaktion (Springen, Interagieren...) wählen. Rechtsklick: leeren.\n- Die Zeile unter dem Steuerkreuz: die Felder deiner einfachen Tasten in dieser Ebene.\n\nDu kannst auch auf eine Ebenen-Miniatur im HUD klicken, um sie direkt zu bearbeiten.\n\nAktionen werden pro Charakter gespeichert; Typen und Tasten im Profil, für den ganzen Account. Alles funktioniert im Kampf; nur Änderungen im Kampf warten auf sein Ende.",
-    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD:\n\n- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte eine Taste und sie wechselt.\n- |cffffd100Miniaturen|r: alle deine Ebenen, in der Mitte die Felder deiner einfachen Tasten; die gehaltene leuchtet auf. Klicke auf eine, um sie zu bearbeiten.\n- |cffffd100In der Mitte|r: deine einfachen Tasten mit der Aktion, die sie auslösen.\n\nEinstellungen (Größe, Position, Miniaturen): Reiter |cffffd100HUD|r. |cffffd100/mgir hud off|r: zurück zur Leiste des Spiels.",
-    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben",
+    TUTO_ACTIONS_TEXT = "Im Reiter |cffffd100Ebenen|r: links alle deine Ebenen (Allein, LT, RT, deine Modifikatoren und Paare); rechts die gewählte Ebene, angeordnet wie der Controller.\n\n- Ziehe einen Zauber aus deinem Zauberbuch, einen Gegenstand aus deinen Taschen, ein Makro, ein Reittier oder ein Spielzeug auf ein Feld.\n- Oder klicke auf ein Feld: einen Zauber oder Gegenstand wählen, ein Makro schreiben, einen WoW-Befehl (Automatisch laufen...) oder eine Grundaktion (Springen, Interagieren...) wählen. Rechtsklick: leeren.\n- Die Zeile unter dem Steuerkreuz: die Felder deiner einfachen Tasten in dieser Ebene.\n\nDu kannst auch auf eine Ebenen-Miniatur im HUD klicken, um sie direkt zu bearbeiten.\n\nAktionen werden pro Charakter gespeichert; Typen und Tasten im Profil, für den ganzen Account. Alles funktioniert im Kampf; nur Änderungen im Kampf warten auf sein Ende.\n\n|cffffd100Praktisch|r:\n- Das Feld oben in der Liste sucht eine Aktion in all deinen Ebenen.\n- |cffffd100Intelligentes Verbrauchsgut|r (Feldmenü): dein bester Trank, Essen, Getränk oder Verband, aktualisiert sich selbst.\n- Ein grauer, roter Zauber: dieser Charakter kennt ihn nicht. |cffffd100Vorlagen und Spezialisierungen...|r kann sie entfernen.\n- Ein neuer Rang beim Klassenlehrer gelernt: das Addon bietet an, ihn überall statt des alten einzusetzen.",
+    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD:\n\n- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte eine Taste und sie wechselt.\n- |cffffd100Miniaturen|r: alle deine Ebenen, in der Mitte die Felder deiner einfachen Tasten; die gehaltene leuchtet auf. Klicke auf eine, um sie zu bearbeiten.\n- |cffffd100In der Mitte|r: deine einfachen Tasten mit der Aktion, die sie auslösen.\n\nEinstellungen (Größe, Position, Miniaturen): Reiter |cffffd100HUD|r.\n\nFährt die Maus über die Miniaturen, erscheinen kleine Knöpfe: das |cffffd100Schloss|r entsperrt das HUD, um es mit der Maus zu verschieben (und sperrt es wieder), ein anderer ordnet die Miniaturen in einer Zeile oder Spalte an. Ein |cffffd100Zahnrad|r öffnet den HUD-Reiter für genauere Einstellungen (vom HUD getrennte Miniaturen, Größe...).",
+    TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben\n|cffffd100/mgir rangs|r: neue Ränge deiner Zauber statt der alten einsetzen",
     SETTINGS_DESC = "Lege fest, was jede Taste deines Controllers tut: Zusatztasten (Paddles hinten, zusätzliche Trigger) und Grundtasten (LT, RT, LB, RB). Befehl: /mgir",
     BUTTONS_INTRO = "Wähle für jede Taste einen Typ: Fahre über einen Typ, um zu sehen, was er tut. In Grün: der Standardtyp der Grundtasten, der wie im Spiel funktioniert.",
     BUTTONS_TYPES_HELP = "Die Tastentypen",
@@ -448,7 +440,7 @@ ns.AddLocale("deDE", {
     PROFILE_PER_CHAR_DESC = "Beim Einloggen nimmt jeder Charakter wieder das zuletzt von ihm genutzte Profil. Ohne diese Option nehmen alle das zuletzt auf dem Account genutzte Profil.",
     REPORT_BUTTON = "Bericht kopieren",
     REPORT_TITLE = "Controller-Bericht",
-    REPORT_HINT = "Drücke zuerst jede Taste im Test-Reiter, kopiere dann diesen Text (Strg+C) und schicke ihn dem Autor des Addons, mit dem, was funktioniert und was nicht. Er hilft, die Einstellungen anderer Controller zu bestätigen. Kein Charakter- oder Realmname ist enthalten.",
+    REPORT_HINT = "Drücke zuerst jede Taste im Controller-Test, kopiere dann diesen Text (Strg+C) und schicke ihn dem Autor des Addons, mit dem, was funktioniert und was nicht. Er hilft, die Einstellungen anderer Controller zu bestätigen. Kein Charakter- oder Realmname ist enthalten.",
     WHATSNEW_TITLE = "Neues in My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Leere Felder füllen",
     QUICKFILL_DESC = "Legt Ruhestein, angelegte benutzbare Schmuckstücke und Verbrauchsgüter aus den Taschen (Tränke, Essen, Verbände, Elixiere...) in die leeren Felder dieser Ebene, außer denen, die schon da sind. Rechtsklick auf ein Feld leert es.",
@@ -458,7 +450,7 @@ ns.AddLocale("deDE", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("deDE", {
-    SLASH_HELP = "/mgir : öffnen  |  /mgir profile <Name> : Profil wechseln  |  /mgir test : Controller-Test  |  /mgir tuto : Tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : Aktionen dieses Charakters zurücksetzen  |  /mgir undo : letzte Änderung der Aktionen rückgängig machen",
+    SLASH_HELP = "/mgir : öffnen  |  /mgir profile <Name> : Profil wechseln  |  /mgir test : Controller-Test  |  /mgir tuto : Tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : Aktionen dieses Charakters zurücksetzen  |  /mgir undo : letzte Änderung der Aktionen rückgängig machen  |  /mgir rangs: niedrigere Zauberränge ersetzen",
     LEARN_PAD_REFUSED = "%s ist eine Grundtaste des Controllers: Das Addon kombiniert oder konfiguriert sie selbst. Drücke die Zusatztaste (die Taste, die ihre Software sendet).",
     RESET_CONFIRM = "Alle Aktionen dieses Charakters im aktuellen Profil löschen?",
     RESET_CONFIRM_SPEC = "Alle Aktionen dieses Charakters für die Spezialisierung „%s“ im aktuellen Profil löschen?",
@@ -521,4 +513,144 @@ ns.AddLocale("deDE", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("deDE", {
     WHATSNEW_1_1_6 = "• Schlachtzugsmarkierungen in den Grundaktionen: „Schnellmarkierung“ setzt bei jedem Druck die nächste Markierung auf dein Ziel (Totenschädel, Kreuz, Quadrat, Mond, Dreieck, Diamant, Kreis, Stern), dazu jede der 8 Markierungen einzeln und „Markierung entfernen“.\n• „Sich selbst anvisieren“ in den Grundaktionen.\n• Der Tooltip eines Zaubers zeigt seinen Rang.\n• Freundliches / feindliches Ziel: Jeder kurze Druck wechselt jetzt auch in Forever zum nächsten Ziel, und das Zielen mit dem rechten Stick reagiert sofort. Das anvisierte Ziel bleibt, wenn der Stick beim Loslassen noch geneigt ist, oder nach einem langen Druck.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("deDE", {
+    UPRANK_ASK = "Neuer Rang erlernt: %s.\n\nDen niedrigeren Rang in deinen Aktionen ersetzen?\n(%d Feld(er) des Addons, %d Feld(er) der Leisten des Spiels)",
+    UPRANK_REPLACE = "Ersetzen",
+    UPRANK_KEEP = "Behalten",
+    UPRANK_DONE = "Neuer Rang gesetzt: %d Feld(er) des Addons, %d Feld(er) der Leisten des Spiels.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("deDE", {
+    COMFORT_TITLE = "Komfort",
+    UPRANK_AUTO = "Neue Zauberränge ohne Nachfrage ersetzen (niedrigere Ränge in den Aktionen des Addons und auf den Leisten des Spiels)",
+    UPRANK_NONE = "Kein niedrigerer Rang zu ersetzen.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("deDE", {
+    GAME_targetlast = "Vorheriges Ziel",
+    GAME_assist = "Ziel assistieren",
+    GAME_focus = "Als Fokus setzen",
+    GAME_targetfocus = "Fokus anvisieren",
+    GAME_follow = "Ziel folgen",
+    GAME_openbags = "Taschen öffnen",
+    GAME_dismount = "Absitzen",
+    GAME_randommount = "Zufälliges Lieblingsreittier",
+})
+
+-- Sorts inconnus
+ns.AddLocale("deDE", {
+    SPELL_UNKNOWN = "Dieser Charakter kennt diesen Zauber nicht (Talente, andere Spezialisierung, Vorlage eines anderen Charakters): dieses Feld tut nichts.",
+    UNKNOWN_SECTION = "Unbekannte Zauber",
+    UNKNOWN_REMOVE = "Unbekannte Zauber entfernen",
+    UNKNOWN_CONFIRM = "%d Zauber, die dieser Charakter nicht kennt, aus den Aktionen von %s entfernen?",
+    UNKNOWN_REMOVED = "%d unbekannte(r) Zauber entfernt.",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("deDE", {
+    SEARCH_HINT = "Aktion suchen",
+    SEARCH_DESC = "Gib einen Teil eines Namens ein (Zauber, Gegenstand, Makro...): die Ebenen, die ihn haben, zeigen die Anzahl der Felder, und diese Felder bekommen einen goldenen Rand.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("deDE", {
+    MENU_BEST = "Intelligentes Verbrauchsgut...",
+    BEST_TITLE = "Intelligente Verbrauchsgüter",
+    KIND_best = "Intelligentes Verbrauchsgut",
+    BEST_heal = "Bester Heiltrank",
+    BEST_mana = "Bester Manatrank",
+    BEST_food = "Bestes Essen",
+    BEST_drink = "Bestes Getränk",
+    BEST_bandage = "Bester Verband",
+    BEST_NONE = "Keiner in deinen Taschen",
+    BEST_DESC = "Benutzt den besten Gegenstand dieser Art in deinen Taschen; ist ein Stapel leer, den nächsten (auch im Kampf). Die Liste folgt deinen Taschen außerhalb des Kampfes.",
+})
+
+-- Vibrations
+ns.AddLocale("deDE", {
+    VIBRATION_OPTION = "Controller-Vibration (feststellbarer Modifikator an / aus, langer Druck erkannt, neuer Rang gesetzt)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("deDE", {
+    SIMPLE_MOD_ROW = "Mit gehaltenem Modifikator (leer: tut nichts)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("deDE", {
+    HUD_LAYERS_LABEL = "Ebenen:",
+    HUD_DETACH = "Vom HUD getrennt",
+    HUD_VERTICAL = "In Spalten",
+    HUD_STRIP_COLS = "Miniaturspalten:",
+    HUD_TOOL_VERTICAL = "Ebenen in Spalten",
+    HUD_TOOL_HORIZONTAL = "Ebenen in Zeilen",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("deDE", {
+    HUD_TOOL_UNLOCK = "Entsperren: HUD mit der Maus verschieben",
+    HUD_TOOL_LOCK = "HUD sperren (zuerst an die gewünschte Stelle ziehen)",
+    HUD_TOOL_LOCK_DETACHED = "HUD sperren (zuerst HUD und Ebenen ziehen, jedes an seinen Platz)",
+    HUD_UNLOCKED_HINT = "Entsperrt: mit der Maus ziehen (getrennte Ebenen bewegen sich separat). Zum Sperren auf das Schloss klicken.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("deDE", {
+    HUD_TOOL_SETTINGS = "HUD-Einstellungen (Reiter HUD): vom HUD getrennte Miniaturen, Größe...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("deDE", {
+    HUD_HIDE_STRIP = "Ausgeblendet",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("deDE", {
+    TAB_OPTIONS = "Optionen",
+    ACTIONS_INTRO = "Was jede Taste auslöst. Wähle links eine Ebene und lege rechts deine Aktionen auf ihre Felder.",
+    OPTIONS_INTRO = "Die allgemeinen Einstellungen des Addons: was weder eine Taste noch eine Ebene noch die HUD-Anzeige ist.",
+    OPTIONS_SECTION_UI = "Oberfläche",
+    HUD_SECTION_STRIP = "Ebenen-Miniaturen",
+    HUD_SECTION_PLACE = "Größe und Position des HUD",
+    HUD_LAYOUT_LABEL = "Anordnung:",
+    TEST_OPEN = "Controller testen",
+    TEST_BACK = "Zurück zu den Tasten",
+    HELP_INTRO = "Wähle links ein Thema. Das Tutorial geht alles Schritt für Schritt durch.",
+    HELP_PRINCIPLE = "Das Prinzip",
+    HELP_COMMANDS = "Befehle",
+    TIP_CONTROLLER = "Wähle deinen Controller: das Addon übernimmt die Namen seiner Zusatztasten.",
+    TIP_TYPES = "Noch einmal sehen, was jeder Tastentyp tut: Modifikator, Ziel, einfache Taste, keiner.",
+    TIP_DETECT = "Drücke dann die Taste am Controller: das Addon merkt sich die Taste, die sie sendet.",
+    TIP_CLEAR = "Die Taste dieses Knopfes vergessen: er tut nichts mehr.",
+    TIP_TEST = "Live sehen, was WoW von jeder Taste empfängt: nützlich, wenn eine Taste nicht reagiert.",
+    TIP_REPORT = "Ein Text für den Autor bei Problemen (ohne Charakter- oder Realmnamen).",
+    TIP_PROFILE_USE = "Dieses Profil wird verwendet: sein Controller, seine Tasten und die Aktionen dieses Charakters.",
+    TIP_PROFILE_NEW = "Ein leeres Profil, zum Beispiel für einen anderen Controller.",
+    TIP_PROFILE_COPY = "Ein neues Profil als Kopie des gewählten, um Änderungen gefahrlos zu testen.",
+    TIP_PROFILE_RENAME = "Den Namen des gewählten Profils ändern.",
+    TIP_PROFILE_DELETE = "Das gewählte Profil löschen, mit den Aktionen all deiner Charaktere für dieses Profil.",
+    TIP_PROFILE_EXPORT = "Ein Text zum Kopieren, um dieses Profil zu teilen oder aufzubewahren.",
+    TIP_PROFILE_IMPORT = "Den Text eines exportierten Profils einfügen (deines oder das eines anderen Spielers).",
+    TIP_HUD_DETACH = "Die Miniaturen verlassen das HUD: du kannst sie überall platzieren (Schloss am HUD, dann ziehen).",
+    TIP_HUD_VERTICAL = "Die Miniaturen stapeln sich in Spalten statt in einer Zeile.",
+    TIP_HUD_HIDDEN = "Keine Miniaturen mehr: das HUD zeigt nur die aktuelle Ebene. Ebenen werden im Reiter Ebenen bearbeitet.",
+    TIP_HUD_ROWS = "Auf wie viele Zeilen (oder Spalten) die Miniaturen verteilt werden.",
+    TIP_HUD_STRIP_SIZE = "Die Größe der Miniaturen, ohne den Rest des HUD zu ändern.",
+    TIP_HUD_SIZE = "Die Größe des ganzen HUD.",
+    TIP_HUD_MOVE = "HUD entsperren, um es mit der Maus zu ziehen (wie das Schloss am HUD). Erneut klicken zum Sperren.",
+    TIP_HUD_RESET = "Das HUD an seinen ursprünglichen Platz und in seine Größe zurücksetzen (getrennte Miniaturen kommen darunter zurück).",
+    TIP_UPRANK = "Lernst du einen neuen Rang eines Zaubers, ersetzt er den alten überall ohne Nachfrage.",
+    TIP_VIBRATION = "Eine kurze Vibration, wenn ein feststellbarer Modifikator an- oder ausgeht und wenn ein neuer Rang gesetzt wird.",
+    TIP_MINIMAP = "Der Knopf an der Minikarte: Klick öffnet die Einstellungen, Rechtsklick verschiebt das HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("deDE", {
+    WHATSNEW_1_2_0 = "• Das Fenster ist in der Reihenfolge der Einrichtung neu geordnet: Tasten, Ebenen (der frühere Reiter Aktionen), HUD, Optionen, Profile, Hilfe. Jede Einstellung hat einen Tooltip, die Hilfe ein Inhaltsverzeichnis, und der Controller-Test öffnet sich im Reiter Tasten.\n• Neue Zauberränge: Lernst du einen, bietet das Addon an, den alten überall zu ersetzen (oder tut es selbst, Reiter Optionen). /mgir rangs prüft das ganze Zauberbuch.\n• Intelligente Verbrauchsgüter (Feldmenü): dein bester Trank, Essen, Getränk oder Verband, aktualisiert sich selbst.\n• Zauber, die dieser Charakter nicht kennt, sind rot; „Vorlagen und Spezialisierungen...“ kann sie entfernen.\n• Ein Feld sucht eine Aktion in all deinen Ebenen.\n• Neue Grundaktionen: vorheriges Ziel, assistieren, Fokus, folgen, Taschen öffnen, absitzen, zufälliges Lieblingsreittier.\n• HUD: kleine Knöpfe beim Überfahren (Schloss zum Verschieben, Zeile oder Spalte, Einstellungen); die Miniaturen können vom HUD getrennt, in Spalten oder ausgeblendet sein. Das HUD ist immer sichtbar.\n• A, B, X und Y von „Allein“ zeigen die Aktion des Spiels, und die Seite einer einfachen Taste ihr Feld in jedem Modifikator.\n• Controller-Vibrationen, wenn das Spiel sie erlaubt.",
+    WHATSNEW_FEEDBACK = "Ein Fehler, eine Idee, etwas Störendes? Sag es mir: jede Rückmeldung hilft, das Addon zu verbessern. Kopiere diesen Link (Strg+C), um auf GitHub zu schreiben:",
 })

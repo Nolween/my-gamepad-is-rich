@@ -34,7 +34,7 @@ end
 function UI.BuildTestPage(page)
     local intro = UI.Text(page, "GameFontHighlight", L.TEST_INTRO)
     intro:SetPoint("TOPLEFT", 16, -12)
-    intro:SetPoint("RIGHT", -16, 0)
+    intro:SetPoint("RIGHT", -210, 0)
     intro:SetJustifyH("LEFT")
 
     local std = UI.Text(page, "GameFontNormal", L.TEST_STANDARD)
@@ -173,6 +173,7 @@ function UI.BuildTestPage(page)
     local reportButton = UI.Button(page, L.REPORT_BUTTON, 200, 22)
     reportButton:SetPoint("TOPRIGHT", -16, -274)
     reportButton:SetScript("OnClick", OpenReport)
+    UI.Tip(reportButton, L.REPORT_BUTTON, L.TIP_REPORT)
 
     local function Push(key)
         Remember(key)

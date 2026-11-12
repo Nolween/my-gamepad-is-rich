@@ -12,6 +12,7 @@ ns.WhatsNew = W
 -- plus ancienne (clé du texte dans les Locales). Une note par version
 -- publiée : la 1.1.0 reprend tout ce qui a changé depuis la 1.0.0.
 local NOTES = {
+    { version = "1.2.0", text = "WHATSNEW_1_2_0" },
     { version = "1.1.6", text = "WHATSNEW_1_1_6" },
     { version = "1.1.5", text = "WHATSNEW_1_1_5" },
     { version = "1.1.4", text = "WHATSNEW_1_1_4" },
@@ -44,15 +45,18 @@ local function Text(since)
     return #parts > 0 and table.concat(parts, "\n\n") or nil
 end
 
+-- Où donner son avis (les tickets du dépôt), montré sous les nouveautés
+local FEEDBACK_URL = "https://github.com/Nolween/my-gamepad-is-rich/issues"
+
 local dialog
 function W.Open(since)
     local text = Text(since)
     if not text then return end
     if not dialog then
-        local d = UI.Dialog("MyGamepadIsRichWhatsNew", 540, 380, L.WHATSNEW_TITLE)
+        local d = UI.Dialog("MyGamepadIsRichWhatsNew", 540, 450, L.WHATSNEW_TITLE)
         local scroll = CreateFrame("ScrollFrame", nil, d, "UIPanelScrollFrameTemplate")
         scroll:SetPoint("TOPLEFT", 18, -44)
-        scroll:SetPoint("BOTTOMRIGHT", -36, 48)
+        scroll:SetPoint("BOTTOMRIGHT", -36, 118)
         local body = CreateFrame("Frame", nil, scroll)
         body:SetSize(540 - 18 - 36, 10)
         d.text = UI.Text(body, "GameFontHighlight")
@@ -65,6 +69,29 @@ function W.Open(since)
         local close = UI.Button(d, L.CLOSE, 120, 24)
         close:SetPoint("BOTTOM", 0, 14)
         close:SetScript("OnClick", function() d:Hide() end)
+        -- (sous les nouveautés : un avis, une idée, un bug ? Le lien à copier,
+        -- remis tel quel si on le modifie)
+        local line = d:CreateTexture(nil, "ARTWORK")
+        line:SetColorTexture(1, 0.82, 0, 0.25)
+        line:SetHeight(1)
+        line:SetPoint("BOTTOMLEFT", 18, 108)
+        line:SetPoint("BOTTOMRIGHT", -18, 108)
+        local feedback = UI.Text(d, "GameFontNormal", L.WHATSNEW_FEEDBACK)
+        feedback:SetPoint("BOTTOMLEFT", 20, 74)
+        feedback:SetPoint("RIGHT", -20, 0)
+        feedback:SetJustifyH("LEFT")
+        local link = CreateFrame("EditBox", nil, d, "InputBoxTemplate")
+        link:SetSize(540 - 60, 20)
+        link:SetPoint("BOTTOM", 0, 48)
+        link:SetAutoFocus(false)
+        link:SetText(FEEDBACK_URL)
+        link:SetCursorPosition(0)
+        link:SetScript("OnTextChanged", function(self, user)
+            if user then self:SetText(FEEDBACK_URL) self:HighlightText() end
+        end)
+        link:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+        link:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
+        link:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
         dialog = d
     end
     dialog.text:SetText(text)

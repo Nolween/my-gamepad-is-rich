@@ -1,5 +1,37 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.2.0
+
+### Fenêtre de configuration
+- **Onglets dans l'ordre de la configuration** : Boutons, Couches, HUD, Options, Profils, Aide, Soutenir. La fenêtre s'ouvre sur Boutons la première fois, puis sur le dernier onglet utilisé.
+- L'onglet **Actions** devient **Couches**, comme partout ailleurs dans l'addon.
+- Chaque onglet commence par une phrase qui dit à quoi il sert, et chaque réglage a une info-bulle.
+- Nouvel onglet **Options** : section Confort (nouveaux rangs de sorts, vibrations) et section Interface (bouton de la minimap). L'onglet **HUD** ne garde que l'affichage, en deux sections : Miniatures des couches, et Taille et position du HUD.
+- Le **test de la manette** n'est plus un onglet : « Tester ma manette » l'ouvre depuis l'onglet Boutons (`/mgir test` aussi).
+- L'onglet **Aide** a un sommaire : le principe, chaque étape du tutoriel, les commandes.
+- Le tutoriel présente les nouveautés ci-dessous (recherche, consommables intelligents, sorts inconnus, nouveaux rangs, petits boutons du HUD, `/mgir rangs`).
+- La fenêtre des nouveautés invite à donner son avis, avec le lien des tickets GitHub à copier.
+
+### Couches et actions
+- **Nouveaux rangs de sorts** : quand on apprend un rang chez le maître de classe, l'addon repère le rang inférieur posé dans ses couches et sur les barres du jeu, et propose de le remplacer partout. Option pour le faire sans demander (onglet Options) ; `/mgir rangs` vérifie tout le grimoire. Un rang choisi exprès garde son rang.
+- **Consommables intelligents** (menu d'une case, aussi sur le HUD) : meilleure potion de soins ou de mana, nourriture, boisson, bandage. La case lance le meilleur objet des sacs utilisable à ce niveau, puis le suivant quand la pile est finie, combat compris.
+- **Sorts inconnus** : un sort que ce personnage ne connaît pas est grisé et rouge (onglet Couches et HUD). « Modèles et spés… » propose de retirer ces sorts (`/mgir undo` les remet).
+- **Chercher une action** : un champ en haut de la liste des couches. Les couches qui l'ont montrent combien de cases, les cases trouvées ont un bord doré.
+- **Nouvelles actions de base** : cible précédente, assister la cible, mettre en focus, cibler le focus, suivre la cible, ouvrir les sacs, descendre de monture, monture favorite au hasard.
+- **Seul** : A, B, X et Y montrent l'action du jeu (icône et nom, lu dans l'info-bulle de Forever) au lieu de « Jeu », dans l'onglet Couches et sur le HUD.
+- La page d'un **bouton simple** montre aussi sa case dans chaque couche de modificateur, de ciblage et de paire. Une case vide y affiche « Vide » (elle ne fait rien), et non plus « Habituel ».
+
+### HUD
+- **Petits boutons au survol** : le cadenas déverrouille le HUD pour le glisser à la souris, un autre met les miniatures en ligne ou en colonne, l'engrenage ouvre l'onglet HUD.
+- Les miniatures des couches peuvent être **séparées du HUD** (placées où on veut), **en colonne**, ou **cachées**. Le HUD principal ne bouge pas quand on change ces réglages.
+- Le HUD est toujours affiché : la case « Afficher le HUD » et `/mgir hud on / off` disparaissent. Le choix « miniatures en haut / en bas » aussi, remplacé par les miniatures séparées.
+
+### Manette
+- **Vibrations** (si le jeu les permet, voir `/mgir etat`) : une quand un modificateur verrouillable s'allume, deux quand il s'éteint, une quand un nouveau rang est posé. Option dans l'onglet Options.
+
+### Corrections
+- La mesure de durée d'un appui (boutons de ciblage) est vérifiée à nouveau si un écran de chargement l'a fait échouer au lancement, au lieu de conclure qu'elle est impossible.
+
 ## 1.1.6
 
 ### Actions

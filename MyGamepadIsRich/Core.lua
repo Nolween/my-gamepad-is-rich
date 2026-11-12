@@ -686,6 +686,8 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.UI.Confirm(text, function()
             if ns.Profiles.SetActions({}) then ns.Print(L.RESET_DONE .. " " .. L.UNDO_HINT) end
         end)
+    elseif msg == "rangs" or msg == "ranks" then
+        ns.Uprank.CheckAll()
     elseif msg == "undo" or msg == "annuler" then
         ns.Profiles.Undo()
     elseif msg == "help" or msg == "?" then

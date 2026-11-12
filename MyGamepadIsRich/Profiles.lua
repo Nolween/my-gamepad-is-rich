@@ -52,6 +52,8 @@ local function FillActions(actions)
         if type(a) == "table" then
             a.combos = a.combos or {}
             a.layers = a.layers or {}
+            -- (appui long d'une version de test, retiré)
+            a.holds = nil
         end
     end
     return actions

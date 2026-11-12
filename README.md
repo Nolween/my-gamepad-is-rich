@@ -76,25 +76,29 @@ La solution : les programmer dans le logiciel de la manette (ou Steam Input) pou
 
 Au premier lancement (et une fois après la mise à jour qui l'a refait), un **tutoriel** s'ouvre : le principe des couches, le choix de la manette, **les 4 types de boutons** (Modificateur, Cible alliée / ennemie, Bouton simple, Désactivé) expliqués en cartes, les boutons de base (types par défaut en vert), puis — seulement si la manette a des boutons en plus — le logiciel, la détection et le type de ces boutons ; ensuite les paires à cocher, la pose des actions et le HUD. Tout se règle directement dans la fenêtre. On peut le revoir avec `/mgir tuto`, depuis l'onglet Aide, ou ouvrir l'explication des types avec le bouton « Les types de boutons » de l'onglet Boutons. La page de l'addon dans Options > AddOns reprend aussi cette explication.
 
-La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
+La fenêtre (`/mgir` ou le bouton de la minimap) est organisée dans l'ordre de la configuration, de gauche à droite ; chaque onglet commence par une phrase qui dit à quoi il sert, et chaque réglage a une info-bulle. Elle rouvre sur le dernier onglet utilisé.
 
 | Onglet | Rôle |
 |---|---|
-| **Actions** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. Une commande WoW ou une macro écrite à la main peut prendre l'icône de son choix (menu de la case, **Changer l'icône...** : icônes du jeu, ou celle d'un sort ou d'un objet cherché par son nom). Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
-| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**, qui refuse A/B/X/Y, la croix et LT/RT/LB/RB), mode, et **Verrouillable** pour un modificateur. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. |
+| **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**, qui refuse A/B/X/Y, la croix et LT/RT/LB/RB), mode, et **Verrouillable** pour un modificateur. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. **Tester ma manette** ouvre la vue de test : ce que WoW reçoit de chaque bouton, et **Copier un rapport**, un texte à envoyer à l'auteur (manette choisie, touche et mode de chaque bouton, ce que WoW en a reçu, version du jeu ; ni nom de personnage ni royaume). |
+| **Couches** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. En haut de la liste, un champ **cherche une action** dans toutes les couches. La page d'un bouton simple montre aussi sa case dans chaque couche de modificateur, de ciblage et de paire. Une commande WoW ou une macro écrite à la main peut prendre l'icône de son choix (menu de la case, **Changer l'icône...** : icônes du jeu, ou celle d'un sort ou d'un objet cherché par son nom). Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
+| **HUD** | L'affichage du HUD, en deux sections : **Miniatures des couches** (séparées du HUD, en colonne ou cachées ; taille ; lignes ou colonnes) et **Taille et position du HUD** (taille, déplacer, position d'origine). À droite, l'ordre des miniatures. |
+| **Options** | Les réglages généraux : **Confort** (nouveaux rangs de sorts remplacés sans demander, vibrations de la manette) et **Interface** (bouton de la minimap). |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. Option « Retenir le profil de chaque personnage ». |
-| **HUD** | Afficher le HUD, miniatures en bas / en haut, taille, ordre des miniatures, déplacer, bouton de la minimap. |
-| **Test manette** | Ce que WoW reçoit de chaque bouton. **Copier un rapport** : un texte à envoyer à l'auteur (manette choisie, touche et mode de chaque bouton, ce que WoW en a reçu, version du jeu ; ni nom de personnage ni royaume), pour confirmer les préréglages des manettes non testées. |
-| **Aide** | Les textes du tutoriel (pour la manette choisie), et un bouton pour le relancer. |
+| **Aide** | Un sommaire à gauche (le principe, chaque étape du tutoriel pour la manette choisie, les commandes), la section choisie à droite, et un bouton pour relancer le tutoriel. |
 
 **État des actions sur le HUD** : les actions de l'addon s'affichent comme sur les barres du jeu. Elles sont rouges hors de portée de la cible, bleues sans assez de ressource (mana, énergie…) et grises si elles sont inutilisables. Le bord est doré pendant un proc, les charges restantes s'affichent, et la case s'allume pendant une action en cours (attaque automatique, forme…). Une information que le jeu rend secrète n'est pas affichée (la case reste normale).
 
 **Ordre des miniatures du HUD** : dans l'onglet HUD, les flèches montent ou descendent une couche ; sur le HUD, on peut aussi glisser une miniature sur une autre (hors combat). « Ordre d'origine » remet l'ordre de l'interface. Une couche ajoutée plus tard (nouveau modificateur, paire cochée) se place après sa voisine habituelle ; une couche retirée garde sa place pour son retour. L'ordre fait partie des réglages du HUD (export / import compris).
 
+**Petits boutons du HUD** (à côté des miniatures, quand la souris passe sur le HUD) : le **cadenas** déverrouille le HUD pour le glisser à la souris (les miniatures séparées se glissent à part), puis le verrouille ; un autre met les miniatures **en ligne ou en colonne** ; l'**engrenage** ouvre l'onglet HUD de la configuration pour les réglages précis.
+
+**Miniatures séparées ou en colonne** : dans l'onglet HUD (section « Miniatures des couches », ligne « Disposition »). **Séparées**, elles se placent où on veut (cadenas, puis glisser) ; elles suivent l'affichage et la taille du HUD. **En colonne**, elles s'empilent sur 1 à 3 colonnes ; attachées au HUD, elles vont alors à sa droite (en ligne : sous le HUD). **Cachées**, le HUD ne montre plus que la couche active (le cadenas et l'engrenage passent dans son coin) ; les couches se modifient alors dans l'onglet Couches. La couche active ne bouge pas quand on change ces réglages. « Remettre position et taille d'origine » ramène aussi les miniatures séparées sous le HUD.
+
 **La couche « Seul »** (rien de maintenu) accepte tout :
 - Un sort, un objet, une monture ou une macro de la liste va dans la barre du jeu, comme avec son éditeur.
 - Une macro écrite à la main, une commande WoW ou un ensemble d'équipement va dans une couche de l'addon, qui ne prend que les cases remplies. Les autres restent au jeu.
-- **A, B, X et Y** gardent les actions du jeu (sauter, interagir…) tant qu'on n'y met rien. Une action posée dessus les remplace, et vider la case rend l'action du jeu.
+- **A, B, X et Y** gardent les actions du jeu (sauter, interagir…) tant qu'on n'y met rien : l'onglet Couches les montre avec leur icône et leur nom. Une action posée dessus les remplace, et vider la case rend l'action du jeu.
 
 **Actions de base** (menu d'une case, « Action de base… ») : les actions de Forever sur A/B/X/Y, à poser où on veut. Une action posée par l'addon reste en place même quand Forever change le rôle d'un bouton selon le contexte (X qui devient « interagir » près d'un PNJ). Elles sont refaites avec le jeu :
 
@@ -106,6 +110,13 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée par tâche :
 | Attaque automatique | `/startattack` |
 | Interagir | commande WoW « Interagir avec la cible » |
 | Se cibler soi-même | `/target player` |
+| Cible précédente | `/targetlasttarget` |
+| Assister la cible | `/assist` (prend la cible de ta cible) |
+| Mettre en focus / Cibler le focus | `/focus`, `/target focus` |
+| Suivre la cible | `/follow` |
+| Ouvrir les sacs | comme la commande « Ouvrir tous les sacs », en macro (possible sur toutes les cases) |
+| Descendre de monture | `/dismount` |
+| Monture favorite au hasard | une monture favorite du journal des montures, au hasard (seulement si le jeu a ce journal) |
 | Marquage rapide | pose le marqueur suivant sur la cible à chaque appui : crâne, croix, carré, lune, triangle, losange, cercle, étoile, puis on recommence (`/tm`) |
 | Marquer : Crâne… Étoile | un marqueur précis sur la cible (`/tm 8` … `/tm 1`) ; un nouvel appui sur la même cible le retire |
 | Retirer le marqueur | `/tm 0` |
@@ -118,7 +129,7 @@ La manette, les touches et les modes sont enregistrés pour tout le compte, dans
 
 ### Modèles de classe et copie de spé
 
-Le bouton **Modèles et spés…** (sous la liste des couches de l'onglet Actions) remplace d'un coup toutes les actions de la spé active, après confirmation :
+Le bouton **Modèles et spés…** (sous la liste des couches de l'onglet Couches) remplace d'un coup toutes les actions de la spé active, après confirmation :
 - **Enregistrer comme modèle** : les actions de la spé active, gardées pour tout le compte sous un nom, pour la classe du personnage (ni nom de personnage ni royaume). Les actions laissées sur la barre du jeu n'en font pas partie.
 - **Charger un modèle** : sur n'importe quel personnage de la même classe.
 - **Copier depuis une spé** : les actions d'une autre spé déjà jouée par ce personnage dans ce profil.
@@ -127,6 +138,35 @@ Le bouton **Modèles et spés…** (sous la liste des couches de l'onglet Action
 `/mgir undo` revient en arrière après un chargement, une copie de spé, une copie ou un échange de couches, ou un `/mgir reset` (une étape, pour la même spé ; le refaire annule l'annulation).
 
 Changer de manette (dans un profil) remet les noms et les modes conseillés de la nouvelle manette. Les touches et les actions de ses boutons restent. Un bouton de l'ancienne manette qui n'existe pas sur la nouvelle est vidé et désactivé.
+
+### Nouveaux rangs de sorts
+
+Quand tu apprends un nouveau rang (chez le maître de classe…), l'addon cherche le rang inférieur de ce sort dans ses actions (toutes les couches, tous les profils et toutes les spés du personnage) et sur les barres du jeu (barre manette de Forever comprise), puis demande s'il faut le remplacer (**Remplacer** / **Garder**). Plusieurs sorts achetés d'affilée donnent une seule question.
+- Un rang inférieur choisi exprès dans l'addon (« Nom (Rang 1) » dans la liste des sorts) n'est pas proposé.
+- Rien ne change en combat : la question ou le remplacement attendent la fin du combat.
+- Option **Remplacer les nouveaux rangs de sorts sans demander** (onglet Options, section Confort).
+- `/mgir rangs` fait la même vérification pour tout le grimoire, par exemple pour des rangs appris avant cette version.
+
+### Consommables intelligents
+
+Menu d'une case, **Consommable intelligent…** : **Meilleure potion de soins**, **de mana**, **Meilleure nourriture**, **boisson**, **Meilleur bandage**. La case utilise le meilleur objet de ce type présent dans les sacs : utilisable à ton niveau, niveau requis le plus haut d'abord.
+- Sa macro essaie jusqu'à 5 objets, du meilleur au moins bon. Quand une pile est finie en combat, la suivante part toute seule (le temps de recharge commun des potions empêche d'en boire deux).
+- La liste suit les sacs hors combat : un nouvel objet ou une pile finie la met à jour à la fin du combat.
+- L'icône, l'info-bulle et le nombre en stock sont ceux de l'objet qui partira. Sans objet de ce type dans les sacs, la case ne fait rien.
+- Le type d'un objet vient de son sort, comparé aux sorts du jeu (Potion de soins, Rendre le mana, Nourriture, Boisson) ; les bandages par leur catégorie.
+- **Remplir les cases vides** pose ces consommables intelligents avant les objets un par un.
+
+### Sorts inconnus
+
+Un sort posé que ce personnage ne connaît pas (autres talents, autre spé, modèle chargé depuis un personnage plus haut niveau) est grisé et teinté de rouge, dans l'onglet Couches comme sur le HUD, avec une ligne dans l'info-bulle. Le menu **Modèles et spés…** propose alors **Retirer les sorts inconnus** (spé active, après confirmation ; `/mgir undo` revient en arrière). Un sort sans rang choisi compte comme connu si un rang de ce sort est dans le grimoire.
+
+### Chercher une action
+
+Le champ en haut de la liste des couches (onglet Couches) cherche une action par son nom (sort, objet, macro…) dans toutes les couches. Chaque couche montre combien de cases l'ont, les autres sont estompées, et les cases trouvées ont un bord doré. Échap vide la recherche.
+
+### Vibrations
+
+Si le jeu sait faire vibrer la manette (`C_GamePad.SetVibration`, voir `/mgir etat`), l'option **Vibrations de la manette** (onglet Options, section Confort, cochée par défaut) donne un petit retour : une vibration quand un modificateur verrouillable s'allume, deux quand il s'éteint, une quand un nouveau rang de sort est posé.
 
 ## Modes de ciblage
 
@@ -181,17 +221,16 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir` (ou l'ancien `/gps`) | Ouvrir / fermer la fenêtre |
 | `/mgir profil <nom>` (ou `profile`) | Utiliser le profil de ce nom |
 | `/mgir profils` (ou `profiles`) | Ouvrir l'onglet Profils |
-| `/mgir test` | Ouvrir l'onglet Test manette |
+| `/mgir test` | Ouvrir le test de la manette (onglet Boutons, « Tester ma manette ») |
 | `/mgir tuto` | Revoir le tutoriel |
 | `/mgir news` (ou `nouveautes`) | Revoir les nouveautés (la fenêtre s'ouvre seule une fois après chaque mise à jour) |
 | `/mgir hud` | Déverrouiller / verrouiller le HUD pour le déplacer à la souris |
 | `/mgir hud scale 1.2` | Taille du HUD (0.5 à 2) |
-| `/mgir hud off` / `on` | Revenir à la barre manette du jeu / réafficher le HUD |
-| `/mgir hud strip` | Miniatures des couches sous le HUD (par défaut) ou au-dessus (aussi dans le tutoriel) |
 | `/mgir minimap` | Masquer / remontrer le bouton autour de la minimap |
 | `/mgir hud reset` | Remettre le HUD à sa place et à sa taille d'origine |
 | `/mgir reset` | Vider les actions du personnage courant pour la spé active (dans le profil utilisé), après confirmation |
 | `/mgir undo` (ou `annuler`) | Revenir aux actions d'avant le dernier remplacement (reset, modèle, copie de spé, copie / échange de couches) |
+| `/mgir rangs` (ou `ranks`) | Chercher les rangs inférieurs de sorts posés dans l'addon et sur les barres du jeu, et proposer de les remplacer par le rang le plus haut (voir [Nouveaux rangs](#nouveaux-rangs-de-sorts)) |
 | `/mgir restore` | Rendre LT, RT, LB, RB au jeu et remettre leur imitation de Maj / Ctrl (plus nécessaire avant de désactiver l'addon : c'est fait à chaque déconnexion) |
 | `/mgir etat` (ou `state`) | Afficher dans le chat l'état des couches (boutons tenus, barre active de Forever, liaisons de A, LT, RT, LB, RB), à taper quand une couche semble bloquée. Les derniers changements d'état sont aussi gardés dans `MyGamepadIsRichDB.diagLog` (écrit au `/reload`), pour un rapport de bug |
 | `/mgir selftest` | Outil de développement : vérifie l'export / import (aller-retour du profil utilisé, chaînes abîmées ou forgées) |
@@ -213,7 +252,7 @@ Un raccourci « Ouvrir la configuration » existe aussi dans Options › Raccour
 
 - Une **commande WoW** ne peut pas être sur une couche LT/RT, ni sur la couche « Seul » d'un bouton qui a des couches LT/RT. En mode Modificateur, elle marche partout.
 - Avec deux modificateurs maintenus en même temps, c'est le dernier pressé qui l'emporte, sauf s'ils forment une paire cochée : leur couche de paire s'active (avec trois tenus ou plus : le dernier pressé et le plus récent des autres qui fait paire avec lui).
-- **LB + LT et RB + RT déclenchent toujours l'action de classe de Forever** (souvent une roue de sorts, par exemple chez le paladin), même quand ces boutons appartiennent à l'addon : Forever détecte lui-même ces deux boutons tenus ensemble, par un chemin interne que l'addon ne peut pas intercepter. La roue prend la main sur A, B, X et Y tant qu'elle est ouverte (B pour la fermer). Ces deux paires restent cochables, mais l'addon prévient partout (onglet Boutons, onglet Actions, chat, tutoriel, options) : mieux vaut choisir d'autres paires. Pendant une paire, l'addon n'allume plus le ciblage du moteur (la visée au stick d'un bouton de ciblage), pour ne pas s'en mêler.
+- **LB + LT et RB + RT déclenchent toujours l'action de classe de Forever** (souvent une roue de sorts, par exemple chez le paladin), même quand ces boutons appartiennent à l'addon : Forever détecte lui-même ces deux boutons tenus ensemble, par un chemin interne que l'addon ne peut pas intercepter. La roue prend la main sur A, B, X et Y tant qu'elle est ouverte (B pour la fermer). Ces deux paires restent cochables, mais l'addon prévient partout (onglet Boutons, onglet Couches, chat, tutoriel, options) : mieux vaut choisir d'autres paires. Pendant une paire, l'addon n'allume plus le ciblage du moteur (la visée au stick d'un bouton de ciblage), pour ne pas s'en mêler.
 - Si Forever bascule l'interface en mode clavier/souris quand une palette envoie une touche, merci de le signaler : une option pourra forcer le style manette.
 - Improved Forever peut aussi poser des liaisons sur certaines touches. En cas de conflit, c'est la dernière liaison appliquée qui gagne.
 

@@ -236,6 +236,11 @@ local function CleanAction(a)
     elseif k == "game" then
         -- (une action de base connue : sa commande ou sa macro vient de l'addon)
         if type(a.id) == "string" and ns.Actions.GameDef(a.id) then return { kind = k, id = a.id } end
+    elseif k == "best" then
+        -- (un consommable intelligent : un type connu, la macro vient de l'addon)
+        for _, cat in ipairs(ns.Actions.BEST_CATS) do
+            if a.cat == cat then return { kind = k, cat = cat } end
+        end
     elseif k == "command" then
         local c = a.command
         if type(c) == "string" and #c <= 64 and c:match("^[%w_]+$") and KnownCommand(c) then
@@ -447,7 +452,10 @@ function S.SelfTest()
             PAD4 = { kind = "command", command = "NOT_A_BINDING" },
             PAD5 = { kind = "command", command = "JUMP", icon = 136243 },
             PAD6 = { kind = "macrotext", text = "/dance", icon = "Interface\\Icons\\X|cffff0000" },
-        }, layers = { nope = { kind = "item", id = 6948 } } }, ZZ = { combos = {} } },
+            PADDUP = { kind = "best", cat = "heal" },
+            PADDDOWN = { kind = "best", cat = "evil" },
+        }, layers = { nope = { kind = "item", id = 6948 } },
+            holds = { lt = { kind = "spell", id = 133 } } }, ZZ = { combos = {} } },
         hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 },
             order = { "bar:topBar", "evil", "mod:L5", "mod:L5", "bar:nope", "mod:ZZ", 7, "mod:L5R5" } },
         pads = { LB = "target_friend", RB = "evil", LT = 5, XX = "modifier" },
@@ -469,7 +477,10 @@ function S.SelfTest()
         Check(combos.PAD5 and combos.PAD5.icon == 136243, "icon kept")
         Check(combos.PAD6 and combos.PAD6.icon == nil, "forged icon dropped")
         Check(next(d.actions.L5.layers) == nil and d.actions.ZZ == nil, "forged layers")
-        Check(d.hud.scale == 2 and d.hud.strip == "bottom" and d.hud.pos == nil, "forged hud")
+        Check(combos.PADDUP and combos.PADDUP.cat == "heal" and combos.PADDDOWN == nil, "smart consumables")
+        -- (l'appui long d'une version de test, retiré : ignoré)
+        Check(d.actions.L5.holds == nil, "old holds dropped")
+        Check(d.hud.scale == 2 and d.hud.strip == nil and d.hud.pos == nil, "forged hud")
         Check(Serialize(d.hud.order) == Serialize({ "bar:topBar", "mod:L5", "mod:L5R5" }), "forged hud order")
     end
 

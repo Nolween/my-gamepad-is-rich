@@ -252,6 +252,8 @@ local function Handler(id)
             elseif not self.isDown then
                 self.isDown = true
                 SetHeld(id, not held[id])
+                -- (une vibration : allumé ; deux : éteint)
+                if ns.Rumble then ns.Rumble.Play(held[id] and "on" or "off") end
             end
         else
             SetHeld(id, down)
@@ -565,7 +567,14 @@ end
 -- La surveillance d'unité cache-t-elle le cadre à chaque passage, et à quel
 -- rythme ? Vérifié une fois, hors combat : le cadre montré, armé pour 3
 -- passages ; une seconde plus tard, il doit avoir été caché 3 fois
+-- Un échec peut venir d'un écran de chargement (la surveillance ne passe pas
+-- pendant qu'il est affiché) : vérifié à nouveau quelques secondes plus
+-- tard, jusqu'à WATCH_TRIES fois, avant de conclure qu'elle ne marche pas.
 local watchWorks
+local WATCH_TRIES = 4
+local watchTries = 0
+local hides = {}
+local hooked
 local function WatchWorks()
     if watchWorks == nil and not InCombatLockdown() and RegisterUnitWatch then
         local ok, f = pcall(TapWatch, "Probe")
@@ -573,8 +582,11 @@ local function WatchWorks()
             watchWorks = false
             return watchWorks
         end
-        local hides = {}
-        f:HookScript("OnHide", function() hides[#hides + 1] = GetTime() end)
+        watchTries = watchTries + 1
+        if not hooked then
+            hooked = true
+            f:HookScript("OnHide", function() hides[#hides + 1] = GetTime() end)
+        end
         local okRun = pcall(function()
             f:SetAttribute("gps-armed", nil)
             f:Hide()
@@ -595,10 +607,17 @@ local function WatchWorks()
                         ns.Diag.Log(("surveillance d'unité : passage %.2f s, %d passages"):format(period, WatchPasses()))
                     end
                 else
-                    watchWorks = false
                     if ns.Diag then
-                        ns.Diag.Log(("surveillance d'unité : %d passage(s) compté(s) sur 3"):format(count))
+                        ns.Diag.Log(("surveillance d'unité : %d passage(s) compté(s) sur 3 (essai %d)")
+                            :format(count, watchTries))
                     end
+                    -- (encore un essai dans 3 s : Apply relance la vérification)
+                    if watchTries < WATCH_TRIES then
+                        watchWorks = nil
+                        C_Timer.After(3, function() ns.Apply(true) end)
+                        return
+                    end
+                    watchWorks = false
                 end
                 -- (refait les boutons de ciblage : rythme mesuré, ou autre mode)
                 ns.Apply(true)

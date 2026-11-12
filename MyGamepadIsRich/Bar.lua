@@ -179,6 +179,18 @@ function B.SetView(bar, i, action)
     return ok, err
 end
 
+-- Le nom de l'action du jeu sur la case i (sauter...), d'après la liaison
+-- de sa touche sans celles de l'addon ; nil si le jeu ne la nomme pas
+function B.GameActionName(i)
+    local key = B.PAD_KEYS[i]
+    if not (key and GetBindingAction) then return nil end
+    local ok, command = pcall(GetBindingAction, key, false)
+    if not ok or type(command) ~= "string" or command == "" then return nil end
+    if issecretvalue and issecretvalue(command) then return nil end
+    local name = _G["BINDING_NAME_" .. command]
+    if type(name) == "string" and not (issecretvalue and issecretvalue(name)) and name ~= "" then return name end
+end
+
 -- Une case réservée au jeu sans action de l'addon (A/B/X/Y de « Seul »)
 function B.ShowsGameAction(bar, i)
     return bar == B.BASE_BAR and B.IsGameSlot(bar, i) and not B.Override(i)

@@ -105,10 +105,8 @@ ns.AddLocale("zhTW", {
 
 -- HUD
 ns.AddLocale("zhTW", {
-    HUD_UNLOCKED = "HUD 已解鎖：用滑鼠拖曳。再次輸入 /mgir hud 鎖定。",
+    HUD_UNLOCKED = "HUD 已解鎖：用滑鼠拖曳（分離的縮圖單獨移動）。鎖定：點擊 HUD 上的鎖，或再次輸入 /mgir hud。",
     HUD_LOCKED = "HUD 已鎖定。",
-    HUD_ON = "HUD 已顯示：它取代遊戲的手把快捷列。",
-    HUD_OFF = "HUD 已隱藏：遊戲的手把快捷列已恢復。輸入 /mgir hud on 重新顯示。",
     HUD_SCALE = "HUD 大小：%s",
     TUTO_HUD_TITLE = "你的手把 HUD",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("zhTW", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("zhTW", {
-    HUD_STRIP_TOP = "各層縮圖現在位於 HUD 上方。輸入 /mgir hud strip 切換。",
-    HUD_STRIP_BOTTOM = "各層縮圖現在位於 HUD 下方。輸入 /mgir hud strip 切換。",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("zhTW", {
-    TUTO_STRIP_LABEL = "各層縮圖：",
-    TUTO_STRIP_BOTTOM = "下方（建議）",
-    TUTO_STRIP_TOP = "上方",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("zhTW", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("zhTW", {
-    TAB_ACTIONS = "動作",
+    TAB_ACTIONS = "層",
     TAB_HUD = "HUD",
     SECTION_PAD = "手把快捷列",
     SECTION_MODS = "修飾鍵",
@@ -167,7 +160,6 @@ ns.AddLocale("zhTW", {
     LAYER_DESC_HOLD = "按住 %s，再按 A、B、X、Y 或十字鍵。",
     PAIRS_TITLE = "組合（同時按住兩個修飾鍵）",
     HUD_INTRO = "HUD 取代遊戲的手把快捷列：正在使用的層放大顯示，所有層以縮圖顯示。",
-    HUD_SHOW = "顯示 HUD（代替遊戲的手把快捷列）",
     HUD_SIZE = "大小：",
     HUD_MOVE = "移動 HUD",
     HUD_MOVE_DONE = "鎖定 HUD",
@@ -292,7 +284,7 @@ ns.AddLocale("zhTW", {
     TRIGGERS_ADDON = "插件修飾鍵",
     TRIGGERS_GAME = "遊戲的層",
     TRIGGERS_ADDON_DESC = "按住 LT 或 RT（或兩者）再按 A、B、X、Y 或十字鍵：觸發插件的動作，支援插件的全部功能（手寫巨集、WoW 指令）。它們取代遊戲手把快捷列的 LT、RT 和 LT + RT 層；空格子不執行任何動作。LB 和 RB 不變。",
-    TRIGGERS_GAME_DESC = "LT 和 RT 保留遊戲手把快捷列的層（可在「動作」分頁編輯）。",
+    TRIGGERS_GAME_DESC = "LT 和 RT 保留遊戲手把快捷列的層（可在「層」分頁編輯）。",
     TRIGGERS_COPIED = "已將遊戲 LT / RT 層中的 %d 個動作複製到插件的層。",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT：插件修飾鍵。",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("zhTW", {
     TUTO_PAIRS_TITLE = "組合：同時按住兩個按鍵",
     TUTO_PAIRS_TEXT = "同時按住兩個按鍵（修飾鍵或目標選擇）：再多一層 8 個動作。任意兩個都能組成組合：L5 + R5、LT + RT、LB + LT……勾選你想要的（之後可在 |cffffd100按鍵|r 分頁中更改）。預設：左 + 右組合。",
     TUTO_ACTIONS_TITLE = "放置你的動作",
-    TUTO_ACTIONS_TEXT = "在 |cffffd100動作|r 分頁：左邊是你所有的層（單獨、LT、RT、你的修飾鍵和組合）；右邊是所選的層，按手把配置排列。\n\n- 從法術書拖入法術，從背包拖入物品、巨集、坐騎或玩具到格子上。\n- 或點擊格子：選擇法術或物品、編寫巨集、選擇 WoW 指令（自動奔跑……）或基礎動作（跳躍、互動……）。右鍵：清空。\n- 十字鍵下方那一列：你的一般按鍵在該層中的格子。\n\n你也可以點擊 HUD 上的層縮圖直接編輯。\n\n動作按角色儲存；類型和按鍵儲存在設定檔中，整個帳號通用。所有功能在戰鬥中都能使用；只有在戰鬥中做的修改會等到戰鬥結束後生效。",
-    TUTO_HUD_TEXT = "插件用自己的 HUD 取代遊戲的手把動作條：\n\n- |cffffd100大圖|r：你正在使用的層，左邊是十字鍵，右邊是 A/B/X/Y。按住一個按鍵即可切換。\n- |cffffd100縮圖|r：你所有的層，中間是一般按鍵的格子；正在按住的層會亮起。點擊縮圖即可編輯。\n- |cffffd100中央|r：你的一般按鍵，以及它們將觸發的動作。\n\n設定（大小、位置、縮圖）：|cffffd100HUD|r 分頁。|cffffd100/mgir hud off|r：恢復遊戲動作條。",
-    TUTO_DONE_TEXT = "開啟設定來放置你的第一批動作。\n\n|cffffd100/mgir|r：開啟設定\n|cffffd100/mgir test|r：手把測試，查看 WoW 收到的輸入\n|cffffd100/mgir tuto|r：本教學\n|cffffd100/mgir reset|r：清空此角色的動作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 還給遊戲",
+    TUTO_ACTIONS_TEXT = "在 |cffffd100層|r 分頁：左邊是你所有的層（單獨、LT、RT、你的修飾鍵和組合）；右邊是所選的層，按手把配置排列。\n\n- 從法術書拖入法術，從背包拖入物品、巨集、坐騎或玩具到格子上。\n- 或點擊格子：選擇法術或物品、編寫巨集、選擇 WoW 指令（自動奔跑……）或基礎動作（跳躍、互動……）。右鍵：清空。\n- 十字鍵下方那一列：你的一般按鍵在該層中的格子。\n\n你也可以點擊 HUD 上的層縮圖直接編輯。\n\n動作按角色儲存；類型和按鍵儲存在設定檔中，整個帳號通用。所有功能在戰鬥中都能使用；只有在戰鬥中做的修改會等到戰鬥結束後生效。\n\n|cffffd100實用|r：\n- 清單上方的輸入框可在所有層中搜尋動作。\n- |cffffd100智慧消耗品|r（格子選單）：背包裡最好的藥水、食物、飲料或繃帶，自動更新。\n- 灰色帶紅色的法術：這個角色還不會。|cffffd100範本和專精...|r 可以移除它們。\n- 在職業訓練師處學會新等級：插件會提議在所有地方替換舊等級。",
+    TUTO_HUD_TEXT = "插件用自己的 HUD 取代遊戲的手把動作條：\n\n- |cffffd100大圖|r：你正在使用的層，左邊是十字鍵，右邊是 A/B/X/Y。按住一個按鍵即可切換。\n- |cffffd100縮圖|r：你所有的層，中間是一般按鍵的格子；正在按住的層會亮起。點擊縮圖即可編輯。\n- |cffffd100中央|r：你的一般按鍵，以及它們將觸發的動作。\n\n設定（大小、位置、縮圖）：|cffffd100HUD|r 分頁。\n\n滑鼠移到縮圖上會出現小按鈕：|cffffd100鎖|r可解鎖 HUD 以便用滑鼠移動（再點一次鎖定），另一個按鈕把縮圖橫排或直排。|cffffd100齒輪|r會開啟 HUD 分頁，進行更細的設定（與 HUD 分離的縮圖、大小……）。",
+    TUTO_DONE_TEXT = "開啟設定來放置你的第一批動作。\n\n|cffffd100/mgir|r：開啟設定\n|cffffd100/mgir test|r：手把測試，查看 WoW 收到的輸入\n|cffffd100/mgir tuto|r：本教學\n|cffffd100/mgir reset|r：清空此角色的動作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 還給遊戲\n|cffffd100/mgir rangs|r：用法術的新等級替換舊等級",
     SETTINGS_DESC = "決定手把上每個按鍵的作用：額外按鍵（背鍵、額外扳機）和基礎按鍵（LT、RT、LB、RB）。指令：/mgir",
     BUTTONS_INTRO = "為每個按鍵選擇類型：將滑鼠停在類型上可查看其作用。綠色：基礎按鍵的預設類型，與遊戲中相同。",
     BUTTONS_TYPES_HELP = "按鍵類型",
@@ -448,7 +440,7 @@ ns.AddLocale("zhTW", {
     PROFILE_PER_CHAR_DESC = "登入時，每個角色會回到自己上次使用的設定檔。不勾選時，所有角色都使用帳號上次使用的設定檔。",
     REPORT_BUTTON = "複製報告",
     REPORT_TITLE = "手把報告",
-    REPORT_HINT = "先在測試分頁按一遍每個按鍵，然後複製這段文字（Ctrl+C），連同哪些可用、哪些不可用一起寄給插件作者。這有助於確認其他手把的設定。其中不包含角色名稱或伺服器名稱。",
+    REPORT_HINT = "先在手把測試中按一遍每個按鍵，然後複製這段文字（Ctrl+C），連同哪些可用、哪些不可用一起寄給插件作者。這有助於確認其他手把的設定。其中不包含角色名稱或伺服器名稱。",
     WHATSNEW_TITLE = "My Gamepad Is Rich 新內容",
     QUICKFILL_BUTTON = "填滿空格",
     QUICKFILL_DESC = "把爐石、已裝備的可使用飾品和背包裡的消耗品（藥水、食物、繃帶、藥劑……）放進此層的空格，已有的除外。右鍵點擊格子可清空。",
@@ -458,7 +450,7 @@ ns.AddLocale("zhTW", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("zhTW", {
-    SLASH_HELP = "/mgir : 開啟  |  /mgir profile <名稱> : 切換設定檔  |  /mgir test : 手把測試  |  /mgir tuto : 教學  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重設此角色的動作  |  /mgir undo : 復原上一次動作變更",
+    SLASH_HELP = "/mgir : 開啟  |  /mgir profile <名稱> : 切換設定檔  |  /mgir test : 手把測試  |  /mgir tuto : 教學  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 重設此角色的動作  |  /mgir undo : 復原上一次動作變更  |  /mgir rangs：替換低等級法術",
     LEARN_PAD_REFUSED = "%s 是手把的基本按鍵：插件會自行組合或設定它。請按額外按鍵（其軟體送出的鍵）。",
     RESET_CONFIRM = "清空此角色在目前設定檔中的所有動作？",
     RESET_CONFIRM_SPEC = "清空此角色在目前設定檔中「%s」專精的所有動作？",
@@ -521,4 +513,144 @@ ns.AddLocale("zhTW", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("zhTW", {
     WHATSNEW_1_1_6 = "• 基礎動作中新增團隊標記：「快速標記」每按一次就在目標上放下一個標記（骷髏、十字、方塊、月亮、三角、菱形、圓圈、星星），也可以單獨選擇 8 種標記，以及「移除標記」。\n• 基礎動作中新增「選擇自己為目標」。\n• 法術的提示資訊會顯示其等級。\n• 友方 / 敵方目標：現在在 Forever 中每次短按也會切換到下一個目標，右搖桿瞄準會立即回應。放開按鍵時搖桿仍在傾斜，或長按之後，瞄準的目標會保留。",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("zhTW", {
+    UPRANK_ASK = "學會了新等級：%s。\n\n替換你的動作中的低等級嗎？\n（插件格子 %d 個，遊戲動作條格子 %d 個）",
+    UPRANK_REPLACE = "替換",
+    UPRANK_KEEP = "保留",
+    UPRANK_DONE = "已放入新等級：插件格子 %d 個，遊戲動作條格子 %d 個。",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("zhTW", {
+    COMFORT_TITLE = "便利",
+    UPRANK_AUTO = "不詢問直接替換新的法術等級（插件動作和遊戲動作條中的低等級）",
+    UPRANK_NONE = "沒有需要替換的低等級。",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("zhTW", {
+    GAME_targetlast = "上一個目標",
+    GAME_assist = "協助目標",
+    GAME_focus = "設為專注",
+    GAME_targetfocus = "選擇專注為目標",
+    GAME_follow = "跟隨目標",
+    GAME_openbags = "打開背包",
+    GAME_dismount = "解散坐騎",
+    GAME_randommount = "隨機最愛坐騎",
+})
+
+-- Sorts inconnus
+ns.AddLocale("zhTW", {
+    SPELL_UNKNOWN = "該角色不會這個法術（天賦、其他專精、其他角色的模板）：這個格子沒有作用。",
+    UNKNOWN_SECTION = "未知法術",
+    UNKNOWN_REMOVE = "移除未知法術",
+    UNKNOWN_CONFIRM = "從 %2$s 的動作中移除該角色不會的 %1$d 個法術嗎？",
+    UNKNOWN_REMOVED = "已移除 %d 個未知法術。",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("zhTW", {
+    SEARCH_HINT = "尋找動作",
+    SEARCH_DESC = "輸入名稱的一部分（法術、物品、巨集……）：包含它的層會顯示格子數量，這些格子會有金色邊框。",
+})
+
+-- Consommables intelligents
+ns.AddLocale("zhTW", {
+    MENU_BEST = "智慧消耗品……",
+    BEST_TITLE = "智慧消耗品",
+    KIND_best = "智慧消耗品",
+    BEST_heal = "最佳治療藥水",
+    BEST_mana = "最佳法力藥水",
+    BEST_food = "最佳食物",
+    BEST_drink = "最佳飲料",
+    BEST_bandage = "最佳繃帶",
+    BEST_NONE = "背包中沒有",
+    BEST_DESC = "使用背包中此類最好的物品；一組用完後使用下一個（戰鬥中也可以）。列表在脫戰時跟隨背包更新。",
+})
+
+-- Vibrations
+ns.AddLocale("zhTW", {
+    VIBRATION_OPTION = "手把震動（可鎖定修飾鍵開啟 / 關閉、識別到長按、放入新等級）",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("zhTW", {
+    SIMPLE_MOD_ROW = "按住修飾鍵時（空：不做任何事）",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("zhTW", {
+    HUD_LAYERS_LABEL = "層：",
+    HUD_DETACH = "與 HUD 分離",
+    HUD_VERTICAL = "直排",
+    HUD_STRIP_COLS = "縮圖欄數：",
+    HUD_TOOL_VERTICAL = "層直排",
+    HUD_TOOL_HORIZONTAL = "層橫排",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("zhTW", {
+    HUD_TOOL_UNLOCK = "解鎖：用滑鼠移動 HUD",
+    HUD_TOOL_LOCK = "鎖定 HUD（先把它拖到想要的位置）",
+    HUD_TOOL_LOCK_DETACHED = "鎖定 HUD（先把 HUD 和層分別拖到各自的位置）",
+    HUD_UNLOCKED_HINT = "已解鎖：用滑鼠拖曳（分離的層單獨移動）。點擊鎖圖示即可鎖定。",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("zhTW", {
+    HUD_TOOL_SETTINGS = "HUD 設定（HUD 分頁）：與 HUD 分離的縮圖、大小……",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("zhTW", {
+    HUD_HIDE_STRIP = "隱藏",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("zhTW", {
+    TAB_OPTIONS = "選項",
+    ACTIONS_INTRO = "每個按鍵觸發什麼。在左側選擇一個層，然後在右側的格子裡放上動作。",
+    OPTIONS_INTRO = "插件的通用設定：既不屬於按鍵、也不屬於層或 HUD 顯示的內容。",
+    OPTIONS_SECTION_UI = "介面",
+    HUD_SECTION_STRIP = "層縮圖",
+    HUD_SECTION_PLACE = "HUD 大小和位置",
+    HUD_LAYOUT_LABEL = "排列：",
+    TEST_OPEN = "測試我的手把",
+    TEST_BACK = "返回按鍵",
+    HELP_INTRO = "在左側選擇一個主題。教學會一步步講解全部內容。",
+    HELP_PRINCIPLE = "原理",
+    HELP_COMMANDS = "指令",
+    TIP_CONTROLLER = "選擇你的手把：插件會使用其額外按鍵的名稱。",
+    TIP_TYPES = "再看一遍每種按鍵類型的作用：修飾鍵、目標、簡單按鍵、無。",
+    TIP_DETECT = "然後按下手把上的按鍵：插件會記住它送出的鍵。",
+    TIP_CLEAR = "清除此按鍵的鍵位：它將不再有任何作用。",
+    TIP_TEST = "即時查看 WoW 從每個按鍵收到的訊號：按鍵沒有反應時很有用。",
+    TIP_REPORT = "出現問題時寄給作者的文字（不含角色名和伺服器名）。",
+    TIP_PROFILE_USE = "使用此設定檔：它的手把、按鍵以及此角色的動作。",
+    TIP_PROFILE_NEW = "一個空的設定檔，例如用於另一個手把。",
+    TIP_PROFILE_COPY = "新建一個所選設定檔的副本，安全地嘗試修改。",
+    TIP_PROFILE_RENAME = "修改所選設定檔的名稱。",
+    TIP_PROFILE_DELETE = "刪除所選設定檔，以及你所有角色在該設定檔下的動作。",
+    TIP_PROFILE_EXPORT = "複製一段文字，用於分享或保存此設定檔。",
+    TIP_PROFILE_IMPORT = "貼上匯出的設定檔文字（你自己的或其他玩家的）。",
+    TIP_HUD_DETACH = "縮圖離開 HUD：可以放在任何位置（點擊 HUD 上的鎖，然後拖曳）。",
+    TIP_HUD_VERTICAL = "縮圖直向排列，而不是橫排一列。",
+    TIP_HUD_HIDDEN = "不顯示縮圖：HUD 只顯示目前的層。層在「層」分頁中編輯。",
+    TIP_HUD_ROWS = "縮圖分布在幾列（或幾欄）。",
+    TIP_HUD_STRIP_SIZE = "縮圖的大小，不改變 HUD 其餘部分。",
+    TIP_HUD_SIZE = "整個 HUD 的大小。",
+    TIP_HUD_MOVE = "解鎖 HUD，用滑鼠拖曳（與 HUD 上的鎖相同）。再次點擊即可鎖定。",
+    TIP_HUD_RESET = "將 HUD 恢復到原始位置和大小（分離的縮圖回到它下方）。",
+    TIP_UPRANK = "學會法術的新等級時，不再詢問，直接在所有地方替換舊等級。",
+    TIP_VIBRATION = "可鎖定修飾鍵開啟或關閉時、放置新等級時，手把會輕微震動。",
+    TIP_MINIMAP = "小地圖旁的按鈕：點擊開啟設定，右鍵移動 HUD。",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("zhTW", {
+    WHATSNEW_1_2_0 = "• 視窗按設定順序重新整理：按鍵、層（原「動作」分頁）、HUD、選項、設定檔、說明。每個設定都有提示，說明有目錄，手把測試從「按鍵」分頁開啟。\n• 法術新等級：學會新等級時，插件會提議在所有地方替換舊等級（也可以在「選項」中設為自動）。/mgir rangs 檢查整本法術書。\n• 智慧消耗品（格子選單）：你最好的藥水、食物、飲料或繃帶，自動更新。\n• 這個角色不會的法術顯示為紅色；「範本和專精...」可以移除它們。\n• 輸入框可在所有層中搜尋動作。\n• 新的基礎動作：上一個目標、協助、專注、跟隨、打開背包、下坐騎、隨機偏好坐騎。\n• HUD：滑鼠停留時出現小按鈕（鎖用於移動、橫排或直排、設定）；縮圖可以與 HUD 分離、直排或隱藏。HUD 始終顯示。\n• 「單獨」層的 A、B、X、Y 顯示遊戲動作，簡單按鍵頁面顯示它在每個修飾鍵中的格子。\n• 手把震動（如果遊戲支援）。",
+    WHATSNEW_FEEDBACK = "發現問題、有想法或覺得不順手？告訴我：每則回饋都能幫助改進插件。複製這個連結（Ctrl+C）到 GitHub 留言：",
 })

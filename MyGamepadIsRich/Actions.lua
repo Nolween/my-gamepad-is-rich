@@ -44,6 +44,83 @@ function A.SpellRank(spellID)
     if ok and type(text) == "string" and not (issecretvalue and issecretvalue(text)) and text ~= "" then return text end
 end
 
+---------------------------------------------------------------------------
+-- Sorts inconnus : un sort posé que ce personnage ne connaît pas (autre
+-- talent, autre spé, modèle d'un personnage plus haut niveau). Connu : son
+-- rang est connu, ou, sans rang choisi, un sort du même nom est dans le
+-- grimoire (/cast Nom prend alors le rang connu). Dans le doute (API
+-- absente, valeur secrète) : connu, pour ne rien signaler à tort. Mis en
+-- cache jusqu'au prochain SPELLS_CHANGED.
+---------------------------------------------------------------------------
+local knownCache, bookNames = {}, nil
+
+local function IsSecret(v)
+    return issecretvalue ~= nil and issecretvalue(v)
+end
+
+-- vrai (connu), faux (inconnu), nil (on ne sait pas)
+local function KnownByID(id)
+    local any = false
+    for _, get in ipairs({ C_SpellBook and C_SpellBook.IsSpellKnown, IsPlayerSpell, IsSpellKnown }) do
+        if type(get) == "function" then
+            local ok, v = pcall(get, id)
+            if ok and not IsSecret(v) then
+                if v then return true end
+                any = true
+            end
+        end
+    end
+    if any then return false end
+end
+
+local function BookNames()
+    if bookNames then return bookNames end
+    bookNames = {}
+    for _, e in ipairs(A.SpellbookEntries()) do
+        local name = e.action and A.SpellInfo(e.action.id)
+        if type(name) == "string" and not IsSecret(name) then bookNames[name] = true end
+    end
+    return bookNames
+end
+
+function A.IsKnown(action)
+    if not (action and action.kind == "spell" and type(action.id) == "number") then return true end
+    local key = action.rank and (action.id .. "|" .. action.rank) or action.id
+    if knownCache[key] ~= nil then return knownCache[key] end
+    local known = KnownByID(action.id)
+    if known == false and not action.rank then
+        local name = A.SpellInfo(action.id) or action.name
+        if type(name) == "string" and not IsSecret(name) and BookNames()[name] then known = true end
+    end
+    known = known ~= false
+    knownCache[key] = known
+    return known
+end
+
+-- Les cases de ce jeu d'actions dont le sort est inconnu : { list, key }
+function A.UnknownSpots(actions)
+    local out = {}
+    for _, a in pairs(actions or {}) do
+        if type(a) == "table" then
+            for _, list in ipairs({ a.combos, a.layers }) do
+                if type(list) == "table" then
+                    for key, action in pairs(list) do
+                        if not A.IsKnown(action) then out[#out + 1] = { list = list, key = key } end
+                    end
+                end
+            end
+        end
+    end
+    return out
+end
+
+local spellEvents = CreateFrame("Frame")
+spellEvents:RegisterEvent("SPELLS_CHANGED")
+spellEvents:SetScript("OnEvent", function()
+    wipe(knownCache)
+    bookNames = nil
+end)
+
 -- Le rang d'un sort dans une info-bulle (« Rang 3 », en gris à droite du
 -- nom, comme le grimoire ; sinon une ligne de plus). action : un sort de
 -- l'addon ({ kind = "spell", id, rank }) ; le rang retenu, sinon celui du sort.
@@ -156,6 +233,19 @@ A.GAME = {
     { id = "interact", command = "INTERACTTARGET", icon = "Interface\\GossipFrame\\GossipGossipIcon" },
     -- (une macro, pas la commande TARGETSELF : possible sur toutes les cases)
     { id = "targetself", text = "/target player", icon = "Interface\\Icons\\INV_Misc_Head_Human_01" },
+    -- (cible et focus : des macros, possibles sur toutes les cases)
+    { id = "targetlast", text = "/targetlasttarget", icon = "Interface\\Buttons\\UI-RefreshButton" },
+    { id = "assist", text = "/assist", icon = "Interface\\Icons\\Ability_Hunter_MarkedForDeath" },
+    { id = "focus", text = "/focus", icon = "Interface\\Icons\\Ability_Hunter_FocusedAim" },
+    { id = "targetfocus", text = "/target focus", icon = "Interface\\Icons\\Ability_Hunter_FocusFire" },
+    { id = "follow", text = "/follow", icon = "Interface\\Icons\\Ability_Tracking" },
+    -- (les sacs : comme la commande « Ouvrir tous les sacs », mais en macro)
+    { id = "openbags", text = "/run ToggleAllBags()", icon = "Interface\\Icons\\INV_Misc_Bag_08" },
+    { id = "dismount", text = "/dismount", icon = "Interface\\Icons\\Spell_Nature_Swiftness" },
+    -- (une monture favorite au hasard : seulement si le jeu a le journal
+    -- des montures)
+    { id = "randommount", text = "/run C_MountJournal.SummonByID(0)", icon = "Interface\\Icons\\Ability_Mount_RidingHorse",
+        available = function() return C_MountJournal ~= nil and C_MountJournal.SummonByID ~= nil end },
 }
 
 -- Marqueurs de raid sur la cible (/tm, en combat aussi). Le marquage
@@ -269,6 +359,8 @@ function A.Label(action)
         -- (ce que tient un emplacement de la barre du jeu, d'un autre type)
         local text = GetActionText and GetActionText(action.slot)
         return (type(text) == "string" and text ~= "") and text or L.KIND_slot
+    elseif k == "best" then
+        return L["BEST_" .. tostring(action.cat)]
     end
 end
 
@@ -309,6 +401,8 @@ function A.Icon(action)
         return (def.spell and SpellIcon(def.spell)) or def.icon
     elseif k == "slot" then
         return (GetActionTexture and GetActionTexture(action.slot)) or QUESTION
+    elseif k == "best" then
+        return A.BestIcon(action.cat)
     elseif k == "equipset" then
         if C_EquipmentSet and C_EquipmentSet.GetEquipmentSetID and C_EquipmentSet.GetEquipmentSetInfo then
             local setID = C_EquipmentSet.GetEquipmentSetID(action.name)
@@ -352,6 +446,10 @@ function A.Secure(action)
     elseif k == "game" then
         local def = GAME_BY_ID[action.id]
         return nil, def and def.text
+    elseif k == "best" then
+        -- (sans objet dans les sacs : une ligne qui ne fait rien, pour que la
+        -- case reste à l'addon et ne lance pas l'action du jeu)
+        return nil, A.BestMacro(action.cat) or "#mgirbest"
     end
     return nil -- ("command" : binding direct, pas de bouton)
 end
@@ -375,7 +473,7 @@ end
 function A.GameEntries(commandOK)
     local entries = {}
     for _, def in ipairs(A.GAME) do
-        if commandOK or not def.command then
+        if (commandOK or not def.command) and (not def.available or def.available()) then
             local action = { kind = "game", id = def.id }
             entries[#entries + 1] = { label = A.Label(action), icon = A.Icon(action), action = action }
         end
@@ -577,6 +675,184 @@ local function ItemClass(id)
     if ok then return classID, subclassID end
 end
 
+---------------------------------------------------------------------------
+-- Consommables intelligents ({ kind = "best", cat = "heal" }...) : le
+-- meilleur objet de ce type présent dans les sacs. La macro essaie les
+-- meilleurs d'abord (une ligne /use par objet, jusqu'à BEST_LINES) : une
+-- pile épuisée en combat passe à la suivante (le temps de recharge commun
+-- des potions empêche d'en boire deux). La liste suit les sacs, hors
+-- combat (ns.Apply quand elle change).
+-- Le type d'un objet vient de son sort, comparé aux sorts de référence du
+-- jeu (noms traduits par le jeu lui-même) : « Potion de soins », « Rendre le
+-- mana », « Nourriture », « Boisson » ; les bandages par leur sous-classe ;
+-- sinon, pour une potion, le mot « vie » / « mana » de sa description.
+---------------------------------------------------------------------------
+A.BEST_CATS = { "heal", "mana", "food", "drink", "bandage" }
+local BEST_LINES = 5
+local BEST_ICON = {
+    heal = "Interface\\Icons\\INV_Potion_54", mana = "Interface\\Icons\\INV_Potion_76",
+    food = "Interface\\Icons\\INV_Misc_Food_15", drink = "Interface\\Icons\\INV_Drink_07",
+    bandage = "Interface\\Icons\\INV_Misc_Bandage_15",
+}
+-- (sorts de référence : Potion de soins, Rendre le mana, Nourriture,
+-- Boisson, Nourriture et boisson)
+local BEST_REF = { heal = { 439, 440, 441, 2024, 4042 }, mana = { 437, 438, 2023, 11903 },
+    food = { 433, 434, 435 }, drink = { 430, 431, 432 }, both = { 18234 } }
+local POTION, FOOD, BANDAGE = 1, 5, 7
+
+local refNames
+local function RefNames()
+    if refNames then return refNames end
+    refNames = {}
+    for cat, ids in pairs(BEST_REF) do
+        for _, id in ipairs(ids) do
+            local name = A.SpellInfo(id)
+            if type(name) == "string" and not IsSecret(name) then refNames[name] = cat end
+        end
+    end
+    return refNames
+end
+
+local function Mentions(text, word)
+    if type(text) ~= "string" or IsSecret(text) or type(word) ~= "string" or word == "" then return false end
+    return text:lower():find(word:lower(), 1, true) ~= nil
+end
+
+-- Les types d'un objet : { heal = true, ... } ou nil
+local itemCats = {}
+local function ItemCats(id)
+    if itemCats[id] ~= nil then return itemCats[id] or nil end
+    local classID, subclassID = ItemClass(id)
+    local cats
+    if classID == CONSUMABLE then
+        local spellName, spellID = ItemSpell(id)
+        local ref = type(spellName) == "string" and not IsSecret(spellName) and RefNames()[spellName]
+        if subclassID == BANDAGE then
+            cats = { bandage = true }
+        elseif ref == "both" then
+            cats = { food = true, drink = true }
+        elseif ref then
+            cats = { [ref] = true }
+        elseif subclassID == POTION and spellID then
+            local desc = C_Spell and C_Spell.GetSpellDescription and select(2, pcall(C_Spell.GetSpellDescription, spellID))
+            local heal, mana = Mentions(desc, _G.HEALTH), Mentions(desc, _G.MANA)
+            if heal or mana then cats = { heal = heal or nil, mana = mana or nil } end
+        end
+    end
+    -- (un objet pas encore chargé par le jeu : redemandé plus tard)
+    if cats or ItemName(id) then itemCats[id] = cats or false end
+    return cats
+end
+
+local function ItemLevels(id)
+    local get = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+    if not get then return 0, 0 end
+    local ok, _, _, _, level, minLevel = pcall(get, id)
+    if not ok then return 0, 0 end
+    return tonumber(minLevel) or 0, tonumber(level) or 0
+end
+
+-- Les objets de ce type dans les sacs, le meilleur d'abord : utilisable à
+-- ce niveau, niveau requis le plus haut, puis niveau d'objet
+local bestCache = {}
+function A.BestItems(cat)
+    if bestCache[cat] then return bestCache[cat] end
+    local found, seen = {}, {}
+    local myLevel = UnitLevel and UnitLevel("player") or 0
+    for bag = 0, NUM_BAG_SLOTS or 4 do
+        for slot = 1, ContainerSlots(bag) do
+            local id = ContainerItemID(bag, slot)
+            if id and not seen[id] then
+                seen[id] = true
+                local cats = ItemCats(id)
+                if cats and cats[cat] then
+                    local minLevel, level = ItemLevels(id)
+                    found[#found + 1] = { id = id, ok = minLevel <= myLevel, min = minLevel, level = level }
+                end
+            end
+        end
+    end
+    table.sort(found, function(a, b)
+        if a.ok ~= b.ok then return a.ok end
+        if a.min ~= b.min then return a.min > b.min end
+        if a.level ~= b.level then return a.level > b.level end
+        return a.id > b.id
+    end)
+    local out = {}
+    for i, e in ipairs(found) do out[i] = e.id end
+    bestCache[cat] = out
+    return out
+end
+
+-- L'objet qui partira, ou nil (aucun dans les sacs)
+function A.BestItem(cat)
+    return A.BestItems(cat)[1]
+end
+
+function A.BestIcon(cat)
+    local id = A.BestItem(cat)
+    return (id and ItemIcon(id)) or BEST_ICON[cat] or QUESTION
+end
+
+function A.BestMacro(cat)
+    local lines = {}
+    for i, id in ipairs(A.BestItems(cat)) do
+        if i > BEST_LINES then break end
+        lines[#lines + 1] = "/use item:" .. id
+    end
+    return #lines > 0 and table.concat(lines, "\n") or nil
+end
+
+-- La liste « Consommable intelligent... »
+function A.BestEntries()
+    local entries = {}
+    for _, cat in ipairs(A.BEST_CATS) do
+        local action = { kind = "best", cat = cat }
+        local id = A.BestItem(cat)
+        entries[#entries + 1] = {
+            label = A.Label(action),
+            sub = id and (ItemName(id) or ("item:" .. id)) or L.BEST_NONE,
+            icon = A.BestIcon(cat),
+            action = action,
+        }
+    end
+    return entries
+end
+
+-- (les sacs ont changé : la liste est refaite ; si celle d'un consommable
+-- intelligent change, les liaisons sont remises, hors combat)
+local bestSignature
+local function BestSignature()
+    local parts = {}
+    for _, cat in ipairs(A.BEST_CATS) do parts[#parts + 1] = table.concat(A.BestItems(cat), ",") end
+    return table.concat(parts, "|")
+end
+
+local bagEvents = CreateFrame("Frame")
+local bagWait = false
+local function BagsChanged()
+    bagWait = false
+    if InCombatLockdown() then return end -- (repris à la fin du combat)
+    wipe(bestCache)
+    local sig = BestSignature()
+    if sig ~= bestSignature then
+        bestSignature = sig
+        if ns.db then ns.Apply(true) end
+    end
+end
+for _, event in ipairs({ "BAG_UPDATE_DELAYED", "PLAYER_REGEN_ENABLED", "PLAYER_LEVEL_UP", "GET_ITEM_INFO_RECEIVED" }) do
+    pcall(bagEvents.RegisterEvent, bagEvents, event)
+end
+bagEvents:SetScript("OnEvent", function(_, event)
+    -- (un objet chargé par le jeu : son type peut enfin se lire)
+    if event == "GET_ITEM_INFO_RECEIVED" then
+        for id, v in pairs(itemCats) do if v == false then itemCats[id] = nil end end
+    end
+    if bagWait then return end
+    bagWait = true
+    if C_Timer then C_Timer.After(1, BagsChanged) else BagsChanged() end
+end)
+
 function A.QuickFillActions()
     local out, seen = {}, {}
     local function add(id)
@@ -588,6 +864,15 @@ function A.QuickFillActions()
     for _, slot in ipairs({ 13, 14 }) do
         local id = GetInventoryItemID and GetInventoryItemID("player", slot)
         if id and ItemSpell(id) then add(id) end
+    end
+    -- (les consommables intelligents avant les objets un par un : leurs
+    -- objets n'ont plus besoin d'une case à eux)
+    for _, cat in ipairs(A.BEST_CATS) do
+        local items = A.BestItems(cat)
+        if #items > 0 then
+            out[#out + 1] = { kind = "best", cat = cat }
+            for _, id in ipairs(items) do seen[id] = true end
+        end
     end
     local found = {}
     for bag = 0, NUM_BAG_SLOTS or 4 do
@@ -615,7 +900,7 @@ end
 -- Deux actions identiques (même type, même sort / objet / macro...)
 function A.Same(a, b)
     if not (a and b) or a.kind ~= b.kind then return false end
-    return a.id == b.id and a.name == b.name and a.text == b.text and a.command == b.command
+    return a.id == b.id and a.name == b.name and a.text == b.text and a.command == b.command and a.cat == b.cat
 end
 
 ---------------------------------------------------------------------------

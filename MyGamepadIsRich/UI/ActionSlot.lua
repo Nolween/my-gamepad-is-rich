@@ -12,7 +12,10 @@ local SIZE = 40
 --   allowMacroText = fn() -> bool (macro écrite à la main possible ?),
 --   locked = fn() -> bool (case réservée au jeu : ni pose, ni vidage),
 --   emptyLabel = fn() -> texte d'une case vide (sinon « Vide »),
+--   gameIcon = fn() -> texture, atlas d'une case vide qui garde l'action du
+--              jeu (sauter...), montrée à la place du « + »,
 --   disabledHint = fn() -> texte qui dit pourquoi des choix du menu sont grisés,
+--   found = fn(action) -> bool (trouvée par une recherche : bord doré),
 --   labelWidth = n,
 -- }
 local function Allowed(fn)
@@ -66,19 +69,47 @@ function UI.CreateActionSlot(parent, opts)
             return
         end
         self.lock:Hide()
-        self.border:SetColorTexture(0.45, 0.42, 0.35, 0.9)
         local action = self.opts.get()
+        -- (trouvée par la recherche de l'onglet Actions : bord doré)
+        if action and self.opts.found and self.opts.found(action) then
+            self.border:SetColorTexture(1, 0.82, 0, 1)
+        else
+            self.border:SetColorTexture(0.45, 0.42, 0.35, 0.9)
+        end
         if action then
+            self.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
             self.icon:SetTexture(ns.Actions.Icon(action))
             self.icon:Show()
             self.plus:Hide()
             self.label:SetText(ns.Actions.Label(action) or "")
             self.label:SetFontObject("GameFontHighlightSmall")
+            -- (un sort que ce personnage ne connaît pas : grisé, teinté de rouge)
+            local known = ns.Actions.IsKnown(action)
+            self.icon:SetDesaturated(not known)
+            self.icon:SetVertexColor(1, known and 1 or 0.35, known and 1 or 0.35)
+            if not known then self.label:SetTextColor(1, 0.35, 0.35) end
         else
-            self.icon:Hide()
-            self.plus:Show()
+            -- (l'action du jeu que la case garde : son image, comme le HUD)
+            local tex, atlas
+            if self.opts.gameIcon then tex, atlas = self.opts.gameIcon() end
+            local shown = false
+            if atlas then
+                shown = pcall(self.icon.SetAtlas, self.icon, atlas)
+            elseif tex then
+                self.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+                shown = pcall(self.icon.SetTexture, self.icon, tex)
+            end
+            if shown then
+                self.icon:SetDesaturated(false)
+                self.icon:SetVertexColor(1, 1, 1)
+                self.icon:Show()
+                self.plus:Hide()
+            else
+                self.icon:Hide()
+                self.plus:Show()
+            end
             self.label:SetText(self.opts.emptyLabel and self.opts.emptyLabel() or L.EMPTY)
-            self.label:SetFontObject("GameFontDisableSmall")
+            self.label:SetFontObject(shown and "GameFontHighlightSmall" or "GameFontDisableSmall")
         end
     end
 
@@ -115,6 +146,10 @@ function UI.CreateActionSlot(parent, opts)
             end },
             { text = L.MENU_ITEM, func = function()
                 UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), Set)
+            end },
+            -- (le meilleur objet des sacs de ce type : une macro de l'addon)
+            { text = L.MENU_BEST, disabled = not macroOK, func = function()
+                UI.PickFromList(L.BEST_TITLE, ns.Actions.BestEntries(), Set)
             end },
             -- (sauter, annuler, rechercher, attaque auto, interagir)
             { text = L.MENU_GAME, disabled = not macroOK, func = function()
@@ -175,16 +210,30 @@ function UI.CreateActionSlot(parent, opts)
                 shown = pcall(GameTooltip.SetItemByID, GameTooltip, action.id)
             elseif action.kind == "slot" and GameTooltip.SetAction then
                 shown = pcall(GameTooltip.SetAction, GameTooltip, action.slot)
+            elseif action.kind == "best" and GameTooltip.SetItemByID then
+                -- (l'objet qui partira)
+                local item = ns.Actions.BestItem(action.cat)
+                shown = item ~= nil and pcall(GameTooltip.SetItemByID, GameTooltip, item)
             end
             if not shown then
                 GameTooltip:SetText(ns.Actions.Label(action) or "", 1, 1, 1)
+                if action.kind == "best" then GameTooltip:AddLine(L.BEST_NONE, 0.7, 0.7, 0.7) end
             elseif action.kind == "spell" then
                 ns.Actions.AddRankToTooltip(GameTooltip, action)
             end
-            GameTooltip:AddLine(ns.Actions.KindLabel(action), 0.6, 0.8, 1)
+            if not ns.Actions.IsKnown(action) then GameTooltip:AddLine(L.SPELL_UNKNOWN, 1, 0.35, 0.35, true) end
+            GameTooltip:AddLine(action.kind == "best" and ns.Actions.Label(action) or ns.Actions.KindLabel(action),
+                0.6, 0.8, 1)
+            if action.kind == "best" then GameTooltip:AddLine(L.BEST_DESC, 0.9, 0.9, 0.9, true) end
             if action.kind == "macrotext" then GameTooltip:AddLine(action.text, 0.9, 0.9, 0.9, true) end
         else
-            GameTooltip:SetText(L.EMPTY, 0.7, 0.7, 0.7)
+            local label = self.opts.emptyLabel and self.opts.emptyLabel()
+            GameTooltip:SetText(label or L.EMPTY, 0.7, 0.7, 0.7)
+            -- (A/B/X/Y de « Seul » : l'action du jeu reste tant que la case
+            -- n'a pas d'action de l'addon)
+            if self.opts.gameIcon and self.opts.gameIcon() then
+                GameTooltip:AddLine(L.HUD_GAME_SLOT, 0.8, 0.8, 0.8, true)
+            end
         end
         GameTooltip:AddLine(L.SLOT_HINT, 1, 0.82, 0, true)
         GameTooltip:Show()

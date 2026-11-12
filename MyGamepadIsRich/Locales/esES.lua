@@ -105,10 +105,8 @@ ns.AddLocale("esES", {
 
 -- HUD
 ns.AddLocale("esES", {
-    HUD_UNLOCKED = "HUD desbloqueado: arrástralo con el ratón. Escribe /mgir hud otra vez para bloquearlo.",
+    HUD_UNLOCKED = "HUD desbloqueado: arrástralo con el ratón (las miniaturas separadas se mueven aparte). Para bloquearlo: el candado del HUD, o /mgir hud otra vez.",
     HUD_LOCKED = "HUD bloqueado.",
-    HUD_ON = "HUD visible: sustituye la barra de mando del juego.",
-    HUD_OFF = "HUD oculto: vuelve la barra de mando del juego. Escribe /mgir hud on para mostrarlo de nuevo.",
     HUD_SCALE = "Tamaño del HUD: %s",
     TUTO_HUD_TITLE = "Tu HUD de mando",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("esES", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("esES", {
-    HUD_STRIP_TOP = "Miniaturas de las capas ahora encima del HUD. Escribe /mgir hud strip para cambiar.",
-    HUD_STRIP_BOTTOM = "Miniaturas de las capas ahora debajo del HUD. Escribe /mgir hud strip para cambiar.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("esES", {
-    TUTO_STRIP_LABEL = "Miniaturas de las capas:",
-    TUTO_STRIP_BOTTOM = "Abajo (recomendado)",
-    TUTO_STRIP_TOP = "Arriba",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("esES", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("esES", {
-    TAB_ACTIONS = "Acciones",
+    TAB_ACTIONS = "Capas",
     TAB_HUD = "HUD",
     SECTION_PAD = "Barra del mando",
     SECTION_MODS = "Modificadores",
@@ -167,7 +160,6 @@ ns.AddLocale("esES", {
     LAYER_DESC_HOLD = "Mantén %s y pulsa A, B, X, Y o la cruceta.",
     PAIRS_TITLE = "Parejas (dos modificadores mantenidos a la vez)",
     HUD_INTRO = "El HUD sustituye la barra de mando del juego: la capa en uso en grande y todas las capas en miniatura.",
-    HUD_SHOW = "Mostrar el HUD (en lugar de la barra de mando del juego)",
     HUD_SIZE = "Tamaño:",
     HUD_MOVE = "Mover el HUD",
     HUD_MOVE_DONE = "Bloquear el HUD",
@@ -292,7 +284,7 @@ ns.AddLocale("esES", {
     TRIGGERS_ADDON = "Modificadores del addon",
     TRIGGERS_GAME = "Capas del juego",
     TRIGGERS_ADDON_DESC = "Mantén LT o RT (o ambos) y pulsa A, B, X, Y o la cruceta: las acciones del addon, con todo lo que permite (macros escritas a mano, comandos de WoW). Sustituyen las capas LT, RT y LT + RT de la barra de mando del juego; una casilla vacía no hace nada. LB y RB no cambian.",
-    TRIGGERS_GAME_DESC = "LT y RT conservan las capas de la barra de mando del juego (editables desde la pestaña Acciones).",
+    TRIGGERS_GAME_DESC = "LT y RT conservan las capas de la barra de mando del juego (editables desde la pestaña Capas).",
     TRIGGERS_COPIED = "%d acción(es) de las capas LT / RT del juego copiada(s) a las del addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: modificadores del addon.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("esES", {
     TUTO_PAIRS_TITLE = "Parejas: dos botones mantenidos a la vez",
     TUTO_PAIRS_TEXT = "Mantén dos botones a la vez (modificadores o de objetivo): otra capa más de 8 acciones. Dos botones cualesquiera pueden formar una pareja: L5 + R5, LT + RT, LB + LT... Marca las que quieras (podrás cambiarlas en la pestaña |cffffd100Botones|r). Por defecto: las parejas izquierda + derecha.",
     TUTO_ACTIONS_TITLE = "Colocar tus acciones",
-    TUTO_ACTIONS_TEXT = "En la pestaña |cffffd100Acciones|r: a la izquierda, todas tus capas (Solo, LT, RT, tus modificadores y parejas); a la derecha, la capa elegida, dispuesta como el mando.\n\n- Arrastra un hechizo de tu libro de hechizos, un objeto de tus bolsas, una macro, una montura o un juguete a una casilla.\n- O haz clic en una casilla: elegir un hechizo o un objeto, escribir una macro, elegir un comando de WoW (Correr automáticamente...) o una acción básica (Saltar, Interactuar...). Clic derecho: vaciar.\n- La fila bajo la cruceta: las casillas de tus botones simples en esa capa.\n\nTambién puedes hacer clic en una miniatura de capa del HUD para editarla allí mismo.\n\nLas acciones se guardan por personaje; los tipos y las teclas en el perfil, para toda la cuenta. Todo funciona en combate; solo los cambios hechos en combate esperan a que termine.",
-    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD:\n\n- |cffffd100En grande|r: la capa que usas, la cruceta a la izquierda y A/B/X/Y a la derecha. Mantén un botón y cambia.\n- |cffffd100Las miniaturas|r: todas tus capas, con las casillas de tus botones simples en el centro; la que mantienes se ilumina. Haz clic en una para editarla.\n- |cffffd100En el centro|r: tus botones simples, con la acción que lanzarán.\n\nAjustes (tamaño, posición, miniaturas): pestaña |cffffd100HUD|r. |cffffd100/mgir hud off|r: volver a la barra del juego.",
-    TUTO_DONE_TEXT = "Abre la configuración para colocar tus primeras acciones.\n\n|cffffd100/mgir|r: abrir la configuración\n|cffffd100/mgir test|r: prueba del mando, para ver lo que recibe WoW\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: vaciar las acciones de este personaje\n|cffffd100/mgir restore|r: devolver LT, RT, LB y RB al juego",
+    TUTO_ACTIONS_TEXT = "En la pestaña |cffffd100Capas|r: a la izquierda, todas tus capas (Solo, LT, RT, tus modificadores y parejas); a la derecha, la capa elegida, dispuesta como el mando.\n\n- Arrastra un hechizo de tu libro de hechizos, un objeto de tus bolsas, una macro, una montura o un juguete a una casilla.\n- O haz clic en una casilla: elegir un hechizo o un objeto, escribir una macro, elegir un comando de WoW (Correr automáticamente...) o una acción básica (Saltar, Interactuar...). Clic derecho: vaciar.\n- La fila bajo la cruceta: las casillas de tus botones simples en esa capa.\n\nTambién puedes hacer clic en una miniatura de capa del HUD para editarla allí mismo.\n\nLas acciones se guardan por personaje; los tipos y las teclas en el perfil, para toda la cuenta. Todo funciona en combate; solo los cambios hechos en combate esperan a que termine.\n\n|cffffd100Práctico|r:\n- El campo de arriba de la lista busca una acción en todas tus capas.\n- |cffffd100Consumible inteligente|r (menú de una casilla): tu mejor poción, comida, bebida o venda, actualizada sola.\n- Un hechizo gris y rojo: este personaje no lo conoce. |cffffd100Plantillas y especializaciones...|r puede quitarlos.\n- Un nuevo rango aprendido con el instructor de clase: el addon propone ponerlo en lugar del antiguo, en todas partes.",
+    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD:\n\n- |cffffd100En grande|r: la capa que usas, la cruceta a la izquierda y A/B/X/Y a la derecha. Mantén un botón y cambia.\n- |cffffd100Las miniaturas|r: todas tus capas, con las casillas de tus botones simples en el centro; la que mantienes se ilumina. Haz clic en una para editarla.\n- |cffffd100En el centro|r: tus botones simples, con la acción que lanzarán.\n\nAjustes (tamaño, posición, miniaturas): pestaña |cffffd100HUD|r.\n\nAl pasar el ratón por las miniaturas aparecen pequeños botones: el |cffffd100candado|r desbloquea el HUD para moverlo con el ratón (y lo vuelve a bloquear), otro pone las miniaturas en fila o en columna. Un |cffffd100engranaje|r abre la pestaña HUD para ajustes más precisos (miniaturas separadas del HUD, tamaño...).",
+    TUTO_DONE_TEXT = "Abre la configuración para colocar tus primeras acciones.\n\n|cffffd100/mgir|r: abrir la configuración\n|cffffd100/mgir test|r: prueba del mando, para ver lo que recibe WoW\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: vaciar las acciones de este personaje\n|cffffd100/mgir restore|r: devolver LT, RT, LB y RB al juego\n|cffffd100/mgir rangs|r: poner los nuevos rangos de tus hechizos en lugar de los antiguos",
     SETTINGS_DESC = "Elige qué hace cada botón de tu mando: botones adicionales (palancas traseras, gatillos extra) y botones base (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Elige el tipo de cada botón: pasa el ratón sobre un tipo para ver lo que hace. En verde: el tipo por defecto de los botones base, que funciona como el juego.",
     BUTTONS_TYPES_HELP = "Los tipos de botón",
@@ -448,7 +440,7 @@ ns.AddLocale("esES", {
     PROFILE_PER_CHAR_DESC = "Al conectarse, cada personaje vuelve al último perfil que usó. Sin esta opción, todos toman el último perfil usado en la cuenta.",
     REPORT_BUTTON = "Copiar un informe",
     REPORT_TITLE = "Informe del mando",
-    REPORT_HINT = "Pulsa primero cada botón en la pestaña Prueba, luego copia este texto (Ctrl+C) y envíalo al autor del addon, con lo que funciona y lo que no. Ayuda a confirmar los ajustes de otros mandos. No incluye ningún nombre de personaje ni de reino.",
+    REPORT_HINT = "Pulsa primero cada botón en la prueba del mando, luego copia este texto (Ctrl+C) y envíalo al autor del addon, con lo que funciona y lo que no. Ayuda a confirmar los ajustes de otros mandos. No incluye ningún nombre de personaje ni de reino.",
     WHATSNEW_TITLE = "Novedades de My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Rellenar casillas vacías",
     QUICKFILL_DESC = "Coloca en las casillas vacías de esta capa la piedra de hogar, los abalorios usables equipados y los consumibles de las bolsas (pociones, comida, vendas, elixires...), salvo los que ya están. Clic derecho en una casilla para vaciarla.",
@@ -458,7 +450,7 @@ ns.AddLocale("esES", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("esES", {
-    SLASH_HELP = "/mgir : abrir  |  /mgir profile <nombre> : cambiar de perfil  |  /mgir test : prueba del mando  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reiniciar las acciones de este personaje  |  /mgir undo : deshacer el último cambio de acciones",
+    SLASH_HELP = "/mgir : abrir  |  /mgir profile <nombre> : cambiar de perfil  |  /mgir test : prueba del mando  |  /mgir tuto : tutorial  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : reiniciar las acciones de este personaje  |  /mgir undo : deshacer el último cambio de acciones  |  /mgir rangs: reemplazar los rangos inferiores de hechizos",
     LEARN_PAD_REFUSED = "%s es un botón básico del mando: el addon lo combina o lo configura él mismo. Pulsa el botón adicional (la tecla que envía su software).",
     RESET_CONFIRM = "¿Vaciar todas las acciones de este personaje en el perfil actual?",
     RESET_CONFIRM_SPEC = "¿Vaciar todas las acciones de este personaje para la especialización «%s», en el perfil actual?",
@@ -521,4 +513,144 @@ ns.AddLocale("esES", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("esES", {
     WHATSNEW_1_1_6 = "• Marcas de banda en las acciones básicas: «Marcado rápido» pone la siguiente marca en tu objetivo en cada pulsación (calavera, cruz, cuadrado, luna, triángulo, diamante, círculo, estrella), cada una de las 8 marcas y «Quitar la marca».\n• «Seleccionarte a ti mismo» en las acciones básicas.\n• La descripción de un hechizo muestra su rango.\n• Objetivo aliado / enemigo: cada pulsación breve pasa ahora al siguiente objetivo, también en Forever, y apuntar con el stick derecho responde al instante. El objetivo apuntado se queda si el stick sigue inclinado al soltar el botón, o tras una pulsación mantenida.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("esES", {
+    UPRANK_ASK = "Nuevo rango aprendido: %s.\n\n¿Reemplazar el rango inferior en tus acciones?\n(%d casilla(s) del addon, %d casilla(s) de las barras del juego)",
+    UPRANK_REPLACE = "Reemplazar",
+    UPRANK_KEEP = "Conservar",
+    UPRANK_DONE = "Nuevo rango puesto: %d casilla(s) del addon, %d casilla(s) de las barras del juego.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("esES", {
+    COMFORT_TITLE = "Comodidad",
+    UPRANK_AUTO = "Reemplazar los nuevos rangos de hechizos sin preguntar (rangos inferiores en las acciones del addon y en las barras del juego)",
+    UPRANK_NONE = "Ningún rango inferior que reemplazar.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("esES", {
+    GAME_targetlast = "Objetivo anterior",
+    GAME_assist = "Asistir al objetivo",
+    GAME_focus = "Poner como foco",
+    GAME_targetfocus = "Seleccionar el foco",
+    GAME_follow = "Seguir al objetivo",
+    GAME_openbags = "Abrir las bolsas",
+    GAME_dismount = "Desmontar",
+    GAME_randommount = "Montura favorita al azar",
+})
+
+-- Sorts inconnus
+ns.AddLocale("esES", {
+    SPELL_UNKNOWN = "Este personaje no conoce este hechizo (talentos, otra especialización, plantilla de otro personaje): esta casilla no hace nada.",
+    UNKNOWN_SECTION = "Hechizos desconocidos",
+    UNKNOWN_REMOVE = "Quitar los hechizos desconocidos",
+    UNKNOWN_CONFIRM = "¿Quitar de las acciones de %2$s los %1$d hechizo(s) que este personaje no conoce?",
+    UNKNOWN_REMOVED = "%d hechizo(s) desconocido(s) quitado(s).",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("esES", {
+    SEARCH_HINT = "Buscar una acción",
+    SEARCH_DESC = "Escribe parte de un nombre (hechizo, objeto, macro...): las capas que lo tienen muestran cuántas casillas, y esas casillas tienen un borde dorado.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("esES", {
+    MENU_BEST = "Consumible inteligente...",
+    BEST_TITLE = "Consumibles inteligentes",
+    KIND_best = "Consumible inteligente",
+    BEST_heal = "Mejor poción de sanación",
+    BEST_mana = "Mejor poción de maná",
+    BEST_food = "Mejor comida",
+    BEST_drink = "Mejor bebida",
+    BEST_bandage = "Mejor venda",
+    BEST_NONE = "Ninguno en tus bolsas",
+    BEST_DESC = "Usa el mejor objeto de este tipo de tus bolsas; cuando se acaba una pila, el siguiente (también en combate). La lista sigue tus bolsas fuera de combate.",
+})
+
+-- Vibrations
+ns.AddLocale("esES", {
+    VIBRATION_OPTION = "Vibración del mando (modificador bloqueable activado / desactivado, pulsación larga reconocida, nuevo rango puesto)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("esES", {
+    SIMPLE_MOD_ROW = "Con un modificador mantenido (vacío: no hace nada)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("esES", {
+    HUD_LAYERS_LABEL = "Capas:",
+    HUD_DETACH = "Separadas del HUD",
+    HUD_VERTICAL = "En columna",
+    HUD_STRIP_COLS = "Columnas de miniaturas:",
+    HUD_TOOL_VERTICAL = "Capas en columna",
+    HUD_TOOL_HORIZONTAL = "Capas en fila",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("esES", {
+    HUD_TOOL_UNLOCK = "Desbloquear: mover el HUD con el ratón",
+    HUD_TOOL_LOCK = "Bloquear el HUD (arrástralo antes donde quieras)",
+    HUD_TOOL_LOCK_DETACHED = "Bloquear el HUD (arrastra antes el HUD y las capas, cada uno a su sitio)",
+    HUD_UNLOCKED_HINT = "Desbloqueado: arrastra con el ratón (las capas separadas se mueven aparte). Haz clic en el candado para bloquear.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("esES", {
+    HUD_TOOL_SETTINGS = "Ajustes del HUD (pestaña HUD): miniaturas separadas del HUD, tamaño...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("esES", {
+    HUD_HIDE_STRIP = "Ocultas",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("esES", {
+    TAB_OPTIONS = "Opciones",
+    ACTIONS_INTRO = "Lo que lanza cada botón. Elige una capa a la izquierda y pon tus acciones en sus casillas a la derecha.",
+    OPTIONS_INTRO = "Los ajustes generales del addon: lo que no es ni un botón, ni una capa, ni la visualización del HUD.",
+    OPTIONS_SECTION_UI = "Interfaz",
+    HUD_SECTION_STRIP = "Miniaturas de las capas",
+    HUD_SECTION_PLACE = "Tamaño y posición del HUD",
+    HUD_LAYOUT_LABEL = "Disposición:",
+    TEST_OPEN = "Probar mi mando",
+    TEST_BACK = "Volver a los botones",
+    HELP_INTRO = "Elige un tema a la izquierda. El tutorial lo repasa todo paso a paso.",
+    HELP_PRINCIPLE = "El principio",
+    HELP_COMMANDS = "Comandos",
+    TIP_CONTROLLER = "Elige tu mando: el addon usa los nombres de sus botones adicionales.",
+    TIP_TYPES = "Volver a ver qué hace cada tipo de botón: modificador, objetivo, botón simple, ninguno.",
+    TIP_DETECT = "Luego pulsa el botón del mando: el addon recuerda la tecla que envía.",
+    TIP_CLEAR = "Olvidar la tecla de este botón: ya no hace nada.",
+    TIP_TEST = "Ver en directo lo que WoW recibe de cada botón: útil si un botón no responde.",
+    TIP_REPORT = "Un texto para enviar al autor si hay un problema (sin nombre de personaje ni de reino).",
+    TIP_PROFILE_USE = "Este perfil pasa a ser el usado: su mando, sus botones y las acciones de este personaje.",
+    TIP_PROFILE_NEW = "Un perfil vacío, por ejemplo para otro mando.",
+    TIP_PROFILE_COPY = "Un perfil nuevo, copia del elegido, para probar cambios sin riesgo.",
+    TIP_PROFILE_RENAME = "Cambiar el nombre del perfil elegido.",
+    TIP_PROFILE_DELETE = "Borrar el perfil elegido, con las acciones de todos tus personajes para este perfil.",
+    TIP_PROFILE_EXPORT = "Un texto para copiar, para compartir este perfil o guardarlo aparte.",
+    TIP_PROFILE_IMPORT = "Pegar el texto de un perfil exportado (el tuyo o el de otro jugador).",
+    TIP_HUD_DETACH = "Las miniaturas salen del HUD: puedes colocarlas donde quieras (candado del HUD y arrastrar).",
+    TIP_HUD_VERTICAL = "Las miniaturas se apilan en columna en lugar de en fila.",
+    TIP_HUD_HIDDEN = "Sin miniaturas: el HUD solo muestra la capa actual. Las capas se editan en la pestaña Capas.",
+    TIP_HUD_ROWS = "En cuántas filas (o columnas) se reparten las miniaturas.",
+    TIP_HUD_STRIP_SIZE = "El tamaño de las miniaturas, sin cambiar el resto del HUD.",
+    TIP_HUD_SIZE = "El tamaño de todo el HUD.",
+    TIP_HUD_MOVE = "Desbloquear el HUD para arrastrarlo con el ratón (como el candado del HUD). Haz clic de nuevo para bloquearlo.",
+    TIP_HUD_RESET = "Devolver el HUD a su lugar y tamaño de origen (las miniaturas separadas vuelven debajo).",
+    TIP_UPRANK = "Cuando aprendes un nuevo rango de un hechizo, sustituye al antiguo en todas partes sin preguntar.",
+    TIP_VIBRATION = "Una breve vibración cuando un modificador bloqueable se activa o desactiva, y cuando se pone un nuevo rango.",
+    TIP_MINIMAP = "El botón junto al minimapa: clic para abrir la configuración, clic derecho para mover el HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("esES", {
+    WHATSNEW_1_2_0 = "• La ventana se reorganiza en el orden de la configuración: Botones, Capas (la antigua pestaña Acciones), HUD, Opciones, Perfiles, Ayuda. Cada ajuste tiene su descripción emergente, la Ayuda tiene un índice y la prueba del mando se abre desde la pestaña Botones.\n• Nuevos rangos de hechizos: cuando aprendes uno, el addon propone sustituir el antiguo en todas partes (o lo hace solo, pestaña Opciones). /mgir rangs revisa todo el libro de hechizos.\n• Consumibles inteligentes (menú de una casilla): tu mejor poción, comida, bebida o venda, actualizada sola.\n• Los hechizos que este personaje no conoce aparecen en rojo; «Plantillas y especializaciones...» puede quitarlos.\n• Un campo busca una acción en todas tus capas.\n• Nuevas acciones básicas: objetivo anterior, asistir, foco, seguir, abrir las bolsas, desmontar, montura favorita al azar.\n• HUD: pequeños botones al pasar el ratón (candado para moverlo, fila o columna, ajustes); las miniaturas pueden separarse del HUD, ponerse en columna u ocultarse. El HUD siempre se muestra.\n• A, B, X e Y de «Solo» muestran la acción del juego, y la página de un botón simple su casilla en cada modificador.\n• Vibraciones del mando, si el juego lo permite.",
+    WHATSNEW_FEEDBACK = "¿Un error, una idea, algo molesto? Dímelo: cada comentario ayuda a mejorar el addon. Copia este enlace (Ctrl+C) para escribir en GitHub:",
 })

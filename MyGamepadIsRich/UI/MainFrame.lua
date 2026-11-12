@@ -17,6 +17,8 @@ local LIST_W = 214
 local frame, pages, tabs = nil, {}, {}
 local currentTab = "actions"
 local RefreshAll
+-- (onglet Couches : la hauteur de la phrase d'accueil)
+local ACTIONS_TOP = 26
 
 local DPAD_KEYS = { "PADDLEFT", "PADDUP", "PADDRIGHT", "PADDDOWN" }
 local FACE_KEYS = { "PAD3", "PAD4", "PAD2", "PAD1" }
@@ -145,10 +147,45 @@ local function CheckSelected()
     selected = { bar = "topBar" }
 end
 
+-- Les boutons simples dans la couche choisie : leur case (couche de
+-- modificateur), ou leur propre couche Seul / LT / RT (barre du jeu)
+local BAR_SIMPLE_LAYER = { topBar = "base", leftBar = "lt", rightBar = "rt" }
+
+---------------------------------------------------------------------------
+-- « Où est ce sort ? » : le texte cherché (en minuscules, "" : pas de
+-- recherche). Les couches qui ont une action dont le nom le contient
+-- montrent leur nombre de cases trouvées ; ces cases ont un bord doré.
+---------------------------------------------------------------------------
+local searchText = ""
+
+local function Found(action)
+    if searchText == "" or not action then return false end
+    local label = ns.Actions.Label(action)
+    return type(label) == "string" and label:lower():find(searchText, 1, true) ~= nil
+end
+
+local function FoundCount(layer)
+    local n = 0
+    local function Count(action) if Found(action) then n = n + 1 end end
+    if layer.bar then
+        for i = 1, 8 do Count(ns.Bar.GetView(layer.bar, i)) end
+        local own = BAR_SIMPLE_LAYER[layer.bar]
+        if own then
+            for _, sid in ipairs(ns.SimpleIDs()) do Count(ns.ButtonActions(sid).layers[own]) end
+        end
+    elseif layer.mod then
+        for _, action in pairs(ns.ButtonActions(layer.mod).combos) do Count(action) end
+    elseif layer.simple then
+        for _, action in pairs(ns.ButtonActions(layer.simple).layers) do Count(action) end
+    end
+    return n
+end
+
 ---------------------------------------------------------------------------
 -- Onglet Actions : la liste des couches (gauche)
 ---------------------------------------------------------------------------
 local list, entryPool, headerPool = nil, {}, {}
+local LIST_TOP = -34 -- (au-dessus : le champ de recherche)
 
 local function Entry(i)
     local e = entryPool[i]
@@ -190,7 +227,7 @@ local function Header(i)
 end
 
 local function RefreshList()
-    local y, ne, nh = -4, 0, 0
+    local y, ne, nh = LIST_TOP, 0, 0
     for _, section in ipairs(Sections()) do
         nh = nh + 1
         local h = Header(nh)
@@ -217,9 +254,19 @@ local function RefreshList()
             e:SetPoint("TOPLEFT", 8, y)
             SetTag(e.tag, LayerKeys(item))
             e.name:SetText(LayerName(item))
-            local n, total = LayerCount(item)
-            e.count:SetText(("%d/%d"):format(n, total))
-            e.count:SetTextColor(n > 0 and 0.4 or 0.5, n > 0 and 0.9 or 0.5, n > 0 and 0.4 or 0.5)
+            if searchText ~= "" then
+                -- (recherche : le nombre de cases trouvées, en doré ; les
+                -- couches sans rien de trouvé, estompées)
+                local found = FoundCount(item)
+                e.count:SetText(found > 0 and found or "")
+                e.count:SetTextColor(1, 0.82, 0)
+                e:SetAlpha(found > 0 and 1 or 0.4)
+            else
+                local n, total = LayerCount(item)
+                e.count:SetText(("%d/%d"):format(n, total))
+                e.count:SetTextColor(n > 0 and 0.4 or 0.5, n > 0 and 0.9 or 0.5, n > 0 and 0.4 or 0.5)
+                e:SetAlpha(1)
+            end
             e.sel:SetShown(Same(item, selected))
             e:Show()
             y = y - 36
@@ -259,10 +306,6 @@ local function SetCross(i, action)
         ns.Apply()
     end
 end
-
--- Les boutons simples dans la couche choisie : leur case (couche de
--- modificateur), ou leur propre couche Seul / LT / RT (barre du jeu)
-local BAR_SIMPLE_LAYER = { topBar = "base", leftBar = "lt", rightBar = "rt" }
 
 local function SimpleGet(sid)
     if not sid then return nil end
@@ -421,6 +464,13 @@ local function TemplatesMenu()
                 action = { op = "spec", key = s.key, name = s.name } }
         end
     end
+    -- (les sorts que ce personnage ne connaît pas, dans la spé active)
+    local unknown = #ns.Actions.UnknownSpots(ns.cprof.actions)
+    if unknown > 0 then
+        entries[#entries + 1] = { header = L.UNKNOWN_SECTION }
+        entries[#entries + 1] = { label = L.UNKNOWN_REMOVE, sub = L.ACTION_COUNT:format(unknown),
+            action = { op = "unknown" } }
+    end
     if #templates > 0 then
         entries[#entries + 1] = { header = L.TPL_SECTION_DELETE }
         for _, t in ipairs(templates) do
@@ -451,6 +501,15 @@ local function TemplatesMenu()
                     ns.Print(L.SPEC_COPIED:format(choice.name) .. " " .. L.UNDO_HINT)
                 end
             end)
+        elseif choice.op == "unknown" then
+            UI.Confirm(L.UNKNOWN_CONFIRM:format(unknown, spec), function()
+                if P.ActionsCombat() then return end
+                P.Backup()
+                local spots = ns.Actions.UnknownSpots(ns.cprof.actions)
+                for _, s in ipairs(spots) do s.list[s.key] = nil end
+                ns.Apply()
+                ns.Print(L.UNKNOWN_REMOVED:format(#spots) .. " " .. L.UNDO_HINT)
+            end)
         elseif choice.op == "delete" then
             UI.Confirm(L.TPL_DELETE_CONFIRM:format(choice.name), function()
                 P.DeleteTemplate(choice.name)
@@ -462,7 +521,7 @@ end
 
 local function BuildDetail(page)
     detail = CreateFrame("Frame", nil, page)
-    detail:SetPoint("TOPLEFT", LIST_W + 10, 0)
+    detail:SetPoint("TOPLEFT", LIST_W + 10, -ACTIONS_TOP)
     detail:SetPoint("BOTTOMRIGHT", 0, 0)
     local w = WIDTH - 16 - LIST_W - 10
 
@@ -523,9 +582,18 @@ local function BuildDetail(page)
                 end,
                 -- (A/B/X/Y de « Seul » sans action de l'addon : celle du jeu)
                 emptyLabel = function()
-                    return selected.bar and ns.Bar.ShowsGameAction(selected.bar, i) and L.GAME_ACTION or nil
+                    if not (selected.bar and ns.Bar.ShowsGameAction(selected.bar, i)) then return nil end
+                    -- (le nom : celui de la liaison, sinon l'info-bulle de Forever)
+                    return ns.Bar.GameActionName(i) or (ns.Hud and ns.Hud.GameName and ns.Hud.GameName(i))
+                        or L.GAME_ACTION
+                end,
+                -- (son image : celle du bouton de Forever, comme sur le HUD)
+                gameIcon = function()
+                    if not (selected.bar and ns.Bar.ShowsGameAction(selected.bar, i)) then return nil end
+                    if ns.Hud and ns.Hud.GamePicture then return ns.Hud.GamePicture(i) end
                 end,
                 disabledHint = function() return not FullLayer() and L.MENU_GAME_BAR_HINT or nil end,
+                found = Found,
                 labelWidth = 80,
             })
             slot:SetPoint("CENTER", detail.cross, "TOPLEFT", centers[side] + spot[1] * stepX,
@@ -553,8 +621,9 @@ local function BuildDetail(page)
             get = function() return SimpleGet(Sid()) end,
             set = function(action) SimpleSet(Sid(), action) end,
             allowCommand = function() return SimpleCommandAllowed(Sid()) end,
-            -- (vide dans une couche de modificateur : le bouton garde son action habituelle)
-            emptyLabel = function() return selected.mod and L.SIMPLE_USUAL or nil end,
+            -- (vide dans une couche de modificateur : le bouton ne fait rien
+            -- tant que la couche est tenue)
+            found = Found,
             labelWidth = 62,
         })
         slot:SetPoint("CENTER", detail.simpleRow, "TOPLEFT", 44 + ((k - 1) % 8) * 66, -44 - math.floor((k - 1) / 8) * 70)
@@ -595,9 +664,41 @@ local function BuildDetail(page)
             allowCommand = function()
                 return selected.simple ~= nil and ns.Simple.CommandAllowed(ns.ButtonActions(selected.simple), layer)
             end,
+            found = Found,
         })
         cell.slot:SetPoint("TOP", 0, -40)
         detail.simpleCells[k] = cell
+    end
+
+    -- Sous ses couches : la case du bouton simple dans chaque couche de
+    -- modificateur, de ciblage ou de paire (les mêmes que la rangée
+    -- « Boutons simples » de ces couches)
+    detail.modRow = CreateFrame("Frame", nil, detail)
+    detail.modRow:SetPoint("TOPLEFT", 0, -256)
+    detail.modRow:SetSize(w, 150)
+    local modTitle = UI.Text(detail.modRow, "GameFontNormal", L.SIMPLE_MOD_ROW)
+    modTitle:SetPoint("TOPLEFT", 10, 0)
+    detail.modSlots = {}
+    for k = 1, 18 do
+        local slot
+        local function Mod() return slot and slot.mod end
+        slot = UI.CreateActionSlot(detail.modRow, {
+            get = function()
+                return Mod() and selected.simple and ns.ButtonActions(Mod()).combos[selected.simple]
+            end,
+            set = function(action)
+                if not (Mod() and selected.simple) then return end
+                ns.ButtonActions(Mod()).combos[selected.simple] = action
+                ns.Apply()
+            end,
+            found = Found,
+            labelWidth = 58,
+        })
+        slot:SetPoint("CENTER", detail.modRow, "TOPLEFT", 40 + ((k - 1) % 9) * 62,
+            -56 - math.floor((k - 1) / 9) * 86)
+        slot.tag = Tag(slot, 18)
+        slot.tag:SetPoint("BOTTOM", slot, "TOP", 0, 4)
+        detail.modSlots[k] = slot
     end
 
     detail.warning = UI.Text(detail, "GameFontRed")
@@ -642,6 +743,23 @@ local function RefreshDetail()
         end
     else
         for _, slot in ipairs(detail.slots) do slot:Refresh() end
+    end
+    -- (bouton simple : sa case dans chaque couche de modificateur)
+    local mods = {}
+    if isSimple then
+        local pad, extra = ns.ModLayerLists()
+        for _, list in ipairs({ pad, extra }) do
+            for _, id in ipairs(list) do mods[#mods + 1] = id end
+        end
+    end
+    detail.modRow:SetShown(#mods > 0)
+    for k, slot in ipairs(detail.modSlots) do
+        slot.mod = mods[k]
+        slot:SetShown(slot.mod ~= nil)
+        if slot.mod then
+            SetTag(slot.tag, LayerKeys({ mod = slot.mod }))
+            slot:Refresh()
+        end
     end
 
     -- (les cases des boutons simples : couche de modificateur, ou Seul / LT / RT)
@@ -782,10 +900,17 @@ local function BuildButtons(page)
     local change = UI.Button(page, L.CONTROLLER_CHANGE, 140, 22)
     change:SetPoint("LEFT", controllerName, "RIGHT", 12, 0)
     change:SetScript("OnClick", PickController)
+    UI.Tip(change, L.CONTROLLER_CHANGE, L.TIP_CONTROLLER)
     -- (l'explication des types de boutons : l'étape du tutoriel)
     local typesHelp = UI.Button(page, L.BUTTONS_TYPES_HELP, 190, 22)
     typesHelp:SetPoint("TOPRIGHT", -14, -38)
     typesHelp:SetScript("OnClick", function() ns.Tutorial.Open("types") end)
+    UI.Tip(typesHelp, L.BUTTONS_TYPES_HELP, L.TIP_TYPES)
+    -- (ce que WoW reçoit de chaque bouton : la vue de test, sans onglet)
+    local test = UI.Button(page, L.TEST_OPEN, 170, 22)
+    test:SetPoint("RIGHT", typesHelp, "LEFT", -6, 0)
+    test:SetScript("OnClick", function() SelectTab("test") end)
+    UI.Tip(test, L.TEST_OPEN, L.TIP_TEST)
 
     -- La liste qui défile
     local scroll = CreateFrame("ScrollFrame", nil, page, "UIPanelScrollFrameTemplate")
@@ -853,6 +978,7 @@ local function BuildButtons(page)
         local detect = UI.Button(row, L.DETECT, 110, 22)
         detect:SetPoint("TOPRIGHT", -104, -4)
         detect:SetScript("OnClick", function() ns.Learn.Start(id, function() RefreshAll() end) end)
+        UI.Tip(detect, L.DETECT, L.TIP_DETECT)
         local clear = UI.Button(row, L.CLEAR, 90, 22)
         clear:SetPoint("LEFT", detect, "RIGHT", 4, 0)
         clear:SetScript("OnClick", function()
@@ -860,6 +986,7 @@ local function BuildButtons(page)
             ns.Apply()
             RefreshAll()
         end)
+        UI.Tip(clear, L.CLEAR, L.TIP_CLEAR)
         row.id = id
         rows[i] = row
     end
@@ -1017,25 +1144,11 @@ local function BuildHudPage(page)
     intro:SetPoint("TOPLEFT", 16, -10)
     intro:SetPoint("RIGHT", -16, 0)
     intro:SetJustifyH("LEFT")
-
-    hud.enabled = Check(page, L.HUD_SHOW, function(on) ns.Hud.SetEnabled(on) end)
-    hud.enabled:SetPoint("TOPLEFT", 16, -60)
-
-    -- Miniatures : en bas / en haut
-    local stripLabel = UI.Text(page, "GameFontNormal", L.TUTO_STRIP_LABEL)
-    stripLabel:SetPoint("TOPLEFT", 20, -104)
-    hud.strip = {}
-    local x = stripLabel:GetStringWidth() + 14
-    for _, def in ipairs({ { "bottom", L.TUTO_STRIP_BOTTOM }, { "top", L.TUTO_STRIP_TOP } }) do
-        local pos = def[1]
-        local cb = Check(page, def[2], function() ns.Hud.SetStrip(pos) end)
-        cb:SetPoint("LEFT", stripLabel, "LEFT", x, 0)
-        hud.strip[pos] = cb
-        x = x + 34 + cb.text:GetStringWidth() + 20
-    end
+    -- (la colonne de gauche s'arrête avant l'ordre des miniatures)
+    local leftRight = WIDTH - 16 - (ORDER_X - 20)
 
     -- (une valeur en % avec - et +)
-    local function Stepper(y, label, get, set)
+    local function Stepper(y, label, get, set, tip)
         local text = UI.Text(page, "GameFontNormal", label)
         text:SetPoint("TOPLEFT", 20, y)
         local minus = UI.Button(page, "-", 28, 22)
@@ -1047,44 +1160,64 @@ local function BuildHudPage(page)
         plus:SetPoint("LEFT", value, "RIGHT", 10, 0)
         minus:SetScript("OnClick", function() set(get() - 0.05) RefreshAll() end)
         plus:SetScript("OnClick", function() set(get() + 0.05) RefreshAll() end)
+        UI.Tip(minus, label, tip)
+        UI.Tip(plus, label, tip)
         return value
     end
 
-    -- Miniatures : taille, nombre de lignes
-    hud.stripSize = Stepper(-140, L.HUD_STRIP_SIZE, ns.Hud.StripScale, ns.Hud.SetStripScale)
+    -- Les miniatures des couches : disposition, taille, lignes
+    UI.Section(page, L.HUD_SECTION_STRIP, 16, -48, leftRight)
+    local layoutLabel = UI.Text(page, "GameFontNormal", L.HUD_LAYOUT_LABEL)
+    layoutLabel:SetPoint("TOPLEFT", 20, -82)
+    hud.detached = Check(page, L.HUD_DETACH, function(on) ns.Hud.SetDetached(on) end)
+    hud.detached:SetPoint("LEFT", layoutLabel, "LEFT", layoutLabel:GetStringWidth() + 14, 0)
+    UI.Tip(hud.detached, L.HUD_DETACH, L.TIP_HUD_DETACH)
+    hud.vertical = Check(page, L.HUD_VERTICAL, function(on) ns.Hud.SetVertical(on) end)
+    hud.vertical:SetPoint("LEFT", hud.detached.text, "RIGHT", 20, 0)
+    UI.Tip(hud.vertical, L.HUD_VERTICAL, L.TIP_HUD_VERTICAL)
+    hud.hidden = Check(page, L.HUD_HIDE_STRIP, function(on) ns.Hud.SetStripHidden(on) end)
+    hud.hidden:SetPoint("LEFT", hud.vertical.text, "RIGHT", 20, 0)
+    UI.Tip(hud.hidden, L.HUD_HIDE_STRIP, L.TIP_HUD_HIDDEN)
+
+    hud.stripSize = Stepper(-118, L.HUD_STRIP_SIZE, ns.Hud.StripScale, ns.Hud.SetStripScale, L.TIP_HUD_STRIP_SIZE)
     local rowsLabel = UI.Text(page, "GameFontNormal", L.HUD_STRIP_ROWS)
-    rowsLabel:SetPoint("TOPLEFT", 20, -176)
+    rowsLabel:SetPoint("TOPLEFT", 20, -154)
+    hud.rowsLabel = rowsLabel
     hud.rows = {}
-    x = rowsLabel:GetStringWidth() + 14
+    local x = rowsLabel:GetStringWidth() + 14
+    do
+        -- (« Lignes » ou « Colonnes » : la place des cases suit le plus long)
+        local probe = UI.Text(page, "GameFontNormal", L.HUD_STRIP_COLS)
+        x = math.max(x, probe:GetStringWidth() + 14)
+        probe:Hide()
+    end
     for n = 1, 3 do
         local cb = Check(page, tostring(n), function() ns.Hud.SetStripRows(n) end)
         cb:SetPoint("LEFT", rowsLabel, "LEFT", x, 0)
+        UI.Tip(cb, function() return hud.rowsLabel:GetText() end, L.TIP_HUD_ROWS)
         hud.rows[n] = cb
         x = x + 34 + cb.text:GetStringWidth() + 20
     end
 
-    -- Taille du HUD
-    hud.size = Stepper(-220, L.HUD_SIZE, ns.Hud.Scale, ns.Hud.SetScale)
-
-    -- Position
+    -- Le HUD : taille, position
+    UI.Section(page, L.HUD_SECTION_PLACE, 16, -200, leftRight)
+    hud.size = Stepper(-234, L.HUD_SIZE, ns.Hud.Scale, ns.Hud.SetScale, L.TIP_HUD_SIZE)
     hud.move = UI.Button(page, L.HUD_MOVE, 220, 26)
-    hud.move:SetPoint("TOPLEFT", 20, -260)
+    hud.move:SetPoint("TOPLEFT", 20, -270)
     hud.move:SetScript("OnClick", function()
         ns.Hud.SetUnlocked(not ns.Hud.IsUnlocked())
         RefreshAll()
     end)
+    UI.Tip(hud.move, function() return hud.move:GetText() end, L.TIP_HUD_MOVE)
     local reset = UI.Button(page, L.HUD_RESET, 260, 26)
     reset:SetPoint("LEFT", hud.move, "RIGHT", 10, 0)
     reset:SetScript("OnClick", function() ns.Hud.ResetPosition() RefreshAll() end)
+    UI.Tip(reset, L.HUD_RESET, L.TIP_HUD_RESET)
     hud.moveHint = UI.Text(page, "GameFontHighlightSmall", L.HUD_UNLOCKED)
     hud.moveHint:SetPoint("TOPLEFT", hud.move, "BOTTOMLEFT", 0, -6)
     hud.moveHint:SetPoint("RIGHT", page, "LEFT", ORDER_X - 20, 0)
     hud.moveHint:SetJustifyH("LEFT")
     hud.moveHint:SetTextColor(0.5, 0.85, 1)
-
-    -- Bouton de la minimap
-    hud.minimap = Check(page, L.MINIMAP_SHOW, function(on) ns.MinimapButton.SetShown(on) end)
-    hud.minimap:SetPoint("TOPLEFT", 16, -330)
 
     local tip = UI.Text(page, "GameFontDisableSmall", L.HUD_TILE_HINT .. "  -  " .. L.HUD_CARD_HINT)
     tip:SetPoint("BOTTOMLEFT", 16, 12)
@@ -1178,9 +1311,17 @@ local function RefreshOrder()
 end
 
 local function RefreshHudPage()
-    hud.enabled:SetChecked(ns.Hud.IsEnabled())
-    local strip = ns.Hud.Strip()
-    for pos, cb in pairs(hud.strip) do cb:SetChecked(pos == strip) end
+    local detached, vertical = ns.Hud.Detached(), ns.Hud.Vertical()
+    hud.detached:SetChecked(detached)
+    hud.vertical:SetChecked(vertical)
+    -- (cachées : séparées / en colonne sans objet)
+    local hidden = ns.Hud.StripHidden()
+    hud.hidden:SetChecked(hidden)
+    for _, cb in ipairs({ hud.detached, hud.vertical }) do
+        cb:SetEnabled(not hidden)
+        cb:SetAlpha(hidden and 0.4 or 1)
+    end
+    hud.rowsLabel:SetText(vertical and L.HUD_STRIP_COLS or L.HUD_STRIP_ROWS)
     hud.size:SetText(("%d %%"):format(math.floor(ns.Hud.Scale() * 100 + 0.5)))
     hud.stripSize:SetText(("%d %%"):format(math.floor(ns.Hud.StripScale() * 100 + 0.5)))
     local rows = ns.Hud.StripRows()
@@ -1188,40 +1329,128 @@ local function RefreshHudPage()
     local unlocked = ns.Hud.IsUnlocked()
     hud.move:SetText(unlocked and L.HUD_MOVE_DONE or L.HUD_MOVE)
     hud.moveHint:SetShown(unlocked)
-    hud.minimap:SetChecked(ns.MinimapButton.IsShown())
     RefreshOrder()
+end
+
+---------------------------------------------------------------------------
+-- Onglet Options : les réglages généraux (ni bouton, ni couche, ni HUD)
+---------------------------------------------------------------------------
+local opt = {}
+
+local function BuildOptionsPage(page)
+    local intro = UI.Text(page, "GameFontHighlight", L.OPTIONS_INTRO)
+    intro:SetPoint("TOPLEFT", 16, -10)
+    intro:SetPoint("RIGHT", -16, 0)
+    intro:SetJustifyH("LEFT")
+
+    -- Confort : nouveaux rangs de sorts, vibrations
+    UI.Section(page, L.COMFORT_TITLE, 16, -48)
+    opt.uprank = Check(page, L.UPRANK_AUTO, function(on) ns.Uprank.SetAuto(on) end)
+    opt.uprank:SetPoint("TOPLEFT", 16, -80)
+    opt.uprank.text:SetPoint("RIGHT", page, "RIGHT", -16, 0)
+    opt.uprank.text:SetJustifyH("LEFT")
+    UI.Tip(opt.uprank, L.UPRANK_AUTO, L.TIP_UPRANK)
+    -- (vibrations : seulement si le jeu sait faire vibrer la manette)
+    opt.vibration = Check(page, L.VIBRATION_OPTION, function(on)
+        ns.Rumble.SetEnabled(on)
+        if on then ns.Rumble.Play("on") end
+    end)
+    opt.vibration:SetPoint("TOPLEFT", opt.uprank, "BOTTOMLEFT", 0, -10)
+    opt.vibration.text:SetPoint("RIGHT", page, "RIGHT", -16, 0)
+    opt.vibration.text:SetJustifyH("LEFT")
+    UI.Tip(opt.vibration, L.VIBRATION_OPTION, L.TIP_VIBRATION)
+
+    -- Interface : le bouton de la minimap
+    UI.Section(page, L.OPTIONS_SECTION_UI, 16, -170)
+    opt.minimap = Check(page, L.MINIMAP_SHOW, function(on) ns.MinimapButton.SetShown(on) end)
+    opt.minimap:SetPoint("TOPLEFT", 16, -202)
+    UI.Tip(opt.minimap, L.MINIMAP_SHOW, L.TIP_MINIMAP)
+end
+
+local function RefreshOptionsPage()
+    opt.uprank:SetChecked(ns.Uprank.Auto())
+    opt.vibration:SetShown(ns.Rumble.Available())
+    opt.vibration:SetChecked(ns.Rumble.Enabled())
+    opt.minimap:SetChecked(ns.MinimapButton.IsShown())
 end
 
 ---------------------------------------------------------------------------
 -- Aide : les textes du tutoriel (une seule source à traduire)
 ---------------------------------------------------------------------------
+-- Onglet Aide : un sommaire à gauche (les sections du tutoriel, puis les
+-- commandes), la section choisie à droite ; le texte dépend de la manette
+local HELP_LIST_W = 210
+local helpSection = 1
+
 local function BuildHelp(page)
+    local intro = UI.Text(page, "GameFontHighlight", L.HELP_INTRO)
+    intro:SetPoint("TOPLEFT", 12, -10)
+    intro:SetPoint("RIGHT", -250, 0)
+    intro:SetJustifyH("LEFT")
     local replay = UI.Button(page, L.HELP_REPLAY, 220, 24)
-    replay:SetPoint("TOPLEFT", 12, -6)
+    replay:SetPoint("TOPRIGHT", -12, -6)
     replay:SetScript("OnClick", function() ns.Tutorial.Open(1) end)
+
     local scroll = CreateFrame("ScrollFrame", nil, page, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 12, -40)
+    scroll:SetPoint("TOPLEFT", HELP_LIST_W + 24, -44)
     scroll:SetPoint("BOTTOMRIGHT", -32, 8)
     local child = CreateFrame("Frame", nil, scroll)
-    child:SetSize(WIDTH - 80, 10)
+    child:SetSize(WIDTH - HELP_LIST_W - 90, 10)
     scroll:SetScrollChild(child)
-    local text = UI.Text(child, "GameFontHighlight", ns.Tutorial.HelpText())
-    text:SetPoint("TOPLEFT", 4, -4)
-    text:SetWidth(WIDTH - 90)
+    local title = UI.Text(child, "GameFontNormalLarge")
+    title:SetPoint("TOPLEFT", 4, -4)
+    local text = UI.Text(child, "GameFontHighlight")
+    text:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -10)
+    text:SetWidth(WIDTH - HELP_LIST_W - 100)
     text:SetJustifyH("LEFT")
     text:SetSpacing(3)
-    child:SetHeight(text:GetStringHeight() + 20)
+    Separator(page, HELP_LIST_W + 14, -44, HELP_LIST_W + 15, -(HEIGHT - 76))
+
+    local buttons = {}
+    local function Show()
+        local sections = ns.Tutorial.HelpSections()
+        helpSection = math.max(1, math.min(helpSection, #sections))
+        for i, b in ipairs(buttons) do
+            local sec = sections[i]
+            b:SetShown(sec ~= nil)
+            if sec then
+                b:SetText(sec.title)
+                if i == helpSection then b:LockHighlight() else b:UnlockHighlight() end
+            end
+        end
+        local sec = sections[helpSection]
+        title:SetText(sec and sec.title or "")
+        text:SetText(sec and sec.text or "")
+        child:SetHeight(title:GetStringHeight() + text:GetStringHeight() + 30)
+        scroll:SetVerticalScroll(0)
+    end
+    for i = 1, 14 do
+        local b = UI.Button(page, "", HELP_LIST_W, 24)
+        b:SetPoint("TOPLEFT", 12, -44 - (i - 1) * 28)
+        local fs = b:GetFontString()
+        if fs then
+            fs:SetWidth(HELP_LIST_W - 12)
+            fs:SetWordWrap(false)
+        end
+        b:SetScript("OnClick", function()
+            helpSection = i
+            Show()
+        end)
+        buttons[i] = b
+    end
     -- (le texte dépend de la manette choisie)
-    page:SetScript("OnShow", function()
-        text:SetText(ns.Tutorial.HelpText())
-        child:SetHeight(text:GetStringHeight() + 20)
-    end)
+    page:SetScript("OnShow", Show)
+    Show()
 end
 
 ---------------------------------------------------------------------------
 -- Fenêtre
 ---------------------------------------------------------------------------
-local TAB_ORDER = { "actions", "buttons", "profiles", "hud", "test", "help", "donate" }
+-- (de gauche à droite : l'ordre dans lequel on configure ; « test », sans
+-- onglet, s'ouvre depuis Boutons, dont l'onglet reste allumé)
+local TAB_ORDER = { "buttons", "actions", "hud", "options", "profiles", "help", "donate" }
+local PAGE_KEYS = { "buttons", "actions", "hud", "options", "profiles", "help", "donate", "test" }
+local TAB_OF = { test = "buttons" }
 local TAB_GAP = 4
 local titleText
 
@@ -1239,6 +1468,8 @@ function RefreshAll()
         RefreshButtons()
     elseif currentTab == "hud" then
         RefreshHudPage()
+    elseif currentTab == "options" then
+        RefreshOptionsPage()
     elseif currentTab == "test" and pages.test.RefreshExtra then
         pages.test.RefreshExtra()
     end
@@ -1248,9 +1479,12 @@ local function SelectTab(name)
     -- (anciens noms d'onglets)
     if not pages[name] then name = "actions" end
     currentTab = name
+    -- (retenu pour la prochaine ouverture ; pas le test, ouvert de passage)
+    if ns.db and name ~= "test" then ns.db.options.tab = name end
     for key, page in pairs(pages) do page:SetShown(key == name) end
+    local lit = TAB_OF[name] or name
     for key, tab in pairs(tabs) do
-        if key == name then tab:LockHighlight() else tab:UnlockHighlight() end
+        if key == lit then tab:LockHighlight() else tab:UnlockHighlight() end
     end
     RefreshAll()
 end
@@ -1284,7 +1518,7 @@ local function Build()
     titleText = title
 
     local labels = { actions = L.TAB_ACTIONS, buttons = L.TAB_BUTTONS, profiles = L.TAB_PROFILES,
-        hud = L.TAB_HUD, test = L.TAB_TEST, help = L.TAB_HELP, donate = L.TAB_DONATE }
+        hud = L.TAB_HUD, options = L.TAB_OPTIONS, help = L.TAB_HELP, donate = L.TAB_DONATE }
     local prev
     for _, key in ipairs(TAB_ORDER) do
         local tab = UI.Button(f, labels[key], 100, 24)
@@ -1292,7 +1526,8 @@ local function Build()
         tab:SetScript("OnClick", function() SelectTab(key) end)
         tabs[key] = tab
         prev = tab
-
+    end
+    for _, key in ipairs(PAGE_KEYS) do
         local page = CreateFrame("Frame", nil, f)
         page:SetPoint("TOPLEFT", 8, -60)
         page:SetPoint("BOTTOMRIGHT", -8, 8)
@@ -1312,11 +1547,42 @@ local function Build()
         tabs[key]:SetWidth(math.floor(natural[key] + extra))
     end
 
-    -- Actions : la liste à gauche, la couche à droite
+    -- Couches : une phrase d'accueil ; dessous, la liste à gauche, la couche
+    -- à droite
+    local actionsIntro = UI.Text(pages.actions, "GameFontHighlight", L.ACTIONS_INTRO)
+    actionsIntro:SetPoint("TOPLEFT", 12, -6)
+    actionsIntro:SetPoint("RIGHT", -12, 0)
+    actionsIntro:SetJustifyH("LEFT")
     list = CreateFrame("Frame", nil, pages.actions)
-    list:SetPoint("TOPLEFT", 0, 0)
+    list:SetPoint("TOPLEFT", 0, -ACTIONS_TOP)
     list:SetPoint("BOTTOMLEFT", 0, 0)
     list:SetWidth(LIST_W)
+    -- (au-dessus de la liste : « Où est ce sort ? », la recherche d'une action)
+    local okSearch, search = pcall(CreateFrame, "EditBox", nil, list, "SearchBoxTemplate")
+    if not (okSearch and search) then search = CreateFrame("EditBox", nil, list, "InputBoxTemplate") end
+    search:SetSize(LIST_W - 24, 20)
+    search:SetPoint("TOPLEFT", 14, -6)
+    search:SetAutoFocus(false)
+    search:SetMaxLetters(40)
+    if search.Instructions then search.Instructions:SetText(L.SEARCH_HINT) end
+    search:HookScript("OnTextChanged", function(self)
+        local text = strtrim(self:GetText() or ""):lower()
+        if text == searchText then return end
+        searchText = text
+        RefreshAll()
+    end)
+    search:SetScript("OnEscapePressed", function(self)
+        self:SetText("")
+        self:ClearFocus()
+    end)
+    search:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+    search:HookScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(L.SEARCH_HINT, 1, 0.82, 0)
+        GameTooltip:AddLine(L.SEARCH_DESC, 1, 1, 1, true)
+        GameTooltip:Show()
+    end)
+    search:HookScript("OnLeave", function() GameTooltip:Hide() end)
     -- (sous la liste : modèles de classe et copie depuis une autre spé)
     local templates = UI.Button(list, L.TPL_BUTTON, LIST_W - 16, 22)
     templates:SetPoint("BOTTOM", 0, 6)
@@ -1328,13 +1594,17 @@ local function Build()
         GameTooltip:Show()
     end)
     templates:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    Separator(pages.actions, LIST_W + 2, -4, LIST_W + 3, -(HEIGHT - 76))
+    Separator(pages.actions, LIST_W + 2, -ACTIONS_TOP - 4, LIST_W + 3, -(HEIGHT - 76))
     BuildDetail(pages.actions)
 
     BuildButtons(pages.buttons)
     UI.BuildProfilesPage(pages.profiles)
     BuildHudPage(pages.hud)
+    BuildOptionsPage(pages.options)
     UI.BuildTestPage(pages.test)
+    local back = UI.Button(pages.test, L.TEST_BACK, 180, 22)
+    back:SetPoint("TOPRIGHT", -16, -8)
+    back:SetScript("OnClick", function() SelectTab("buttons") end)
     BuildHelp(pages.help)
     UI.BuildDonatePage(pages.donate)
 
@@ -1352,7 +1622,10 @@ end
 
 function UI.Show(tab)
     if not ns.db then return end
-    if not frame then Build() end
+    if not frame then
+        currentTab = ns.db.options.tab or "buttons"
+        Build()
+    end
     frame:Show()
     SelectTab(tab or currentTab)
 end

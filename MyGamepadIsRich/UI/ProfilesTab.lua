@@ -380,11 +380,19 @@ function UI.BuildProfilesPage(p)
 
     -- Les actions, à droite de la liste
     local x, y = LIST_W + 32, listTop
+    -- (chaque bouton : ce qu'il fait, en info-bulle)
+    local TIPS = {
+        [L.PROFILE_USE] = L.TIP_PROFILE_USE, [L.PROFILE_NEW] = L.TIP_PROFILE_NEW,
+        [L.PROFILE_COPY] = L.TIP_PROFILE_COPY, [L.PROFILE_RENAME] = L.TIP_PROFILE_RENAME,
+        [L.PROFILE_DELETE] = L.TIP_PROFILE_DELETE, [L.PROFILE_EXPORT] = L.TIP_PROFILE_EXPORT,
+        [L.PROFILE_IMPORT] = L.TIP_PROFILE_IMPORT,
+    }
     local function Add(label, onClick, gap)
         y = y - (gap or 0)
         local b = UI.Button(p, label, 200, 24)
         b:SetPoint("TOPLEFT", x, y)
         b:SetScript("OnClick", onClick)
+        if TIPS[label] then UI.Tip(b, label, TIPS[label]) end
         y = y - 30
         return b
     end

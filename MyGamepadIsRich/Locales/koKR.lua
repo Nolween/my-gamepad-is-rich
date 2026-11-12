@@ -105,10 +105,8 @@ ns.AddLocale("koKR", {
 
 -- HUD
 ns.AddLocale("koKR", {
-    HUD_UNLOCKED = "HUD 잠금 해제: 마우스로 끌어 옮기세요. 다시 잠그려면 /mgir hud를 입력하세요.",
+    HUD_UNLOCKED = "HUD 잠금 해제: 마우스로 끌어 옮기세요 (분리된 미니어처는 따로 움직입니다). 잠그려면: HUD의 자물쇠, 또는 다시 /mgir hud.",
     HUD_LOCKED = "HUD가 잠겼습니다.",
-    HUD_ON = "HUD 표시: 게임의 컨트롤러 바를 대신합니다.",
-    HUD_OFF = "HUD 숨김: 게임의 컨트롤러 바가 돌아왔습니다. 다시 표시하려면 /mgir hud on을 입력하세요.",
     HUD_SCALE = "HUD 크기: %s",
     TUTO_HUD_TITLE = "컨트롤러 HUD",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("koKR", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("koKR", {
-    HUD_STRIP_TOP = "층 미리보기가 이제 HUD 위에 있습니다. 바꾸려면 /mgir hud strip을 입력하세요.",
-    HUD_STRIP_BOTTOM = "층 미리보기가 이제 HUD 아래에 있습니다. 바꾸려면 /mgir hud strip을 입력하세요.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("koKR", {
-    TUTO_STRIP_LABEL = "층 미리보기:",
-    TUTO_STRIP_BOTTOM = "아래 (추천)",
-    TUTO_STRIP_TOP = "위",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("koKR", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("koKR", {
-    TAB_ACTIONS = "동작",
+    TAB_ACTIONS = "층",
     TAB_HUD = "HUD",
     SECTION_PAD = "컨트롤러 바",
     SECTION_MODS = "수정키",
@@ -167,7 +160,6 @@ ns.AddLocale("koKR", {
     LAYER_DESC_HOLD = "%s을(를) 누른 채 A, B, X, Y 또는 십자키를 누르세요.",
     PAIRS_TITLE = "쌍 (함께 누르는 두 수정키)",
     HUD_INTRO = "HUD는 게임의 컨트롤러 바를 대신합니다: 사용 중인 층은 크게, 모든 층은 미리보기로.",
-    HUD_SHOW = "HUD 표시 (게임 컨트롤러 바 대신)",
     HUD_SIZE = "크기:",
     HUD_MOVE = "HUD 이동",
     HUD_MOVE_DONE = "HUD 잠그기",
@@ -292,7 +284,7 @@ ns.AddLocale("koKR", {
     TRIGGERS_ADDON = "애드온 수정키",
     TRIGGERS_GAME = "게임 층",
     TRIGGERS_ADDON_DESC = "LT나 RT(또는 둘 다)를 누른 채 A, B, X, Y 또는 십자키를 누르면 애드온의 동작이 나갑니다(직접 작성한 매크로, WoW 명령 등 모두 가능). 게임 컨트롤러 바의 LT, RT, LT + RT 층을 대신하며, 빈 칸은 아무것도 하지 않습니다. LB와 RB는 바뀌지 않습니다.",
-    TRIGGERS_GAME_DESC = "LT와 RT는 게임 컨트롤러 바의 층을 그대로 씁니다(동작 탭에서 편집).",
+    TRIGGERS_GAME_DESC = "LT와 RT는 게임 컨트롤러 바의 층을 그대로 씁니다(층 탭에서 편집).",
     TRIGGERS_COPIED = "게임의 LT / RT 층에서 동작 %d개를 애드온으로 가져왔습니다.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT: 애드온 수정키.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("koKR", {
     TUTO_PAIRS_TITLE = "쌍: 함께 누르는 두 버튼",
     TUTO_PAIRS_TEXT = "두 버튼(수정키 또는 대상 지정)을 함께 누르세요: 동작 8개의 층이 하나 더 생깁니다. 어떤 두 버튼이든 쌍이 될 수 있습니다: L5 + R5, LT + RT, LB + LT... 원하는 쌍을 선택하세요(나중에 |cffffd100버튼|r 탭에서 바꿀 수 있습니다). 기본값: 왼쪽 + 오른쪽 쌍.",
     TUTO_ACTIONS_TITLE = "동작 배치",
-    TUTO_ACTIONS_TEXT = "|cffffd100동작|r 탭: 왼쪽에는 모든 층(단독, LT, RT, 수정키와 쌍), 오른쪽에는 선택한 층이 컨트롤러 모양으로 표시됩니다.\n\n- 주문서의 주문, 가방의 아이템, 매크로, 탈것, 장난감을 칸으로 끌어다 놓으세요.\n- 또는 칸을 클릭: 주문이나 아이템 선택, 매크로 작성, WoW 명령(자동 달리기...) 또는 기본 동작(점프, 상호작용...) 선택. 오른쪽 클릭: 비우기.\n- 십자키 아래 줄: 이 층에서 단일 버튼의 칸.\n\nHUD의 층 미리보기를 클릭해 그 자리에서 수정할 수도 있습니다.\n\n동작은 캐릭터별로 저장되고, 유형과 키는 계정 전체의 프로필에 저장됩니다. 모든 기능은 전투 중에도 작동하며, 전투 중 변경만 전투가 끝난 뒤 적용됩니다.",
-    TUTO_HUD_TEXT = "애드온이 게임의 컨트롤러 바를 자체 HUD로 대체합니다:\n\n- |cffffd100크게|r: 지금 사용하는 층. 왼쪽은 십자키, 오른쪽은 A/B/X/Y. 버튼을 누르고 있으면 바뀝니다.\n- |cffffd100미리보기|r: 모든 층, 가운데에는 단일 버튼의 칸. 누르고 있는 층이 강조됩니다. 클릭하면 수정할 수 있습니다.\n- |cffffd100가운데|r: 단일 버튼과 실행될 동작.\n\n설정(크기, 위치, 미리보기): |cffffd100HUD|r 탭. |cffffd100/mgir hud off|r: 게임 바로 돌아가기.",
-    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n|cffffd100/mgir|r: 설정 열기\n|cffffd100/mgir test|r: 컨트롤러 테스트, WoW가 받는 입력 보기\n|cffffd100/mgir tuto|r: 이 튜토리얼\n|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기\n|cffffd100/mgir restore|r: LT, RT, LB, RB를 게임에 돌려주기",
+    TUTO_ACTIONS_TEXT = "|cffffd100층|r 탭: 왼쪽에는 모든 층(단독, LT, RT, 수정키와 쌍), 오른쪽에는 선택한 층이 컨트롤러 모양으로 표시됩니다.\n\n- 주문서의 주문, 가방의 아이템, 매크로, 탈것, 장난감을 칸으로 끌어다 놓으세요.\n- 또는 칸을 클릭: 주문이나 아이템 선택, 매크로 작성, WoW 명령(자동 달리기...) 또는 기본 동작(점프, 상호작용...) 선택. 오른쪽 클릭: 비우기.\n- 십자키 아래 줄: 이 층에서 단일 버튼의 칸.\n\nHUD의 층 미리보기를 클릭해 그 자리에서 수정할 수도 있습니다.\n\n동작은 캐릭터별로 저장되고, 유형과 키는 계정 전체의 프로필에 저장됩니다. 모든 기능은 전투 중에도 작동하며, 전투 중 변경만 전투가 끝난 뒤 적용됩니다.\n\n|cffffd100편리한 기능|r:\n- 목록 위의 입력란은 모든 층에서 동작을 찾습니다.\n- |cffffd100스마트 소모품|r (칸 메뉴): 가방에서 가장 좋은 물약, 음식, 음료, 붕대를 자동으로 고릅니다.\n- 회색에 빨간 주문: 이 캐릭터가 모르는 주문입니다. |cffffd100템플릿 및 전문화...|r에서 지울 수 있습니다.\n- 직업 전문가에게 새 등급을 배우면: 애드온이 모든 곳에서 이전 등급을 바꿀지 묻습니다.",
+    TUTO_HUD_TEXT = "애드온이 게임의 컨트롤러 바를 자체 HUD로 대체합니다:\n\n- |cffffd100크게|r: 지금 사용하는 층. 왼쪽은 십자키, 오른쪽은 A/B/X/Y. 버튼을 누르고 있으면 바뀝니다.\n- |cffffd100미리보기|r: 모든 층, 가운데에는 단일 버튼의 칸. 누르고 있는 층이 강조됩니다. 클릭하면 수정할 수 있습니다.\n- |cffffd100가운데|r: 단일 버튼과 실행될 동작.\n\n설정(크기, 위치, 미리보기): |cffffd100HUD|r 탭.\n\n미니어처 위에 마우스를 올리면 작은 버튼이 나타납니다: |cffffd100자물쇠|r는 HUD 잠금을 풀어 마우스로 옮기게 하고 (다시 잠그고), 다른 버튼은 미니어처를 가로 또는 세로로 놓습니다. |cffffd100톱니바퀴|r로 HUD 탭을 열어 더 세밀하게 설정할 수 있습니다 (HUD와 분리된 미니어처, 크기...).",
+    TUTO_DONE_TEXT = "설정을 열어 첫 동작을 배치하세요.\n\n|cffffd100/mgir|r: 설정 열기\n|cffffd100/mgir test|r: 컨트롤러 테스트, WoW가 받는 입력 보기\n|cffffd100/mgir tuto|r: 이 튜토리얼\n|cffffd100/mgir reset|r: 이 캐릭터의 동작 비우기\n|cffffd100/mgir restore|r: LT, RT, LB, RB를 게임에 돌려주기\n|cffffd100/mgir rangs|r: 주문의 새 등급으로 이전 등급 바꾸기",
     SETTINGS_DESC = "컨트롤러의 모든 버튼이 할 일을 정하세요: 추가 버튼(뒷면 패들, 추가 트리거)과 기본 버튼(LT, RT, LB, RB). 명령어: /mgir",
     BUTTONS_INTRO = "버튼마다 유형을 선택하세요. 유형 위에 마우스를 올리면 하는 일을 볼 수 있습니다. 초록색: 게임처럼 동작하는 기본 버튼의 기본 유형.",
     BUTTONS_TYPES_HELP = "버튼 유형",
@@ -448,7 +440,7 @@ ns.AddLocale("koKR", {
     PROFILE_PER_CHAR_DESC = "접속할 때 각 캐릭터가 마지막으로 쓴 프로필로 돌아갑니다. 이 옵션이 없으면 모든 캐릭터가 계정에서 마지막으로 쓴 프로필을 씁니다.",
     REPORT_BUTTON = "보고서 복사",
     REPORT_TITLE = "컨트롤러 보고서",
-    REPORT_HINT = "먼저 테스트 탭에서 모든 버튼을 눌러 본 뒤, 이 텍스트를 복사(Ctrl+C)해서 되는 것과 안 되는 것을 함께 애드온 제작자에게 보내 주세요. 다른 컨트롤러의 설정을 확인하는 데 도움이 됩니다. 캐릭터나 서버 이름은 들어 있지 않습니다.",
+    REPORT_HINT = "먼저 컨트롤러 테스트에서 모든 버튼을 눌러 본 뒤, 이 텍스트를 복사(Ctrl+C)해서 되는 것과 안 되는 것을 함께 애드온 제작자에게 보내 주세요. 다른 컨트롤러의 설정을 확인하는 데 도움이 됩니다. 캐릭터나 서버 이름은 들어 있지 않습니다.",
     WHATSNEW_TITLE = "My Gamepad Is Rich 새 기능",
     QUICKFILL_BUTTON = "빈 칸 채우기",
     QUICKFILL_DESC = "이 층의 빈 칸에 귀환석, 착용 중인 사용 가능 장신구, 가방의 소모품(물약, 음식, 붕대, 비약...)을 놓습니다. 이미 있는 것은 빼고 놓습니다. 칸을 오른쪽 클릭하면 비웁니다.",
@@ -458,7 +450,7 @@ ns.AddLocale("koKR", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("koKR", {
-    SLASH_HELP = "/mgir : 열기  |  /mgir profile <이름> : 프로필 변경  |  /mgir test : 컨트롤러 테스트  |  /mgir tuto : 튜토리얼  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 이 캐릭터의 동작 초기화  |  /mgir undo : 마지막 동작 변경 취소",
+    SLASH_HELP = "/mgir : 열기  |  /mgir profile <이름> : 프로필 변경  |  /mgir test : 컨트롤러 테스트  |  /mgir tuto : 튜토리얼  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : 이 캐릭터의 동작 초기화  |  /mgir undo : 마지막 동작 변경 취소  |  /mgir rangs: 낮은 주문 등급 바꾸기",
     LEARN_PAD_REFUSED = "%s은(는) 컨트롤러의 기본 버튼입니다. 애드온이 직접 조합하거나 설정합니다. 추가 버튼(해당 소프트웨어가 보내는 키)을 누르세요.",
     RESET_CONFIRM = "현재 프로필에서 이 캐릭터의 동작을 모두 비울까요?",
     RESET_CONFIRM_SPEC = "현재 프로필에서 이 캐릭터의 '%s' 전문화 동작을 모두 비울까요?",
@@ -521,4 +513,144 @@ ns.AddLocale("koKR", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("koKR", {
     WHATSNEW_1_1_6 = "• 기본 동작에 공격대 징표 추가: \"빠른 징표\"는 누를 때마다 대상에게 다음 징표를 붙입니다(해골, 가위표, 네모, 달, 세모, 다이아몬드, 동그라미, 별). 8개 징표를 각각 고를 수도 있고, \"징표 제거\"도 있습니다.\n• 기본 동작에 \"자신을 대상으로 지정\" 추가.\n• 주문 툴팁에 주문 등급이 표시됩니다.\n• 아군 / 적 대상: 이제 Forever에서도 짧게 누를 때마다 다음 대상으로 넘어가고, 오른쪽 스틱 조준이 바로 반응합니다. 버튼을 뗄 때 스틱이 아직 기울어져 있거나 길게 눌렀다면 조준한 대상이 유지됩니다.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("koKR", {
+    UPRANK_ASK = "새 등급을 배웠습니다: %s.\n\n동작에 있는 낮은 등급을 바꿀까요?\n(애드온 칸 %d개, 게임 바 칸 %d개)",
+    UPRANK_REPLACE = "바꾸기",
+    UPRANK_KEEP = "유지",
+    UPRANK_DONE = "새 등급 적용: 애드온 칸 %d개, 게임 바 칸 %d개.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("koKR", {
+    COMFORT_TITLE = "편의",
+    UPRANK_AUTO = "새 주문 등급을 묻지 않고 바꾸기 (애드온 동작과 게임 바의 낮은 등급)",
+    UPRANK_NONE = "바꿀 낮은 등급이 없습니다.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("koKR", {
+    GAME_targetlast = "이전 대상",
+    GAME_assist = "대상 지원",
+    GAME_focus = "주시 대상으로 설정",
+    GAME_targetfocus = "주시 대상 선택",
+    GAME_follow = "대상 따라가기",
+    GAME_openbags = "가방 열기",
+    GAME_dismount = "탈것에서 내리기",
+    GAME_randommount = "무작위 즐겨찾는 탈것",
+})
+
+-- Sorts inconnus
+ns.AddLocale("koKR", {
+    SPELL_UNKNOWN = "이 캐릭터는 이 주문을 모릅니다(특성, 다른 전문화, 다른 캐릭터의 템플릿): 이 칸은 아무것도 하지 않습니다.",
+    UNKNOWN_SECTION = "모르는 주문",
+    UNKNOWN_REMOVE = "모르는 주문 제거",
+    UNKNOWN_CONFIRM = "%2$s의 동작에서 이 캐릭터가 모르는 주문 %1$d개를 제거할까요?",
+    UNKNOWN_REMOVED = "모르는 주문 %d개를 제거했습니다.",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("koKR", {
+    SEARCH_HINT = "동작 찾기",
+    SEARCH_DESC = "이름의 일부를 입력하세요(주문, 아이템, 매크로...): 그것이 있는 층에 칸 수가 표시되고, 해당 칸에 금색 테두리가 생깁니다.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("koKR", {
+    MENU_BEST = "스마트 소모품...",
+    BEST_TITLE = "스마트 소모품",
+    KIND_best = "스마트 소모품",
+    BEST_heal = "가장 좋은 치유 물약",
+    BEST_mana = "가장 좋은 마나 물약",
+    BEST_food = "가장 좋은 음식",
+    BEST_drink = "가장 좋은 음료",
+    BEST_bandage = "가장 좋은 붕대",
+    BEST_NONE = "가방에 없음",
+    BEST_DESC = "가방에 있는 이 종류의 가장 좋은 아이템을 사용합니다. 한 묶음이 떨어지면 다음 것을 씁니다(전투 중에도). 목록은 전투 밖에서 가방을 따라갑니다.",
+})
+
+-- Vibrations
+ns.AddLocale("koKR", {
+    VIBRATION_OPTION = "컨트롤러 진동 (고정 수정키 켜짐 / 꺼짐, 길게 누르기 인식, 새 등급 적용)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("koKR", {
+    SIMPLE_MOD_ROW = "수정자를 누른 상태 (비어 있으면 아무 일도 하지 않음)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("koKR", {
+    HUD_LAYERS_LABEL = "층:",
+    HUD_DETACH = "HUD와 분리",
+    HUD_VERTICAL = "세로로",
+    HUD_STRIP_COLS = "미니어처 열:",
+    HUD_TOOL_VERTICAL = "층을 세로로",
+    HUD_TOOL_HORIZONTAL = "층을 가로로",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("koKR", {
+    HUD_TOOL_UNLOCK = "잠금 해제: 마우스로 HUD 이동",
+    HUD_TOOL_LOCK = "HUD 잠금 (먼저 원하는 곳으로 끌어 놓으세요)",
+    HUD_TOOL_LOCK_DETACHED = "HUD 잠금 (먼저 HUD와 층을 각각 제자리로 끌어 놓으세요)",
+    HUD_UNLOCKED_HINT = "잠금 해제됨: 마우스로 끌어 옮기세요 (분리된 층은 따로 움직입니다). 자물쇠를 클릭하면 잠깁니다.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("koKR", {
+    HUD_TOOL_SETTINGS = "HUD 설정 (HUD 탭): HUD와 분리된 미니어처, 크기...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("koKR", {
+    HUD_HIDE_STRIP = "숨김",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("koKR", {
+    TAB_OPTIONS = "옵션",
+    ACTIONS_INTRO = "각 버튼이 실행하는 것입니다. 왼쪽에서 층을 고르고, 오른쪽 칸에 동작을 놓으세요.",
+    OPTIONS_INTRO = "애드온의 일반 설정: 버튼도, 층도, HUD 표시도 아닌 것들입니다.",
+    OPTIONS_SECTION_UI = "인터페이스",
+    HUD_SECTION_STRIP = "층 미니어처",
+    HUD_SECTION_PLACE = "HUD 크기와 위치",
+    HUD_LAYOUT_LABEL = "배치:",
+    TEST_OPEN = "컨트롤러 테스트",
+    TEST_BACK = "버튼으로 돌아가기",
+    HELP_INTRO = "왼쪽에서 주제를 고르세요. 튜토리얼이 모든 것을 단계별로 설명합니다.",
+    HELP_PRINCIPLE = "원리",
+    HELP_COMMANDS = "명령어",
+    TIP_CONTROLLER = "컨트롤러 선택: 애드온이 추가 버튼의 이름을 가져옵니다.",
+    TIP_TYPES = "각 버튼 유형이 하는 일을 다시 보기: 수정자, 대상, 단순 버튼, 없음.",
+    TIP_DETECT = "그다음 컨트롤러 버튼을 누르세요: 애드온이 그 버튼이 보내는 키를 기억합니다.",
+    TIP_CLEAR = "이 버튼의 키를 지웁니다: 더 이상 아무것도 하지 않습니다.",
+    TIP_TEST = "WoW가 각 버튼에서 받는 것을 실시간으로 보기: 버튼이 반응하지 않을 때 유용합니다.",
+    TIP_REPORT = "문제가 있을 때 제작자에게 보낼 텍스트 (캐릭터 이름과 서버 이름 없음).",
+    TIP_PROFILE_USE = "이 프로필을 사용합니다: 그 컨트롤러, 버튼, 이 캐릭터의 동작.",
+    TIP_PROFILE_NEW = "빈 프로필, 예를 들어 다른 컨트롤러용.",
+    TIP_PROFILE_COPY = "선택한 프로필의 복사본인 새 프로필로, 변경을 안전하게 시험합니다.",
+    TIP_PROFILE_RENAME = "선택한 프로필의 이름을 바꿉니다.",
+    TIP_PROFILE_DELETE = "선택한 프로필을 이 프로필의 모든 캐릭터 동작과 함께 삭제합니다.",
+    TIP_PROFILE_EXPORT = "이 프로필을 공유하거나 보관하기 위해 복사할 텍스트.",
+    TIP_PROFILE_IMPORT = "내보낸 프로필의 텍스트를 붙여 넣습니다 (내 것이든 다른 플레이어의 것이든).",
+    TIP_HUD_DETACH = "미니어처가 HUD에서 분리됩니다: 원하는 곳에 놓을 수 있습니다 (HUD의 자물쇠, 그다음 끌기).",
+    TIP_HUD_VERTICAL = "미니어처가 가로 대신 세로로 쌓입니다.",
+    TIP_HUD_HIDDEN = "미니어처 없음: HUD에는 현재 층만 보입니다. 층은 층 탭에서 편집합니다.",
+    TIP_HUD_ROWS = "미니어처를 몇 줄 (또는 몇 열)로 나눌지.",
+    TIP_HUD_STRIP_SIZE = "HUD의 나머지는 그대로 두고 미니어처 크기만 바꿉니다.",
+    TIP_HUD_SIZE = "HUD 전체의 크기.",
+    TIP_HUD_MOVE = "HUD 잠금을 풀어 마우스로 끌어 옮깁니다 (HUD의 자물쇠와 같음). 다시 클릭하면 잠깁니다.",
+    TIP_HUD_RESET = "HUD를 원래 위치와 크기로 되돌립니다 (분리된 미니어처는 그 아래로 돌아옵니다).",
+    TIP_UPRANK = "주문의 새 등급을 배우면 묻지 않고 모든 곳에서 이전 등급을 바꿉니다.",
+    TIP_VIBRATION = "고정 가능한 수정자가 켜지거나 꺼질 때, 그리고 새 등급이 놓일 때 짧은 진동.",
+    TIP_MINIMAP = "미니맵 주위의 버튼: 클릭하면 설정을 열고, 오른쪽 클릭하면 HUD를 옮깁니다.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("koKR", {
+    WHATSNEW_1_2_0 = "• 창을 설정 순서대로 다시 정리했습니다: 버튼, 층 (이전 동작 탭), HUD, 옵션, 프로필, 도움말. 모든 설정에 툴팁이 있고, 도움말에는 목차가 있으며, 컨트롤러 테스트는 버튼 탭에서 엽니다.\n• 새 주문 등급: 새 등급을 배우면 애드온이 모든 곳에서 이전 등급을 바꿀지 묻습니다 (옵션 탭에서 자동으로 할 수도 있습니다). /mgir rangs는 주문책 전체를 확인합니다.\n• 스마트 소모품 (칸 메뉴): 가장 좋은 물약, 음식, 음료, 붕대를 자동으로 고릅니다.\n• 이 캐릭터가 모르는 주문은 빨간색으로 표시되고, \"템플릿 및 전문화...\"에서 지울 수 있습니다.\n• 입력란으로 모든 층에서 동작을 찾습니다.\n• 새 기본 동작: 이전 대상, 지원, 주시, 따라가기, 가방 열기, 내리기, 무작위 즐겨찾는 탈것.\n• HUD: 마우스를 올리면 작은 버튼 (이동용 자물쇠, 가로 또는 세로, 설정); 미니어처를 HUD에서 분리하거나 세로로 놓거나 숨길 수 있습니다. HUD는 항상 표시됩니다.\n• \"단독\"의 A, B, X, Y는 게임 동작을 보여 주고, 단순 버튼 페이지는 각 수정자에서의 칸을 보여 줍니다.\n• 게임이 허용하면 컨트롤러 진동.",
+    WHATSNEW_FEEDBACK = "버그, 아이디어, 불편한 점이 있나요? 알려 주세요: 모든 의견이 애드온을 더 좋게 만듭니다. 이 링크를 복사(Ctrl+C)해 GitHub에 글을 남겨 주세요:",
 })

@@ -105,10 +105,8 @@ ns.AddLocale("frFR", {
 
 -- HUD
 ns.AddLocale("frFR", {
-    HUD_UNLOCKED = "HUD déverrouillé : déplace-le à la souris. Tape à nouveau /mgir hud pour le verrouiller.",
+    HUD_UNLOCKED = "HUD déverrouillé : déplace-le à la souris (les miniatures séparées se déplacent à part). Pour le verrouiller : le cadenas du HUD, ou à nouveau /mgir hud.",
     HUD_LOCKED = "HUD verrouillé.",
-    HUD_ON = "HUD affiché : il remplace la barre manette du jeu.",
-    HUD_OFF = "HUD masqué : la barre manette du jeu revient. Tape /mgir hud on pour le réafficher.",
     HUD_SCALE = "Taille du HUD : %s",
     TUTO_HUD_TITLE = "Ton HUD manette",
 })
@@ -125,15 +123,10 @@ ns.AddLocale("frFR", {
 
 -- HUD : bande des miniatures
 ns.AddLocale("frFR", {
-    HUD_STRIP_TOP = "Miniatures des couches maintenant au-dessus du HUD. Tape /mgir hud strip pour basculer.",
-    HUD_STRIP_BOTTOM = "Miniatures des couches maintenant sous le HUD. Tape /mgir hud strip pour basculer.",
 })
 
 -- Tutoriel : choix de la bande des miniatures
 ns.AddLocale("frFR", {
-    TUTO_STRIP_LABEL = "Miniatures des couches :",
-    TUTO_STRIP_BOTTOM = "En bas (conseillé)",
-    TUTO_STRIP_TOP = "En haut",
 })
 
 -- Bouton de la minimap
@@ -156,7 +149,7 @@ ns.AddLocale("frFR", {
 
 -- Fenêtre de configuration (onglets Actions, Boutons, HUD)
 ns.AddLocale("frFR", {
-    TAB_ACTIONS = "Actions",
+    TAB_ACTIONS = "Couches",
     TAB_HUD = "HUD",
     SECTION_PAD = "Barre manette",
     SECTION_MODS = "Modificateurs",
@@ -167,7 +160,6 @@ ns.AddLocale("frFR", {
     LAYER_DESC_HOLD = "Maintiens %s, puis appuie sur A, B, X, Y ou la croix.",
     PAIRS_TITLE = "Paires (deux modificateurs maintenus ensemble)",
     HUD_INTRO = "Le HUD remplace la barre manette du jeu : la couche utilisée en grand, toutes les couches en miniature.",
-    HUD_SHOW = "Afficher le HUD (à la place de la barre manette du jeu)",
     HUD_SIZE = "Taille :",
     HUD_MOVE = "Déplacer le HUD",
     HUD_MOVE_DONE = "Verrouiller le HUD",
@@ -292,7 +284,7 @@ ns.AddLocale("frFR", {
     TRIGGERS_ADDON = "Modificateurs de l'addon",
     TRIGGERS_GAME = "Couches du jeu",
     TRIGGERS_ADDON_DESC = "Maintiens LT ou RT (ou les deux) puis appuie sur A, B, X, Y ou la croix : les actions de l'addon, avec tout ce qu'il permet (macros écrites à la main, commandes WoW). Elles remplacent les couches LT, RT et LT + RT de la barre manette du jeu ; une case vide ne fait rien. LB et RB ne changent pas.",
-    TRIGGERS_GAME_DESC = "LT et RT gardent les couches de la barre manette du jeu (modifiables depuis l'onglet Actions).",
+    TRIGGERS_GAME_DESC = "LT et RT gardent les couches de la barre manette du jeu (modifiables depuis l'onglet Couches).",
     TRIGGERS_COPIED = "%d action(s) des couches LT / RT du jeu reprise(s) dans celles de l'addon.",
     IMPORT_SUMMARY_TRIGGERS = "LT / RT : modificateurs de l'addon.",
 })
@@ -411,9 +403,9 @@ ns.AddLocale("frFR", {
     TUTO_PAIRS_TITLE = "Les paires : deux boutons maintenus ensemble",
     TUTO_PAIRS_TEXT = "Maintiens deux boutons ensemble (modificateurs ou cibles) : encore une couche de 8 actions. N'importe lesquels peuvent faire une paire : L5 + R5, LT + RT, LB + LT... Coche celles que tu veux (tu pourras changer dans l'onglet |cffffd100Boutons|r). Par défaut : les paires gauche + droite.",
     TUTO_ACTIONS_TITLE = "Poser tes actions",
-    TUTO_ACTIONS_TEXT = "Dans l'onglet |cffffd100Actions|r : à gauche, toutes tes couches (Seul, LT, RT, tes modificateurs et tes paires) ; à droite, la couche choisie, disposée comme la manette.\n\n- Glisse un sort depuis ton grimoire, un objet depuis tes sacs, une macro, une monture ou un jouet sur une case.\n- Ou clique sur une case : choisir un sort ou un objet, écrire une macro, choisir une commande WoW (Course automatique...) ou une action de base (Sauter, Interagir...). Clic droit : vider.\n- La ligne sous la croix : les cases de tes boutons simples dans cette couche.\n\nTu peux aussi cliquer sur une miniature de couche du HUD pour la modifier sur place.\n\nLes actions sont enregistrées par personnage ; les types et les touches dans le profil, pour tout le compte. Tout fonctionne en combat ; seules les modifications faites en combat attendent sa fin.",
-    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD :\n\n- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens un bouton et elle change.\n- |cffffd100Les miniatures|r : toutes tes couches, avec au milieu les cases de tes boutons simples ; celle que tu maintiens s'allume. Clique sur une miniature pour la modifier.\n- |cffffd100Au centre|r : tes boutons simples, avec l'action qui partira.\n\nRéglages (taille, position, miniatures) : onglet |cffffd100HUD|r. |cffffd100/mgir hud off|r : revenir à la barre du jeu.",
-    TUTO_DONE_TEXT = "Ouvre la configuration pour poser tes premières actions.\n\n|cffffd100/mgir|r : ouvrir la configuration\n|cffffd100/mgir test|r : test manette, pour voir ce que WoW reçoit\n|cffffd100/mgir tuto|r : ce tutoriel\n|cffffd100/mgir reset|r : vider les actions de ce personnage\n|cffffd100/mgir restore|r : rendre LT, RT, LB et RB au jeu",
+    TUTO_ACTIONS_TEXT = "Dans l'onglet |cffffd100Couches|r : à gauche, toutes tes couches (Seul, LT, RT, tes modificateurs et tes paires) ; à droite, la couche choisie, disposée comme la manette.\n\n- Glisse un sort depuis ton grimoire, un objet depuis tes sacs, une macro, une monture ou un jouet sur une case.\n- Ou clique sur une case : choisir un sort ou un objet, écrire une macro, choisir une commande WoW (Course automatique...) ou une action de base (Sauter, Interagir...). Clic droit : vider.\n- La ligne sous la croix : les cases de tes boutons simples dans cette couche.\n\nTu peux aussi cliquer sur une miniature de couche du HUD pour la modifier sur place.\n\nLes actions sont enregistrées par personnage ; les types et les touches dans le profil, pour tout le compte. Tout fonctionne en combat ; seules les modifications faites en combat attendent sa fin.\n\n|cffffd100Pratique|r :\n- Le champ en haut de la liste cherche une action dans toutes tes couches.\n- |cffffd100Consommable intelligent|r (menu d'une case) : ta meilleure potion, nourriture, boisson ou bandage, mise à jour toute seule.\n- Un sort grisé et rouge : ce personnage ne le connaît pas. |cffffd100Modèles et spés...|r peut les retirer.\n- Un nouveau rang appris chez le maître de classe : l'addon propose de le mettre à la place de l'ancien, partout.",
+    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD :\n\n- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens un bouton et elle change.\n- |cffffd100Les miniatures|r : toutes tes couches, avec au milieu les cases de tes boutons simples ; celle que tu maintiens s'allume. Clique sur une miniature pour la modifier.\n- |cffffd100Au centre|r : tes boutons simples, avec l'action qui partira.\n\nRéglages (taille, position, miniatures) : onglet |cffffd100HUD|r.\n\nAu survol des miniatures, de petits boutons apparaissent : le |cffffd100cadenas|r déverrouille le HUD pour le déplacer à la souris (puis le reverrouille), un autre met les miniatures en ligne ou en colonne. Un |cffffd100engrenage|r ouvre l'onglet HUD pour les réglages précis (miniatures séparées du HUD, taille...).",
+    TUTO_DONE_TEXT = "Ouvre la configuration pour poser tes premières actions.\n\n|cffffd100/mgir|r : ouvrir la configuration\n|cffffd100/mgir test|r : test manette, pour voir ce que WoW reçoit\n|cffffd100/mgir tuto|r : ce tutoriel\n|cffffd100/mgir reset|r : vider les actions de ce personnage\n|cffffd100/mgir restore|r : rendre LT, RT, LB et RB au jeu\n|cffffd100/mgir rangs|r : mettre les nouveaux rangs de tes sorts à la place des anciens",
     SETTINGS_DESC = "Choisis ce que fait chaque bouton de ta manette : boutons supplémentaires (palettes arrière, gâchettes en plus) et boutons de base (LT, RT, LB, RB). Commande : /mgir",
     BUTTONS_INTRO = "Choisis le type de chaque bouton : survole un type pour voir ce qu'il fait. En vert : le type par défaut des boutons de base, qui fait comme le jeu.",
     BUTTONS_TYPES_HELP = "Les types de boutons",
@@ -448,7 +440,7 @@ ns.AddLocale("frFR", {
     PROFILE_PER_CHAR_DESC = "À la connexion, chaque personnage reprend le dernier profil qu'il a utilisé. Sans cette option, tous prennent le dernier profil utilisé sur le compte.",
     REPORT_BUTTON = "Copier un rapport",
     REPORT_TITLE = "Rapport de manette",
-    REPORT_HINT = "Appuie d'abord sur chaque bouton dans l'onglet Test, puis copie ce texte (Ctrl+C) et envoie-le à l'auteur de l'addon, avec ce qui marche ou pas. Il aide à confirmer les réglages des autres manettes. Aucun nom de personnage ni de royaume n'y figure.",
+    REPORT_HINT = "Appuie d'abord sur chaque bouton dans le test de la manette, puis copie ce texte (Ctrl+C) et envoie-le à l'auteur de l'addon, avec ce qui marche ou pas. Il aide à confirmer les réglages des autres manettes. Aucun nom de personnage ni de royaume n'y figure.",
     WHATSNEW_TITLE = "Nouveautés de My Gamepad Is Rich",
     QUICKFILL_BUTTON = "Remplir les cases vides",
     QUICKFILL_DESC = "Pose dans les cases vides de cette couche la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs...), sauf ceux déjà présents. Clic droit sur une case pour la vider.",
@@ -458,7 +450,7 @@ ns.AddLocale("frFR", {
 
 -- 1.1.0 : modèles de classe, copie de couches, verrou, annulation, véhicules
 ns.AddLocale("frFR", {
-    SLASH_HELP = "/mgir : ouvrir  |  /mgir profil <nom> : changer de profil  |  /mgir test : test manette  |  /mgir tuto : tutoriel  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : remettre à zéro les actions de ce personnage  |  /mgir undo : annuler le dernier changement d'actions",
+    SLASH_HELP = "/mgir : ouvrir  |  /mgir profil <nom> : changer de profil  |  /mgir test : test manette  |  /mgir tuto : tutoriel  |  /mgir hud : HUD  |  /mgir minimap  |  /mgir reset : remettre à zéro les actions de ce personnage  |  /mgir undo : annuler le dernier changement d'actions  |  /mgir rangs : remplacer les rangs inférieurs des sorts",
     LEARN_PAD_REFUSED = "%s est un bouton de base de la manette : l'addon le combine ou le configure lui-même. Appuie sur le bouton supplémentaire (la touche que son logiciel envoie).",
     RESET_CONFIRM = "Vider toutes les actions de ce personnage dans le profil utilisé ?",
     RESET_CONFIRM_SPEC = "Vider toutes les actions de ce personnage pour la spécialisation « %s », dans le profil utilisé ?",
@@ -521,4 +513,144 @@ ns.AddLocale("frFR", {
 -- Nouveautés de la 1.1.6
 ns.AddLocale("frFR", {
     WHATSNEW_1_1_6 = "• Marqueurs de raid dans les actions de base : « Marquage rapide » pose le marqueur suivant sur ta cible à chaque appui (crâne, croix, carré, lune, triangle, losange, cercle, étoile), les 8 marqueurs un par un, et « Retirer le marqueur ».\n• « Se cibler soi-même » dans les actions de base.\n• L'info-bulle d'un sort montre son rang.\n• Cible alliée / ennemie : chaque appui bref passe maintenant à la cible suivante, aussi dans Forever, et la visée au stick droit répond tout de suite. La cible visée reste si le stick est encore incliné quand tu relâches le bouton, ou après un appui maintenu.",
+})
+
+-- Nouveaux rangs (maître de classe)
+ns.AddLocale("frFR", {
+    UPRANK_ASK = "Nouveau rang appris : %s.\n\nRemplacer le rang inférieur dans tes actions ?\n(%d case(s) de l'addon, %d case(s) des barres du jeu)",
+    UPRANK_REPLACE = "Remplacer",
+    UPRANK_KEEP = "Garder",
+    UPRANK_DONE = "Nouveau rang posé : %d case(s) de l'addon, %d case(s) des barres du jeu.",
+})
+
+-- Confort : nouveaux rangs sans demander
+ns.AddLocale("frFR", {
+    COMFORT_TITLE = "Confort",
+    UPRANK_AUTO = "Remplacer les nouveaux rangs de sorts sans demander (rangs inférieurs dans les actions de l'addon et sur les barres du jeu)",
+    UPRANK_NONE = "Aucun rang inférieur à remplacer.",
+})
+
+-- Actions de base : cible, focus, sacs, montures
+ns.AddLocale("frFR", {
+    GAME_targetlast = "Cible précédente",
+    GAME_assist = "Assister la cible",
+    GAME_focus = "Mettre en focus",
+    GAME_targetfocus = "Cibler le focus",
+    GAME_follow = "Suivre la cible",
+    GAME_openbags = "Ouvrir les sacs",
+    GAME_dismount = "Descendre de monture",
+    GAME_randommount = "Monture favorite au hasard",
+})
+
+-- Sorts inconnus
+ns.AddLocale("frFR", {
+    SPELL_UNKNOWN = "Ce personnage ne connaît pas ce sort (talents, autre spécialisation, modèle d'un autre personnage) : cette case ne fait rien.",
+    UNKNOWN_SECTION = "Sorts inconnus",
+    UNKNOWN_REMOVE = "Retirer les sorts inconnus",
+    UNKNOWN_CONFIRM = "Retirer des actions de %2$s les %1$d sort(s) que ce personnage ne connaît pas ?",
+    UNKNOWN_REMOVED = "%d sort(s) inconnu(s) retiré(s).",
+})
+
+-- Recherche d'une action (onglet Actions)
+ns.AddLocale("frFR", {
+    SEARCH_HINT = "Chercher une action",
+    SEARCH_DESC = "Tape une partie d'un nom (sort, objet, macro...) : les couches qui l'ont montrent combien de cases, et ces cases ont un bord doré.",
+})
+
+-- Consommables intelligents
+ns.AddLocale("frFR", {
+    MENU_BEST = "Consommable intelligent...",
+    BEST_TITLE = "Consommables intelligents",
+    KIND_best = "Consommable intelligent",
+    BEST_heal = "Meilleure potion de soins",
+    BEST_mana = "Meilleure potion de mana",
+    BEST_food = "Meilleure nourriture",
+    BEST_drink = "Meilleure boisson",
+    BEST_bandage = "Meilleur bandage",
+    BEST_NONE = "Aucun dans tes sacs",
+    BEST_DESC = "Utilise le meilleur objet de ce type présent dans tes sacs ; quand une pile est finie, le suivant (en combat aussi). La liste suit tes sacs hors combat.",
+})
+
+-- Vibrations
+ns.AddLocale("frFR", {
+    VIBRATION_OPTION = "Vibrations de la manette (modificateur verrouillable allumé / éteint, appui long reconnu, nouveau rang posé)",
+})
+
+-- Bouton simple : sa case dans chaque couche de modificateur
+ns.AddLocale("frFR", {
+    SIMPLE_MOD_ROW = "Avec un modificateur tenu (vide : ne fait rien)",
+})
+
+-- HUD : couches séparées, en colonne
+ns.AddLocale("frFR", {
+    HUD_LAYERS_LABEL = "Couches :",
+    HUD_DETACH = "Séparées du HUD",
+    HUD_VERTICAL = "En colonne",
+    HUD_STRIP_COLS = "Colonnes de miniatures :",
+    HUD_TOOL_VERTICAL = "Couches en colonne",
+    HUD_TOOL_HORIZONTAL = "Couches en ligne",
+})
+
+-- HUD : cadenas (verrouiller / déverrouiller)
+ns.AddLocale("frFR", {
+    HUD_TOOL_UNLOCK = "Déverrouiller : déplacer le HUD à la souris",
+    HUD_TOOL_LOCK = "Verrouiller le HUD (glisse-le d'abord où tu veux)",
+    HUD_TOOL_LOCK_DETACHED = "Verrouiller le HUD (glisse d'abord le HUD et les couches, chacun à sa place)",
+    HUD_UNLOCKED_HINT = "Déverrouillé : glisse à la souris (les couches séparées se déplacent à part). Clique sur le cadenas pour verrouiller.",
+})
+
+-- HUD : bouton vers l'onglet HUD
+ns.AddLocale("frFR", {
+    HUD_TOOL_SETTINGS = "Réglages du HUD (onglet HUD) : miniatures séparées du HUD, taille...",
+})
+
+-- HUD : miniatures des couches cachées
+ns.AddLocale("frFR", {
+    HUD_HIDE_STRIP = "Cachées",
+})
+
+-- Onglets réorganisés : Options, sections, Aide en sections, info-bulles
+ns.AddLocale("frFR", {
+    TAB_OPTIONS = "Options",
+    ACTIONS_INTRO = "Ce que lance chaque bouton. Choisis une couche à gauche, puis pose tes actions sur ses cases à droite.",
+    OPTIONS_INTRO = "Les réglages généraux de l'addon : ce qui n'est ni un bouton, ni une couche, ni l'affichage du HUD.",
+    OPTIONS_SECTION_UI = "Interface",
+    HUD_SECTION_STRIP = "Miniatures des couches",
+    HUD_SECTION_PLACE = "Taille et position du HUD",
+    HUD_LAYOUT_LABEL = "Disposition :",
+    TEST_OPEN = "Tester ma manette",
+    TEST_BACK = "Retour aux boutons",
+    HELP_INTRO = "Choisis un sujet à gauche. Le tutoriel reprend tout pas à pas.",
+    HELP_PRINCIPLE = "Le principe",
+    HELP_COMMANDS = "Commandes",
+    TIP_CONTROLLER = "Choisir ta manette : l'addon reprend les noms de ses boutons supplémentaires.",
+    TIP_TYPES = "Revoir ce que fait chaque type de bouton : modificateur, cible, bouton simple, aucun.",
+    TIP_DETECT = "Appuie ensuite sur le bouton de ta manette : l'addon retient la touche qu'il envoie.",
+    TIP_CLEAR = "Oublier la touche de ce bouton : il ne fait plus rien.",
+    TIP_TEST = "Voir en direct ce que WoW reçoit de chaque bouton : utile si un bouton ne répond pas.",
+    TIP_REPORT = "Un texte à envoyer à l'auteur en cas de problème (sans nom de personnage ni royaume).",
+    TIP_PROFILE_USE = "Ce profil devient celui utilisé : sa manette, ses boutons et les actions de ce personnage.",
+    TIP_PROFILE_NEW = "Un profil vide, par exemple pour une autre manette.",
+    TIP_PROFILE_COPY = "Un nouveau profil, copie de celui choisi, pour essayer des changements sans risque.",
+    TIP_PROFILE_RENAME = "Changer le nom du profil choisi.",
+    TIP_PROFILE_DELETE = "Supprimer le profil choisi, avec les actions de tous tes personnages pour ce profil.",
+    TIP_PROFILE_EXPORT = "Un texte à copier pour partager ce profil ou le garder de côté.",
+    TIP_PROFILE_IMPORT = "Coller le texte d'un profil exporté (le tien ou celui d'un autre joueur).",
+    TIP_HUD_DETACH = "Les miniatures quittent le HUD : tu peux les placer où tu veux (cadenas du HUD, puis glisser).",
+    TIP_HUD_VERTICAL = "Les miniatures s'empilent en colonne au lieu d'une ligne.",
+    TIP_HUD_HIDDEN = "Plus de miniatures : le HUD ne montre que la couche en cours. Les couches se modifient dans l'onglet Couches.",
+    TIP_HUD_ROWS = "Sur combien de lignes (ou de colonnes) répartir les miniatures.",
+    TIP_HUD_STRIP_SIZE = "La taille des miniatures, sans changer celle du reste du HUD.",
+    TIP_HUD_SIZE = "La taille de tout le HUD.",
+    TIP_HUD_MOVE = "Déverrouiller le HUD pour le glisser à la souris (comme le cadenas du HUD). Clique à nouveau pour le verrouiller.",
+    TIP_HUD_RESET = "Remettre le HUD à sa place et à sa taille d'origine (les miniatures séparées reviennent dessous).",
+    TIP_UPRANK = "Quand tu apprends un nouveau rang d'un sort, il remplace l'ancien partout sans te poser la question.",
+    TIP_VIBRATION = "Une petite vibration quand un modificateur verrouillable s'allume ou s'éteint, et quand un nouveau rang est posé.",
+    TIP_MINIMAP = "Le bouton autour de la minimap : clic pour ouvrir la configuration, clic droit pour déplacer le HUD.",
+})
+
+-- Nouveautés 1.2.0, et l'encart « donne ton avis »
+ns.AddLocale("frFR", {
+    WHATSNEW_1_2_0 = "• Fenêtre réorganisée, dans l'ordre de la configuration : Boutons, Couches (l'ancien onglet Actions), HUD, Options, Profils, Aide. Chaque réglage a une info-bulle, l'Aide a un sommaire, et le test de la manette s'ouvre depuis l'onglet Boutons.\n• Nouveaux rangs de sorts : quand tu en apprends un, l'addon propose de remplacer l'ancien partout (ou le fait tout seul, onglet Options). /mgir rangs vérifie tout le grimoire.\n• Consommables intelligents (menu d'une case) : ta meilleure potion, nourriture, boisson ou bandage, mise à jour toute seule.\n• Les sorts que ce personnage ne connaît pas sont en rouge ; « Modèles et spés... » peut les retirer.\n• Un champ cherche une action dans toutes tes couches.\n• Nouvelles actions de base : cible précédente, assister, focus, suivre, ouvrir les sacs, descendre de monture, monture favorite au hasard.\n• HUD : de petits boutons au survol (cadenas pour le déplacer, ligne ou colonne, réglages) ; les miniatures peuvent être séparées du HUD, en colonne ou cachées. Le HUD est toujours affiché.\n• A, B, X et Y de « Seul » montrent l'action du jeu, et la page d'un bouton simple sa case dans chaque modificateur.\n• Vibrations de la manette, si le jeu le permet.",
+    WHATSNEW_FEEDBACK = "Un bug, une idée, une gêne ? Dis-le-moi : chaque retour aide à améliorer l'addon. Copie ce lien (Ctrl+C) pour écrire sur GitHub :",
 })
