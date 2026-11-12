@@ -82,7 +82,7 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée dans l'ordre de 
 |---|---|
 | **Boutons** | La manette (« Changer… »). Pour chaque bouton supplémentaire : nom, touche (**Détecter**, qui refuse A/B/X/Y, la croix et LT/RT/LB/RB), mode, et **Verrouillable** pour un modificateur. Pour les boutons de base (LT, RT, LB, RB) : mode. Les paires à utiliser, parmi toutes celles de deux modificateurs. **Tester ma manette** ouvre la vue de test : ce que WoW reçoit de chaque bouton, et **Copier un rapport**, un texte à envoyer à l'auteur (manette choisie, touche et mode de chaque bouton, ce que WoW en a reçu, version du jeu ; ni nom de personnage ni royaume). |
 | **Couches** | Chaque couche, disposée comme la manette (croix à gauche, A/B/X/Y à droite) : la **barre manette** du jeu (Seul, LT, RT, LT+RT), les **modificateurs** et les **paires**, les **boutons simples**. Glisser un sort / objet / macro / monture sur une case, clic : menu, clic droit : vider. En haut de la liste, un champ **cherche une action** dans toutes les couches. La page d'un bouton simple montre aussi sa case dans chaque couche de modificateur, de ciblage et de paire. Une commande WoW ou une macro écrite à la main peut prendre l'icône de son choix (menu de la case, **Changer l'icône...** : icônes du jeu, ou celle d'un sort ou d'un objet cherché par son nom). Sur une couche de modificateur, **Remplir les cases vides** pose la pierre de foyer, les bijoux utilisables équipés et les consommables des sacs (potions, nourriture, bandages, élixirs…) qui n'y sont pas déjà, et **Copier / échanger…** copie la couche vers une autre couche de combinaisons, ou échange les deux. Sous la liste, **Modèles et spés…** : voir [Modèles de classe](#modèles-de-classe-et-copie-de-spé). |
-| **HUD** | L'affichage du HUD, en deux sections : **Miniatures des couches** (séparées du HUD, en colonne ou cachées ; taille ; lignes ou colonnes) et **Taille et position du HUD** (taille, déplacer, position d'origine). À droite, l'ordre des miniatures. |
+| **HUD** | L'affichage du HUD, en deux sections : **Miniatures des couches** (séparées du HUD, en colonne ou cachées ; taille ; lignes ou colonnes) et **Taille et position du HUD** (taille, opacité au repos, déverrouiller / verrouiller pour déplacer, position d'origine). En bas, **Aide-mémoire des couches**. À droite, l'ordre des miniatures. |
 | **Options** | Les réglages généraux : **Confort** (nouveaux rangs de sorts remplacés sans demander, vibrations de la manette) et **Interface** (bouton de la minimap). |
 | **Profils** | Les profils (un par manette, par exemple) : utiliser, créer, copier, renommer, supprimer, exporter, importer. Option « Retenir le profil de chaque personnage ». |
 | **Aide** | Un sommaire à gauche (le principe, chaque étape du tutoriel pour la manette choisie, les commandes), la section choisie à droite, et un bouton pour relancer le tutoriel. |
@@ -120,6 +120,13 @@ La fenêtre (`/mgir` ou le bouton de la minimap) est organisée dans l'ordre de 
 | Marquage rapide | pose le marqueur suivant sur la cible à chaque appui : crâne, croix, carré, lune, triangle, losange, cercle, étoile, puis on recommence (`/tm`) |
 | Marquer : Crâne… Étoile | un marqueur précis sur la cible (`/tm 8` … `/tm 1`) ; un nouvel appui sur la même cible le retire |
 | Retirer le marqueur | `/tm 0` |
+| Monter / descendre de monture | monté : descendre ; à pied : une monture favorite au hasard (seulement si le jeu a le journal des montures) |
+| Cibler mon familier | `/target pet` |
+| Allié suivant du groupe | à chaque appui : toi, puis les membres 1 à 4 du groupe, absents sautés (comme le marquage rapide, le code protégé fait tourner la macro) |
+| Cibler le membre du groupe 1… 4 | `/target party1` … `/target party4` |
+| Afficher l'aide-mémoire des couches | `/mgir carte` (voir [HUD : confort](#hud--confort)) |
+
+Choisir l'allié **le plus blessé** n'est pas possible : le code protégé, seul à pouvoir changer de cible en combat, ne lit pas la vie des unités, et le reste du code ne peut pas cibler en combat (Forever cache en plus la vie).
 
 Les couches LT, RT et LT + RT de la barre du jeu n'acceptent que ce que la barre du jeu sait tenir. Pour y mettre des macros écrites ou des commandes WoW, il faut donner LT / RT à l'addon (voir [Boutons de base](#boutons-de-base-lt-rt-lb-rb)) ; le menu d'une case l'indique.
 
@@ -155,6 +162,53 @@ Menu d'une case, **Consommable intelligent…** : **Meilleure potion de soins**,
 - L'icône, l'info-bulle et le nombre en stock sont ceux de l'objet qui partira. Sans objet de ce type dans les sacs, la case ne fait rien.
 - Le type d'un objet vient de son sort, comparé aux sorts du jeu (Potion de soins, Rendre le mana, Nourriture, Boisson) ; les bandages par leur catégorie.
 - **Remplir les cases vides** pose ces consommables intelligents avant les objets un par un.
+
+### Lancer sur…
+
+Menu d'une case de sort ou d'objet, **Lancer sur…** : la cible (habituel), moi, l'allié ciblé sinon moi, le focus, la cible de ma cible, mon familier, ou le membre du groupe 1 à 4. Sans écrire de macro : l'addon en fait une (`/cast [@player] Nom`, `/use [@focus] item:ID`, `/cast [help,nodead][@player] Nom` pour « l'allié ciblé, sinon moi »).
+- La case montre un « @ » (« @2 » pour le membre 2), l'info-bulle dit la cible, et le HUD montre la portée sur cette cible.
+- Sur la couche « Seul », la case passe à l'addon (la barre du jeu ne sait pas tenir une cible choisie). Sur les couches LT / RT de la barre du jeu, il faut donner LT / RT à l'addon, comme pour une macro écrite.
+
+### Action selon le contexte
+
+Menu d'une case, **Action selon le contexte…** : une fenêtre avec une condition et deux cases (sorts, objets, montures, jouets ; chacune peut avoir sa cible). La première part si la condition est vraie, la seconde sinon ; une des deux peut rester vide (rien ne part alors dans ce cas).
+- Conditions : en combat, sur une monture, en furtivité, ma cible est un ennemi, un allié, j'ai une cible, un familier, en groupe, en nageant, à l'intérieur, forme ou posture 1 à 6.
+- Une seule ligne de macro, `/cast [condition] A; B` : ça marche en combat.
+- Le HUD montre l'icône, la recharge et l'état de l'action qui partirait (`SecureCmdOptionParse`), l'onglet Couches « A / B ». La case montre un « / », l'info-bulle les deux branches.
+
+### Action cyclique
+
+Menu d'une case, **Action cyclique…** : 2 à 4 sorts ou objets, le suivant à chaque appui, puis on recommence (`/castsequence`). Le jeu ne passe au suivant que si le sort est parti : marteler le bouton ne saute pas d'étape.
+- **Revenir au premier** : après le dernier seulement, au changement de cible, à la fin du combat, les deux, ou après 5, 10 ou 30 s sans appui.
+- La case montre l'étape qui partira (« 2/3 », lue avec `QueryCastSequence`), et le HUD son icône et sa recharge.
+- Pas de cible choisie dans un cycle.
+
+Les nouveaux rangs de sorts, les sorts inconnus et la recherche regardent aussi les branches et les étapes de ces actions composées.
+
+### Vérifier ma configuration
+
+Bouton **Vérifier ma configuration** (onglets Boutons et Aide) ou `/mgir check` : une fenêtre liste ce qui empêche un bouton ou une case de marcher, le plus grave d'abord, et rien ne change sans un clic.
+
+| Ce qui est vérifié | Bouton |
+|---|---|
+| Bouton supplémentaire sans touche ; deux boutons sur la même touche | Y aller |
+| Plus de ciblage allié ou ennemi | Y aller |
+| Paire cochée dont un bouton n'est pas modificateur ; paire LB + LT / RB + RT | Décocher |
+| Macro du jeu ou ensemble d'équipement supprimé ; action composée sans action valide | Vider la case (`/mgir undo`) |
+| Objet ni dans les sacs ni équipé ; bouton sans aucune action | Y aller |
+| Sorts inconnus | Retirer (`/mgir undo`) |
+| Rangs inférieurs posés | Remplacer (comme `/mgir rangs`) |
+| Commande WoW sur « Seul » d'un bouton simple qui a des couches LT / RT | Y aller |
+| Appui bref non mesurable (boutons de ciblage), réglages en attente de la fin du combat | — |
+
+Seuls les boutons et les couches utilisés sont regardés : une couche d'un bouton désactivé ou d'une paire décochée garde ses actions sans rien signaler.
+
+### HUD : confort
+
+- **Opacité au repos** (onglet HUD, de 0 à 100 %, 80 % par défaut) : l'opacité du HUD hors combat quand aucun bouton n'est tenu. À 0 %, il est caché et revient en combat, quand un bouton est tenu ou au survol de la souris.
+- **Aide-mémoire des couches** : toutes les couches en grand au milieu de l'écran (la croix, A/B/X/Y et les boutons simples), la couche utilisée avec un bord doré. Bouton de l'onglet HUD, `/mgir carte` (ou `map`), ou l'action de base « Afficher l'aide-mémoire des couches » posée sur une case. Un cadre ordinaire : il s'ouvre en combat, ne prend ni la souris ni la manette, et Échap le ferme.
+
+Ces réglages font partie des réglages du HUD (export / import compris).
 
 ### Sorts inconnus
 
@@ -222,6 +276,8 @@ La ligne commence par `!MGIR1!`, avec une somme de contrôle qui repère une cop
 | `/mgir profil <nom>` (ou `profile`) | Utiliser le profil de ce nom |
 | `/mgir profils` (ou `profiles`) | Ouvrir l'onglet Profils |
 | `/mgir test` | Ouvrir le test de la manette (onglet Boutons, « Tester ma manette ») |
+| `/mgir check` (ou `verifier`) | Vérifier la configuration (voir [Vérifier ma configuration](#vérifier-ma-configuration)) |
+| `/mgir carte` (ou `map`) | Ouvrir / fermer l'aide-mémoire de toutes les couches |
 | `/mgir tuto` | Revoir le tutoriel |
 | `/mgir news` (ou `nouveautes`) | Revoir les nouveautés (la fenêtre s'ouvre seule une fois après chaque mise à jour) |
 | `/mgir hud` | Déverrouiller / verrouiller le HUD pour le déplacer à la souris |
@@ -279,6 +335,7 @@ MyGamepadIsRich/
   Learn.lua               « Détecter »
   Bar.lua                 lecture / écriture de la barre manette du jeu
   Diag.lua                /mgir etat
+  Check.lua               « Vérifier ma configuration » (/mgir check)
   Probe.lua               relevés de développement (/mgir probe) : hors du .toc
                           publié, à y ajouter après Diag.lua pour s'en servir
   UI/                     icônes, emplacements, menus, test, tutoriel, fenêtre,

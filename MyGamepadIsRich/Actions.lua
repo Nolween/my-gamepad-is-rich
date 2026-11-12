@@ -7,6 +7,13 @@
 --   { kind = "macrotext", text = "/cast ..." }
 --   { kind = "equipset",  name = "..." }
 --   { kind = "command",   command = "TOGGLEAUTORUN" }  (binding WoW)
+-- Un sort ou un objet peut viser autre chose que la cible : unit = "player",
+-- "focus", "party1"... (A.UNITS), rendu en « /cast [@player] Nom ».
+-- Actions composées, faites d'actions simples (sort, objet...) :
+--   { kind = "cond", cond = "combat", a = action, b = action }
+--       a si la condition est vraie, sinon b (une des deux peut manquer)
+--   { kind = "seq", steps = { action, ... }, reset = "target" | 10 | nil }
+--       la suivante à chaque appui (/castsequence)
 -- Tout sauf "command" passe par un bouton sécurisé de type macro (comme
 -- Improved Forever, éprouvé sur Forever) : ça marche en combat.
 local _, ns = ...
@@ -84,6 +91,18 @@ local function BookNames()
 end
 
 function A.IsKnown(action)
+    -- (une action composée : connue si toutes ses actions le sont)
+    if type(action) == "table" and action.kind == "cond" then
+        return A.IsKnown(action.a) and A.IsKnown(action.b)
+    elseif type(action) == "table" and action.kind == "seq" then
+        if type(action.steps) == "table" then
+            for i = 1, A.SEQ_MAX do
+                local step = action.steps[i]
+                if type(step) == "table" and not A.IsKnown(step) then return false end
+            end
+        end
+        return true
+    end
     if not (action and action.kind == "spell" and type(action.id) == "number") then return true end
     local key = action.rank and (action.id .. "|" .. action.rank) or action.id
     if knownCache[key] ~= nil then return knownCache[key] end
@@ -97,15 +116,19 @@ function A.IsKnown(action)
     return known
 end
 
--- Les cases de ce jeu d'actions dont le sort est inconnu : { list, key }
+-- Les sorts inconnus de ce jeu d'actions : { list, key } (list[key] est le
+-- sort : la case, ou une branche / une étape d'une action composée, qui
+-- garde alors ses autres actions)
 function A.UnknownSpots(actions)
     local out = {}
     for _, a in pairs(actions or {}) do
         if type(a) == "table" then
             for _, list in ipairs({ a.combos, a.layers }) do
                 if type(list) == "table" then
-                    for key, action in pairs(list) do
-                        if not A.IsKnown(action) then out[#out + 1] = { list = list, key = key } end
+                    for key in pairs(list) do
+                        A.EachLeaf(list, key, function(where, at, leaf)
+                            if not A.IsKnown(leaf) then out[#out + 1] = { list = where, key = at } end
+                        end)
                     end
                 end
             end
@@ -246,7 +269,28 @@ A.GAME = {
     -- des montures)
     { id = "randommount", text = "/run C_MountJournal.SummonByID(0)", icon = "Interface\\Icons\\Ability_Mount_RidingHorse",
         available = function() return C_MountJournal ~= nil and C_MountJournal.SummonByID ~= nil end },
+    -- (monter / descendre : à pied, une monture favorite ; monté, on descend)
+    { id = "mounttoggle", text = "/run if IsMounted() then Dismount() else C_MountJournal.SummonByID(0) end",
+        icon = "Interface\\Icons\\Ability_Mount_WhiteTiger",
+        available = function() return C_MountJournal ~= nil and C_MountJournal.SummonByID ~= nil end },
+    { id = "targetpet", text = "/target pet", icon = "Interface\\Icons\\Ability_Hunter_BeastCall" },
+    -- (l'aide-mémoire : toutes les couches en grand, Hud.lua)
+    { id = "sheet", text = "/mgir carte", icon = "Interface\\Icons\\INV_Misc_Book_09" },
 }
+
+-- Le groupe (5 joueurs) : un membre précis, ou le suivant à chaque appui
+-- (moi, puis les membres 1 à 4, absents sautés). Comme le marquage rapide,
+-- la première ligne de la macro (A.PARTY_NEXT, ignorée par le jeu) le
+-- signale au code sécurisé, qui écrit la cible (Modifier.lua, Simple.lua).
+-- Choisir l'allié le plus blessé n'est pas possible : le code sécurisé ne
+-- lit pas la vie des unités, et le reste du code ne cible pas en combat.
+A.PARTY_NEXT = "#mgirparty"
+local PARTY_ICON = "Interface\\Icons\\INV_Misc_GroupNeedMore"
+A.GAME[#A.GAME + 1] = { id = "partynext", text = A.PARTY_NEXT .. "\n/target player",
+    icon = "Interface\\Icons\\INV_Misc_GroupLooking" }
+for n = 1, 4 do
+    A.GAME[#A.GAME + 1] = { id = "targetparty" .. n, text = "/target party" .. n, icon = PARTY_ICON, party = n }
+end
 
 -- Marqueurs de raid sur la cible (/tm, en combat aussi). Le marquage
 -- rapide pose le suivant à chaque appui (crâne, croix, carré...) : la
@@ -328,6 +372,309 @@ local function SpellIcon(id)
 end
 
 ---------------------------------------------------------------------------
+-- Cible d'un sort ou d'un objet (action.unit)
+---------------------------------------------------------------------------
+-- Dans l'ordre de la liste « Lancer sur... ». « helpself » : la cible si
+-- c'est un allié vivant, sinon moi.
+A.UNITS = { "player", "helpself", "focus", "targettarget", "pet", "party1", "party2", "party3", "party4" }
+local UNIT_OK = {}
+for _, unit in ipairs(A.UNITS) do UNIT_OK[unit] = true end
+
+function A.IsUnit(unit)
+    return UNIT_OK[unit] == true
+end
+
+-- (les types d'action qui prennent une cible)
+function A.CanSetUnit(action)
+    return action ~= nil and (action.kind == "spell" or action.kind == "item")
+end
+
+function A.UnitLabel(unit)
+    local n = type(unit) == "string" and unit:match("^party(%d)$")
+    if n then return L.UNIT_party:format(n) end
+    return L["UNIT_" .. tostring(unit)]
+end
+
+-- L'unité à regarder pour la portée : la cible sans choix, nil quand la
+-- cible dépend du moment (« helpself »)
+function A.RangeUnit(action)
+    local unit = action and action.unit
+    if not UNIT_OK[unit] then return "target" end
+    if unit == "helpself" then return nil end
+    return unit
+end
+
+-- Une copie de l'action avec cette cible (nil : la cible habituelle)
+function A.WithUnit(action, unit)
+    local copy = {}
+    for k, v in pairs(action) do copy[k] = v end
+    copy.unit = UNIT_OK[unit] and unit or nil
+    return copy
+end
+
+-- La liste « Lancer sur... » : la cible habituelle, puis A.UNITS
+function A.UnitEntries(action)
+    local entries = { { label = L.UNIT_target, action = { unit = false } } }
+    for _, unit in ipairs(A.UNITS) do
+        entries[#entries + 1] = { label = A.UnitLabel(unit), action = { unit = unit } }
+    end
+    for _, e in ipairs(entries) do
+        if (action.unit or false) == e.action.unit then e.sub = L.UNIT_CURRENT end
+    end
+    return entries
+end
+
+-- Les conditions de macro d'une cible : « [@player] », ou deux clauses pour
+-- « helpself ». cond : une condition à ajouter à chacune (« combat »), ou nil.
+-- Avec un espace à la fin ; "" sans cible ni condition.
+local function Brackets(cond, unit)
+    local clauses
+    if unit == "helpself" then
+        clauses = { "help,nodead", "@player" }
+    elseif UNIT_OK[unit] then
+        clauses = { "@" .. unit }
+    end
+    if not clauses then return cond and ("[" .. cond .. "] ") or "" end
+    local out = {}
+    for _, clause in ipairs(clauses) do
+        out[#out + 1] = "[" .. (cond and (cond .. ",") or "") .. clause .. "]"
+    end
+    return table.concat(out) .. " "
+end
+
+-- Ce qui suit « /cast » ou « /use » pour une action simple : le nom du sort
+-- (avec son rang choisi), ou « item:ID » ; nil pour un autre type
+local function CastToken(action)
+    local k = action.kind
+    if k == "spell" or k == "mount" then
+        local name = A.SpellInfo(action.id) or action.name
+        -- (un rang inférieur choisi exprès : sinon /cast prend le plus haut)
+        if name and action.rank then name = name .. "(" .. action.rank .. ")" end
+        return name
+    elseif k == "item" or k == "toy" then
+        return "item:" .. tostring(action.id)
+    end
+end
+
+---------------------------------------------------------------------------
+-- Action selon le contexte ({ kind = "cond" }) : a si la condition est
+-- vraie, sinon b. Rendue en une ligne « /cast [condition] A; B » (/cast et
+-- /use sont la même commande : sorts et objets s'y mélangent). Avec une
+-- seule des deux : l'autre cas ne fait rien.
+---------------------------------------------------------------------------
+-- (macro : la condition de macro du jeu ; « no » devant la retourne)
+A.CONDS = {
+    { id = "combat", macro = "combat" },
+    { id = "mounted", macro = "mounted" },
+    { id = "stealth", macro = "stealth" },
+    { id = "harm", macro = "harm" },
+    { id = "help", macro = "help" },
+    { id = "exists", macro = "exists" },
+    { id = "pet", macro = "pet" },
+    { id = "group", macro = "group" },
+    { id = "swimming", macro = "swimming" },
+    { id = "indoors", macro = "indoors" },
+}
+for n = 1, 6 do
+    A.CONDS[#A.CONDS + 1] = { id = "stance" .. n, macro = "stance:" .. n, stance = n }
+end
+local COND_BY_ID = {}
+for _, def in ipairs(A.CONDS) do
+    COND_BY_ID[def.id] = def
+    -- (pour savoir quelle branche partirait : « a » ou « b »)
+    def.probe = "[" .. def.macro .. "] a; b"
+end
+
+-- Les types d'action d'une branche, et d'une étape de cycle
+A.COND_KINDS = { spell = true, mount = true, item = true, toy = true }
+A.SEQ_KINDS = { spell = true, item = true }
+
+function A.CondDef(id)
+    return id and COND_BY_ID[id]
+end
+
+function A.CondLabel(id)
+    local def = COND_BY_ID[id]
+    if not def then return "" end
+    if def.stance then return L.COND_stance:format(def.stance) end
+    return L["COND_" .. def.id]
+end
+
+-- La liste des conditions, pour UI.PickFromList
+function A.CondEntries()
+    local entries = {}
+    for _, def in ipairs(A.CONDS) do
+        entries[#entries + 1] = { label = A.CondLabel(def.id), action = { cond = def.id } }
+    end
+    return entries
+end
+
+local function CondText(action)
+    local def = COND_BY_ID[action.cond]
+    if not def then return nil end
+    local a = type(action.a) == "table" and A.COND_KINDS[action.a.kind] and CastToken(action.a)
+    local b = type(action.b) == "table" and A.COND_KINDS[action.b.kind] and CastToken(action.b)
+    if a and b then
+        return "/cast " .. Brackets(def.macro, action.a.unit) .. a .. "; " .. Brackets(nil, action.b.unit) .. b
+    elseif a then
+        return "/cast " .. Brackets(def.macro, action.a.unit) .. a
+    elseif b then
+        return "/cast " .. Brackets("no" .. def.macro, action.b.unit) .. b
+    end
+end
+
+---------------------------------------------------------------------------
+-- Action cyclique ({ kind = "seq" }) : l'étape suivante à chaque appui,
+-- par « /castsequence » : le jeu n'avance que si le sort part, donc pas de
+-- saut d'étape quand on martèle le bouton.
+---------------------------------------------------------------------------
+A.SEQ_MAX = 4
+-- (remise à la première étape : au changement de cible, en fin de combat,
+-- ou après ce nombre de secondes sans appui ; nil : jamais)
+A.SEQ_RESETS = { "target", "combat", "target/combat", 5, 10, 30 }
+local SEQ_RESET_OK = {}
+for _, reset in ipairs(A.SEQ_RESETS) do SEQ_RESET_OK[reset] = true end
+
+function A.IsSeqReset(reset)
+    return reset ~= nil and SEQ_RESET_OK[reset] == true
+end
+
+function A.SeqResetLabel(reset)
+    if type(reset) == "number" then return L.SEQ_RESET_seconds:format(reset) end
+    if reset == "target/combat" then return L.SEQ_RESET_both end
+    return L["SEQ_RESET_" .. (SEQ_RESET_OK[reset] and reset or "none")]
+end
+
+function A.SeqResetEntries()
+    local entries = { { label = A.SeqResetLabel(nil), action = { reset = false } } }
+    for _, reset in ipairs(A.SEQ_RESETS) do
+        entries[#entries + 1] = { label = A.SeqResetLabel(reset), action = { reset = reset } }
+    end
+    return entries
+end
+
+-- Les étapes valides d'un cycle et sa séquence (« reset=10 A, B, C »),
+-- gardées en mémoire par action : le HUD les demande 20 fois par seconde.
+-- Vidé à chaque application des réglages (rang remplacé, nom enfin connu).
+local seqCache = setmetatable({}, { __mode = "k" })
+
+local function SeqInfo(action)
+    local info = seqCache[action]
+    if info then return info end
+    local tokens, steps = {}, {}
+    if type(action.steps) == "table" then
+        for i = 1, A.SEQ_MAX do
+            local step = action.steps[i]
+            local token = type(step) == "table" and A.SEQ_KINDS[step.kind] and CastToken(step)
+            if token then
+                tokens[#tokens + 1] = token
+                steps[#steps + 1] = step
+            end
+        end
+    end
+    info = { steps = steps }
+    if #tokens > 0 then
+        local reset = A.IsSeqReset(action.reset) and ("reset=" .. tostring(action.reset) .. " ") or ""
+        info.sequence = reset .. table.concat(tokens, ", ")
+    end
+    seqCache[action] = info
+    return info
+end
+
+if ns.OnApplied then ns.OnApplied(function() wipe(seqCache) end) end
+
+-- L'action simple qui partirait maintenant : la branche vraie d'une action
+-- selon le contexte, l'étape suivante d'un cycle ; sinon l'action elle-même.
+-- Pour l'icône, la recharge et l'info-bulle.
+function A.Resolve(action)
+    if type(action) ~= "table" then return nil end
+    if action.kind == "cond" then
+        local def = COND_BY_ID[action.cond]
+        local a = type(action.a) == "table" and action.a or nil
+        local b = type(action.b) == "table" and action.b or nil
+        if def and a and b and SecureCmdOptionParse then
+            local ok, isB = pcall(function() return SecureCmdOptionParse(def.probe) == "b" end)
+            if ok and isB then return b end
+            return a
+        end
+        return a or b
+    elseif action.kind == "seq" then
+        local index = A.SeqIndex(action)
+        return SeqInfo(action).steps[index]
+    end
+    return action
+end
+
+-- L'étape d'un cycle qui partira au prochain appui, et le nombre d'étapes
+-- (l'étape 1 si le jeu ne le dit pas)
+function A.SeqIndex(action)
+    local info = SeqInfo(action)
+    local index = 1
+    if info.sequence and QueryCastSequence then
+        local ok, i = pcall(QueryCastSequence, info.sequence)
+        if ok and type(i) == "number" and not IsSecret(i) and info.steps[i] then index = i end
+    end
+    return index, #info.steps
+end
+
+-- La pastille d'une case, sans texte à traduire : « @ » pour une cible
+-- choisie (« @2 » : le membre 2 du groupe), « / » pour une action selon le
+-- contexte, « 2/3 » pour l'étape d'un cycle ; nil sinon
+function A.Badge(action)
+    if type(action) ~= "table" then return nil end
+    if action.kind == "cond" then return "/" end
+    if action.kind == "seq" then
+        local index, count = A.SeqIndex(action)
+        return count > 0 and (index .. "/" .. count) or nil
+    end
+    if UNIT_OK[action.unit] then
+        return "@" .. (action.unit:match("^party(%d)$") or "")
+    end
+end
+
+-- Les lignes d'une info-bulle qui disent la cible choisie, la condition et
+-- ses deux branches, ou les étapes d'un cycle
+function A.AddDetailsToTooltip(tooltip, action)
+    if not tooltip or type(action) ~= "table" then return end
+    if action.kind == "cond" then
+        tooltip:AddLine(L.COND_TIP_IF:format(A.CondLabel(action.cond), A.Label(action.a) or L.COND_NOTHING),
+            0.9, 0.9, 0.9, true)
+        tooltip:AddLine(L.COND_TIP_ELSE:format(A.Label(action.b) or L.COND_NOTHING), 0.9, 0.9, 0.9, true)
+    elseif action.kind == "seq" then
+        local index = A.SeqIndex(action)
+        for i, step in ipairs(SeqInfo(action).steps) do
+            local c = i == index and 1 or 0.7
+            tooltip:AddLine(i .. ". " .. (A.Label(step) or ""), c, c, c)
+        end
+        tooltip:AddLine(L.SEQ_TIP_RESET:format(A.SeqResetLabel(action.reset)), 0.7, 0.7, 0.7, true)
+    elseif UNIT_OK[action.unit] then
+        tooltip:AddLine(L.UNIT_TIP:format(A.UnitLabel(action.unit)), 0.6, 0.8, 1, true)
+    end
+end
+
+-- Les actions simples d'une case : elle-même, ou les branches / étapes
+-- d'une action composée. fn(list, key, action) : list[key] est l'action
+-- (pour la remplacer sur place, comme les nouveaux rangs de sorts).
+function A.EachLeaf(list, key, fn)
+    local action = list[key]
+    if type(action) ~= "table" then return end
+    if action.kind == "cond" then
+        if type(action.a) == "table" then fn(action, "a", action.a) end
+        if type(action.b) == "table" then fn(action, "b", action.b) end
+    elseif action.kind == "seq" then
+        -- (pas ipairs : une étape retirée laisse un trou, les suivantes comptent)
+        if type(action.steps) == "table" then
+            for i = 1, A.SEQ_MAX do
+                local step = action.steps[i]
+                if type(step) == "table" then fn(action.steps, i, step) end
+            end
+        end
+    else
+        fn(list, key, action)
+    end
+end
+
+---------------------------------------------------------------------------
 -- Libellé et icône
 ---------------------------------------------------------------------------
 function A.Label(action)
@@ -336,9 +683,21 @@ function A.Label(action)
     if k == "spell" or k == "mount" then
         local name = A.SpellInfo(action.id) or action.name or ("spell:" .. tostring(action.id))
         if action.rank then name = name .. " (" .. action.rank .. ")" end
+        if UNIT_OK[action.unit] then name = name .. " [" .. A.UnitLabel(action.unit) .. "]" end
         return name
     elseif k == "item" or k == "toy" then
-        return ItemName(action.id) or ("item:" .. tostring(action.id))
+        local name = ItemName(action.id) or ("item:" .. tostring(action.id))
+        if UNIT_OK[action.unit] then name = name .. " [" .. A.UnitLabel(action.unit) .. "]" end
+        return name
+    elseif k == "cond" then
+        -- (« A / B » : la branche de la condition, puis l'autre)
+        local a, b = A.Label(action.a), A.Label(action.b)
+        if a and b then return a .. " / " .. b end
+        return a or b or L.KIND_cond
+    elseif k == "seq" then
+        local names = {}
+        for _, step in ipairs(SeqInfo(action).steps) do names[#names + 1] = A.Label(step) end
+        return #names > 0 and table.concat(names, " > ") or L.KIND_seq
     elseif k == "macro" or k == "equipset" then
         return action.name
     elseif k == "macrotext" then
@@ -354,6 +713,8 @@ function A.Label(action)
             if type(name) ~= "string" or (issecretvalue and issecretvalue(name)) then name = tostring(def.raidTarget) end
             return L.GAME_mark:format(name)
         end
+        -- (un membre du groupe : son numéro)
+        if def and def.party then return L.GAME_targetparty:format(def.party) end
         return L["GAME_" .. tostring(action.id)]
     elseif k == "slot" then
         -- (ce que tient un emplacement de la barre du jeu, d'un autre type)
@@ -384,7 +745,11 @@ function A.Icon(action)
     if not action then return nil end
     local k = action.kind
     if action.icon and CUSTOM_ICON[k] then return action.icon end
-    if k == "spell" or k == "mount" then
+    if k == "cond" or k == "seq" then
+        -- (une action composée : l'icône de ce qui partirait maintenant)
+        local now = A.Resolve(action)
+        return now and now ~= action and A.Icon(now) or QUESTION
+    elseif k == "spell" or k == "mount" then
         return select(2, A.SpellInfo(action.id)) or QUESTION
     elseif k == "item" or k == "toy" then
         return ItemIcon(action.id) or QUESTION
@@ -427,12 +792,16 @@ function A.Secure(action)
     if not action then return nil end
     local k = action.kind
     if k == "spell" or k == "mount" then
-        local name = A.SpellInfo(action.id) or action.name
-        -- (un rang inférieur choisi exprès : sinon /cast prend le plus haut)
-        if name and action.rank then name = name .. "(" .. action.rank .. ")" end
-        return nil, name and ("/cast " .. name)
+        -- (avec une cible choisie : « /cast [@player] Nom »)
+        local name = CastToken(action)
+        return nil, name and ("/cast " .. Brackets(nil, k == "spell" and action.unit or nil) .. name)
     elseif k == "item" or k == "toy" then
-        return nil, "/use item:" .. tostring(action.id)
+        return nil, "/use " .. Brackets(nil, k == "item" and action.unit or nil) .. CastToken(action)
+    elseif k == "cond" then
+        return nil, CondText(action)
+    elseif k == "seq" then
+        local sequence = SeqInfo(action).sequence
+        return nil, sequence and ("/castsequence " .. sequence)
     elseif k == "macro" then
         if action.name and GetMacroIndexByName and GetMacroIndexByName(action.name) > 0 then
             return action.name, nil
@@ -600,6 +969,7 @@ local function ItemCount(id)
     local get = (C_Item and C_Item.GetItemCount) or GetItemCount
     return get and get(id) or 0
 end
+A.ItemCount = ItemCount -- (aussi pour « Vérifier ma configuration », Check.lua)
 
 -- Objets utilisables équipés (bijoux...), puis tous les objets des sacs :
 -- utilisables d'abord, puis les autres (un équipement s'équipe avec /use)
@@ -900,7 +1270,19 @@ end
 -- Deux actions identiques (même type, même sort / objet / macro...)
 function A.Same(a, b)
     if not (a and b) or a.kind ~= b.kind then return false end
+    if a.kind == "cond" then
+        local function Branch(x, y) return (x == nil and y == nil) or A.Same(x, y) end
+        return a.cond == b.cond and Branch(a.a, b.a) and Branch(a.b, b.b)
+    elseif a.kind == "seq" then
+        local x, y = SeqInfo(a).steps, SeqInfo(b).steps
+        if a.reset ~= b.reset or #x ~= #y then return false end
+        for i = 1, #x do
+            if not A.Same(x[i], y[i]) then return false end
+        end
+        return true
+    end
     return a.id == b.id and a.name == b.name and a.text == b.text and a.command == b.command and a.cat == b.cat
+        and a.unit == b.unit
 end
 
 ---------------------------------------------------------------------------

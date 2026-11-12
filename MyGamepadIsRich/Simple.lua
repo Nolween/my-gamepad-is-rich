@@ -33,6 +33,25 @@ local PRECLICK = [[
         local n = (self:GetAttribute("gps-mark-" .. layer) or 0) % 8 + 1
         self:SetAttribute("gps-mark-" .. layer, n)
         text = "#mgirmark\n/tm " .. (9 - n)
+    elseif type(text) == "string" and text:sub(1, 10) == "#mgirparty" then
+        -- (allié suivant du groupe : moi (0), puis les membres 1 à 4 ; un
+        -- membre absent est sauté. Sans moyen de le savoir ici, on les
+        -- prend tous)
+        local n = self:GetAttribute("gps-party-" .. layer) or 4
+        for _ = 1, 5 do
+            n = (n + 1) % 5
+            local there = true
+            if n > 0 then
+                if UnitExists then
+                    there = UnitExists("party" .. n)
+                elseif SecureCmdOptionParse then
+                    there = SecureCmdOptionParse("[@party" .. n .. ",exists] 1")
+                end
+            end
+            if there then break end
+        end
+        self:SetAttribute("gps-party-" .. layer, n)
+        text = "#mgirparty\n/target " .. (n == 0 and "player" or ("party" .. n))
     end
     self:SetAttribute("macrotext", text)
 ]]

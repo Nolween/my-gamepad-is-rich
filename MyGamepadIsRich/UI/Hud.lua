@@ -95,6 +95,11 @@ function H.Settings()
     s.vertical = s.vertical == true
     -- (les miniatures cachées : seulement la couche active)
     s.stripHidden = s.stripHidden == true
+    -- (essai retiré : les miniatures seulement quand un bouton est tenu)
+    s.stripOnHold = nil
+    -- (l'opacité du HUD au repos, hors combat et rien de tenu ; 0 : caché)
+    if type(s.idleAlpha) ~= "number" or s.idleAlpha ~= s.idleAlpha then s.idleAlpha = IDLE_ALPHA end
+    s.idleAlpha = math.max(0, math.min(1, s.idleAlpha))
     -- (l'ordre des miniatures : nil = celui de l'interface)
     if s.order ~= nil and type(s.order) ~= "table" then s.order = nil end
     return s
@@ -537,14 +542,16 @@ local function GameSpell(action)
     return def and def.spell
 end
 
-local function SpellState(spell, st)
+-- (unit : l'unité visée, pour la portée — la cible, ou celle choisie pour
+-- l'action ; nil : elle dépend du moment, la portée ne se dit pas)
+local function SpellState(spell, st, unit)
     st.usable, st.noPower = Usable(C_Spell and C_Spell.IsSpellUsable or IsUsableSpell, spell)
-    if UnitExists("target") then
+    if unit and UnitExists(unit) then
         local inRange
         if C_Spell and C_Spell.IsSpellInRange then
-            inRange = Call(C_Spell.IsSpellInRange, spell, "target")
+            inRange = Call(C_Spell.IsSpellInRange, spell, unit)
         else
-            inRange = Call(IsSpellInRange, ns.Actions.SpellInfo(spell), "target")
+            inRange = Call(IsSpellInRange, ns.Actions.SpellInfo(spell), unit)
         end
         st.outOfRange = Flag(inRange) == false
     end
@@ -570,25 +577,28 @@ local function SpellState(spell, st)
     end
 end
 
-local function ItemState(id, st)
+local function ItemState(id, st, unit)
     st.usable, st.noPower = Usable(C_Item and C_Item.IsUsableItem or IsUsableItem, id)
     -- (la portée d'un objet n'est plus lisible en combat sur une cible
     -- hostile, selon les versions : erreur ou nil, alors on ne dit rien)
-    if UnitExists("target") then
-        st.outOfRange = Flag((Call(C_Item and C_Item.IsItemInRange or IsItemInRange, id, "target"))) == false
+    if unit and UnitExists(unit) then
+        st.outOfRange = Flag((Call(C_Item and C_Item.IsItemInRange or IsItemInRange, id, unit))) == false
     end
 end
 
+-- (action : une action simple — pour une action composée, celle qui
+-- partirait maintenant, ns.Actions.Resolve)
 local stateCache = {}
 local function ActionState(action)
     local st = stateCache
     st.usable, st.noPower, st.outOfRange, st.proc, st.active, st.charges = nil, nil, nil, nil, nil, nil
+    local unit = ns.Actions.RangeUnit(action)
     local spell = ActionSpell(action) or GameSpell(action)
     if spell and action.kind ~= "mount" then
-        SpellState(spell, st)
+        SpellState(spell, st, unit)
     elseif action.kind ~= "toy" then
         local item = ActionItem(action)
-        if item then ItemState(item, st) end
+        if item then ItemState(item, st, unit) end
     end
     return st
 end
@@ -665,44 +675,22 @@ local function TileClick(t, button)
         return
     end
     local set = function(action) Assign(target, action) end
+    -- (l'action de l'addon ; sur « Seul », sinon le sort ou l'objet de la
+    -- barre du jeu, pour lui choisir une cible ou en faire une action composée)
     local current = TargetAction(target)
+    if not current and target.native == ns.Bar.BASE_BAR then
+        local own = ns.Bar.Get(target.native, target.i)
+        if own and own.kind ~= "slot" then current = own end
+    end
     local full = FullTarget(target)
-    local items = {
-        { text = L.MENU_PICKUP_HINT, title = true },
-        { text = L.MENU_SPELL, func = function()
-            UI.PickFromList(L.SPELL_TITLE, ns.Actions.SpellbookEntries(), set)
-        end },
-        { text = L.MENU_ITEM, func = function()
-            UI.PickFromList(L.ITEM_TITLE, ns.Actions.ItemEntries(), set)
-        end },
-        -- (le meilleur objet des sacs de ce type : une macro de l'addon)
-        { text = L.MENU_BEST, disabled = not full, func = function()
-            UI.PickFromList(L.BEST_TITLE, ns.Actions.BestEntries(), set)
-        end },
-        -- (sauter, annuler, rechercher, attaque auto, interagir)
-        { text = L.MENU_GAME, disabled = not full, func = function()
-            UI.PickFromList(L.GAME_TITLE, ns.Actions.GameEntries(CommandAllowed(target)), set)
-        end },
-        { text = L.MENU_MACROTEXT, disabled = not full, func = function()
-            UI.EditMacro(nil, function(text)
-                set(text ~= "" and { kind = "macrotext", text = text } or nil)
-            end)
-        end },
-        { text = L.MENU_COMMAND, disabled = not CommandAllowed(target), func = function()
-            UI.PickFromList(L.COMMAND_TITLE, ns.Actions.Commands(), set)
-        end },
-        -- (commande WoW, macro écrite : une icône au choix)
-        { text = L.MENU_ICON, disabled = not ns.Actions.CanSetIcon(current), func = function()
-            UI.PickIcon(current.icon, function(icon)
-                if InCombatLockdown() then ns.Print(L.HUD_COMBAT) return end
-                set(ns.Actions.WithIcon(current, icon))
-            end)
-        end },
-        { text = L.MENU_CLEAR, func = function() set(nil) end },
-    }
-    -- (des choix grisés : pourquoi, et comment les avoir)
-    if not full then items[#items + 1] = { text = L.MENU_GAME_BAR_HINT, title = true } end
-    UI.ShowMenu(t, items)
+    -- (le même menu que l'onglet Couches ; des choix grisés : pourquoi, et
+    -- comment les avoir)
+    UI.ShowMenu(t, UI.ActionMenuItems({
+        current = current, set = set,
+        macroOK = full, commandOK = CommandAllowed(target),
+        clearAlways = true,
+        hint = not full and L.MENU_GAME_BAR_HINT or nil,
+    }))
 end
 
 ---------------------------------------------------------------------------
@@ -778,23 +766,30 @@ local function Tooltip(self)
             ns.Actions.AddRankToTooltip(GameTooltip, { kind = "spell", id = id })
         end
     elseif a then
-        if a.kind == "spell" or a.kind == "mount" then
-            ok = pcall(GameTooltip.SetSpellByID, GameTooltip, a.id)
-            if ok and a.kind == "spell" then ns.Actions.AddRankToTooltip(GameTooltip, a) end
+        -- (une action composée : l'info-bulle de ce qui partirait maintenant)
+        local now = ns.Actions.Resolve(a) or a
+        if now.kind == "spell" or now.kind == "mount" then
+            ok = pcall(GameTooltip.SetSpellByID, GameTooltip, now.id)
+            if ok and now.kind == "spell" then ns.Actions.AddRankToTooltip(GameTooltip, now) end
             if ok and not ns.Actions.IsKnown(a) then GameTooltip:AddLine(L.SPELL_UNKNOWN, 1, 0.35, 0.35, true) end
-        elseif a.kind == "item" or a.kind == "toy" then
-            ok = pcall(GameTooltip.SetItemByID, GameTooltip, a.id)
-        elseif a.kind == "best" then
+        elseif now.kind == "item" or now.kind == "toy" then
+            ok = pcall(GameTooltip.SetItemByID, GameTooltip, now.id)
+        elseif now.kind == "best" then
             -- (l'objet qui partira, sous le nom du consommable intelligent)
-            local item = ns.Actions.BestItem(a.cat)
+            local item = ns.Actions.BestItem(now.cat)
             ok = item ~= nil and pcall(GameTooltip.SetItemByID, GameTooltip, item)
-            if ok then GameTooltip:AddLine(ns.Actions.Label(a), 0.6, 0.8, 1) end
+            if ok then GameTooltip:AddLine(ns.Actions.Label(now), 0.6, 0.8, 1) end
         end
         if not ok then
             GameTooltip:SetText(ns.Actions.Label(a) or "", 1, 1, 1)
             if a.kind == "best" then GameTooltip:AddLine(L.BEST_NONE, 0.7, 0.7, 0.7) end
             ok = true
         end
+        -- (cible choisie, condition et branches, étapes d'un cycle)
+        if a.kind == "cond" or a.kind == "seq" then
+            GameTooltip:AddLine(ns.Actions.KindLabel(a), 0.6, 0.8, 1)
+        end
+        ns.Actions.AddDetailsToTooltip(GameTooltip, a)
     end
     if not ok then GameTooltip:SetText(L.EMPTY, 0.7, 0.7, 0.7) end
     if self.target and not InCombatLockdown() then
@@ -826,6 +821,8 @@ local function Tile(parent, size)
     t.top:SetFrameLevel(t.cooldown:GetFrameLevel() + 2)
     t.count = t.top:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
     t.count:SetPoint("BOTTOMRIGHT", -3, 3)
+    t.badge = t.top:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    t.badge:SetPoint("TOPLEFT", 3, -3)
     -- (action en cours : attaque auto, forme, aura... comme la case cochée
     -- des barres du jeu)
     t.checked = t.top:CreateTexture(nil, "ARTWORK")
@@ -847,6 +844,7 @@ end
 -- Une case qui reflète un bouton de Forever
 local function MirrorNative(t, native)
     t.native, t.action = native, nil
+    t.badge:SetText("")
     local has, tex, atlas, icon = NativePicture(native)
     if not has then
         SetPicture(t)
@@ -891,6 +889,8 @@ end
 local function MirrorAction(t, action, dim, lit)
     t.native, t.action = nil, action
     SetEdge(t, lit and GOLD_EDGE or DIM_EDGE)
+    -- (cible choisie « @ », action selon le contexte « / », étape d'un cycle)
+    t.badge:SetText(ns.Actions.Badge(action) or "")
     if not action then
         SetPicture(t)
         t.count:SetText("")
@@ -899,12 +899,16 @@ local function MirrorAction(t, action, dim, lit)
         return
     end
     SetPicture(t, ns.Actions.Icon(action))
+    -- (une action composée : l'état, la recharge et le stock de ce qui
+    -- partirait maintenant ; le reste de la fonction regarde cette action-là)
+    local whole = action
+    action = ns.Actions.Resolve(action) or action
     -- (sa teinte, comme les barres du jeu : hors de portée en rouge,
     -- ressource insuffisante en bleu, inutilisable en gris ; estompée quand
     -- la case reprend « Seul »)
     local st = ActionState(action)
     -- (un sort que ce personnage ne connaît pas : grisé, teinté de rouge)
-    local unknown = not ns.Actions.IsKnown(action)
+    local unknown = not ns.Actions.IsKnown(whole)
     if unknown then
         t.icon:SetVertexColor(1, 0.35, 0.35)
     elseif dim then
@@ -1688,10 +1692,14 @@ local function Update(pu)
     if hover or unlocked then toolsUntil = GetTime() + 1 end
     stripTools:SetShown(GetTime() < toolsUntil)
     local busy = unlocked or editing ~= nil or InCombatLockdown() or any or hover
-    local want = busy and 1 or IDLE_ALPHA
+    local s = H.Settings()
+    local want = busy and 1 or s.idleAlpha
     local now = holder:GetAlpha()
     if math.abs(now - want) > 0.01 then
         holder:SetAlpha(now + (want - now) * 0.35)
+    elseif now ~= want then
+        -- (au bout du fondu : la valeur exacte, pour un HUD vraiment caché à 0)
+        holder:SetAlpha(want)
     end
 end
 
@@ -1869,6 +1877,14 @@ function H.SetStripRows(n)
     dirty = true
 end
 
+-- L'opacité du HUD au repos (0 à 100 % ; 0 : caché hors combat, il revient
+-- au survol, en combat ou quand un bouton est tenu)
+function H.IdleAlpha() return H.Settings().idleAlpha end
+
+function H.SetIdleAlpha(n)
+    H.Settings().idleAlpha = math.max(0, math.min(1, math.floor(n * 20 + 0.5) / 20))
+end
+
 -- (pour l'onglet HUD de la fenêtre de configuration)
 function H.Scale() return H.Settings().scale end
 
@@ -1901,7 +1917,7 @@ function H.ExportSettings()
     local s = H.Settings()
     local out = { scale = s.scale,
         stripScale = s.stripScale, stripRows = s.stripRows, detached = s.detached, vertical = s.vertical,
-        stripHidden = s.stripHidden }
+        stripHidden = s.stripHidden, idleAlpha = s.idleAlpha }
     if s.pos then out.pos = { s.pos[1], s.pos[2], s.pos[3], s.pos[4] } end
     if s.stripPos then out.stripPos = { s.stripPos[1], s.stripPos[2], s.stripPos[3], s.stripPos[4] } end
     if s.order then
@@ -1935,6 +1951,7 @@ function H.CleanSettings(t)
         detached = t.detached == true,
         vertical = t.vertical == true,
         stripHidden = t.stripHidden == true,
+        idleAlpha = Clamp(t.idleAlpha, 0, 1, IDLE_ALPHA),
     }
     local p = t.pos
     if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
@@ -1976,6 +1993,179 @@ function H.SetUnlocked(on)
     stripOutline:SetShown(unlocked and detached)
     UpdateLock()
     LayoutTools(H.Settings())
+end
+
+---------------------------------------------------------------------------
+-- Aide-mémoire : toutes les couches en grand au milieu de l'écran, pour
+-- apprendre ses raccourcis. /mgir carte, le bouton de l'onglet HUD, ou
+-- l'action de base « Aide-mémoire » posée sur une case. Un cadre ordinaire
+-- (non protégé) : il s'ouvre et se ferme en combat aussi. Il ne prend ni la
+-- souris ni la manette ; Échap, ou la même commande, le ferme. La couche
+-- utilisée à l'instant a un bord doré.
+---------------------------------------------------------------------------
+local sheet
+local sheetCards = {}
+local S_ICON, S_STEP = 34, 38
+local S_CROSS = S_STEP * 2 + S_ICON
+local S_CARD_H = S_CROSS + 46
+local S_GAP = 14
+
+-- (les mêmes champs qu'une miniature du HUD : SetCardMinis la remplit)
+local function SheetCard()
+    local c = CreateFrame("Frame", nil, sheet)
+    c.edge = c:CreateTexture(nil, "BACKGROUND")
+    c.edge:SetAllPoints()
+    local bg = c:CreateTexture(nil, "BORDER")
+    bg:SetPoint("TOPLEFT", 2, -2)
+    bg:SetPoint("BOTTOMRIGHT", -2, 2)
+    bg:SetColorTexture(0.03, 0.03, 0.03, 0.9)
+    c.tag = Tag(c, 24, "GameFontNormalLarge")
+    c.tag:SetPoint("TOP", 0, -6)
+    local function Mini(r, g, b, a)
+        local back = c:CreateTexture(nil, "BORDER", nil, 1)
+        back:SetSize(S_ICON, S_ICON)
+        back:SetColorTexture(r, g, b, a)
+        local tex = c:CreateTexture(nil, "ARTWORK")
+        tex:SetSize(S_ICON, S_ICON)
+        tex:SetPoint("CENTER", back, "CENTER")
+        tex.back = back
+        return tex
+    end
+    c.minis = {}
+    for i = 1, 8 do c.minis[i] = Mini(1, 1, 1, 0.1) end
+    -- (les boutons simples : fond doré, et leur bouton dans le coin)
+    c.simple = {}
+    for i = 1, #ns.BUTTON_IDS + #ns.PAD_IDS do
+        local tex = Mini(0.75, 0.55, 0.1, 0.25)
+        tex.glyph = UI.CreateGlyph(c, 16)
+        tex.glyph:SetPoint("CENTER", tex.back, "TOPLEFT", 3, -3)
+        c.simple[i] = tex
+    end
+    return c
+end
+
+-- La largeur d'une couche de l'aide-mémoire, selon le nombre de boutons simples
+local function SheetCardWidth(nSimple)
+    local middle = nSimple > 0 and (math.ceil(nSimple / SIMPLE_PER_COL) * S_STEP + 16) or 14
+    return 20 + 2 * S_CROSS + middle, middle
+end
+
+local function LayoutSheetCard(c, simple, nSimple)
+    local width, middle = SheetCardWidth(nSimple)
+    c:SetSize(width, S_CARD_H)
+    for g = 0, 1 do
+        for i, spot in ipairs(SPOTS) do
+            local x = 10 + g * (S_CROSS + middle) + S_CROSS / 2 + spot[1] * S_STEP
+            local y = 10 + S_CROSS / 2 + spot[2] * S_STEP
+            local tex = c.minis[g * 4 + i]
+            tex.back:ClearAllPoints()
+            tex.back:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
+        end
+    end
+    for k, tex in ipairs(c.simple) do
+        local shown = k <= nSimple
+        tex.back:SetShown(shown)
+        tex.glyph:SetShown(shown)
+        if not shown then
+            tex:Hide()
+        else
+            local col, row = math.floor((k - 1) / SIMPLE_PER_COL), (k - 1) % SIMPLE_PER_COL
+            local inCol = math.min(SIMPLE_PER_COL, nSimple - col * SIMPLE_PER_COL)
+            local x = 10 + S_CROSS + 8 + col * S_STEP + S_STEP / 2
+            local y = 10 + S_CROSS / 2 + ((inCol - 1) / 2 - row) * S_STEP
+            tex.back:ClearAllPoints()
+            tex.back:SetPoint("CENTER", c, "BOTTOMLEFT", x, y)
+            tex.glyph:SetKey(simple[k])
+        end
+    end
+end
+
+local function RefreshSheet()
+    local list = H.Layers()
+    local simple = ns.SimpleIDs()
+    local nSimple = math.min(#simple, #ns.BUTTON_IDS + #ns.PAD_IDS)
+    local width = SheetCardWidth(nSimple)
+    -- (autant de couches par ligne que l'écran en tient, les lignes égales ;
+    -- trop haut pour l'écran : le tout est réduit)
+    local screenW, screenH = UIParent:GetWidth(), UIParent:GetHeight()
+    local per = math.max(1, math.min(#list, math.floor((screenW * 0.92 - 40 + S_GAP) / (width + S_GAP))))
+    local rows = math.max(1, math.ceil(#list / per))
+    per = math.max(1, math.ceil(#list / rows))
+    local totalW = math.max(per * width + (per - 1) * S_GAP + 40, 360)
+    local totalH = rows * S_CARD_H + (rows - 1) * S_GAP + 92
+    sheet:SetSize(totalW, totalH)
+    sheet:SetScale(math.min(1, screenH * 0.9 / totalH))
+
+    -- (la couche utilisée à l'instant, comme le HUD)
+    local pu = PageUnit()
+    local mod = ns.Modifier.Held and ns.Modifier.Held()
+    if mod and not ns.IsModLayer(mod) then mod = nil end
+    local activeName
+    if pu then
+        for _, name in ipairs(BARS) do
+            if pu.actionBars and pu.actionBars[name] == pu.activeBar then activeName = name end
+        end
+    end
+
+    for i, entry in ipairs(list) do
+        local c = sheetCards[i] or SheetCard()
+        sheetCards[i] = c
+        c.entry = entry
+        local row, col = math.floor((i - 1) / per), (i - 1) % per
+        local inRow = math.min(per, #list - row * per)
+        local x = (totalW - (inRow * width + (inRow - 1) * S_GAP)) / 2 + col * (width + S_GAP)
+        LayoutSheetCard(c, simple, nSimple)
+        c:ClearAllPoints()
+        c:SetPoint("TOPLEFT", sheet, "TOPLEFT", x, -(48 + row * (S_CARD_H + S_GAP)))
+        EntryTag(c.tag, entry)
+        -- (une barre du jeu se lit dans la barre de Forever)
+        if pu or not entry.bar then SetCardMinis(c, pu) end
+        local live = (mod ~= nil and entry.mod == mod) or (mod == nil and entry.bar ~= nil and entry.bar == activeName)
+        local edge = live and GOLD_EDGE or DIM_EDGE
+        c.edge:SetColorTexture(edge[1], edge[2], edge[3], edge[4])
+        c:Show()
+    end
+    for i = #list + 1, #sheetCards do sheetCards[i]:Hide() end
+end
+
+local function BuildSheet()
+    sheet = UI.Panel(UIParent, "MyGamepadIsRichSheet", "DIALOG")
+    sheet:SetPoint("CENTER", 0, 30)
+    sheet:SetFrameLevel(20)
+    tinsert(UISpecialFrames, "MyGamepadIsRichSheet")
+    sheet.title = UI.Text(sheet, "GameFontNormalLarge", L.SHEET_TITLE)
+    sheet.title:SetPoint("TOP", 0, -14)
+    sheet.hint = UI.Text(sheet, "GameFontDisableSmall", L.SHEET_HINT)
+    sheet.hint:SetPoint("BOTTOM", 0, 14)
+    -- (ouvert : les icônes et la couche utilisée suivent, 5 fois par seconde ;
+    -- une erreur le ferme au lieu de se répéter)
+    local wait = 0
+    sheet:SetScript("OnUpdate", function(self, elapsed)
+        wait = wait - elapsed
+        if wait > 0 then return end
+        wait = 0.2
+        if not pcall(RefreshSheet) then self:Hide() end
+    end)
+    sheet:Hide()
+end
+
+function H.SheetShown()
+    return sheet ~= nil and sheet:IsShown()
+end
+
+function H.ToggleSheet()
+    if not ns.db then return end
+    if not sheet then BuildSheet() end
+    if sheet:IsShown() then
+        sheet:Hide()
+        return
+    end
+    local ok, err = pcall(RefreshSheet)
+    if not ok then
+        ns.Print(L.HUD_ERROR:format(tostring(err)))
+        return
+    end
+    sheet:Show()
 end
 
 ---------------------------------------------------------------------------

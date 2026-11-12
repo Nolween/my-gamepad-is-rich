@@ -143,6 +143,9 @@ end
 
 -- Ce que la barre du jeu peut tenir
 function B.Holds(action)
+    -- (un sort ou un objet avec une cible choisie est une macro de l'addon :
+    -- la barre du jeu ne le tient pas)
+    if ns.Actions.IsUnit(action.unit) then return false end
     return Pickup(action) ~= nil
 end
 

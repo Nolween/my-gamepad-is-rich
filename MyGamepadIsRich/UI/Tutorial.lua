@@ -503,8 +503,11 @@ local STEPS = {
         skip = NoExtra },
     { key = "pairs", title = "TUTO_PAIRS_TITLE", text = "TUTO_PAIRS_TEXT", build = BuildPairs, refresh = RefreshPairs,
         helpExtra = function() return T.ClassPairNote() end },
-    { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT" },
-    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT" },
+    -- (help : la suite, seulement dans l'onglet Aide, qui défile — les
+    -- actions à cible choisie, selon le contexte et cycliques ; l'opacité du
+    -- HUD, les miniatures au maintien et l'aide-mémoire)
+    { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT", help = "TUTO_ACTIONS_MORE" },
+    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", help = "TUTO_HUD_MORE" },
     { key = "done", title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },
 }
 
@@ -530,7 +533,7 @@ function T.HelpSections()
             out[#out + 1] = { title = L[s.title], text = text }
         end
     end
-    out[#out + 1] = { title = L.HELP_COMMANDS, text = L.TUTO_DONE_TEXT }
+    out[#out + 1] = { title = L.HELP_COMMANDS, text = L.TUTO_DONE_TEXT .. "\n" .. L.HELP_COMMANDS_MORE }
     return out
 end
 

@@ -678,6 +678,13 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
         ns.Tutorial.Open(1)
     elseif msg == "test" then
         ns.UI.Show("test")
+    elseif msg == "check" or msg == "verifier" or msg == "vérifier" then
+        -- (ce qui empêche un bouton ou une case de marcher, Check.lua)
+        ns.Check.Show()
+    elseif msg == "carte" or msg == "map" or msg == "sheet" then
+        -- (l'aide-mémoire : toutes les couches en grand ; aussi une action de
+        -- base, à poser sur une case)
+        ns.Hud.ToggleSheet()
     elseif msg == "reset" then
         -- (après confirmation, avec une sauvegarde : /mgir undo)
         if ns.Profiles.ActionsCombat() then return end
@@ -691,7 +698,7 @@ SlashCmdList.MYGAMEPADISRICH = function(msg)
     elseif msg == "undo" or msg == "annuler" then
         ns.Profiles.Undo()
     elseif msg == "help" or msg == "?" then
-        ns.Print(L.SLASH_HELP)
+        ns.Print(L.SLASH_HELP .. "  |  " .. L.SLASH_HELP_MORE)
     else
         ns.UI.Toggle()
     end

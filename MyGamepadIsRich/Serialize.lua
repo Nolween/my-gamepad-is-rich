@@ -211,19 +211,55 @@ local function KnownCommand(command)
     return knownCommands[command]
 end
 
--- Une action, d'après les types d'Actions.lua ; nil si invalide
-local function CleanAction(a)
+-- La cible choisie d'un sort ou d'un objet : une de celles d'Actions.lua
+local function CleanUnit(unit)
+    return ns.Actions.IsUnit(unit) and unit or nil
+end
+
+-- Une action, d'après les types d'Actions.lua ; nil si invalide.
+-- kinds : dans une action composée, les seuls types permis (une branche ou
+-- une étape est une action simple : pas d'action composée dans une autre)
+local function CleanAction(a, kinds)
     if type(a) ~= "table" then return nil end
     local k = a.kind
+    if kinds and not kinds[k] then return nil end
     if k == "spell" then
         local id = CleanID(a.id)
-        if id then return { kind = k, id = id, name = CleanString(a.name, 64), rank = CleanString(a.rank, 32) } end
+        if id then
+            return { kind = k, id = id, name = CleanString(a.name, 64), rank = CleanString(a.rank, 32),
+                unit = CleanUnit(a.unit) }
+        end
     elseif k == "mount" then
         local id = CleanID(a.id)
         if id then return { kind = k, id = id, mountID = CleanID(a.mountID), name = CleanString(a.name, 64) } end
-    elseif k == "item" or k == "toy" then
+    elseif k == "item" then
+        local id = CleanID(a.id)
+        if id then return { kind = k, id = id, unit = CleanUnit(a.unit) } end
+    elseif k == "toy" then
         local id = CleanID(a.id)
         if id then return { kind = k, id = id } end
+    elseif k == "cond" then
+        -- (une action selon le contexte : une condition connue, et au moins
+        -- une des deux branches ; la macro vient de l'addon)
+        if type(a.cond) == "string" and ns.Actions.CondDef(a.cond) then
+            local x, y = CleanAction(a.a, ns.Actions.COND_KINDS), CleanAction(a.b, ns.Actions.COND_KINDS)
+            if x or y then return { kind = k, cond = a.cond, a = x, b = y } end
+        end
+    elseif k == "seq" then
+        -- (un cycle : 2 à 4 étapes, sans leur cible, et une remise au début connue)
+        local steps = {}
+        if type(a.steps) == "table" then
+            for i = 1, ns.Actions.SEQ_MAX do
+                local step = CleanAction(a.steps[i], ns.Actions.SEQ_KINDS)
+                if step then
+                    step.unit = nil
+                    steps[#steps + 1] = step
+                end
+            end
+        end
+        if #steps >= 2 then
+            return { kind = k, steps = steps, reset = ns.Actions.IsSeqReset(a.reset) and a.reset or nil }
+        end
     elseif k == "macro" or k == "equipset" then
         local name = CleanString(a.name, 64)
         if name then return { kind = k, name = name } end
@@ -455,7 +491,20 @@ function S.SelfTest()
             PADDUP = { kind = "best", cat = "heal" },
             PADDDOWN = { kind = "best", cat = "evil" },
         }, layers = { nope = { kind = "item", id = 6948 } },
-            holds = { lt = { kind = "spell", id = 133 } } }, ZZ = { combos = {} } },
+            holds = { lt = { kind = "spell", id = 133 } } },
+            -- (cible choisie, action selon le contexte, cycle)
+            R5 = { combos = {
+                PAD1 = { kind = "spell", id = 133, unit = "player" },
+                PAD2 = { kind = "spell", id = 133, unit = "/run evil" },
+                PAD3 = { kind = "cond", cond = "combat", a = { kind = "item", id = 6948, unit = "focus" },
+                    b = { kind = "macrotext", text = "/dance" } },
+                PAD4 = { kind = "cond", cond = "] /run evil [", a = { kind = "spell", id = 133 } },
+                PADDUP = { kind = "seq", reset = "target", steps = { { kind = "spell", id = 133, unit = "player" },
+                    { kind = "seq", steps = {} }, { kind = "item", id = 6948 }, { kind = "mount", id = 5 } } },
+                PADDDOWN = { kind = "seq", reset = "evil", steps = { { kind = "spell", id = 133 } } },
+                PADDLEFT = { kind = "seq", reset = 7, steps = { { kind = "spell", id = 133 }, { kind = "spell", id = 116 } } },
+            } },
+            ZZ = { combos = {} } },
         hud = { scale = 99, strip = "side", pos = { "EVIL", "TOP", 1, 2 },
             order = { "bar:topBar", "evil", "mod:L5", "mod:L5", "bar:nope", "mod:ZZ", 7, "mod:L5R5" } },
         pads = { LB = "target_friend", RB = "evil", LT = 5, XX = "modifier" },
@@ -480,6 +529,20 @@ function S.SelfTest()
         Check(combos.PADDUP and combos.PADDUP.cat == "heal" and combos.PADDDOWN == nil, "smart consumables")
         -- (l'appui long d'une version de test, retiré : ignoré)
         Check(d.actions.L5.holds == nil, "old holds dropped")
+        -- (cible choisie : une de la liste, sinon retirée)
+        local more = d.actions.R5 and d.actions.R5.combos or {}
+        Check(more.PAD1 and more.PAD1.unit == "player", "unit kept")
+        Check(more.PAD2 and more.PAD2.unit == nil, "forged unit dropped")
+        -- (action selon le contexte : branches simples seulement, condition connue)
+        Check(more.PAD3 and more.PAD3.cond == "combat" and more.PAD3.a and more.PAD3.a.unit == "focus"
+            and more.PAD3.b == nil, "context action")
+        Check(more.PAD4 == nil, "forged condition dropped")
+        -- (cycle : sorts et objets, sans cible, 2 étapes au moins, remise connue)
+        local seq = more.PADDUP
+        Check(seq and #seq.steps == 2 and seq.reset == "target" and seq.steps[1].unit == nil
+            and seq.steps[2].kind == "item", "cycle")
+        Check(more.PADDDOWN == nil, "short cycle dropped")
+        Check(more.PADDLEFT and more.PADDLEFT.reset == nil, "forged cycle reset dropped")
         Check(d.hud.scale == 2 and d.hud.strip == nil and d.hud.pos == nil, "forged hud")
         Check(Serialize(d.hud.order) == Serialize({ "bar:topBar", "mod:L5", "mod:L5R5" }), "forged hud order")
     end

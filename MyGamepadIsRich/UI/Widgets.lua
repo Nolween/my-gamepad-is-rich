@@ -55,6 +55,76 @@ function UI.Tip(frame, title, text)
     frame:HookScript("OnLeave", function() GameTooltip:Hide() end)
 end
 
+-- Une barre avec un curseur à glisser (aussi à la molette), et sa valeur à
+-- droite. onChange(valeur) pendant qu'on glisse, valeur arrondie au pas.
+-- format(valeur) -> le texte affiché. s:SetValueQuiet(v) place le curseur
+-- sans appeler onChange (rafraîchissement de la fenêtre).
+-- Fait main (cadre Slider du jeu) : les modèles de barre du jeu changent
+-- d'une version à l'autre.
+function UI.Slider(parent, width, minValue, maxValue, step, onChange, format)
+    local s = CreateFrame("Slider", nil, parent)
+    s:SetOrientation("HORIZONTAL")
+    s:SetSize(width, 20)
+    s:SetMinMaxValues(minValue, maxValue)
+    s:SetValueStep(step)
+    if s.SetObeyStepOnDrag then s:SetObeyStepOnDrag(true) end
+    -- (la barre se saisit un peu au-dessus et au-dessous du trait)
+    s:EnableMouse(true)
+    s:SetHitRectInsets(0, 0, -4, -4)
+
+    -- Le trait : un bord, un fond sombre, la partie remplie en doré
+    local edge = s:CreateTexture(nil, "BACKGROUND", nil, 0)
+    edge:SetPoint("LEFT", 0, 0)
+    edge:SetPoint("RIGHT", 0, 0)
+    edge:SetHeight(8)
+    edge:SetColorTexture(0.45, 0.42, 0.35, 0.9)
+    local track = s:CreateTexture(nil, "BACKGROUND", nil, 1)
+    track:SetPoint("TOPLEFT", edge, "TOPLEFT", 1, -1)
+    track:SetPoint("BOTTOMRIGHT", edge, "BOTTOMRIGHT", -1, 1)
+    track:SetColorTexture(0, 0, 0, 0.8)
+
+    s:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+    local thumb = s:GetThumbTexture()
+    if thumb then
+        thumb:SetSize(28, 28)
+        local fill = s:CreateTexture(nil, "BORDER")
+        fill:SetPoint("TOPLEFT", track, "TOPLEFT")
+        fill:SetPoint("BOTTOM", track, "BOTTOM")
+        fill:SetPoint("RIGHT", thumb, "CENTER")
+        fill:SetColorTexture(1, 0.78, 0.2, 0.55)
+    end
+
+    s.valueText = UI.Text(s, "GameFontHighlight")
+    s.valueText:SetPoint("LEFT", s, "RIGHT", 12, 0)
+
+    local function Round(v)
+        return minValue + math.floor((v - minValue) / step + 0.5) * step
+    end
+    local function Show(v)
+        s.valueText:SetText(format and format(v) or tostring(v))
+    end
+
+    s:SetScript("OnValueChanged", function(self, value)
+        value = Round(value)
+        Show(value)
+        if self.quiet then return end
+        if onChange then onChange(value) end
+    end)
+    s:EnableMouseWheel(true)
+    s:SetScript("OnMouseWheel", function(self, delta)
+        local lo, hi = self:GetMinMaxValues()
+        self:SetValue(math.max(lo, math.min(hi, Round(self:GetValue()) + delta * step)))
+    end)
+
+    function s:SetValueQuiet(v)
+        self.quiet = true
+        self:SetValue(v)
+        self.quiet = false
+        Show(Round(v))
+    end
+    return s
+end
+
 -- Un titre de section : texte doré, et un trait jusqu'au bord droit (right :
 -- décalage depuis le bord droit du parent)
 function UI.Section(parent, text, x, y, right)
@@ -122,7 +192,7 @@ end
 -- Menu contextuel
 ---------------------------------------------------------------------------
 local menu, blocker
-local MENU_ROWS = 10
+local MENU_ROWS = 14
 
 local function HideMenu()
     if menu then menu:Hide() end

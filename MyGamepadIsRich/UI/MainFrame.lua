@@ -1019,9 +1019,15 @@ local function BuildButtons(page)
     pairsHint:SetWidth(LIST_WIDTH - 12)
     pairsHint:SetJustifyH("LEFT")
 
+    -- (ce qui empêche un bouton ou une case de marcher, Check.lua)
+    local check = UI.Button(page, L.CHECK_BUTTON, 210, 22)
+    check:SetPoint("BOTTOMRIGHT", -14, 4)
+    check:SetScript("OnClick", function() ns.Check.Show() end)
+    UI.Tip(check, L.CHECK_BUTTON, L.TIP_CHECK)
+
     buttonsWarning = UI.Text(page, "GameFontNormalSmall")
     buttonsWarning:SetPoint("BOTTOMLEFT", 14, 10)
-    buttonsWarning:SetPoint("RIGHT", -14, 0)
+    buttonsWarning:SetPoint("RIGHT", check, "LEFT", -10, 0)
     buttonsWarning:SetJustifyH("LEFT")
 end
 
@@ -1147,22 +1153,23 @@ local function BuildHudPage(page)
     -- (la colonne de gauche s'arrête avant l'ordre des miniatures)
     local leftRight = WIDTH - 16 - (ORDER_X - 20)
 
-    -- (une valeur en % avec - et +)
-    local function Stepper(y, label, get, set, tip)
+    -- (une valeur en %, réglée avec une barre à curseur ; les barres des
+    -- deux sections commencent à la même place, après le plus long libellé)
+    local sliderX = 0
+    for _, label in ipairs({ L.HUD_STRIP_SIZE, L.HUD_SIZE, L.HUD_IDLE_ALPHA }) do
+        local probe = UI.Text(page, "GameFontNormal", label)
+        sliderX = math.max(sliderX, probe:GetStringWidth())
+        probe:Hide()
+    end
+    sliderX = 20 + sliderX + 18
+    local function Percent(v) return ("%d %%"):format(math.floor(v * 100 + 0.5)) end
+    local function SliderRow(y, label, set, tip, minValue, maxValue)
         local text = UI.Text(page, "GameFontNormal", label)
         text:SetPoint("TOPLEFT", 20, y)
-        local minus = UI.Button(page, "-", 28, 22)
-        minus:SetPoint("LEFT", text, "RIGHT", 12, 0)
-        local value = UI.Text(page, "GameFontHighlightLarge")
-        value:SetPoint("LEFT", minus, "RIGHT", 10, 0)
-        value:SetWidth(60)
-        local plus = UI.Button(page, "+", 28, 22)
-        plus:SetPoint("LEFT", value, "RIGHT", 10, 0)
-        minus:SetScript("OnClick", function() set(get() - 0.05) RefreshAll() end)
-        plus:SetScript("OnClick", function() set(get() + 0.05) RefreshAll() end)
-        UI.Tip(minus, label, tip)
-        UI.Tip(plus, label, tip)
-        return value
+        local slider = UI.Slider(page, 200, minValue, maxValue, 0.05, set, Percent)
+        slider:SetPoint("LEFT", page, "TOPLEFT", sliderX, y - 7)
+        UI.Tip(slider, label, tip)
+        return slider
     end
 
     -- Les miniatures des couches : disposition, taille, lignes
@@ -1179,7 +1186,7 @@ local function BuildHudPage(page)
     hud.hidden:SetPoint("LEFT", hud.vertical.text, "RIGHT", 20, 0)
     UI.Tip(hud.hidden, L.HUD_HIDE_STRIP, L.TIP_HUD_HIDDEN)
 
-    hud.stripSize = Stepper(-118, L.HUD_STRIP_SIZE, ns.Hud.StripScale, ns.Hud.SetStripScale, L.TIP_HUD_STRIP_SIZE)
+    hud.stripSize = SliderRow(-118, L.HUD_STRIP_SIZE, ns.Hud.SetStripScale, L.TIP_HUD_STRIP_SIZE, 0.5, 1.5)
     local rowsLabel = UI.Text(page, "GameFontNormal", L.HUD_STRIP_ROWS)
     rowsLabel:SetPoint("TOPLEFT", 20, -154)
     hud.rowsLabel = rowsLabel
@@ -1199,11 +1206,12 @@ local function BuildHudPage(page)
         x = x + 34 + cb.text:GetStringWidth() + 20
     end
 
-    -- Le HUD : taille, position
+    -- Le HUD : taille, opacité au repos, position
     UI.Section(page, L.HUD_SECTION_PLACE, 16, -200, leftRight)
-    hud.size = Stepper(-234, L.HUD_SIZE, ns.Hud.Scale, ns.Hud.SetScale, L.TIP_HUD_SIZE)
+    hud.size = SliderRow(-234, L.HUD_SIZE, ns.Hud.SetScale, L.TIP_HUD_SIZE, 0.5, 2)
+    hud.idle = SliderRow(-268, L.HUD_IDLE_ALPHA, ns.Hud.SetIdleAlpha, L.TIP_HUD_IDLE_ALPHA, 0, 1)
     hud.move = UI.Button(page, L.HUD_MOVE, 220, 26)
-    hud.move:SetPoint("TOPLEFT", 20, -270)
+    hud.move:SetPoint("TOPLEFT", 20, -302)
     hud.move:SetScript("OnClick", function()
         ns.Hud.SetUnlocked(not ns.Hud.IsUnlocked())
         RefreshAll()
@@ -1218,6 +1226,13 @@ local function BuildHudPage(page)
     hud.moveHint:SetPoint("RIGHT", page, "LEFT", ORDER_X - 20, 0)
     hud.moveHint:SetJustifyH("LEFT")
     hud.moveHint:SetTextColor(0.5, 0.85, 1)
+
+    -- L'aide-mémoire : toutes les couches en grand (aussi /mgir carte, et une
+    -- action de base à poser sur une case)
+    local sheet = UI.Button(page, L.SHEET_BUTTON, 260, 26)
+    sheet:SetPoint("BOTTOMLEFT", 20, 40)
+    sheet:SetScript("OnClick", function() ns.Hud.ToggleSheet() end)
+    UI.Tip(sheet, L.SHEET_BUTTON, L.TIP_SHEET)
 
     local tip = UI.Text(page, "GameFontDisableSmall", L.HUD_TILE_HINT .. "  -  " .. L.HUD_CARD_HINT)
     tip:SetPoint("BOTTOMLEFT", 16, 12)
@@ -1322,8 +1337,10 @@ local function RefreshHudPage()
         cb:SetAlpha(hidden and 0.4 or 1)
     end
     hud.rowsLabel:SetText(vertical and L.HUD_STRIP_COLS or L.HUD_STRIP_ROWS)
-    hud.size:SetText(("%d %%"):format(math.floor(ns.Hud.Scale() * 100 + 0.5)))
-    hud.stripSize:SetText(("%d %%"):format(math.floor(ns.Hud.StripScale() * 100 + 0.5)))
+    -- (sans rappeler le réglage : seulement le curseur et sa valeur)
+    hud.idle:SetValueQuiet(ns.Hud.IdleAlpha())
+    hud.size:SetValueQuiet(ns.Hud.Scale())
+    hud.stripSize:SetValueQuiet(ns.Hud.StripScale())
     local rows = ns.Hud.StripRows()
     for n, cb in pairs(hud.rows) do cb:SetChecked(n == rows) end
     local unlocked = ns.Hud.IsUnlocked()
@@ -1385,11 +1402,16 @@ local helpSection = 1
 local function BuildHelp(page)
     local intro = UI.Text(page, "GameFontHighlight", L.HELP_INTRO)
     intro:SetPoint("TOPLEFT", 12, -10)
-    intro:SetPoint("RIGHT", -250, 0)
+    intro:SetPoint("RIGHT", -440, 0)
     intro:SetJustifyH("LEFT")
-    local replay = UI.Button(page, L.HELP_REPLAY, 220, 24)
+    local replay = UI.Button(page, L.HELP_REPLAY, 200, 24)
     replay:SetPoint("TOPRIGHT", -12, -6)
     replay:SetScript("OnClick", function() ns.Tutorial.Open(1) end)
+    -- (un bouton ou une case qui ne marche pas : la vérification le dit)
+    local check = UI.Button(page, L.CHECK_BUTTON, 210, 24)
+    check:SetPoint("RIGHT", replay, "LEFT", -6, 0)
+    check:SetScript("OnClick", function() ns.Check.Show() end)
+    UI.Tip(check, L.CHECK_BUTTON, L.TIP_CHECK)
 
     local scroll = CreateFrame("ScrollFrame", nil, page, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", HELP_LIST_W + 24, -44)
@@ -1628,6 +1650,19 @@ function UI.Show(tab)
     end
     frame:Show()
     SelectTab(tab or currentTab)
+end
+
+-- Ouvre l'onglet Couches sur la couche d'un bouton, d'une paire ou de
+-- « Seul » (« BASE ») : pour « Y aller » de la vérification (Check.lua)
+function UI.ShowLayer(id)
+    if id == "BASE" then
+        selected = { bar = "topBar" }
+    elseif ns.IsModLayer(id) then
+        selected = { mod = id }
+    else
+        selected = { simple = id }
+    end
+    UI.Show("actions")
 end
 
 -- (pour l'onglet Profils et ses fenêtres)

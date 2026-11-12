@@ -1,5 +1,25 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.3.0
+
+### Couches et actions
+- **Lancer sur…** (menu d'une case, onglet Couches et HUD) : un sort ou un objet part sur toi, l'allié ciblé sinon toi, le focus, la cible de ta cible, ton familier ou un membre du groupe (1 à 4), sans écrire de macro. La case montre un « @ », l'info-bulle dit la cible, et la portée affichée est celle de cette cible.
+- **Action selon le contexte…** : une case, deux actions (sorts, objets, montures, jouets) et une condition : en combat, sur une monture, en furtivité, cible ennemie, cible alliée, une cible, un familier, en groupe, en nageant, à l'intérieur, forme ou posture 1 à 6. La première part si la condition est vraie, la seconde sinon ; une des deux peut rester vide. Le HUD montre l'icône, la recharge et l'état de celle qui partirait. La case montre un « / ».
+- **Action cyclique…** : 2 à 4 sorts ou objets sur une case, le suivant à chaque appui (`/castsequence`), avec retour au premier au choix (changement de cible, fin du combat, après 5, 10 ou 30 s). Le jeu ne passe au suivant que si le sort est parti. La case montre l'étape (« 2/3 »).
+- **Nouvelles actions de base** : allié suivant du groupe (toi, puis chaque membre, absents sautés), cibler le membre du groupe 1 à 4, cibler ton familier, monter / descendre de monture, aide-mémoire des couches.
+- Choisir l'allié le plus blessé n'est pas possible : le code protégé ne lit pas la vie des unités, et le reste du code ne cible pas en combat.
+- Les nouveaux rangs de sorts, les sorts inconnus et la recherche regardent aussi les actions composées. « Retirer les sorts inconnus » ne retire que le sort concerné.
+- Le menu d'une case est le même dans l'onglet Couches et sur le HUD.
+
+### Vérifier ma configuration
+- Bouton dans les onglets Boutons et Aide, `/mgir check` : la liste de ce qui empêche un bouton ou une case de marcher (bouton sans touche, deux boutons sur la même touche, plus de ciblage allié / ennemi, paire incomplète, paire LB + LT / RB + RT, macro du jeu ou ensemble d'équipement supprimé, action composée vide, objet absent, sorts inconnus, rangs inférieurs, bouton sans action, commande WoW impossible, appui bref non mesurable, réglages en attente du combat). Chaque ligne propose de corriger (avec `/mgir undo` quand une action est retirée) ou d'y aller.
+
+### HUD
+- **Opacité au repos** réglable (onglet HUD), de 0 à 100 % ; à 0 %, le HUD est caché hors combat et revient en combat, quand un bouton est tenu ou au survol.
+- **Aide-mémoire des couches** : toutes les couches en grand au milieu de l'écran, la couche utilisée en doré. Bouton de l'onglet HUD, `/mgir carte` (ou `map`), ou action de base à poser sur une case ; marche en combat, Échap le ferme.
+- Taille des miniatures, taille du HUD et opacité au repos se règlent avec une **barre à curseur** (glisser, ou molette de la souris) au lieu des boutons - et +.
+- Ces réglages voyagent avec l'export du HUD.
+
 ## 1.2.0
 
 ### Fenêtre de configuration

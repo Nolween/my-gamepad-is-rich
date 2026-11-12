@@ -92,13 +92,17 @@ local function AddonSpots(news, out)
             if type(a) == "table" then
                 for _, list in ipairs({ a.combos, a.layers }) do
                     if type(list) == "table" then
-                        for key, action in pairs(list) do
-                            -- (un rang choisi exprès garde son rang)
-                            if type(action) == "table" and action.kind == "spell" and not action.rank
-                                and type(action.id) == "number" then
-                                local new = NewRankFor(action.id, news)
-                                if new then out[#out + 1] = { list = list, key = key, old = action.id, new = new } end
-                            end
+                        for key in pairs(list) do
+                            -- (les branches d'une action selon le contexte et les
+                            -- étapes d'un cycle comptent aussi : chaque sort est
+                            -- remplacé là où il est)
+                            ns.Actions.EachLeaf(list, key, function(where, at, action)
+                                -- (un rang choisi exprès garde son rang)
+                                if action.kind == "spell" and not action.rank and type(action.id) == "number" then
+                                    local new = NewRankFor(action.id, news)
+                                    if new then out[#out + 1] = { list = where, key = at, old = action.id, new = new } end
+                                end
+                            end)
                         end
                     end
                 end
@@ -279,13 +283,7 @@ end
 -- /mgir rangs : tous les sorts du grimoire, à leur rang le plus haut (le
 -- grimoire range les rangs du plus bas au plus haut ; un rang inférieur y
 -- garde son rang dans l'action)
-function U.CheckAll()
-    if not (ns.db and ns.char) then return end
-    if InCombatLockdown() then
-        ns.Print(L.HUD_COMBAT)
-        return
-    end
-    local news = asking or {}
+local function BookNews(news)
     for _, e in ipairs(ns.Actions.SpellbookEntries()) do
         local action = e.action
         if action and action.kind == "spell" and not action.rank and type(action.id) == "number" then
@@ -293,8 +291,25 @@ function U.CheckAll()
             if name and not Passive(action.id) and BookLowRank(action.id) ~= true then news[name] = action.id end
         end
     end
-    asking = news
+    return news
+end
+
+function U.CheckAll()
+    if not (ns.db and ns.char) then return end
+    if InCombatLockdown() then
+        ns.Print(L.HUD_COMBAT)
+        return
+    end
+    asking = BookNews(asking or {})
     Ask(true)
+end
+
+-- Le nombre de rangs inférieurs posés (actions de l'addon et barres du jeu),
+-- sans rien demander : pour « Vérifier ma configuration ». 0 en combat.
+function U.LowerCount()
+    if not (ns.db and ns.char) or InCombatLockdown() then return 0 end
+    local addon, game = Spots(BookNews({}))
+    return #addon + #game
 end
 
 -- (plusieurs sorts achetés d'affilée chez le maître : une seule question)
