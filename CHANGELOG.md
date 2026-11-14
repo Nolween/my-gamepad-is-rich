@@ -1,5 +1,14 @@
 # Journal des versions — My Gamepad Is Rich
 
+## 1.4.0
+
+### HUD
+- **HUD en grille** : une nouvelle disposition, une ligne par couche, les boutons toujours dans le même ordre (la croix puis X, Y, B, A, les deux dans l'ordre gauche, haut, droite, bas, puis les boutons simples), avec leur pastille en grand en tête de colonne, sur un fond de la couleur du bouton. Au-dessus et centré, un **rappel** montre la couche utilisée en grand, chaque case avec son bouton (désactivable dans l'onglet HUD, et séparable de la grille comme les miniatures : cadenas, puis glisser) ; dans la grille, la ligne utilisée passe en doré. Chaque case se modifie directement (clic : menu ou dépôt du curseur, clic droit : vider) ; un clic sur le nom d'une ligne l'agrandit (bleu) pour viser plus facilement, glisser ce nom sur une autre ligne change l'ordre. Les actions de classe (LB + LT, RB + RT) sont au-dessus de la grille.
+- **Taille de la grille** (50 à 150 %), **colonnes de couches** (1 à 3) et **rappel de la couche utilisée** dans l'onglet HUD, qui commence par le choix **Affichage du HUD** : grille ou manette. La disposition manette reste disponible, avec tous ses réglages.
+- Une nouvelle installation commence en grille ; un HUD qui existait déjà garde la disposition manette. Le **tutoriel** fait choisir la disposition à l'étape HUD, et un **petit bouton du HUD** passe de l'une à l'autre.
+- La disposition, la taille de la grille et ses colonnes font partie des réglages du HUD (export / import compris).
+- **Couche bloquée en rouge** : quand Forever reste sur sa barre LT / RT (un relâchement lui a échappé), le HUD montre cette couche avec un bord rouge, en grand comme en miniature, et affiche au-dessus le bouton à appuyer une fois pour la débloquer. Le HUD reste visible tant qu'elle est bloquée, même à une opacité au repos de 0 %.
+
 ## 1.3.0
 
 ### Couches et actions

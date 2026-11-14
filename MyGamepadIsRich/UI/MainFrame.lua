@@ -1156,7 +1156,7 @@ local function BuildHudPage(page)
     -- (une valeur en %, réglée avec une barre à curseur ; les barres des
     -- deux sections commencent à la même place, après le plus long libellé)
     local sliderX = 0
-    for _, label in ipairs({ L.HUD_STRIP_SIZE, L.HUD_SIZE, L.HUD_IDLE_ALPHA }) do
+    for _, label in ipairs({ L.HUD_STRIP_SIZE, L.HUD_SIZE, L.HUD_IDLE_ALPHA, L.HUD_GRID_SIZE }) do
         local probe = UI.Text(page, "GameFontNormal", label)
         sliderX = math.max(sliderX, probe:GetStringWidth())
         probe:Hide()
@@ -1172,10 +1172,56 @@ local function BuildHudPage(page)
         return slider
     end
 
-    -- Les miniatures des couches : disposition, taille, lignes
-    UI.Section(page, L.HUD_SECTION_STRIP, 16, -48, leftRight)
+    -- L'affichage du HUD : en grille (une ligne par couche) ou comme la
+    -- manette (la croix et A/B/X/Y)
+    local styleLabel = UI.Text(page, "GameFontNormal", L.HUD_STYLE_LABEL)
+    styleLabel:SetPoint("TOPLEFT", 20, -40)
+    hud.styleGrid = Check(page, L.HUD_STYLE_GRID, function() ns.Hud.SetLayout("grid") end)
+    hud.styleGrid:SetPoint("LEFT", styleLabel, "LEFT", styleLabel:GetStringWidth() + 14, 0)
+    UI.Tip(hud.styleGrid, L.HUD_STYLE_GRID, L.TIP_HUD_STYLE_GRID)
+    hud.stylePad = Check(page, L.HUD_STYLE_PAD, function() ns.Hud.SetLayout("pad") end)
+    hud.stylePad:SetPoint("LEFT", hud.styleGrid.text, "RIGHT", 20, 0)
+    UI.Tip(hud.stylePad, L.HUD_STYLE_PAD, L.TIP_HUD_STYLE_PAD)
+
+    -- La grille : taille, colonnes de couches (à la place des miniatures)
+    hud.grid = CreateFrame("Frame", nil, page)
+    hud.grid:SetAllPoints()
+    UI.Section(hud.grid, L.HUD_SECTION_GRID, 16, -70, leftRight)
+    do
+        local text = UI.Text(hud.grid, "GameFontNormal", L.HUD_GRID_SIZE)
+        text:SetPoint("TOPLEFT", 20, -104)
+        hud.gridSize = UI.Slider(hud.grid, 200, 0.5, 1.5, 0.05, ns.Hud.SetGridScale, Percent)
+        hud.gridSize:SetPoint("LEFT", page, "TOPLEFT", sliderX, -111)
+        UI.Tip(hud.gridSize, L.HUD_GRID_SIZE, L.TIP_HUD_GRID_SIZE)
+        local colsLabel = UI.Text(hud.grid, "GameFontNormal", L.HUD_GRID_COLS)
+        colsLabel:SetPoint("TOPLEFT", 20, -140)
+        hud.gridCols = {}
+        local cx = colsLabel:GetStringWidth() + 14
+        for n = 1, 3 do
+            local cb = Check(hud.grid, tostring(n), function() ns.Hud.SetGridCols(n) end)
+            cb:SetPoint("LEFT", colsLabel, "LEFT", cx, 0)
+            UI.Tip(cb, L.HUD_GRID_COLS, L.TIP_HUD_GRID_COLS)
+            hud.gridCols[n] = cb
+            cx = cx + 34 + cb.text:GetStringWidth() + 20
+        end
+        hud.gridRecall = Check(hud.grid, L.HUD_GRID_RECALL, function(on) ns.Hud.SetGridRecall(on) end)
+        hud.gridRecall:SetPoint("TOPLEFT", 16, -166)
+        UI.Tip(hud.gridRecall, L.HUD_GRID_RECALL, L.TIP_HUD_GRID_RECALL)
+        -- (le rappel séparé de la grille, comme les miniatures)
+        hud.gridRecallDetach = Check(hud.grid, L.HUD_GRID_RECALL_DETACH,
+            function(on) ns.Hud.SetGridRecallDetached(on) end)
+        hud.gridRecallDetach:SetPoint("TOPLEFT", 40, -192)
+        UI.Tip(hud.gridRecallDetach, L.HUD_GRID_RECALL_DETACH, L.TIP_HUD_GRID_RECALL_DETACH)
+    end
+
+    -- Les miniatures des couches : disposition, taille, lignes (disposition
+    -- manette seulement)
+    hud.strip = CreateFrame("Frame", nil, page)
+    hud.strip:SetAllPoints()
+    page = hud.strip
+    UI.Section(page, L.HUD_SECTION_STRIP, 16, -70, leftRight)
     local layoutLabel = UI.Text(page, "GameFontNormal", L.HUD_LAYOUT_LABEL)
-    layoutLabel:SetPoint("TOPLEFT", 20, -82)
+    layoutLabel:SetPoint("TOPLEFT", 20, -104)
     hud.detached = Check(page, L.HUD_DETACH, function(on) ns.Hud.SetDetached(on) end)
     hud.detached:SetPoint("LEFT", layoutLabel, "LEFT", layoutLabel:GetStringWidth() + 14, 0)
     UI.Tip(hud.detached, L.HUD_DETACH, L.TIP_HUD_DETACH)
@@ -1186,9 +1232,9 @@ local function BuildHudPage(page)
     hud.hidden:SetPoint("LEFT", hud.vertical.text, "RIGHT", 20, 0)
     UI.Tip(hud.hidden, L.HUD_HIDE_STRIP, L.TIP_HUD_HIDDEN)
 
-    hud.stripSize = SliderRow(-118, L.HUD_STRIP_SIZE, ns.Hud.SetStripScale, L.TIP_HUD_STRIP_SIZE, 0.5, 1.5)
+    hud.stripSize = SliderRow(-140, L.HUD_STRIP_SIZE, ns.Hud.SetStripScale, L.TIP_HUD_STRIP_SIZE, 0.5, 1.5)
     local rowsLabel = UI.Text(page, "GameFontNormal", L.HUD_STRIP_ROWS)
-    rowsLabel:SetPoint("TOPLEFT", 20, -154)
+    rowsLabel:SetPoint("TOPLEFT", 20, -176)
     hud.rowsLabel = rowsLabel
     hud.rows = {}
     local x = rowsLabel:GetStringWidth() + 14
@@ -1205,13 +1251,14 @@ local function BuildHudPage(page)
         hud.rows[n] = cb
         x = x + 34 + cb.text:GetStringWidth() + 20
     end
+    page = hud.strip:GetParent()
 
     -- Le HUD : taille, opacité au repos, position
-    UI.Section(page, L.HUD_SECTION_PLACE, 16, -200, leftRight)
-    hud.size = SliderRow(-234, L.HUD_SIZE, ns.Hud.SetScale, L.TIP_HUD_SIZE, 0.5, 2)
-    hud.idle = SliderRow(-268, L.HUD_IDLE_ALPHA, ns.Hud.SetIdleAlpha, L.TIP_HUD_IDLE_ALPHA, 0, 1)
+    UI.Section(page, L.HUD_SECTION_PLACE, 16, -236, leftRight)
+    hud.size = SliderRow(-270, L.HUD_SIZE, ns.Hud.SetScale, L.TIP_HUD_SIZE, 0.5, 2)
+    hud.idle = SliderRow(-304, L.HUD_IDLE_ALPHA, ns.Hud.SetIdleAlpha, L.TIP_HUD_IDLE_ALPHA, 0, 1)
     hud.move = UI.Button(page, L.HUD_MOVE, 220, 26)
-    hud.move:SetPoint("TOPLEFT", 20, -302)
+    hud.move:SetPoint("TOPLEFT", 20, -338)
     hud.move:SetScript("OnClick", function()
         ns.Hud.SetUnlocked(not ns.Hud.IsUnlocked())
         RefreshAll()
@@ -1326,6 +1373,21 @@ local function RefreshOrder()
 end
 
 local function RefreshHudPage()
+    -- (en grille : ses réglages à la place de ceux des miniatures)
+    local grid = ns.Hud.Layout() == "grid"
+    hud.styleGrid:SetChecked(grid)
+    hud.stylePad:SetChecked(not grid)
+    hud.grid:SetShown(grid)
+    hud.strip:SetShown(not grid)
+    hud.gridSize:SetValueQuiet(ns.Hud.GridScale())
+    local gridCols = ns.Hud.GridCols()
+    for n, cb in pairs(hud.gridCols) do cb:SetChecked(n == gridCols) end
+    local recallOn = ns.Hud.GridRecall()
+    hud.gridRecall:SetChecked(recallOn)
+    -- (sans rappel : rien à séparer)
+    hud.gridRecallDetach:SetChecked(ns.Hud.GridRecallDetached())
+    hud.gridRecallDetach:SetEnabled(recallOn)
+    hud.gridRecallDetach:SetAlpha(recallOn and 1 or 0.4)
     local detached, vertical = ns.Hud.Detached(), ns.Hud.Vertical()
     hud.detached:SetChecked(detached)
     hud.vertical:SetChecked(vertical)

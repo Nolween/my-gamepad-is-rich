@@ -174,7 +174,7 @@ end
 -- relâchement) alors que ces boutons sont à l'addon et que rien n'est tenu :
 -- on lui rend ces boutons pour un appui, ce qui le remet sur « Seul »
 local STUCK_PADS = { leftBar = { "LT" }, rightBar = { "RT" }, bottomBar = { "LT", "RT" } }
-local stuckSince, givenBack, warned
+local stuckSince, givenBack, givenBar, warned
 
 local function ForeverBar()
     local pu = ns.Bar and ns.Bar.PageUnit()
@@ -190,7 +190,13 @@ function F.TakeBack()
     if not givenBack or InCombatLockdown() then return end
     if ns.Diag then ns.Diag.Log("reprise " .. table.concat(givenBack, "+")) end
     ns.Modifier.GiveBack(givenBack, false)
-    givenBack, warned, stuckSince = nil, nil, nil
+    givenBack, givenBar, warned, stuckSince = nil, nil, nil, nil
+end
+
+-- La barre de Forever restée bloquée et ses boutons rendus ({ "LT" }...),
+-- en attente de l'appui qui la débloque (le HUD la montre en rouge), ou nil
+function F.Stuck()
+    if givenBack then return givenBar, givenBack end
 end
 
 local function CheckStuck(down, inGame)
@@ -214,7 +220,7 @@ local function CheckStuck(down, inGame)
     stuckSince = stuckSince or GetTime()
     if GetTime() - stuckSince < 0.5 then return end
     stuckSince = nil
-    givenBack = pads
+    givenBack, givenBar = pads, bar
     if ns.Diag then ns.Diag.Log("bloqué sur " .. bar .. " : rendu à Forever " .. table.concat(pads, "+")) end
     ns.Modifier.GiveBack(pads, true)
     if not warned then

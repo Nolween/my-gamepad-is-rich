@@ -159,7 +159,7 @@ ns.AddLocale("deDE", {
     LAYER_DESC_BASE = "A, B, X, Y und das Steuerkreuz, ohne etwas zu halten. Alles ist möglich: Was die Leiste des Spiels nicht halten kann (selbst geschriebenes Makro, WoW-Befehl), übernimmt das Addon. A, B, X und Y behalten die Aktionen des Spiels (Springen, Interagieren...), bis du eigene festlegst.",
     LAYER_DESC_HOLD = "Halte %s und drücke dann A, B, X, Y oder das Steuerkreuz.",
     PAIRS_TITLE = "Paare (zwei gemeinsam gehaltene Modifikatoren)",
-    HUD_INTRO = "Das HUD ersetzt die Controller-Leiste des Spiels: die genutzte Ebene groß, alle Ebenen als Miniatur.",
+    HUD_INTRO = "Das HUD ersetzt die Controller-Leiste des Spiels: als Raster (eine Zeile pro Ebene) oder wie der Controller (die genutzte Ebene groß, alle Ebenen als Miniatur).",
     HUD_SIZE = "Größe:",
     HUD_MOVE = "HUD entsperren",
     HUD_MOVE_DONE = "HUD sperren",
@@ -175,9 +175,9 @@ ns.AddLocale("deDE", {
 ns.AddLocale("deDE", {
     HUD_STRIP_SIZE = "Größe der Miniaturen:",
     HUD_STRIP_ROWS = "Zeilen der Miniaturen:",
-    HUD_ORDER = "Reihenfolge der Miniaturen:",
+    HUD_ORDER = "Reihenfolge der Ebenen:",
     HUD_ORDER_RESET = "Standardreihenfolge",
-    HUD_ORDER_HINT = "Pfeile: eine Ebene verschieben. Auf dem HUD kannst du auch eine Miniatur auf eine andere ziehen.",
+    HUD_ORDER_HINT = "Pfeile: eine Ebene verschieben. Auf dem HUD kannst du auch eine Miniatur (oder den Namen einer Rasterzeile) auf eine andere ziehen.",
     HUD_CARD_DRAG = "Ziehen: verschieben (auf eine andere Miniatur)",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("deDE", {
     TUTO_PAIRS_TEXT = "Halte zwei Tasten zusammen (Modifikatoren oder Zielerfassung): noch eine Ebene mit 8 Aktionen. Zwei beliebige Tasten können ein Paar bilden: L5 + R5, LT + RT, LB + LT... Hake die gewünschten an (du kannst sie später im Reiter |cffffd100Tasten|r ändern). Standard: die Paare links + rechts.",
     TUTO_ACTIONS_TITLE = "Deine Aktionen platzieren",
     TUTO_ACTIONS_TEXT = "Im Reiter |cffffd100Ebenen|r: links alle deine Ebenen (Allein, LT, RT, deine Modifikatoren und Paare); rechts die gewählte Ebene, angeordnet wie der Controller.\n\n- Ziehe einen Zauber aus deinem Zauberbuch, einen Gegenstand aus deinen Taschen, ein Makro, ein Reittier oder ein Spielzeug auf ein Feld.\n- Oder klicke auf ein Feld: einen Zauber oder Gegenstand wählen, ein Makro schreiben, einen WoW-Befehl (Automatisch laufen...) oder eine Grundaktion (Springen, Interagieren...) wählen. Rechtsklick: leeren.\n- Die Zeile unter dem Steuerkreuz: die Felder deiner einfachen Tasten in dieser Ebene.\n\nDu kannst auch auf eine Ebenen-Miniatur im HUD klicken, um sie direkt zu bearbeiten.\n\nAktionen werden pro Charakter gespeichert; Typen und Tasten im Profil, für den ganzen Account. Alles funktioniert im Kampf; nur Änderungen im Kampf warten auf sein Ende.\n\n|cffffd100Praktisch|r:\n- Das Feld oben in der Liste sucht eine Aktion in all deinen Ebenen.\n- |cffffd100Intelligentes Verbrauchsgut|r (Feldmenü): dein bester Trank, Essen, Getränk oder Verband, aktualisiert sich selbst.\n- Ein grauer, roter Zauber: dieser Charakter kennt ihn nicht. |cffffd100Vorlagen und Spezialisierungen...|r kann sie entfernen.\n- Ein neuer Rang beim Klassenlehrer gelernt: das Addon bietet an, ihn überall statt des alten einzusetzen.",
-    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD:\n\n- |cffffd100Groß|r: die Ebene, die du gerade nutzt, Steuerkreuz links, A/B/X/Y rechts. Halte eine Taste und sie wechselt.\n- |cffffd100Miniaturen|r: alle deine Ebenen, in der Mitte die Felder deiner einfachen Tasten; die gehaltene leuchtet auf. Klicke auf eine, um sie zu bearbeiten.\n- |cffffd100In der Mitte|r: deine einfachen Tasten mit der Aktion, die sie auslösen.\n\nEinstellungen (Größe, Position, Miniaturen): Reiter |cffffd100HUD|r.\n\nFährt die Maus über die Miniaturen, erscheinen kleine Knöpfe: das |cffffd100Schloss|r entsperrt das HUD, um es mit der Maus zu verschieben (und sperrt es wieder), ein anderer ordnet die Miniaturen in einer Zeile oder Spalte an. Ein |cffffd100Zahnrad|r öffnet den HUD-Reiter für genauere Einstellungen (vom HUD getrennte Miniaturen, Größe...).",
+    TUTO_HUD_TEXT = "Das Addon ersetzt die Controller-Leiste des Spiels durch sein eigenes HUD. Wähle unten seine Anordnung: Das HUD ändert sich sofort, und du kannst jederzeit wechseln (Reiter |cffffd100HUD|r oder die kleine Schaltfläche am HUD).\n\nWenn die Maus über dem HUD ist, erscheinen kleine Schaltflächen: das |cffffd100Schloss|r entsperrt es, um es mit der Maus zu verschieben (und sperrt es wieder), eine andere wechselt die Anordnung, und das |cffffd100Zahnrad|r öffnet den Reiter HUD für genauere Einstellungen (Größe, Miniaturen...).",
     TUTO_DONE_TEXT = "Öffne die Konfiguration, um deine ersten Aktionen zu platzieren.\n\n|cffffd100/mgir|r: Konfiguration öffnen\n|cffffd100/mgir test|r: Controller-Test, um zu sehen, was WoW empfängt\n|cffffd100/mgir tuto|r: dieses Tutorial\n|cffffd100/mgir reset|r: die Aktionen dieses Charakters leeren\n|cffffd100/mgir restore|r: LT, RT, LB und RB dem Spiel zurückgeben\n|cffffd100/mgir rangs|r: neue Ränge deiner Zauber statt der alten einsetzen",
     SETTINGS_DESC = "Lege fest, was jede Taste deines Controllers tut: Zusatztasten (Paddles hinten, zusätzliche Trigger) und Grundtasten (LT, RT, LB, RB). Befehl: /mgir",
     BUTTONS_INTRO = "Wähle für jede Taste einen Typ: Fahre über einen Typ, um zu sehen, was er tut. In Grün: der Standardtyp der Grundtasten, der wie im Spiel funktioniert.",
@@ -429,6 +429,30 @@ ns.AddLocale("deDE", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("deDE", {
     FOREVER_STUCK = "Forever ist auf seiner %s-Leiste hängen geblieben (ein Loslassen der Taste ging verloren). Drücke einmal %s, um zu „Allein“ zurückzukehren.",
+    HUD_STUCK = "%s hängt fest: drücke einmal %s",
+    HUD_GRID_RECALL_DETACH = "Vom Raster getrennt",
+    TIP_HUD_GRID_RECALL_DETACH = "Die Anzeige verlässt das Raster: Du kannst sie platzieren, wo du willst (Schloss des HUD, dann ziehen).",
+    HUD_GRID_RECALL = "Genutzte Ebene oben groß anzeigen",
+    TIP_HUD_GRID_RECALL = "Über dem Raster und zentriert die Ebene, die du nutzt, groß, jedes Feld mit seiner Taste. Ihre Zeile im Raster bleibt dann klein (goldener Rand).",
+    HUD_STYLE_LABEL = "HUD-Anzeige:",
+    HUD_STYLE_GRID = "Raster",
+    HUD_STYLE_PAD = "Controller",
+    TIP_HUD_STYLE_GRID = "Eine Zeile pro Ebene, die Tasten immer in derselben Reihenfolge: Steuerkreuz, dann X, Y, B, A (links, oben, rechts, unten), dann die einfachen Tasten. Die genutzte Ebene oben groß und im Raster golden.",
+    TIP_HUD_STYLE_PAD = "Wie der Controller: die genutzte Ebene groß (Steuerkreuz links, A/B/X/Y rechts, einfache Tasten in der Mitte), alle Ebenen als Miniatur.",
+    HUD_SECTION_GRID = "Ebenen-Raster",
+    HUD_GRID_SIZE = "Größe des Rasters:",
+    HUD_GRID_COLS = "Spalten mit Ebenen:",
+    TIP_HUD_GRID_SIZE = "Die Größe des Rasters. „Größe“ (weiter unten) vergrößert das ganze HUD.",
+    TIP_HUD_GRID_COLS = "Auf wie viele Spalten die Ebenenzeilen verteilt werden: mehr Spalten ergeben ein breiteres, niedrigeres Raster.",
+    HUD_TOOL_TO_GRID = "HUD auf Raster umstellen",
+    HUD_TOOL_TO_PAD = "HUD auf Controller-Anordnung umstellen",
+    HUD_ROW_HINT = "Klick: diese Ebene zum Bearbeiten vergrößern",
+    HUD_ROW_DRAG = "Ziehen: verschieben (auf eine andere Zeile)",
+    TUTO_HUD_GRID_NAME = "Raster (empfohlen)",
+    TUTO_HUD_GRID_DESC = "Eine Zeile pro Ebene, die Tasten immer in derselben Reihenfolge, in ihrer Farbe oben in jeder Spalte: Steuerkreuz, dann X, Y, B, A (links, oben, rechts, unten: dieselbe Stelle für beide Daumen), dann deine einfachen Tasten. Oben zeigt die Anzeige die Ebene, die du nutzt, groß; ihre Zeile wird golden. Klick auf ein Feld, um es zu bearbeiten, auf den Namen einer Zeile, um sie zu vergrößern; zieh diesen Namen, um die Reihenfolge zu ändern. Reiter HUD: Größe, Anzahl der Spalten, Anzeige (die sich vom Raster trennen und frei platzieren lässt).",
+    TUTO_HUD_PAD_NAME = "Controller",
+    TUTO_HUD_PAD_DESC = "Wie der Controller: die Ebene, die du nutzt, groß, Steuerkreuz links, A/B/X/Y rechts, deine einfachen Tasten in der Mitte mit der Aktion, die ausgelöst wird. Alle Ebenen als Miniatur darunter: Klick auf eine Miniatur, um sie zu bearbeiten.",
+    WHATSNEW_1_4_0 = "• |cffffd100HUD als Raster|r: eine neue Anordnung, eine Zeile pro Ebene, die Tasten immer in derselben Reihenfolge, in ihrer Farbe oben in jeder Spalte: Steuerkreuz, dann X, Y, B, A (links, oben, rechts, unten), dann die einfachen Tasten. Oben zeigt die Anzeige die genutzte Ebene groß; im Raster wird sie golden. Jedes Feld lässt sich direkt bearbeiten; Klick auf den Namen einer Zeile vergrößert sie, Ziehen ändert die Reihenfolge.\n• Reiter HUD: Größe des Rasters, Anzahl der Spalten (1 bis 3), Anzeige ein oder aus und vom Raster getrennt, um sie frei zu platzieren. Dein HUD behält seine bisherige Anordnung: Wechsle zum Raster im Reiter HUD („HUD-Anzeige“) oder mit der kleinen Schaltfläche am HUD.\n• |cffffd100Hängende Ebene in Rot|r: Wenn die LT- / RT-Leiste des Spiels hängen bleibt, zeigt das HUD diese Ebene rot mit der Taste, die du zum Lösen drücken musst.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("deDE", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("deDE", {
-    HUD_TOOL_SETTINGS = "HUD-Einstellungen (Reiter HUD): vom HUD getrennte Miniaturen, Größe...",
+    HUD_TOOL_SETTINGS = "HUD-Einstellungen (Reiter HUD): Anordnung, Größe, Miniaturen...",
 })
 
 -- HUD : miniatures des couches cachées

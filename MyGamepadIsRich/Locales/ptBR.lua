@@ -159,7 +159,7 @@ ns.AddLocale("ptBR", {
     LAYER_DESC_BASE = "A, B, X, Y e o direcional sem segurar nada. Tudo cabe aqui: o que a barra do jogo não consegue guardar (macro escrita à mão, comando do WoW) fica com o addon. A, B, X e Y mantêm as ações do jogo (pular, interagir...) até você colocar as suas.",
     LAYER_DESC_HOLD = "Segure %s e aperte A, B, X, Y ou o direcional.",
     PAIRS_TITLE = "Pares (dois modificadores segurados juntos)",
-    HUD_INTRO = "O HUD substitui a barra de controle do jogo: a camada em uso em destaque, todas as camadas em miniatura.",
+    HUD_INTRO = "O HUD substitui a barra de controle do jogo: em grade (uma linha por camada) ou como o controle (a camada em uso em destaque, todas as camadas em miniatura).",
     HUD_SIZE = "Tamanho:",
     HUD_MOVE = "Destravar o HUD",
     HUD_MOVE_DONE = "Travar o HUD",
@@ -175,9 +175,9 @@ ns.AddLocale("ptBR", {
 ns.AddLocale("ptBR", {
     HUD_STRIP_SIZE = "Tamanho das miniaturas:",
     HUD_STRIP_ROWS = "Linhas de miniaturas:",
-    HUD_ORDER = "Ordem das miniaturas:",
+    HUD_ORDER = "Ordem das camadas:",
     HUD_ORDER_RESET = "Ordem padrão",
-    HUD_ORDER_HINT = "Setas: mover uma camada. No HUD, você também pode arrastar uma miniatura sobre outra.",
+    HUD_ORDER_HINT = "Setas: mover uma camada. No HUD, você também pode arrastar uma miniatura (ou o nome de uma linha da grade) sobre outra.",
     HUD_CARD_DRAG = "Arrastar: movê-la (sobre outra miniatura)",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("ptBR", {
     TUTO_PAIRS_TEXT = "Segure dois botões juntos (modificadores ou de alvo): mais uma camada de 8 ações. Quaisquer dois podem formar um par: L5 + R5, LT + RT, LB + LT... Marque os que quiser (você pode mudar depois na aba |cffffd100Botões|r). Padrão: os pares esquerda + direita.",
     TUTO_ACTIONS_TITLE = "Colocar suas ações",
     TUTO_ACTIONS_TEXT = "Na aba |cffffd100Camadas|r: à esquerda, todas as suas camadas (Sozinho, LT, RT, seus modificadores e pares); à direita, a camada escolhida, organizada como o controle.\n\n- Arraste um feitiço do grimório, um item das bolsas, uma macro, uma montaria ou um brinquedo para um espaço.\n- Ou clique em um espaço: escolher um feitiço ou item, escrever uma macro, escolher um comando do WoW (Correr automaticamente...) ou uma ação básica (Pular, Interagir...). Clique direito: limpar.\n- A linha abaixo do direcional: os espaços dos seus botões simples nessa camada.\n\nVocê também pode clicar em uma miniatura de camada no HUD para editá-la ali mesmo.\n\nAs ações são salvas por personagem; tipos e teclas no perfil, para toda a conta. Tudo funciona em combate; só as mudanças feitas em combate esperam ele acabar.\n\n|cffffd100Prático|r:\n- O campo no topo da lista procura uma ação em todas as suas camadas.\n- |cffffd100Consumível inteligente|r (menu de uma casa): sua melhor poção, comida, bebida ou bandagem, atualizada sozinha.\n- Um feitiço cinza e vermelho: este personagem não o conhece. |cffffd100Modelos e especializações...|r pode removê-los.\n- Um novo grau aprendido com o instrutor de classe: o addon propõe colocá-lo no lugar do antigo, em todo lugar.",
-    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo seu próprio HUD:\n\n- |cffffd100Em destaque|r: a camada que você está usando, direcional à esquerda, A/B/X/Y à direita. Segure um botão e ela muda.\n- |cffffd100Miniaturas|r: todas as suas camadas, com os espaços dos botões simples no meio; a que você segura acende. Clique em uma para editá-la.\n- |cffffd100No centro|r: seus botões simples, com a ação que vão lançar.\n\nAjustes (tamanho, posição, miniaturas): aba |cffffd100HUD|r.\n\nAo passar o mouse sobre as miniaturas, aparecem pequenos botões: o |cffffd100cadeado|r desbloqueia o HUD para movê-lo com o mouse (e o bloqueia de novo), outro põe as miniaturas em linha ou em coluna. Uma |cffffd100engrenagem|r abre a aba HUD para ajustes mais precisos (miniaturas separadas do HUD, tamanho...).",
+    TUTO_HUD_TEXT = "O addon substitui a barra de controle do jogo pelo próprio HUD. Escolha a disposição abaixo: o HUD muda na hora, e você pode trocar quando quiser (aba |cffffd100HUD|r, ou o botãozinho do HUD).\n\nAo passar o mouse sobre o HUD, aparecem botõezinhos: o |cffffd100cadeado|r o destrava para movê-lo com o mouse (e o trava de novo), outro troca a disposição, e a |cffffd100engrenagem|r abre a aba HUD para os ajustes finos (tamanho, miniaturas...).",
     TUTO_DONE_TEXT = "Abra a configuração para colocar suas primeiras ações.\n\n|cffffd100/mgir|r: abrir a configuração\n|cffffd100/mgir test|r: teste do controle, para ver o que o WoW recebe\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: limpar as ações deste personagem\n|cffffd100/mgir restore|r: devolver LT, RT, LB e RB ao jogo\n|cffffd100/mgir rangs|r: colocar os novos graus dos seus feitiços no lugar dos antigos",
     SETTINGS_DESC = "Escolha o que cada botão do seu controle faz: botões extras (paletas traseiras, gatilhos extras) e botões básicos (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Escolha o tipo de cada botão: passe o mouse sobre um tipo para ver o que ele faz. Em verde: o tipo padrão dos botões básicos, que funciona como o jogo.",
@@ -429,6 +429,30 @@ ns.AddLocale("ptBR", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("ptBR", {
     FOREVER_STUCK = "O Forever ficou preso na barra %s (a soltura de um botão se perdeu). Aperte %s uma vez para voltar a \"Sozinho\".",
+    HUD_STUCK = "%s travado: aperte %s uma vez",
+    HUD_GRID_RECALL_DETACH = "Separado da grade",
+    TIP_HUD_GRID_RECALL_DETACH = "O lembrete sai da grade: você pode colocá-lo onde quiser (cadeado do HUD, depois arrastar).",
+    HUD_GRID_RECALL = "Lembrete da camada em uso em destaque no topo",
+    TIP_HUD_GRID_RECALL = "Acima da grade e centralizada, a camada que você usa em destaque, cada espaço com seu botão. A linha dessa camada na grade fica então pequena (borda dourada).",
+    HUD_STYLE_LABEL = "Visual do HUD:",
+    HUD_STYLE_GRID = "Grade",
+    HUD_STYLE_PAD = "Controle",
+    TIP_HUD_STYLE_GRID = "Uma linha por camada, os botões sempre na mesma ordem: o direcional, depois X, Y, B, A (esquerda, cima, direita, baixo), depois os botões simples. A camada em uso em destaque no topo, e dourada na grade.",
+    TIP_HUD_STYLE_PAD = "Como o controle: a camada em uso em destaque (direcional à esquerda, A/B/X/Y à direita, botões simples no centro), todas as camadas em miniatura.",
+    HUD_SECTION_GRID = "Grade das camadas",
+    HUD_GRID_SIZE = "Tamanho da grade:",
+    HUD_GRID_COLS = "Colunas de camadas:",
+    TIP_HUD_GRID_SIZE = "O tamanho da grade. \"Tamanho\" (mais abaixo) aumenta todo o HUD.",
+    TIP_HUD_GRID_COLS = "Em quantas colunas distribuir as linhas das camadas: mais colunas, uma grade mais larga e mais baixa.",
+    HUD_TOOL_TO_GRID = "Mudar o HUD para grade",
+    HUD_TOOL_TO_PAD = "Mudar o HUD para a disposição do controle",
+    HUD_ROW_HINT = "Clique: aumentar esta camada para editá-la",
+    HUD_ROW_DRAG = "Arrastar: movê-la (sobre outra linha)",
+    TUTO_HUD_GRID_NAME = "Grade (recomendada)",
+    TUTO_HUD_GRID_DESC = "Uma linha por camada, os botões sempre na mesma ordem, com sua cor no topo de cada coluna: o direcional, depois X, Y, B, A (esquerda, cima, direita, baixo: o mesmo lugar para os dois polegares), depois seus botões simples. No topo, o lembrete mostra em destaque a camada que você usa; a linha dela fica dourada. Clique em um espaço para editá-lo, no nome de uma linha para aumentá-la; arraste esse nome para mudar a ordem. Aba HUD: tamanho, número de colunas, lembrete (que pode ser separado da grade e colocado onde quiser).",
+    TUTO_HUD_PAD_NAME = "Controle",
+    TUTO_HUD_PAD_DESC = "Como o controle: a camada que você usa em destaque, o direcional à esquerda, A/B/X/Y à direita, seus botões simples no centro com a ação que será usada. Todas as suas camadas em miniatura embaixo: clique em uma miniatura para editá-la.",
+    WHATSNEW_1_4_0 = "• |cffffd100HUD em grade|r: uma nova disposição, uma linha por camada, os botões sempre na mesma ordem, com sua cor no topo de cada coluna: o direcional, depois X, Y, B, A (esquerda, cima, direita, baixo), depois os botões simples. No topo, o lembrete mostra em destaque a camada em uso; na grade, ela fica dourada. Cada espaço é editado diretamente; clique no nome de uma linha para aumentá-la, arraste para mudar a ordem.\n• Aba HUD: tamanho da grade, número de colunas (1 a 3), lembrete visível ou não, e separado da grade para colocá-lo onde quiser. Seu HUD mantém a disposição atual: mude para a grade na aba HUD (\"Visual do HUD\") ou com o botãozinho do HUD.\n• |cffffd100Camada travada em vermelho|r: quando a barra LT / RT do jogo fica travada, o HUD mostra essa camada em vermelho com o botão a apertar para destravá-la.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("ptBR", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("ptBR", {
-    HUD_TOOL_SETTINGS = "Ajustes do HUD (aba HUD): miniaturas separadas do HUD, tamanho...",
+    HUD_TOOL_SETTINGS = "Ajustes do HUD (aba HUD): disposição, tamanho, miniaturas...",
 })
 
 -- HUD : miniatures des couches cachées

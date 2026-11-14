@@ -159,7 +159,7 @@ ns.AddLocale("itIT", {
     LAYER_DESC_BASE = "A, B, X, Y e la croce senza tenere nulla. Qui va tutto: ciò che la barra del gioco non può contenere (macro scritta a mano, comando di WoW) lo prende l'addon. A, B, X e Y mantengono le azioni del gioco (saltare, interagire...) finché non metti le tue.",
     LAYER_DESC_HOLD = "Tieni premuto %s, poi premi A, B, X, Y o la croce.",
     PAIRS_TITLE = "Coppie (due modificatori tenuti insieme)",
-    HUD_INTRO = "L'HUD sostituisce la barra del controller del gioco: lo strato in uso in grande, tutti gli strati in miniatura.",
+    HUD_INTRO = "L'HUD sostituisce la barra del controller del gioco: a griglia (una riga per strato) o come il controller (lo strato in uso in grande, tutti gli strati in miniatura).",
     HUD_SIZE = "Dimensione:",
     HUD_MOVE = "Sblocca l'HUD",
     HUD_MOVE_DONE = "Blocca l'HUD",
@@ -175,9 +175,9 @@ ns.AddLocale("itIT", {
 ns.AddLocale("itIT", {
     HUD_STRIP_SIZE = "Dimensione delle miniature:",
     HUD_STRIP_ROWS = "Righe di miniature:",
-    HUD_ORDER = "Ordine delle miniature:",
+    HUD_ORDER = "Ordine degli strati:",
     HUD_ORDER_RESET = "Ordine predefinito",
-    HUD_ORDER_HINT = "Frecce: sposta uno strato. Sull'HUD puoi anche trascinare una miniatura su un'altra.",
+    HUD_ORDER_HINT = "Frecce: sposta uno strato. Sull'HUD puoi anche trascinare una miniatura (o il nome di una riga della griglia) su un'altra.",
     HUD_CARD_DRAG = "Trascina: spostala (su un'altra miniatura)",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("itIT", {
     TUTO_PAIRS_TEXT = "Tieni premuti due pulsanti insieme (modificatori o di selezione bersaglio): un altro strato di 8 azioni. Due pulsanti qualsiasi possono formare una coppia: L5 + R5, LT + RT, LB + LT... Spunta quelle che vuoi (potrai cambiarle nella scheda |cffffd100Pulsanti|r). Predefinite: le coppie sinistra + destra.",
     TUTO_ACTIONS_TITLE = "Posiziona le tue azioni",
     TUTO_ACTIONS_TEXT = "Nella scheda |cffffd100Strati|r: a sinistra, tutti i tuoi strati (Da solo, LT, RT, i tuoi modificatori e coppie); a destra, lo strato scelto, disposto come il controller.\n\n- Trascina un incantesimo dal libro degli incantesimi, un oggetto dalle borse, una macro, una cavalcatura o un giocattolo su una casella.\n- Oppure clicca su una casella: scegliere un incantesimo o un oggetto, scrivere una macro, scegliere un comando di WoW (Corsa automatica...) o un'azione di base (Salta, Interagisci...). Clic destro: svuota.\n- La riga sotto la croce: le caselle dei tuoi pulsanti semplici in quello strato.\n\nPuoi anche cliccare su una miniatura di strato nell'HUD per modificarla lì.\n\nLe azioni sono salvate per personaggio; tipi e tasti nel profilo, per tutto l'account. Tutto funziona in combattimento; solo le modifiche fatte in combattimento aspettano la sua fine.\n\n|cffffd100Utile|r:\n- Il campo in cima alla lista cerca un'azione in tutti i tuoi strati.\n- |cffffd100Consumabile intelligente|r (menu di una casella): la tua migliore pozione, cibo, bevanda o benda, aggiornata da sola.\n- Un incantesimo grigio e rosso: questo personaggio non lo conosce. |cffffd100Modelli e specializzazioni...|r può rimuoverli.\n- Un nuovo grado appreso dall'istruttore di classe: l'addon propone di metterlo al posto del vecchio, ovunque.",
-    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il proprio HUD:\n\n- |cffffd100In grande|r: lo strato che stai usando, croce a sinistra, A/B/X/Y a destra. Tieni premuto un pulsante e cambia.\n- |cffffd100Le miniature|r: tutti i tuoi strati, con al centro le caselle dei tuoi pulsanti semplici; quello tenuto si illumina. Clicca su una per modificarla.\n- |cffffd100Al centro|r: i tuoi pulsanti semplici, con l'azione che lanceranno.\n\nImpostazioni (dimensione, posizione, miniature): scheda |cffffd100HUD|r.\n\nPassando il mouse sulle miniature compaiono dei pulsantini: il |cffffd100lucchetto|r sblocca l'HUD per spostarlo con il mouse (e lo riblocca), un altro mette le miniature in riga o in colonna. Un |cffffd100ingranaggio|r apre la scheda HUD per le impostazioni più precise (miniature separate dall'HUD, dimensione...).",
+    TUTO_HUD_TEXT = "L'addon sostituisce la barra del controller del gioco con il suo HUD. Scegli qui sotto la sua disposizione: l'HUD cambia subito, e potrai cambiarla in qualsiasi momento (scheda |cffffd100HUD|r, o il pulsantino dell'HUD).\n\nPassando il mouse sull'HUD compaiono dei pulsantini: il |cffffd100lucchetto|r lo sblocca per spostarlo col mouse (e lo riblocca), un altro cambia la disposizione, e l'|cffffd100ingranaggio|r apre la scheda HUD per le impostazioni precise (dimensione, miniature...).",
     TUTO_DONE_TEXT = "Apri la configurazione per posizionare le tue prime azioni.\n\n|cffffd100/mgir|r: apri la configurazione\n|cffffd100/mgir test|r: test del controller, per vedere cosa riceve WoW\n|cffffd100/mgir tuto|r: questo tutorial\n|cffffd100/mgir reset|r: svuota le azioni di questo personaggio\n|cffffd100/mgir restore|r: restituisci LT, RT, LB e RB al gioco\n|cffffd100/mgir rangs|r: mettere i nuovi gradi dei tuoi incantesimi al posto dei vecchi",
     SETTINGS_DESC = "Scegli cosa fa ogni pulsante del tuo controller: pulsanti aggiuntivi (palette posteriori, grilletti extra) e pulsanti di base (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Scegli il tipo di ogni pulsante: passa il mouse su un tipo per vedere cosa fa. In verde: il tipo predefinito dei pulsanti di base, che funziona come nel gioco.",
@@ -429,6 +429,30 @@ ns.AddLocale("itIT", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("itIT", {
     FOREVER_STUCK = "Forever è rimasto sulla sua barra %s (il rilascio di un pulsante è andato perso). Premi %s una volta per tornare a «Da solo».",
+    HUD_STUCK = "%s bloccato: premi %s una volta",
+    HUD_GRID_RECALL_DETACH = "Separato dalla griglia",
+    TIP_HUD_GRID_RECALL_DETACH = "Il promemoria lascia la griglia: puoi metterlo dove vuoi (lucchetto dell'HUD, poi trascina).",
+    HUD_GRID_RECALL = "Promemoria dello strato in uso in grande in alto",
+    TIP_HUD_GRID_RECALL = "Sopra la griglia e centrato, lo strato che usi in grande, ogni casella con il suo pulsante. La sua riga nella griglia resta allora piccola (bordo dorato).",
+    HUD_STYLE_LABEL = "Vista dell'HUD:",
+    HUD_STYLE_GRID = "Griglia",
+    HUD_STYLE_PAD = "Controller",
+    TIP_HUD_STYLE_GRID = "Una riga per strato, i pulsanti sempre nello stesso ordine: la croce, poi X, Y, B, A (sinistra, alto, destra, basso), poi i pulsanti semplici. Lo strato in uso in grande in alto, e dorato nella griglia.",
+    TIP_HUD_STYLE_PAD = "Come il controller: lo strato in uso in grande (croce a sinistra, A/B/X/Y a destra, pulsanti semplici al centro), tutti gli strati in miniatura.",
+    HUD_SECTION_GRID = "Griglia degli strati",
+    HUD_GRID_SIZE = "Dimensione della griglia:",
+    HUD_GRID_COLS = "Colonne di strati:",
+    TIP_HUD_GRID_SIZE = "La dimensione della griglia. «Dimensione» (più in basso) ingrandisce tutto l'HUD.",
+    TIP_HUD_GRID_COLS = "Su quante colonne distribuire le righe degli strati: più colonne, una griglia più larga e più bassa.",
+    HUD_TOOL_TO_GRID = "Passa l'HUD alla griglia",
+    HUD_TOOL_TO_PAD = "Passa l'HUD alla disposizione controller",
+    HUD_ROW_HINT = "Clic: ingrandisci questo strato per modificarlo",
+    HUD_ROW_DRAG = "Trascina: spostalo (su un'altra riga)",
+    TUTO_HUD_GRID_NAME = "Griglia (consigliata)",
+    TUTO_HUD_GRID_DESC = "Una riga per strato, i pulsanti sempre nello stesso ordine, col loro colore in cima a ogni colonna: la croce, poi X, Y, B, A (sinistra, alto, destra, basso: lo stesso posto per i due pollici), poi i tuoi pulsanti semplici. In alto, il promemoria mostra in grande lo strato che usi; la sua riga diventa dorata. Clic su una casella per modificarla, sul nome di una riga per ingrandirla; trascina quel nome per cambiare l'ordine. Scheda HUD: dimensione, numero di colonne, promemoria (che si può separare dalla griglia e mettere dove vuoi).",
+    TUTO_HUD_PAD_NAME = "Controller",
+    TUTO_HUD_PAD_DESC = "Come il controller: lo strato che usi in grande, la croce a sinistra, A/B/X/Y a destra, i tuoi pulsanti semplici al centro con l'azione che partirà. Tutti i tuoi strati in miniatura sotto: clicca su una miniatura per modificarla.",
+    WHATSNEW_1_4_0 = "• |cffffd100HUD a griglia|r: una nuova disposizione, una riga per strato, i pulsanti sempre nello stesso ordine, col loro colore in cima a ogni colonna: la croce, poi X, Y, B, A (sinistra, alto, destra, basso), poi i pulsanti semplici. In alto, il promemoria mostra in grande lo strato in uso; nella griglia diventa dorato. Ogni casella si modifica direttamente; clic sul nome di una riga per ingrandirla, trascina per cambiare l'ordine.\n• Scheda HUD: dimensione della griglia, numero di colonne (da 1 a 3), promemoria visibile o no, e separato dalla griglia per metterlo dove vuoi. Il tuo HUD mantiene la disposizione attuale: passa alla griglia nella scheda HUD («Vista dell'HUD») o con il pulsantino dell'HUD.\n• |cffffd100Strato bloccato in rosso|r: quando la barra LT / RT del gioco resta bloccata, l'HUD mostra quello strato in rosso con il pulsante da premere per sbloccarlo.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("itIT", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("itIT", {
-    HUD_TOOL_SETTINGS = "Impostazioni dell'HUD (scheda HUD): miniature separate dall'HUD, dimensione...",
+    HUD_TOOL_SETTINGS = "Impostazioni dell'HUD (scheda HUD): disposizione, dimensione, miniature...",
 })
 
 -- HUD : miniatures des couches cachées

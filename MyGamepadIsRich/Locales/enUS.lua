@@ -160,7 +160,7 @@ ns.AddLocale("enUS", {
     LAYER_DESC_BASE = "A, B, X, Y and the D-pad with nothing held. Everything can go here: what the game's bar can't hold (custom macro, WoW command) is taken by the addon. A, B, X and Y keep the game's actions (jump, interact...) until you put your own.",
     LAYER_DESC_HOLD = "Hold %s, then press A, B, X, Y or the D-pad.",
     PAIRS_TITLE = "Pairs (two modifiers held together)",
-    HUD_INTRO = "The HUD replaces the game's controller bar: the layer in use in large, every layer in miniature.",
+    HUD_INTRO = "The HUD replaces the game's controller bar: as a grid (one row per layer) or like the controller (the layer in use in large, every layer in miniature).",
     HUD_SIZE = "Size:",
     HUD_MOVE = "Unlock the HUD",
     HUD_MOVE_DONE = "Lock the HUD",
@@ -176,9 +176,9 @@ ns.AddLocale("enUS", {
 ns.AddLocale("enUS", {
     HUD_STRIP_SIZE = "Miniature size:",
     HUD_STRIP_ROWS = "Miniature rows:",
-    HUD_ORDER = "Order of the miniatures:",
+    HUD_ORDER = "Layer order:",
     HUD_ORDER_RESET = "Default order",
-    HUD_ORDER_HINT = "Arrows: move a layer. On the HUD, you can also drag a miniature onto another one.",
+    HUD_ORDER_HINT = "Arrows: move a layer. On the HUD, you can also drag a miniature (or a grid row's name) onto another one.",
     HUD_CARD_DRAG = "Drag: move it (onto another miniature)",
 })
 
@@ -405,7 +405,7 @@ ns.AddLocale("enUS", {
     TUTO_PAIRS_TEXT = "Hold two buttons together (modifiers or targeting): yet another layer of 8 actions. Any two can make a pair: L5 + R5, LT + RT, LB + LT... Tick the ones you want (you can change them later in the |cffffd100Buttons|r tab). By default: the left + right pairs.",
     TUTO_ACTIONS_TITLE = "Place your actions",
     TUTO_ACTIONS_TEXT = "In the |cffffd100Layers|r tab: on the left, all your layers (Alone, LT, RT, your modifiers and pairs); on the right, the chosen layer, laid out like the controller.\n\n- Drag a spell from your spellbook, an item from your bags, a macro, a mount or a toy onto a slot.\n- Or click a slot: pick a spell or an item, write a macro, pick a WoW command (Auto run...) or a basic action (Jump, Interact...). Right-click: clear.\n- The row under the D-pad holds your simple buttons' slots in that layer.\n\nYou can also click a layer thumbnail on the HUD to edit it right there.\n\nActions are saved per character; types and keys in the profile, for the whole account. Everything works in combat; only changes made in combat wait for it to end.\n\n|cffffd100Handy|r:\n- The field at the top of the list searches an action in all your layers.\n- |cffffd100Smart consumable|r (slot menu): your best potion, food, drink or bandage, updated on its own.\n- A greyed, red spell: this character does not know it. |cffffd100Templates and specs...|r can remove them.\n- A new rank learned from your class trainer: the addon offers to put it in place of the old one, everywhere.",
-    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD:\n\n- |cffffd100Large|r: the layer you are using, D-pad on the left, A/B/X/Y on the right. Hold a button and it changes.\n- |cffffd100Thumbnails|r: all your layers, with your simple buttons' slots in the middle; the one you hold lights up. Click one to edit it.\n- |cffffd100In the center|r: your simple buttons, with the action they will cast.\n\nSettings (size, position, thumbnails): |cffffd100HUD|r tab.\n\nWhen the mouse is over the miniatures, small buttons appear: the |cffffd100padlock|r unlocks the HUD to move it with the mouse (and locks it again), another one puts the miniatures in a row or a column. A |cffffd100gear|r opens the HUD tab for finer settings (miniatures separated from the HUD, size...).",
+    TUTO_HUD_TEXT = "The addon replaces the game's controller bar with its own HUD. Pick its layout below: the HUD changes right away, and you can switch at any time (|cffffd100HUD|r tab, or the HUD's small button).\n\nWhen the mouse is over the HUD, small buttons appear: the |cffffd100padlock|r unlocks it to move it with the mouse (and locks it again), another one switches the layout, and the |cffffd100gear|r opens the HUD tab for finer settings (size, miniatures...).",
     TUTO_DONE_TEXT = "Open the configuration to place your first actions.\n\n|cffffd100/mgir|r: open the configuration\n|cffffd100/mgir test|r: controller test, to see what WoW receives\n|cffffd100/mgir tuto|r: this tutorial\n|cffffd100/mgir reset|r: clear this character's actions\n|cffffd100/mgir restore|r: give LT, RT, LB and RB back to the game\n|cffffd100/mgir rangs|r: put the new ranks of your spells in place of the old ones",
     SETTINGS_DESC = "Choose what every button of your controller does: extra buttons (back paddles, extra triggers) and base buttons (LT, RT, LB, RB). Command: /mgir",
     BUTTONS_INTRO = "Pick a type for each button: hover a type to see what it does. In green: the default type of the base buttons, which works like the game.",
@@ -430,6 +430,30 @@ ns.AddLocale("enUS", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("enUS", {
     FOREVER_STUCK = "Forever stayed on its %s bar (a button release went missing). Press %s once to bring it back to \"Alone\".",
+    HUD_STUCK = "%s stuck: press %s once",
+    HUD_GRID_RECALL_DETACH = "Separated from the grid",
+    TIP_HUD_GRID_RECALL_DETACH = "The reminder leaves the grid: you can place it wherever you want (HUD padlock, then drag).",
+    HUD_GRID_RECALL = "Show the layer in use in large on top",
+    TIP_HUD_GRID_RECALL = "Above the grid and centered, the layer you are using in large, each tile with its button. That layer's row in the grid then stays small (gold border).",
+    HUD_STYLE_LABEL = "HUD layout:",
+    HUD_STYLE_GRID = "Grid",
+    HUD_STYLE_PAD = "Controller",
+    TIP_HUD_STYLE_GRID = "One row per layer, buttons always in the same order: the D-pad, then X, Y, B, A (left, top, right, bottom), then simple buttons. The layer in use in large on top, and in gold in the grid.",
+    TIP_HUD_STYLE_PAD = "Like the controller: the layer in use in large (D-pad on the left, A/B/X/Y on the right, simple buttons in the center), every layer in miniature.",
+    HUD_SECTION_GRID = "Layer grid",
+    HUD_GRID_SIZE = "Grid size:",
+    HUD_GRID_COLS = "Layer columns:",
+    TIP_HUD_GRID_SIZE = "The size of the grid. \"Size\" (below) scales the whole HUD.",
+    TIP_HUD_GRID_COLS = "How many columns to spread the layer rows over: more columns make a wider, shorter grid.",
+    HUD_TOOL_TO_GRID = "Switch the HUD to the grid layout",
+    HUD_TOOL_TO_PAD = "Switch the HUD to the controller layout",
+    HUD_ROW_HINT = "Click: enlarge this layer to edit it",
+    HUD_ROW_DRAG = "Drag: move it (onto another row)",
+    TUTO_HUD_GRID_NAME = "Grid (recommended)",
+    TUTO_HUD_GRID_DESC = "One row per layer, buttons always in the same order, in their color at the top of each column: the D-pad, then X, Y, B, A (left, top, right, bottom: the same place for both thumbs), then your simple buttons. On top, the reminder shows the layer you use in large; its row turns gold. Click a tile to edit it, a row's name to enlarge it; drag that name to change the order. HUD tab: size, number of columns, reminder (which can be separated from the grid and placed anywhere).",
+    TUTO_HUD_PAD_NAME = "Controller",
+    TUTO_HUD_PAD_DESC = "Like the controller: the layer you use in large, D-pad on the left, A/B/X/Y on the right, your simple buttons in the center with the action they will cast. Every layer in miniature below: click one to edit it.",
+    WHATSNEW_1_4_0 = "• |cffffd100Grid HUD|r: a new layout, one row per layer, buttons always in the same order, in their color at the top of each column: the D-pad, then X, Y, B, A (left, top, right, bottom), then simple buttons. On top, the reminder shows the layer in use in large; in the grid, it turns gold. Every tile can be edited directly; click a row's name to enlarge it, drag it to change the order.\n• HUD tab: grid size, number of columns (1 to 3), reminder shown or not, and separated from the grid to place it anywhere. Your HUD keeps its current layout: switch to the grid in the HUD tab (\"HUD layout\") or with the HUD's small button.\n• |cffffd100Stuck layer in red|r: when the game's LT / RT bar stays stuck, the HUD shows that layer in red with the button to press to free it.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -602,7 +626,7 @@ ns.AddLocale("enUS", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("enUS", {
-    HUD_TOOL_SETTINGS = "HUD settings (HUD tab): miniatures separated from the HUD, size...",
+    HUD_TOOL_SETTINGS = "HUD settings (HUD tab): layout, size, miniatures...",
 })
 
 -- HUD : miniatures des couches cachées

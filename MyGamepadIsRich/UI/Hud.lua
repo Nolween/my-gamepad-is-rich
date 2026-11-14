@@ -76,10 +76,27 @@ local LAYERS = { "base", "lt", "rt" }
 local DIM_EDGE = { 0.38, 0.33, 0.24, 0.95 }
 local GOLD_EDGE = { 1, 0.78, 0.2, 1 }
 local EDIT_EDGE = { 0.3, 0.8, 1, 1 }
+local STUCK_EDGE = { 1, 0.15, 0.1, 1 } -- (couche bloquée : un appui la débloque)
 
 function H.Settings()
+    local fresh = ns.db.hud == nil
     ns.db.hud = ns.db.hud or {}
     local s = ns.db.hud
+    -- (la disposition : « grid », une ligne par couche (HudGrid.lua), ou
+    -- « pad », la croix et A/B/X/Y comme sur la manette. Une installation
+    -- neuve commence en grille ; un HUD qui existait déjà garde la manette)
+    if s.layout ~= "grid" and s.layout ~= "pad" then s.layout = fresh and "grid" or "pad" end
+    -- (la grille : sa taille (50 à 150 %), et sur combien de colonnes de
+    -- couches la répartir (1 à 3))
+    if type(s.gridScale) ~= "number" or s.gridScale ~= s.gridScale then s.gridScale = 1 end
+    s.gridScale = math.max(0.5, math.min(1.5, s.gridScale))
+    if type(s.gridCols) ~= "number" or s.gridCols ~= s.gridCols then s.gridCols = 1 end
+    s.gridCols = math.max(1, math.min(3, math.floor(s.gridCols)))
+    -- (le rappel de la couche utilisée en grand au-dessus de la grille ;
+    -- séparé de la grille, à sa place (s.gridRecallPos))
+    s.gridRecall = s.gridRecall ~= false
+    s.gridRecallDetached = s.gridRecallDetached == true
+    if s.gridRecallPos ~= nil and type(s.gridRecallPos) ~= "table" then s.gridRecallPos = nil end
     -- (toujours affiché : l'ancien réglage « masquer le HUD » n'existe plus)
     s.enabled = nil
     s.scale = s.scale or 1
@@ -1004,6 +1021,9 @@ end
 -- Construction (positions depuis le bas-milieu du cadre)
 ---------------------------------------------------------------------------
 local holder, outline, moveHint
+-- (la disposition manette : la couche active, les boutons simples et la
+-- bande des miniatures ; caché quand le HUD est en grille)
+local classic
 local strip -- (le cadre des miniatures : mis à l'échelle choisie)
 -- (son support, enfant du HUD : il en suit l'affichage, la transparence et
 -- la taille, mais se place où on veut quand la bande est séparée ; ses
@@ -1014,14 +1034,14 @@ local SaveStripPos -- (plus bas)
 local unlocked = false -- (déverrouillé : le HUD se déplace à la souris)
 local dpad, face = {}, {}
 local cards, paddles, classTiles = {}, {}, {}
-local titleTag
+local titleTag, stuckHint
 local dirty = true
 local editing        -- (la couche modifiée : { bar = name } | { mod = id }, ou nil)
 local paddleView = {} -- [id] = couche choisie à la souris pour un bouton simple
 
 local function Cluster(cx, keys, store)
     for i, spot in ipairs(SPOTS) do
-        local t = Tile(holder, TILE)
+        local t = Tile(classic, TILE)
         t.x, t.y = cx + spot[1] * STEP, MAIN_H / 2 + spot[2] * STEP
         t.glyph = UI.CreateGlyph(t, GLYPH)
         t.glyph:SetFrameLevel(t.top:GetFrameLevel() + 1)
@@ -1146,14 +1166,14 @@ local function LayoutCard(c, nSimple)
 end
 
 local function Paddle()
-    local p = Tile(holder, PADDLE)
+    local p = Tile(classic, PADDLE)
     p.glyph = UI.CreateGlyph(p, 22)
     p.glyph:SetFrameLevel(p.top:GetFrameLevel() + 1)
     p.glyph:SetPoint("CENTER", p, "TOP", 0, 0)
     p.pips = {}
     local labels = { L.LAYER_BASE, "LT", "RT" }
     for i, layer in ipairs(LAYERS) do
-        local pip = CreateFrame("Button", nil, holder)
+        local pip = CreateFrame("Button", nil, classic)
         pip.text = UI.Text(pip, "GameFontHighlightSmall", labels[i])
         pip.text:SetPoint("CENTER")
         pip:SetSize(math.max(20, pip.text:GetStringWidth() + 6), 14)
@@ -1224,6 +1244,9 @@ end
 
 local ICON_ROW = { { 3, 7, 3, 4 }, { 7.5, 7, 3, 4 }, { 12, 7, 3, 4 } }
 local ICON_COL = { { 7, 3, 4, 3 }, { 7, 7.5, 4, 3 }, { 7, 12, 4, 3 } }
+-- (passer en grille : trois lignes ; passer à la manette : une croix)
+local ICON_GRID = { { 3, 4, 12, 2 }, { 3, 8, 12, 2 }, { 3, 12, 12, 2 } }
+local ICON_PAD = { { 7, 3, 4, 12 }, { 3, 7, 12, 4 } }
 local LOCK_TEX = "Interface\\Buttons\\LockButton-Locked-Up"
 local UNLOCK_TEX = "Interface\\Buttons\\LockButton-Unlocked-Up"
 
@@ -1252,9 +1275,20 @@ local function BuildTools()
         return H.Settings().vertical and L.HUD_TOOL_HORIZONTAL or L.HUD_TOOL_VERTICAL
     end)
     stripTools.vertical:SetScript("OnClick", function() H.SetVertical(not H.Settings().vertical) end)
+    stripTools.layout = ToolButton(function()
+        return H.Settings().layout == "grid" and L.HUD_TOOL_TO_PAD or L.HUD_TOOL_TO_GRID
+    end)
+    stripTools.layout:SetScript("OnClick", function(self)
+        H.SetLayout(H.Settings().layout == "grid" and "pad" or "grid")
+        if GameTooltip:IsOwned(self) then self:GetScript("OnEnter")(self) end
+    end)
     stripTools.lock = ToolButton(function()
         if not unlocked then return L.HUD_TOOL_UNLOCK end
-        return H.Settings().detached and L.HUD_TOOL_LOCK_DETACHED or L.HUD_TOOL_LOCK
+        local s = H.Settings()
+        -- (quelque chose de séparé : les miniatures, ou le rappel de la grille)
+        local apart = s.detached
+        if s.layout == "grid" then apart = s.gridRecall and s.gridRecallDetached end
+        return apart and L.HUD_TOOL_LOCK_DETACHED or L.HUD_TOOL_LOCK
     end)
     DrawTool(stripTools.lock, {})
     stripTools.lock.icon = stripTools.lock:CreateTexture(nil, "ARTWORK")
@@ -1270,27 +1304,35 @@ end
 
 -- Les petits boutons : leur dessin (ce qu'un clic fera) et leur place
 local function LayoutTools(s)
+    local grid = s.layout == "grid"
     DrawTool(stripTools.vertical, s.vertical and ICON_ROW or ICON_COL)
-    -- (bande cachée : pas de ligne / colonne ; les autres dans le coin du HUD)
-    stripTools.vertical:SetShown(not s.stripHidden)
-    local list = { stripTools.lock, stripTools.vertical, stripTools.settings }
-    if s.stripHidden then list = { stripTools.lock, stripTools.settings } end
+    DrawTool(stripTools.layout, grid and ICON_PAD or ICON_GRID)
+    -- (bande cachée, ou grille : pas de ligne / colonne ; les autres dans le
+    -- coin du HUD, ou à droite de la grille)
+    local alone = s.stripHidden or grid
+    stripTools.vertical:SetShown(not alone)
+    local list = { stripTools.lock, stripTools.vertical, stripTools.layout, stripTools.settings }
+    if alone then list = { stripTools.lock, stripTools.layout, stripTools.settings } end
+    local span = #list * TOOL + (#list - 1) * 2
     stripTools:ClearAllPoints()
     -- (en ligne : à droite de la bande, l'un sous l'autre ; en colonne :
     -- sous la bande, côte à côte)
-    if s.stripHidden then
-        stripTools:SetSize(TOOL, TOOL * 2 + 2)
+    if grid then
+        stripTools:SetSize(TOOL, span)
+        stripTools:SetPoint("TOPLEFT", holder, "TOPRIGHT", 3, 0)
+    elseif s.stripHidden then
+        stripTools:SetSize(TOOL, span)
         stripTools:SetPoint("TOPRIGHT", holder, "TOPRIGHT", 0, 0)
     elseif s.vertical then
-        stripTools:SetSize(TOOL * 3 + 4, TOOL)
+        stripTools:SetSize(span, TOOL)
         stripTools:SetPoint("TOPLEFT", stripHolder, "BOTTOMLEFT", 0, -2)
     else
-        stripTools:SetSize(TOOL, TOOL * 3 + 4)
+        stripTools:SetSize(TOOL, span)
         stripTools:SetPoint("TOPLEFT", stripHolder, "TOPRIGHT", 2, 0)
     end
     for i, b in ipairs(list) do
         b:ClearAllPoints()
-        if s.vertical and not s.stripHidden then
+        if s.vertical and not alone then
             b:SetPoint("TOPLEFT", (i - 1) * (TOOL + 2), 0)
         else
             b:SetPoint("TOPLEFT", 0, -(i - 1) * (TOOL + 2))
@@ -1301,7 +1343,9 @@ end
 local function Build()
     holder = CreateFrame("Frame", "MyGamepadIsRichHud", UIParent)
     holder:SetSize(MAIN_W, HEIGHT)
-    stripHolder = CreateFrame("Frame", nil, holder)
+    classic = CreateFrame("Frame", nil, holder)
+    classic:SetAllPoints()
+    stripHolder = CreateFrame("Frame", nil, classic)
     stripHolder:SetSize(CARD_W, CARD_H)
     stripHolder:SetClampedToScreen(true)
     stripHolder:SetMovable(true)
@@ -1348,16 +1392,21 @@ local function Build()
     Cluster(-cx, DPAD_KEYS, dpad)
     Cluster(cx, FACE_KEYS, face)
 
-    titleTag = Tag(holder, 24, "GameFontNormalLarge")
+    titleTag = Tag(classic, 24, "GameFontNormalLarge")
+    stuckHint = UI.Text(classic, "GameFontNormal")
+    stuckHint:SetTextColor(1, 0.25, 0.2)
+    stuckHint:Hide()
 
     for i, side in ipairs({ { "PADLSHOULDER", "PADLTRIGGER" }, { "PADRSHOULDER", "PADRTRIGGER" } }) do
-        local t = Tile(holder, 34)
+        local t = Tile(classic, 34)
         t.x, t.y = i == 1 and -50 or 50, 24
-        t.tag = Tag(holder, 18, "GameFontNormalSmall")
+        t.tag = Tag(classic, 18, "GameFontNormalSmall")
         SetTag(t.tag, side)
         t.tag:SetPoint(i == 1 and "RIGHT" or "LEFT", t, i == 1 and "LEFT" or "RIGHT", i == 1 and -4 or 4, 0)
         classTiles[i] = t
     end
+    -- (la grille, HudGrid.lua : cachée tant que la disposition est la manette)
+    ns.HudGrid.Build(holder)
     H.Place()
 end
 
@@ -1369,6 +1418,8 @@ local function PlaceMain()
     for _, t in ipairs(classTiles) do t:SetPoint("CENTER", holder, "BOTTOM", t.x, y0 + t.y) end
     titleTag:ClearAllPoints()
     titleTag:SetPoint("CENTER", holder, "BOTTOM", 0, y0 + MAIN_H - 14)
+    stuckHint:ClearAllPoints()
+    stuckHint:SetPoint("BOTTOM", titleTag, "TOP", 0, 4)
 end
 
 function H.Place()
@@ -1388,6 +1439,17 @@ end
 local function Relayout()
     dirty = false
     local s = H.Settings()
+    -- En grille (HudGrid.lua) : la disposition manette est cachée, la grille
+    -- donne sa taille au HUD
+    local grid = s.layout == "grid"
+    classic:SetShown(not grid)
+    ns.HudGrid.SetShown(grid)
+    if grid then
+        editing = nil
+        ns.HudGrid.Relayout(s)
+        LayoutTools(s)
+        return
+    end
     -- (dans l'ordre choisi par le joueur, ou celui de l'interface)
     local list = H.Layers()
 
@@ -1568,10 +1630,86 @@ local function SetCardMinis(c, pu)
     end
 end
 
-local function SetCardState(c, active, edited, any)
-    local edge = edited and EDIT_EDGE or (active and GOLD_EDGE or DIM_EDGE)
+local function SetCardState(c, active, edited, any, stuck)
+    local edge = edited and EDIT_EDGE or (stuck and STUCK_EDGE or (active and GOLD_EDGE or DIM_EDGE))
     c.edge:SetColorTexture(edge[1], edge[2], edge[3], edge[4])
-    c:SetAlpha((active or edited) and 1 or (any and 0.6 or 0.9))
+    c:SetAlpha((active or edited or stuck) and 1 or (any and 0.6 or 0.9))
+end
+
+-- Une couche touchée par le blocage de Forever : sa barre, ou une couche de
+-- l'addon dont tous les boutons sont parmi ceux à appuyer (LT ; LT, RT et
+-- la paire LT + RT pour la barre LT + RT)
+local function IsStuckEntry(e, stuckBar, stuckPads)
+    if not stuckBar then return false end
+    if e.bar then return e.bar == stuckBar end
+    if not e.mod then return false end
+    local pair = ns.PairDef(e.mod)
+    local ids = pair and { pair.a, pair.b } or { e.mod }
+    local given = {}
+    for _, id in ipairs(stuckPads) do given[id] = true end
+    for _, id in ipairs(ids) do
+        if not given[id] then return false end
+    end
+    return true
+end
+
+-- Ce que la grille (HudGrid.lua) reprend du HUD : les cases, leurs
+-- étiquettes et leurs couleurs, le même dessin et le même clic
+H.Kit = {
+    Tile = Tile, MirrorAction = MirrorAction, MirrorNative = MirrorNative, SetEdge = SetEdge,
+    Native = Native, Tag = Tag, SetTag = SetTag, EntryTag = EntryTag, IsStuckEntry = IsStuckEntry,
+    LayerKey = LayerKey, mouseFrames = mouseFrames, pressed = pressed,
+    CARD_SIMPLE_LAYER = CARD_SIMPLE_LAYER,
+    GOLD_EDGE = GOLD_EDGE, DIM_EDGE = DIM_EDGE, EDIT_EDGE = EDIT_EDGE, STUCK_EDGE = STUCK_EDGE,
+}
+
+-- La barre active de Forever, par son nom (nil : une autre, véhicule...)
+local function ActiveBarName(pu)
+    local active = pu.activeBar
+    for _, name in ipairs(BARS) do
+        if pu.actionBars and pu.actionBars[name] == active then return name end
+    end
+end
+
+-- « LT bloqué : appuie une fois sur LT »
+local function StuckText(pads)
+    local names = {}
+    for _, id in ipairs(pads) do names[#names + 1] = ns.ButtonLabel(id) end
+    local label = table.concat(names, " + ")
+    return L.HUD_STUCK:format(label, label)
+end
+
+-- Commun aux deux dispositions : les petits boutons au survol (et une
+-- seconde après), le HUD estompé au repos (hors combat, rien de tenu, rien
+-- en cours de modification)
+local function Rest(busy)
+    local hover = holder:IsMouseOver() or (classic:IsShown() and stripHolder:IsMouseOver())
+        or stripTools:IsMouseOver() or ns.HudGrid.MouseOver()
+    if hover or unlocked then toolsUntil = GetTime() + 1 end
+    stripTools:SetShown(GetTime() < toolsUntil)
+    busy = busy or unlocked or InCombatLockdown() or hover
+    local want = busy and 1 or H.Settings().idleAlpha
+    local now = holder:GetAlpha()
+    if math.abs(now - want) > 0.01 then
+        holder:SetAlpha(now + (want - now) * 0.35)
+    elseif now ~= want then
+        -- (au bout du fondu : la valeur exacte, pour un HUD vraiment caché à 0)
+        holder:SetAlpha(want)
+    end
+end
+
+-- La grille : son état, puis le commun
+local function UpdateGrid(pu)
+    local lt, rt = Triggers()
+    local mod = ns.Modifier.Held and ns.Modifier.Held()
+    if mod and not ns.IsModLayer(mod) then mod = nil end
+    local stuckBar, stuckPads = ns.Focus.Stuck()
+    local any = mod ~= nil or lt or rt
+    ns.HudGrid.Update(pu, {
+        mod = mod, activeName = ActiveBarName(pu), lt = lt, rt = rt, any = any,
+        stuckBar = stuckBar, stuckPads = stuckPads, stuckText = stuckBar and StuckText(stuckPads) or nil,
+    })
+    Rest(any or ns.HudGrid.Editing() or stuckBar ~= nil)
 end
 
 -- La couche en grand : un modificateur, ou une barre de Forever (par son nom
@@ -1605,20 +1743,31 @@ end
 
 local function Update(pu)
     if dirty then Relayout() end
+    if H.Settings().layout == "grid" then return UpdateGrid(pu) end
     if editing and InCombatLockdown() then editing = nil end
     local lt, rt = Triggers()
     local mod = ns.Modifier.Held and ns.Modifier.Held()
     if mod and not ns.IsModLayer(mod) then mod = nil end
 
     -- La barre active de Forever, par son nom
-    local active = pu.activeBar
-    local activeName
-    for _, name in ipairs(BARS) do
-        if pu.actionBars and pu.actionBars[name] == active then activeName = name end
-    end
+    local activeName = ActiveBarName(pu)
     local live = mod and { mod = mod } or { bar = activeName }
     local view = editing or live
     ShowLayer(pu, view)
+
+    -- Forever resté sur sa barre LT / RT (Focus.lua) : cette couche en rouge,
+    -- en grand comme en miniature, et le bouton à appuyer pour la débloquer
+    local stuckBar, stuckPads = ns.Focus.Stuck()
+    if stuckBar then
+        if IsStuckEntry(view, stuckBar, stuckPads) then
+            for _, t in ipairs(dpad) do SetEdge(t, STUCK_EDGE) end
+            for _, t in ipairs(face) do SetEdge(t, STUCK_EDGE) end
+        end
+        stuckHint:SetText(StuckText(stuckPads))
+        -- (un léger battement, pour attirer l'œil)
+        stuckHint:SetAlpha(0.65 + 0.35 * math.abs(math.sin(GetTime() * 3)))
+    end
+    stuckHint:SetShown(stuckBar ~= nil)
 
     local any = mod ~= nil or lt or rt
     if dragCard and InCombatLockdown() then dragCard = nil end
@@ -1629,7 +1778,7 @@ local function Update(pu)
             local e = c.entry
             local isLive = (live.mod and e.mod == live.mod) or (not live.mod and live.bar and e.bar == live.bar)
             local isEdit = editing and e.bar == editing.bar and e.mod == editing.mod
-            SetCardState(c, isLive, isEdit, any)
+            SetCardState(c, isLive, isEdit, any, IsStuckEntry(e, stuckBar, stuckPads))
             -- (glisser en cours : la miniature tenue estompée, sa future place
             -- en bleu)
             if c == dragCard then
@@ -1686,21 +1835,7 @@ local function Update(pu)
         if on then MirrorNative(t, native) end
     end
 
-    -- Estompé au repos : hors combat, rien de tenu, rien en cours de modification
-    -- (les petits boutons de la bande : au survol du HUD, et une seconde après)
-    local hover = holder:IsMouseOver() or stripHolder:IsMouseOver() or stripTools:IsMouseOver()
-    if hover or unlocked then toolsUntil = GetTime() + 1 end
-    stripTools:SetShown(GetTime() < toolsUntil)
-    local busy = unlocked or editing ~= nil or InCombatLockdown() or any or hover
-    local s = H.Settings()
-    local want = busy and 1 or s.idleAlpha
-    local now = holder:GetAlpha()
-    if math.abs(now - want) > 0.01 then
-        holder:SetAlpha(now + (want - now) * 0.35)
-    elseif now ~= want then
-        -- (au bout du fondu : la valeur exacte, pour un HUD vraiment caché à 0)
-        holder:SetAlpha(want)
-    end
+    Rest(editing ~= nil or any or stuckBar ~= nil)
 end
 
 local function Watch()
@@ -1735,6 +1870,7 @@ end
 
 local function StopEditing()
     editing = nil
+    ns.HudGrid.StopEditing()
 end
 
 local function SetEditKeys(on)
@@ -1782,6 +1918,7 @@ local function Restore()
     if holder then holder:Hide() end
     shown = false
     editing = nil
+    pcall(ns.HudGrid.StopEditing)
     pcall(SetEditKeys, false)
 end
 
@@ -1795,7 +1932,7 @@ watcher:SetScript("OnUpdate", function(_, elapsed)
     local ok, err = pcall(function()
         Watch()
         -- (l'écoute des touches suit le mode édition, HUD affiché)
-        SetEditKeys(shown and editing ~= nil)
+        SetEditKeys(shown and (editing ~= nil or ns.HudGrid.Editing()))
     end)
     if not ok then
         broken = true
@@ -1877,6 +2014,60 @@ function H.SetStripRows(n)
     dirty = true
 end
 
+-- La disposition : « grid » (une ligne par couche) ou « pad » (la croix et
+-- A/B/X/Y comme sur la manette)
+function H.Layout() return H.Settings().layout end
+
+function H.SetLayout(layout)
+    if layout ~= "grid" and layout ~= "pad" then return end
+    local s = H.Settings()
+    if s.layout == layout then return end
+    s.layout = layout
+    editing = nil
+    ns.HudGrid.StopEditing()
+    H.Changed()
+end
+
+-- La taille de la grille (50 à 150 %), sans changer celle du reste du HUD
+function H.GridScale() return H.Settings().gridScale end
+
+function H.SetGridScale(n)
+    H.Settings().gridScale = math.max(0.5, math.min(1.5, math.floor(n * 20 + 0.5) / 20))
+    dirty = true
+end
+
+-- Sur combien de colonnes répartir les couches de la grille (1 à 3)
+function H.GridCols() return H.Settings().gridCols end
+
+function H.SetGridCols(n)
+    H.Settings().gridCols = math.max(1, math.min(3, math.floor(n)))
+    dirty = true
+end
+
+-- Le rappel de la couche utilisée en grand au-dessus de la grille
+function H.GridRecall() return H.Settings().gridRecall end
+
+function H.SetGridRecall(on)
+    H.Settings().gridRecall = on and true or false
+    dirty = true
+end
+
+-- Le rappel séparé de la grille (déplacé à part) : il reste d'abord où il est
+function H.GridRecallDetached() return H.Settings().gridRecallDetached end
+
+function H.SetGridRecallDetached(on)
+    local s = H.Settings()
+    on = on and true or false
+    if on == s.gridRecallDetached then return end
+    if on then
+        local left, bottom = ns.HudGrid.RecallCorner()
+        if left then s.gridRecallPos = { "BOTTOMLEFT", "BOTTOMLEFT", left, bottom } end
+    end
+    s.gridRecallDetached = on
+    dirty = true
+    if UI.RefreshAll then UI.RefreshAll() end
+end
+
 -- L'opacité du HUD au repos (0 à 100 % ; 0 : caché hors combat, il revient
 -- au survol, en combat ou quand un bouton est tenu)
 function H.IdleAlpha() return H.Settings().idleAlpha end
@@ -1896,7 +2087,7 @@ end
 
 function H.ResetPosition()
     local s = H.Settings()
-    s.pos, s.scale, s.stripPos = nil, 1, nil
+    s.pos, s.scale, s.stripPos, s.gridRecallPos = nil, 1, nil, nil
     H.Place()
     dirty = true
 end
@@ -1917,8 +2108,12 @@ function H.ExportSettings()
     local s = H.Settings()
     local out = { scale = s.scale,
         stripScale = s.stripScale, stripRows = s.stripRows, detached = s.detached, vertical = s.vertical,
-        stripHidden = s.stripHidden, idleAlpha = s.idleAlpha }
+        stripHidden = s.stripHidden, idleAlpha = s.idleAlpha,
+        layout = s.layout, gridScale = s.gridScale, gridCols = s.gridCols, gridRecall = s.gridRecall,
+        gridRecallDetached = s.gridRecallDetached }
     if s.pos then out.pos = { s.pos[1], s.pos[2], s.pos[3], s.pos[4] } end
+    local rp = s.gridRecallPos
+    if rp then out.gridRecallPos = { rp[1], rp[2], rp[3], rp[4] } end
     if s.stripPos then out.stripPos = { s.stripPos[1], s.stripPos[2], s.stripPos[3], s.stripPos[4] } end
     if s.order then
         out.order = {}
@@ -1952,7 +2147,14 @@ function H.CleanSettings(t)
         vertical = t.vertical == true,
         stripHidden = t.stripHidden == true,
         idleAlpha = Clamp(t.idleAlpha, 0, 1, IDLE_ALPHA),
+        gridScale = Clamp(t.gridScale, 0.5, 1.5, 1),
+        gridCols = math.floor(Clamp(t.gridCols, 1, 3, 1)),
+        gridRecall = t.gridRecall ~= false,
+        gridRecallDetached = t.gridRecallDetached == true,
     }
+    -- (un export d'avant la grille n'a pas de disposition : celle du joueur
+    -- ne change pas)
+    if t.layout == "grid" or t.layout == "pad" then out.layout = t.layout end
     local p = t.pos
     if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
         out.pos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
@@ -1960,6 +2162,10 @@ function H.CleanSettings(t)
     p = t.stripPos
     if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
         out.stripPos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
+    end
+    p = t.gridRecallPos
+    if type(p) == "table" and POINTS[p[1]] and POINTS[p[2]] then
+        out.gridRecallPos = { p[1], p[2], Clamp(p[3], -4000, 4000, 0), Clamp(p[4], -4000, 4000, 0) }
     end
     out.order = CleanOrder(t.order)
     return out
@@ -1972,6 +2178,7 @@ function H.ImportSettings(t)
     for k, v in pairs(clean) do s[k] = v end
     s.pos = clean.pos
     s.stripPos = clean.stripPos
+    s.gridRecallPos = clean.gridRecallPos
     s.order = clean.order
     H.Place()
     dirty = true
@@ -1991,6 +2198,8 @@ function H.SetUnlocked(on)
     local detached = H.Settings().detached
     stripHolder:EnableMouse(unlocked and detached)
     stripOutline:SetShown(unlocked and detached)
+    -- (en grille : le rappel séparé se glisse à part)
+    ns.HudGrid.SetUnlocked(unlocked)
     UpdateLock()
     LayoutTools(H.Settings())
 end

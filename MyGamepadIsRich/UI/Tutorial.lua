@@ -5,7 +5,8 @@
 -- types de boutons, les boutons de base (LT, RT, LB, RB), puis — seulement
 -- si la manette a des boutons en plus — logiciel de la manette, détection
 -- et type de ces boutons ; ensuite les paires, la pose des actions, le
--- HUD, fin. Les étapes interactives agissent en direct.
+-- HUD (le choix de sa disposition : grille ou manette), fin. Les étapes
+-- interactives agissent en direct.
 -- À la manette : A = Suivant, B = Précédent (cadre qui prend la manette
 -- tant que la fenêtre est ouverte, comme le conseille Improved Forever).
 local _, ns = ...
@@ -479,6 +480,69 @@ local function PairPress(id, down)
     end
 end
 
+-- La disposition du HUD : une carte par choix (grille, manette), à cocher ;
+-- le HUD change tout de suite derrière la fenêtre
+local HUD_STYLES = {
+    { layout = "grid", name = "TUTO_HUD_GRID_NAME", desc = "TUTO_HUD_GRID_DESC" },
+    { layout = "pad", name = "TUTO_HUD_PAD_NAME", desc = "TUTO_HUD_PAD_DESC" },
+}
+
+local function BuildHudStyles(c)
+    c.cards = {}
+    for i, style in ipairs(HUD_STYLES) do
+        local card = CreateFrame("Button", nil, c)
+        card:SetWidth(TEXT_WIDTH)
+        local bg = card:CreateTexture(nil, "BACKGROUND")
+        bg:SetAllPoints()
+        bg:SetColorTexture(1, 1, 1, 0.05)
+        local hl = card:CreateTexture(nil, "HIGHLIGHT")
+        hl:SetAllPoints()
+        hl:SetColorTexture(1, 1, 1, 0.05)
+        card.check = CreateFrame("CheckButton", nil, card, "UICheckButtonTemplate")
+        card.check:SetSize(24, 24)
+        card.check:SetPoint("TOPLEFT", 8, -6)
+        card.name = UI.Text(card, "GameFontNormalLarge", L[style.name])
+        card.name:SetPoint("LEFT", card.check, "RIGHT", 4, 0)
+        card.desc = UI.Text(card, "GameFontHighlight", L[style.desc])
+        card.desc:SetPoint("TOPLEFT", 40, -34)
+        card.desc:SetWidth(TEXT_WIDTH - 52)
+        card.desc:SetJustifyH("LEFT")
+        local function Pick()
+            ns.Hud.SetLayout(style.layout)
+            Refresh()
+        end
+        card:SetScript("OnClick", Pick)
+        card.check:SetScript("OnClick", Pick)
+        card.layout = style.layout
+        c.cards[i] = card
+    end
+    return 10
+end
+
+-- (hauteurs selon la langue : calculées quand l'étape est montrée)
+local function RefreshHudStyles(c)
+    local layout = ns.Hud.Layout()
+    local y = 0
+    for _, card in ipairs(c.cards) do
+        card.check:SetChecked(card.layout == layout)
+        local h = 34 + card.desc:GetStringHeight() + 10
+        card:SetHeight(h)
+        card:ClearAllPoints()
+        card:SetPoint("TOPLEFT", 0, -y)
+        y = y + h + 6
+    end
+    return y
+end
+
+-- (les deux dispositions, pour l'onglet Aide)
+local function HudStylesText()
+    local parts = {}
+    for _, style in ipairs(HUD_STYLES) do
+        parts[#parts + 1] = "|cffffd100" .. L[style.name] .. "|r\n" .. L[style.desc]
+    end
+    return table.concat(parts, "\n\n")
+end
+
 -- (LB + LT et RB + RT : l'avertissement, pour l'Aide et les options)
 function T.ClassPairNote()
     return "|cffff8020(!) " .. L.PAIR_CLASS_NOTE:format(ns.ButtonLabel("LTLB"), ns.ButtonLabel("RTRB")) .. "|r"
@@ -507,7 +571,8 @@ local STEPS = {
     -- actions à cible choisie, selon le contexte et cycliques ; l'opacité du
     -- HUD, les miniatures au maintien et l'aide-mémoire)
     { key = "actions", title = "TUTO_ACTIONS_TITLE", text = "TUTO_ACTIONS_TEXT", help = "TUTO_ACTIONS_MORE" },
-    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", help = "TUTO_HUD_MORE" },
+    { key = "hud", title = "TUTO_HUD_TITLE", text = "TUTO_HUD_TEXT", build = BuildHudStyles,
+        refresh = RefreshHudStyles, helpExtra = HudStylesText, help = "TUTO_HUD_MORE" },
     { key = "done", title = "TUTO_DONE_TITLE", text = "TUTO_DONE_TEXT" },
 }
 

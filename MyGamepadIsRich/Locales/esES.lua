@@ -159,7 +159,7 @@ ns.AddLocale("esES", {
     LAYER_DESC_BASE = "A, B, X, Y y la cruceta sin mantener nada. Todo cabe aquí: lo que la barra del juego no puede contener (macro escrita a mano, comando de WoW) lo toma el addon. A, B, X e Y conservan las acciones del juego (saltar, interactuar...) hasta que pongas las tuyas.",
     LAYER_DESC_HOLD = "Mantén %s y pulsa A, B, X, Y o la cruceta.",
     PAIRS_TITLE = "Parejas (dos modificadores mantenidos a la vez)",
-    HUD_INTRO = "El HUD sustituye la barra de mando del juego: la capa en uso en grande y todas las capas en miniatura.",
+    HUD_INTRO = "El HUD sustituye la barra de mando del juego: en cuadrícula (una fila por capa) o como el mando (la capa en uso en grande y todas las capas en miniatura).",
     HUD_SIZE = "Tamaño:",
     HUD_MOVE = "Desbloquear el HUD",
     HUD_MOVE_DONE = "Bloquear el HUD",
@@ -175,9 +175,9 @@ ns.AddLocale("esES", {
 ns.AddLocale("esES", {
     HUD_STRIP_SIZE = "Tamaño de las miniaturas:",
     HUD_STRIP_ROWS = "Filas de miniaturas:",
-    HUD_ORDER = "Orden de las miniaturas:",
+    HUD_ORDER = "Orden de las capas:",
     HUD_ORDER_RESET = "Orden por defecto",
-    HUD_ORDER_HINT = "Flechas: mover una capa. En el HUD también puedes arrastrar una miniatura sobre otra.",
+    HUD_ORDER_HINT = "Flechas: mover una capa. En el HUD también puedes arrastrar una miniatura (o el nombre de una fila de la cuadrícula) sobre otra.",
     HUD_CARD_DRAG = "Arrastrar: moverla (sobre otra miniatura)",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("esES", {
     TUTO_PAIRS_TEXT = "Mantén dos botones a la vez (modificadores o de objetivo): otra capa más de 8 acciones. Dos botones cualesquiera pueden formar una pareja: L5 + R5, LT + RT, LB + LT... Marca las que quieras (podrás cambiarlas en la pestaña |cffffd100Botones|r). Por defecto: las parejas izquierda + derecha.",
     TUTO_ACTIONS_TITLE = "Colocar tus acciones",
     TUTO_ACTIONS_TEXT = "En la pestaña |cffffd100Capas|r: a la izquierda, todas tus capas (Solo, LT, RT, tus modificadores y parejas); a la derecha, la capa elegida, dispuesta como el mando.\n\n- Arrastra un hechizo de tu libro de hechizos, un objeto de tus bolsas, una macro, una montura o un juguete a una casilla.\n- O haz clic en una casilla: elegir un hechizo o un objeto, escribir una macro, elegir un comando de WoW (Correr automáticamente...) o una acción básica (Saltar, Interactuar...). Clic derecho: vaciar.\n- La fila bajo la cruceta: las casillas de tus botones simples en esa capa.\n\nTambién puedes hacer clic en una miniatura de capa del HUD para editarla allí mismo.\n\nLas acciones se guardan por personaje; los tipos y las teclas en el perfil, para toda la cuenta. Todo funciona en combate; solo los cambios hechos en combate esperan a que termine.\n\n|cffffd100Práctico|r:\n- El campo de arriba de la lista busca una acción en todas tus capas.\n- |cffffd100Consumible inteligente|r (menú de una casilla): tu mejor poción, comida, bebida o venda, actualizada sola.\n- Un hechizo gris y rojo: este personaje no lo conoce. |cffffd100Plantillas y especializaciones...|r puede quitarlos.\n- Un nuevo rango aprendido con el instructor de clase: el addon propone ponerlo en lugar del antiguo, en todas partes.",
-    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD:\n\n- |cffffd100En grande|r: la capa que usas, la cruceta a la izquierda y A/B/X/Y a la derecha. Mantén un botón y cambia.\n- |cffffd100Las miniaturas|r: todas tus capas, con las casillas de tus botones simples en el centro; la que mantienes se ilumina. Haz clic en una para editarla.\n- |cffffd100En el centro|r: tus botones simples, con la acción que lanzarán.\n\nAjustes (tamaño, posición, miniaturas): pestaña |cffffd100HUD|r.\n\nAl pasar el ratón por las miniaturas aparecen pequeños botones: el |cffffd100candado|r desbloquea el HUD para moverlo con el ratón (y lo vuelve a bloquear), otro pone las miniaturas en fila o en columna. Un |cffffd100engranaje|r abre la pestaña HUD para ajustes más precisos (miniaturas separadas del HUD, tamaño...).",
+    TUTO_HUD_TEXT = "El addon sustituye la barra de mando del juego por su propio HUD. Elige su disposición abajo: el HUD cambia al instante y podrás cambiarla cuando quieras (pestaña |cffffd100HUD|r o el botoncito del HUD).\n\nAl pasar el ratón sobre el HUD aparecen botoncitos: el |cffffd100candado|r lo desbloquea para moverlo con el ratón (y lo vuelve a bloquear), otro cambia la disposición y el |cffffd100engranaje|r abre la pestaña HUD para los ajustes finos (tamaño, miniaturas...).",
     TUTO_DONE_TEXT = "Abre la configuración para colocar tus primeras acciones.\n\n|cffffd100/mgir|r: abrir la configuración\n|cffffd100/mgir test|r: prueba del mando, para ver lo que recibe WoW\n|cffffd100/mgir tuto|r: este tutorial\n|cffffd100/mgir reset|r: vaciar las acciones de este personaje\n|cffffd100/mgir restore|r: devolver LT, RT, LB y RB al juego\n|cffffd100/mgir rangs|r: poner los nuevos rangos de tus hechizos en lugar de los antiguos",
     SETTINGS_DESC = "Elige qué hace cada botón de tu mando: botones adicionales (palancas traseras, gatillos extra) y botones base (LT, RT, LB, RB). Comando: /mgir",
     BUTTONS_INTRO = "Elige el tipo de cada botón: pasa el ratón sobre un tipo para ver lo que hace. En verde: el tipo por defecto de los botones base, que funciona como el juego.",
@@ -429,6 +429,30 @@ ns.AddLocale("esES", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("esES", {
     FOREVER_STUCK = "Forever se quedó en su barra %s (se perdió el soltar de un botón). Pulsa %s una vez para volver a «Solo».",
+    HUD_STUCK = "%s bloqueado: pulsa %s una vez",
+    HUD_GRID_RECALL_DETACH = "Separado de la cuadrícula",
+    TIP_HUD_GRID_RECALL_DETACH = "El recordatorio sale de la cuadrícula: puedes colocarlo donde quieras (candado del HUD y luego arrastrar).",
+    HUD_GRID_RECALL = "Recordatorio de la capa en uso en grande arriba",
+    TIP_HUD_GRID_RECALL = "Encima de la cuadrícula y centrada, la capa que usas en grande, cada casilla con su botón. Su fila en la cuadrícula se queda entonces pequeña (borde dorado).",
+    HUD_STYLE_LABEL = "Vista del HUD:",
+    HUD_STYLE_GRID = "Cuadrícula",
+    HUD_STYLE_PAD = "Mando",
+    TIP_HUD_STYLE_GRID = "Una fila por capa, los botones siempre en el mismo orden: la cruceta, luego X, Y, B, A (izquierda, arriba, derecha, abajo) y luego los botones simples. La capa en uso en grande arriba y dorada en la cuadrícula.",
+    TIP_HUD_STYLE_PAD = "Como el mando: la capa en uso en grande (cruceta a la izquierda, A/B/X/Y a la derecha, botones simples en el centro) y todas las capas en miniatura.",
+    HUD_SECTION_GRID = "Cuadrícula de capas",
+    HUD_GRID_SIZE = "Tamaño de la cuadrícula:",
+    HUD_GRID_COLS = "Columnas de capas:",
+    TIP_HUD_GRID_SIZE = "El tamaño de la cuadrícula. «Tamaño» (más abajo) agranda todo el HUD.",
+    TIP_HUD_GRID_COLS = "En cuántas columnas repartir las filas de capas: más columnas, una cuadrícula más ancha y más baja.",
+    HUD_TOOL_TO_GRID = "Pasar el HUD a cuadrícula",
+    HUD_TOOL_TO_PAD = "Pasar el HUD a disposición de mando",
+    HUD_ROW_HINT = "Clic: agrandar esta capa para editarla",
+    HUD_ROW_DRAG = "Arrastrar: moverla (sobre otra fila)",
+    TUTO_HUD_GRID_NAME = "Cuadrícula (recomendada)",
+    TUTO_HUD_GRID_DESC = "Una fila por capa, los botones siempre en el mismo orden, con su color en la cabecera de cada columna: la cruceta, luego X, Y, B, A (izquierda, arriba, derecha, abajo: el mismo sitio para los dos pulgares) y luego tus botones simples. Arriba, el recordatorio muestra en grande la capa que usas; su fila se vuelve dorada. Clic en una casilla para editarla, en el nombre de una fila para agrandarla; arrastra ese nombre para cambiar el orden. Pestaña HUD: tamaño, número de columnas, recordatorio (que se puede separar de la cuadrícula y colocar donde quieras).",
+    TUTO_HUD_PAD_NAME = "Mando",
+    TUTO_HUD_PAD_DESC = "Como el mando: la capa que usas en grande, la cruceta a la izquierda, A/B/X/Y a la derecha, tus botones simples en el centro con la acción que se lanzará. Todas tus capas en miniatura debajo: haz clic en una miniatura para editarla.",
+    WHATSNEW_1_4_0 = "• |cffffd100HUD en cuadrícula|r: una nueva disposición, una fila por capa, los botones siempre en el mismo orden, con su color en la cabecera de cada columna: la cruceta, luego X, Y, B, A (izquierda, arriba, derecha, abajo) y luego los botones simples. Arriba, el recordatorio muestra en grande la capa en uso; en la cuadrícula se vuelve dorada. Cada casilla se edita directamente; clic en el nombre de una fila para agrandarla, arrastrar para cambiar el orden.\n• Pestaña HUD: tamaño de la cuadrícula, número de columnas (1 a 3), recordatorio visible o no, y separado de la cuadrícula para colocarlo donde quieras. Tu HUD conserva su disposición actual: pasa a la cuadrícula en la pestaña HUD («Vista del HUD») o con el botoncito del HUD.\n• |cffffd100Capa bloqueada en rojo|r: cuando la barra LT / RT del juego se queda bloqueada, el HUD muestra esa capa en rojo con el botón que hay que pulsar para desbloquearla.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("esES", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("esES", {
-    HUD_TOOL_SETTINGS = "Ajustes del HUD (pestaña HUD): miniaturas separadas del HUD, tamaño...",
+    HUD_TOOL_SETTINGS = "Ajustes del HUD (pestaña HUD): disposición, tamaño, miniaturas...",
 })
 
 -- HUD : miniatures des couches cachées

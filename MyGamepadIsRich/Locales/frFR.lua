@@ -159,7 +159,7 @@ ns.AddLocale("frFR", {
     LAYER_DESC_BASE = "A, B, X, Y et la croix sans rien maintenir. Tout peut y aller : ce que la barre du jeu ne sait pas tenir (macro écrite à la main, commande WoW) est pris par l'addon. A, B, X et Y gardent les actions du jeu (sauter, interagir...) tant que tu n'y mets pas les tiennes.",
     LAYER_DESC_HOLD = "Maintiens %s, puis appuie sur A, B, X, Y ou la croix.",
     PAIRS_TITLE = "Paires (deux modificateurs maintenus ensemble)",
-    HUD_INTRO = "Le HUD remplace la barre manette du jeu : la couche utilisée en grand, toutes les couches en miniature.",
+    HUD_INTRO = "Le HUD remplace la barre manette du jeu : en grille (une ligne par couche) ou comme la manette (la couche utilisée en grand, toutes les couches en miniature).",
     HUD_SIZE = "Taille :",
     HUD_MOVE = "Déverrouiller le HUD",
     HUD_MOVE_DONE = "Verrouiller le HUD",
@@ -175,9 +175,9 @@ ns.AddLocale("frFR", {
 ns.AddLocale("frFR", {
     HUD_STRIP_SIZE = "Taille des miniatures :",
     HUD_STRIP_ROWS = "Lignes de miniatures :",
-    HUD_ORDER = "Ordre des miniatures :",
+    HUD_ORDER = "Ordre des couches :",
     HUD_ORDER_RESET = "Ordre d'origine",
-    HUD_ORDER_HINT = "Flèches : déplacer une couche. Sur le HUD, tu peux aussi glisser une miniature sur une autre.",
+    HUD_ORDER_HINT = "Flèches : déplacer une couche. Sur le HUD, tu peux aussi glisser une miniature (ou le nom d'une ligne de la grille) sur une autre.",
     HUD_CARD_DRAG = "Glisser : la déplacer (sur une autre miniature)",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("frFR", {
     TUTO_PAIRS_TEXT = "Maintiens deux boutons ensemble (modificateurs ou cibles) : encore une couche de 8 actions. N'importe lesquels peuvent faire une paire : L5 + R5, LT + RT, LB + LT... Coche celles que tu veux (tu pourras changer dans l'onglet |cffffd100Boutons|r). Par défaut : les paires gauche + droite.",
     TUTO_ACTIONS_TITLE = "Poser tes actions",
     TUTO_ACTIONS_TEXT = "Dans l'onglet |cffffd100Couches|r : à gauche, toutes tes couches (Seul, LT, RT, tes modificateurs et tes paires) ; à droite, la couche choisie, disposée comme la manette.\n\n- Glisse un sort depuis ton grimoire, un objet depuis tes sacs, une macro, une monture ou un jouet sur une case.\n- Ou clique sur une case : choisir un sort ou un objet, écrire une macro, choisir une commande WoW (Course automatique...) ou une action de base (Sauter, Interagir...). Clic droit : vider.\n- La ligne sous la croix : les cases de tes boutons simples dans cette couche.\n\nTu peux aussi cliquer sur une miniature de couche du HUD pour la modifier sur place.\n\nLes actions sont enregistrées par personnage ; les types et les touches dans le profil, pour tout le compte. Tout fonctionne en combat ; seules les modifications faites en combat attendent sa fin.\n\n|cffffd100Pratique|r :\n- Le champ en haut de la liste cherche une action dans toutes tes couches.\n- |cffffd100Consommable intelligent|r (menu d'une case) : ta meilleure potion, nourriture, boisson ou bandage, mise à jour toute seule.\n- Un sort grisé et rouge : ce personnage ne le connaît pas. |cffffd100Modèles et spés...|r peut les retirer.\n- Un nouveau rang appris chez le maître de classe : l'addon propose de le mettre à la place de l'ancien, partout.",
-    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD :\n\n- |cffffd100En grand|r : la couche que tu utilises, la croix à gauche, A/B/X/Y à droite. Maintiens un bouton et elle change.\n- |cffffd100Les miniatures|r : toutes tes couches, avec au milieu les cases de tes boutons simples ; celle que tu maintiens s'allume. Clique sur une miniature pour la modifier.\n- |cffffd100Au centre|r : tes boutons simples, avec l'action qui partira.\n\nRéglages (taille, position, miniatures) : onglet |cffffd100HUD|r.\n\nAu survol des miniatures, de petits boutons apparaissent : le |cffffd100cadenas|r déverrouille le HUD pour le déplacer à la souris (puis le reverrouille), un autre met les miniatures en ligne ou en colonne. Un |cffffd100engrenage|r ouvre l'onglet HUD pour les réglages précis (miniatures séparées du HUD, taille...).",
+    TUTO_HUD_TEXT = "L'addon remplace la barre manette du jeu par son propre HUD. Choisis sa disposition ci-dessous : le HUD change tout de suite, et tu pourras en changer à tout moment (onglet |cffffd100HUD|r, ou le petit bouton du HUD).\n\nAu survol du HUD, de petits boutons apparaissent : le |cffffd100cadenas|r le déverrouille pour le déplacer à la souris (puis le reverrouille), un autre change de disposition, et l'|cffffd100engrenage|r ouvre l'onglet HUD pour les réglages précis (taille, miniatures...).",
     TUTO_DONE_TEXT = "Ouvre la configuration pour poser tes premières actions.\n\n|cffffd100/mgir|r : ouvrir la configuration\n|cffffd100/mgir test|r : test manette, pour voir ce que WoW reçoit\n|cffffd100/mgir tuto|r : ce tutoriel\n|cffffd100/mgir reset|r : vider les actions de ce personnage\n|cffffd100/mgir restore|r : rendre LT, RT, LB et RB au jeu\n|cffffd100/mgir rangs|r : mettre les nouveaux rangs de tes sorts à la place des anciens",
     SETTINGS_DESC = "Choisis ce que fait chaque bouton de ta manette : boutons supplémentaires (palettes arrière, gâchettes en plus) et boutons de base (LT, RT, LB, RB). Commande : /mgir",
     BUTTONS_INTRO = "Choisis le type de chaque bouton : survole un type pour voir ce qu'il fait. En vert : le type par défaut des boutons de base, qui fait comme le jeu.",
@@ -429,6 +429,30 @@ ns.AddLocale("frFR", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("frFR", {
     FOREVER_STUCK = "Forever est resté sur sa barre %s (un relâchement de bouton lui a échappé). Appuie une fois sur %s pour le remettre sur « Seul ».",
+    HUD_STUCK = "%s bloqué : appuie une fois sur %s",
+    HUD_GRID_RECALL_DETACH = "Séparé de la grille",
+    TIP_HUD_GRID_RECALL_DETACH = "Le rappel quitte la grille : tu peux le placer où tu veux (cadenas du HUD, puis glisser).",
+    HUD_GRID_RECALL = "Rappel de la couche utilisée en grand au-dessus",
+    TIP_HUD_GRID_RECALL = "Au-dessus de la grille et centrée, la couche que tu utilises en grand, chaque case avec son bouton. La ligne de cette couche dans la grille reste alors en petit (bord doré).",
+    HUD_STYLE_LABEL = "Affichage du HUD :",
+    HUD_STYLE_GRID = "Grille",
+    HUD_STYLE_PAD = "Manette",
+    TIP_HUD_STYLE_GRID = "Une ligne par couche, les boutons toujours dans le même ordre : la croix, puis X, Y, B, A (gauche, haut, droite, bas), puis les boutons simples. La couche utilisée en grand au-dessus, et en doré dans la grille.",
+    TIP_HUD_STYLE_PAD = "Comme sur la manette : la couche utilisée en grand (la croix à gauche, A/B/X/Y à droite, les boutons simples au centre), toutes les couches en miniature.",
+    HUD_SECTION_GRID = "Grille des couches",
+    HUD_GRID_SIZE = "Taille de la grille :",
+    HUD_GRID_COLS = "Colonnes de couches :",
+    TIP_HUD_GRID_SIZE = "La taille de la grille. « Taille » (plus bas) agrandit tout le HUD.",
+    TIP_HUD_GRID_COLS = "Sur combien de colonnes répartir les lignes des couches : plus de colonnes, une grille plus large et moins haute.",
+    HUD_TOOL_TO_GRID = "Passer le HUD en grille",
+    HUD_TOOL_TO_PAD = "Passer le HUD en disposition manette",
+    HUD_ROW_HINT = "Clic : agrandir cette couche pour la modifier",
+    HUD_ROW_DRAG = "Glisser : la déplacer (sur une autre ligne)",
+    TUTO_HUD_GRID_NAME = "Grille (recommandée)",
+    TUTO_HUD_GRID_DESC = "Une ligne par couche, les boutons toujours dans le même ordre, à leur couleur en tête de colonne : la croix, puis X, Y, B, A (gauche, haut, droite, bas : la même place pour les deux pouces), puis tes boutons simples. Au-dessus, le rappel montre en grand la couche que tu utilises ; sa ligne passe en doré. Clic sur une case pour la modifier, sur le nom d'une ligne pour l'agrandir ; glisse ce nom pour changer l'ordre. Onglet HUD : taille, nombre de colonnes, rappel (qu'on peut séparer de la grille et placer où on veut).",
+    TUTO_HUD_PAD_NAME = "Manette",
+    TUTO_HUD_PAD_DESC = "Comme sur la manette : la couche que tu utilises en grand, la croix à gauche, A/B/X/Y à droite, tes boutons simples au centre avec l'action qui partira. Toutes tes couches en miniature dessous : clique sur une miniature pour la modifier.",
+    WHATSNEW_1_4_0 = "• |cffffd100HUD en grille|r : une nouvelle disposition, une ligne par couche, les boutons toujours dans le même ordre, à leur couleur en tête de colonne : la croix, puis X, Y, B, A (gauche, haut, droite, bas), puis les boutons simples. Au-dessus, le rappel montre en grand la couche utilisée ; dans la grille, elle passe en doré. Chaque case se modifie directement ; clic sur le nom d'une ligne pour l'agrandir, glisser pour changer l'ordre.\n• Onglet HUD : taille de la grille, nombre de colonnes (1 à 3), rappel affiché ou non, et séparé de la grille pour le placer où tu veux. Ton HUD garde sa disposition actuelle : passe en grille dans l'onglet HUD (« Affichage du HUD ») ou avec le petit bouton du HUD.\n• |cffffd100Couche bloquée en rouge|r : quand la barre LT / RT du jeu reste bloquée, le HUD montre cette couche en rouge avec le bouton à appuyer pour la débloquer.",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("frFR", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("frFR", {
-    HUD_TOOL_SETTINGS = "Réglages du HUD (onglet HUD) : miniatures séparées du HUD, taille...",
+    HUD_TOOL_SETTINGS = "Réglages du HUD (onglet HUD) : disposition, taille, miniatures...",
 })
 
 -- HUD : miniatures des couches cachées

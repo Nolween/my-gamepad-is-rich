@@ -159,7 +159,7 @@ ns.AddLocale("zhCN", {
     LAYER_DESC_BASE = "不按住任何键时的 A、B、X、Y 和十字键。这里可以放任何东西：游戏动作条无法容纳的（手写宏、WoW 指令）由插件接管。在你放入自己的动作之前，A、B、X、Y 保留游戏的动作（跳跃、互动…）。",
     LAYER_DESC_HOLD = "按住 %s，再按 A、B、X、Y 或十字键。",
     PAIRS_TITLE = "组合（同时按住两个修饰键）",
-    HUD_INTRO = "HUD 取代游戏的手柄动作条：正在使用的层放大显示，所有层以缩略图显示。",
+    HUD_INTRO = "HUD 取代游戏的手柄动作条：网格（每层一行），或手柄样式（正在使用的层放大显示，所有层以缩略图显示）。",
     HUD_SIZE = "大小：",
     HUD_MOVE = "解锁 HUD",
     HUD_MOVE_DONE = "锁定 HUD",
@@ -175,9 +175,9 @@ ns.AddLocale("zhCN", {
 ns.AddLocale("zhCN", {
     HUD_STRIP_SIZE = "缩略图大小：",
     HUD_STRIP_ROWS = "缩略图行数：",
-    HUD_ORDER = "缩略图顺序：",
+    HUD_ORDER = "层顺序：",
     HUD_ORDER_RESET = "默认顺序",
-    HUD_ORDER_HINT = "箭头：移动一层。在 HUD 上也可以把缩略图拖到另一个缩略图上。",
+    HUD_ORDER_HINT = "箭头：移动一层。在 HUD 上也可以把缩略图（或网格中一行的名称）拖到另一个上。",
     HUD_CARD_DRAG = "拖动：移动它（拖到另一个缩略图上）",
 })
 
@@ -404,7 +404,7 @@ ns.AddLocale("zhCN", {
     TUTO_PAIRS_TEXT = "同时按住两个按键（修饰键或目标选择）：再多一层 8 个动作。任意两个都能组成组合：L5 + R5、LT + RT、LB + LT……勾选你想要的（之后可在 |cffffd100按键|r 标签页中更改）。默认：左 + 右组合。",
     TUTO_ACTIONS_TITLE = "放置你的动作",
     TUTO_ACTIONS_TEXT = "在 |cffffd100层|r 标签页：左边是你所有的层（单独、LT、RT、你的修饰键和组合）；右边是所选的层，按手柄布局排列。\n\n- 从法术书拖入法术，从背包拖入物品、宏、坐骑或玩具到格子上。\n- 或点击格子：选择法术或物品、编写宏、选择 WoW 命令（自动奔跑……）或基础动作（跳跃、互动……）。右键：清空。\n- 十字键下方那一行：你的普通按键在该层中的格子。\n\n你也可以点击 HUD 上的层缩略图直接编辑。\n\n动作按角色保存；类型和按键保存在配置档中，整个账号通用。所有功能在战斗中都能使用；只有在战斗中做的修改会等到战斗结束后生效。\n\n|cffffd100实用|r：\n- 列表上方的输入框可在所有层中搜索动作。\n- |cffffd100智能消耗品|r（格子菜单）：背包里最好的药水、食物、饮料或绷带，自动更新。\n- 灰色带红色的法术：这个角色还不会。|cffffd100模板和专精...|r 可以移除它们。\n- 在职业训练师处学会新等级：插件会提议在所有地方替换旧等级。",
-    TUTO_HUD_TEXT = "插件用自己的 HUD 替换游戏的手柄动作条：\n\n- |cffffd100大图|r：你正在使用的层，左边是十字键，右边是 A/B/X/Y。按住一个按键即可切换。\n- |cffffd100缩略图|r：你所有的层，中间是普通按键的格子；正在按住的层会高亮。点击缩略图即可编辑。\n- |cffffd100中央|r：你的普通按键，以及它们将触发的动作。\n\n设置（大小、位置、缩略图）：|cffffd100HUD|r 标签页。\n\n鼠标移到缩略图上会出现小按钮：|cffffd100锁|r可解锁 HUD 以便用鼠标移动（再点一次锁定），另一个按钮把缩略图横排或竖排。|cffffd100齿轮|r会打开 HUD 选项卡，进行更细的设置（与 HUD 分离的缩略图、大小……）。",
+    TUTO_HUD_TEXT = "插件用自己的 HUD 取代游戏的手柄动作条。在下方选择它的布局：HUD 会立即改变，之后随时可以切换（|cffffd100HUD|r 选项卡，或 HUD 上的小按钮）。\n\n鼠标移到 HUD 上会出现小按钮：|cffffd100锁|r 解锁 HUD 以便用鼠标移动（再点一次锁定），另一个切换布局，|cffffd100齿轮|r 打开 HUD 选项卡进行详细设置（大小、缩略图……）。",
     TUTO_DONE_TEXT = "打开设置来放置你的第一批动作。\n\n|cffffd100/mgir|r：打开设置\n|cffffd100/mgir test|r：手柄测试，查看 WoW 收到的输入\n|cffffd100/mgir tuto|r：本教程\n|cffffd100/mgir reset|r：清空此角色的动作\n|cffffd100/mgir restore|r：把 LT、RT、LB 和 RB 还给游戏\n|cffffd100/mgir rangs|r：用法术的新等级替换旧等级",
     SETTINGS_DESC = "决定手柄上每个按键的作用：额外按键（背键、额外扳机）和基础按键（LT、RT、LB、RB）。命令：/mgir",
     BUTTONS_INTRO = "为每个按键选择类型：将鼠标悬停在类型上可查看其作用。绿色：基础按键的默认类型，与游戏中相同。",
@@ -429,6 +429,30 @@ ns.AddLocale("zhCN", {
 -- Forever resté sur sa barre LT / RT
 ns.AddLocale("zhCN", {
     FOREVER_STUCK = "Forever 停留在了它的 %s 动作条上（漏掉了一次按键松开）。按一次 %s 即可回到“单独”。",
+    HUD_STUCK = "%s 卡住了：按一次 %s",
+    HUD_GRID_RECALL_DETACH = "与网格分离",
+    TIP_HUD_GRID_RECALL_DETACH = "放大显示离开网格：你可以把它放在任何位置（HUD 的锁，然后拖动）。",
+    HUD_GRID_RECALL = "在上方放大显示正在使用的层",
+    TIP_HUD_GRID_RECALL = "在网格上方居中放大显示你正在使用的层，每个格子都标有按键。此时网格中该层的行保持小尺寸（金色边框）。",
+    HUD_STYLE_LABEL = "HUD 显示：",
+    HUD_STYLE_GRID = "网格",
+    HUD_STYLE_PAD = "手柄",
+    TIP_HUD_STYLE_GRID = "每层一行，按键顺序始终相同：十字键，然后是 X、Y、B、A（左、上、右、下），再是普通按键。正在使用的层在上方放大显示，在网格中显示为金色。",
+    TIP_HUD_STYLE_PAD = "手柄样式：正在使用的层放大显示（十字键在左，A/B/X/Y 在右，普通按键在中间），所有层以缩略图显示。",
+    HUD_SECTION_GRID = "层网格",
+    HUD_GRID_SIZE = "网格大小：",
+    HUD_GRID_COLS = "层的列数：",
+    TIP_HUD_GRID_SIZE = "网格的大小。下方的“大小”会放大整个 HUD。",
+    TIP_HUD_GRID_COLS = "把各层的行分成几列：列越多，网格越宽越矮。",
+    HUD_TOOL_TO_GRID = "把 HUD 切换为网格",
+    HUD_TOOL_TO_PAD = "把 HUD 切换为手柄布局",
+    HUD_ROW_HINT = "点击：放大此层以便编辑",
+    HUD_ROW_DRAG = "拖动：移动它（拖到另一行上）",
+    TUTO_HUD_GRID_NAME = "网格（推荐）",
+    TUTO_HUD_GRID_DESC = "每层一行，按键顺序始终相同，每列顶部显示按键及其颜色：十字键，然后是 X、Y、B、A（左、上、右、下：两个拇指位置一致），再是你的普通按键。上方的放大显示展示你正在使用的层；该层的行变成金色。点击格子可编辑，点击一行的名称可放大该行；拖动名称可调整顺序。HUD 选项卡：大小、列数、放大显示（可与网格分离并放在任意位置）。",
+    TUTO_HUD_PAD_NAME = "手柄",
+    TUTO_HUD_PAD_DESC = "手柄样式：你正在使用的层放大显示，十字键在左，A/B/X/Y 在右，普通按键在中间并显示将要施放的动作。下方是所有层的缩略图：点击缩略图即可编辑。",
+    WHATSNEW_1_4_0 = "• |cffffd100网格 HUD|r：新的布局，每层一行，按键顺序始终相同，每列顶部显示按键及其颜色：十字键，然后是 X、Y、B、A（左、上、右、下），再是普通按键。上方的放大显示展示正在使用的层；在网格中该层显示为金色。每个格子都可直接编辑；点击一行的名称可放大，拖动可调整顺序。\n• HUD 选项卡：网格大小、列数（1 到 3）、是否显示放大显示，以及与网格分离以放在任意位置。你的 HUD 保持当前布局：可在 HUD 选项卡（“HUD 显示”）或用 HUD 上的小按钮切换为网格。\n• |cffffd100卡住的层显示为红色|r：当游戏的 LT / RT 动作条卡住时，HUD 会把该层显示为红色，并提示按哪个键解除。",
 })
 
 -- 1.1.0 : spés, état des actions sur le HUD, profils, remplissage rapide, rapport
@@ -601,7 +625,7 @@ ns.AddLocale("zhCN", {
 
 -- HUD : bouton vers l'onglet HUD
 ns.AddLocale("zhCN", {
-    HUD_TOOL_SETTINGS = "HUD 设置（HUD 选项卡）：与 HUD 分离的缩略图、大小……",
+    HUD_TOOL_SETTINGS = "HUD 设置（HUD 选项卡）：布局、大小、缩略图……",
 })
 
 -- HUD : miniatures des couches cachées
